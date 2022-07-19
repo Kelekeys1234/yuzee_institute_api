@@ -2,7 +2,6 @@ package com.yuzee.app.jobs;
 
 import java.io.IOException;
 
-import javax.persistence.EntityManagerFactory;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.batch.core.ItemWriteListener;
@@ -17,12 +16,13 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.batch.item.data.MongoItemWriter;
+import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 
 import com.yuzee.app.bean.Level;
@@ -53,10 +53,9 @@ public class LevelUploadBatchConfig {
 
 	@Bean("levelItemWriter")
 	@StepScope
-	public JpaItemWriter<Level> writer(@Autowired EntityManagerFactory emf) {
-		JpaItemWriter<Level> writer = new JpaItemWriter<>();
-		writer.setEntityManagerFactory(emf);
-		return writer;
+	public MongoItemWriter<Level> writer(MongoTemplate mongoTemplate) {
+		 return new MongoItemWriterBuilder<Level>().template(mongoTemplate).collection("level")
+	                .build();
 	}
 
 	@Bean("importlevelJob")
@@ -70,10 +69,10 @@ public class LevelUploadBatchConfig {
 			@Qualifier("levelItemReader") ItemReader<LevelDto> reader,
 			@Qualifier("levelItemWriter") ItemWriter<Level> writer,
 			@Qualifier("levelItemProcessor") ItemProcessor<LevelDto, Level> processor,@Qualifier("levelItemWriterListner") ItemWriteListener<Level> levelItemWriteListner,
-			HibernateTransactionManager hibernateTransactionManager, SkipAnyFailureSkipPolicy skipPolicy) {
+			 SkipAnyFailureSkipPolicy skipPolicy) {
 		return stepBuilderFactory.get("levelStep").<LevelDto, Level>chunk(batchSize).reader(reader).faultTolerant()
 				.skipPolicy(skipPolicy).noRollback(ConstraintViolationException.class).processor(processor).writer(writer).listener(levelItemWriteListner)
-				.transactionManager(hibernateTransactionManager).build();
+				.build();
 	}
 	
 	@Bean("levelItemWriterListner")

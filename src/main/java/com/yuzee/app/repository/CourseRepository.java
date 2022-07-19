@@ -2,16 +2,16 @@ package com.yuzee.app.repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import com.yuzee.app.bean.Course;
 
 @Repository
-public interface CourseRepository extends JpaRepository<Course, String>{
+public interface CourseRepository extends MongoRepository<Course, UUID>{
 
 	public List<Course> findByInstituteIdAndFacultyIdAndIsActive (String instituteId , String facultyId, boolean isActive);
 

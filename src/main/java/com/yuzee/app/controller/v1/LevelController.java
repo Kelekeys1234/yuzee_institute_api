@@ -37,7 +37,7 @@ public class LevelController implements LevelInterface {
 				.setMessage(messageTranslator.toLocale("level.list.retrieved")).setStatus(HttpStatus.OK).create();
     }
     
-    @Override
+   /* @Override
     @Deprecated
     public ResponseEntity<?> getLevelByCountry(String countryId) throws Exception {
         List<Level> levelList = levelProcessor.getLevelByCountryId(countryId);
@@ -49,7 +49,7 @@ public class LevelController implements LevelInterface {
     @Deprecated
     public ResponseEntity<?> getCountryLevel(String countryId) throws Exception {
         return ResponseEntity.accepted().body(levelProcessor.getCountryLevel(countryId));
-    }
+    } */
 
 	@Override
 	public ResponseEntity<?> getById(String levelId) throws Exception {

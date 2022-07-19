@@ -59,32 +59,31 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 	@Override
 	public Course process(CourseCsvDto courseDto) throws Exception {
 		log.info("Fetching all level from db");
-		Map<String, String> levelMap = levelDao.getAllLevelMap();
+		Map<String, UUID> levelMap = levelDao.getAllLevelMap();
 		log.info("Fetching all institute from db");
-		Map<String, String> instituteMap = institueDao.getAllInstituteMap();
+		Map<String, UUID> instituteMap = institueDao.getAllInstituteMap();
 		log.info("Fetching all faculty from db");
-		Map<String, String> facultyMap = facultyDao.getFacultyNameIdMap();
-		List<CourseCurriculum> courseCurriculumList = courseCurriculumDao.getAll();
-		Map<String, CourseCurriculum> curriculumMap  = courseCurriculumList.stream().collect(Collectors.toMap(CourseCurriculum::getName, curriculum -> curriculum));
+		Map<UUID, String> facultyMap = facultyDao.getFacultyNameIdMap();
+	
 		Course course = new Course();
-		course.setId(UUID.randomUUID().toString());
+		course.setId(UUID.randomUUID());
 		course.setAbbreviation(courseDto.getAbbreviation());
 		course.setWorldRanking(courseDto.getWorldRanking());
 		course.setName(courseDto.getName());
 		if(!StringUtils.isEmpty(courseDto.getCurriculum())) {
-			course.setCourseCurriculum(curriculumMap.get(courseDto.getCurriculum()));
+			course.setCourseCurriculum(courseDto.getCurriculum());
 		}
 		course.setRemarks(courseDto.getRemarks());
 		course.setWebsite(courseDto.getWebsite());
 		course.setStars(courseDto.getStars());
 		course.setDescription(courseDto.getDescription());
 		course.setFaculty(facultyDao.getFaculty(facultyMap.get(courseDto.getFacultyName())));
-//		course.setInstitute(institueDao.getInstitute(
-//				instituteMap.get(courseDto.getInstituteName() + "~" + courseDto.getCityName() + "~" + StringUtils.trim(courseDto.getCountryName()))));
+		course.setInstitute(institueDao.getInstitute(
+				instituteMap.get(courseDto.getInstituteName() + "~" + courseDto.getCityName() + "~" + StringUtils.trim(courseDto.getCountryName()))).get());
 		course.setIsActive(true);
 		course.setRecognition(courseDto.getRecognition());
 		course.setRecognitionType(courseDto.getRecognitionType());
-		course.setLevel(levelDao.getLevel(levelMap.get(courseDto.getLevelCode())));
+		course.setLevel(levelDao.getLevel(levelMap.get(courseDto.getLevelCode())).get());
 		course.setAvailabilty(courseDto.getAvailabilty());
 		course.setExaminationBoard(courseDto.getExaminationBoard());
 		course.setDomesticApplicationFee(courseDto.getDomesticApplicationFee());
@@ -108,16 +107,14 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 		log.info("Adding englist eligibility into course");
 		if (courseDto.getIeltsOverall() != null) {
 			log.info("Associating IELTS score with course");
-			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility("IELTS", courseDto.getIeltsReading(), courseDto.getIeltsWriting(), courseDto.getIeltsSpeaking(), courseDto.getIeltsListening(), courseDto.getIeltsOverall(), true, DateUtil.getUTCdatetimeAsDate(), DateUtil.getUTCdatetimeAsDate(), null, "AUTO", "AUTO", false);
+			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility("IELTS", courseDto.getIeltsReading(), courseDto.getIeltsWriting(), courseDto.getIeltsSpeaking(), courseDto.getIeltsListening(), courseDto.getIeltsOverall(), true);
 			course.getCourseEnglishEligibilities().add(courseEnglishEligibility);
-			courseEnglishEligibility.setCourse(course);
 		}
 		
 		if (courseDto.getToflOverall() != null) {
 			log.info("Associating TOEFL score with course");
-			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility("TOEFL", courseDto.getToflReading(), courseDto.getToflWriting(), courseDto.getToflSpeaking(), courseDto.getToflListening(), courseDto.getToflOverall(), true, DateUtil.getUTCdatetimeAsDate(), DateUtil.getUTCdatetimeAsDate(), null, "AUTO", "AUTO", false);
+			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility("TOEFL", courseDto.getToflReading(), courseDto.getToflWriting(), courseDto.getToflSpeaking(), courseDto.getToflListening(), courseDto.getToflOverall(), true);
 			course.getCourseEnglishEligibilities().add(courseEnglishEligibility);
-			courseEnglishEligibility.setCourse(course);
 		}
 		
 //		if (!org.springframework.util.ObjectUtils.isEmpty(course.getInstitute())) {
@@ -127,7 +124,7 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 		
 		if (!StringUtils.isEmpty(courseDto.getLanguage())) {
 			log.info("Saving course language into DB");
-			saveCourseLanguage(Arrays.asList(courseDto.getLanguage().split(",")), course);
+			course.setCourseLanguages(Arrays.asList(courseDto.getLanguage().split(",")));
 		}
 		
 		List<String> deliveryModes = new ArrayList<>();
@@ -235,12 +232,6 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 		return content.toString();
 	}
 	
-	private void saveCourseLanguage(List<String> languages, Course course) {
-		languages.stream().forEach(language -> {
-			CourseLanguage courseLanguage = new CourseLanguage(language, course, DateUtil.getUTCdatetimeAsDate(), DateUtil.getUTCdatetimeAsDate(), "API", "API");
-			course.getCourseLanguages().add(courseLanguage);
-		});
-	}
 	
 	private void saveCourseDeliveryModes(List<String> deliveryModes, CourseCsvDto courseDto, Course course) {
 		List<CourseDeliveryModes> courseDeliveryModes = new ArrayList<>();
@@ -250,13 +241,8 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 				CourseDeliveryModes courseDeliveryModeWithFullTime = new CourseDeliveryModes();
 				courseDeliveryModeWithFullTime.setDeliveryType(deliveryMode);
 				courseDeliveryModeWithFullTime.setStudyMode("Full Time");
-//				courseDeliveryModeWithFullTime.setDomesticFee(courseDto.getDomesticFee());
-//				courseDeliveryModeWithFullTime.setInternationalFee(courseDto.getInternationalFee());
 				courseDeliveryModeWithFullTime.setDuration(courseDto.getDuration());
 				courseDeliveryModeWithFullTime.setDurationTime(courseDto.getDurationTime());
-				courseDeliveryModeWithFullTime.setCreatedBy("API");
-				courseDeliveryModeWithFullTime.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-				courseDeliveryModeWithFullTime.setCourse(course);
 				courseDeliveryModes.add(courseDeliveryModeWithFullTime);
 	 		}
 			
@@ -264,13 +250,8 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 				CourseDeliveryModes courseDeliveryModeWithPartTime = new CourseDeliveryModes();
 				courseDeliveryModeWithPartTime.setDeliveryType(deliveryMode);
 				courseDeliveryModeWithPartTime.setStudyMode("Part Time");
-//				courseDeliveryModeWithPartTime.setDomesticFee(courseDto.getDomesticFee());
-//				courseDeliveryModeWithPartTime.setInternationalFee(courseDto.getInternationalFee());
 				courseDeliveryModeWithPartTime.setDuration(courseDto.getDuration());
 				courseDeliveryModeWithPartTime.setDurationTime(courseDto.getDurationTime());
-				courseDeliveryModeWithPartTime.setCreatedBy("API");
-				courseDeliveryModeWithPartTime.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-				courseDeliveryModeWithPartTime.setCourse(course);
 				courseDeliveryModes.add(courseDeliveryModeWithPartTime);
 			}
 		});
@@ -317,20 +298,17 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 	}
 	
 	private void populateCoursePrerequisiteCertificate (CourseCsvDto courseDto, Course course) {
-		List<CoursePrerequisite> listOfCoursePrerequisite = new ArrayList<> ();
 		if (!courseDto.getCoursePreRequisiteCertificate01().equalsIgnoreCase("0") && !StringUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate01())) {
-			listOfCoursePrerequisite.add(new CoursePrerequisite(courseDto.getCoursePreRequisiteCertificate01(), course, DateUtil.getUTCdatetimeAsDate(), DateUtil.getUTCdatetimeAsDate(), "API", "API"));
+			course.getCoursePrerequisites().add(courseDto.getCoursePreRequisiteCertificate01());
 		}
 		
 		if (!courseDto.getCoursePreRequisiteCertificate02().equalsIgnoreCase("0")  && !StringUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate02())) {
-			listOfCoursePrerequisite.add(new CoursePrerequisite(courseDto.getCoursePreRequisiteCertificate02(), course, DateUtil.getUTCdatetimeAsDate(), DateUtil.getUTCdatetimeAsDate(), "API", "API"));
+			course.getCoursePrerequisites().add(courseDto.getCoursePreRequisiteCertificate02());
 		}
 		
 		if (!courseDto.getCoursePreRequisiteCertificate03().equalsIgnoreCase("0") && !StringUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate03())) {
-			listOfCoursePrerequisite.add(new CoursePrerequisite(courseDto.getCoursePreRequisiteCertificate03(), course, DateUtil.getUTCdatetimeAsDate(), DateUtil.getUTCdatetimeAsDate(), "API", "API"));
+			course.getCoursePrerequisites().add(courseDto.getCoursePreRequisiteCertificate03());
 		}
-		
-		course.setCoursePrerequisites(listOfCoursePrerequisite);
 	}
 	
 	private void populateUsdPrices(Course course, CourseCsvDto courseDto) {

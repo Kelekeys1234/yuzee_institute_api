@@ -27,54 +27,19 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
-@Entity
-@ToString(exclude = "course")
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "course_vaccine_requirement", indexes = {
-		@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false) })
+/*@Table(name = "course_vaccine_requirement", indexes = {
+		@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false) }) */
 public class CourseVaccineRequirement implements Serializable {
 
 	private static final long serialVersionUID = 8492390790670110780L;
 
-	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length = 36)
-	private String id;
-
 	@EqualsAndHashCode.Include
-	@Column(name = "description")
 	private String description;
 
-	@OneToOne
-	@JoinColumn(name = "course_id")
-	private Course course;
 	
 	@EqualsAndHashCode.Include
-	@Cascade(CascadeType.ALL)
-	@ElementCollection(fetch = FetchType.EAGER)
 	private Set<String> vaccinationIds;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
-	private Date createdOn;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
-	private Date updatedOn;
-
-	@Column(name = "created_by", length = 50)
-	private String createdBy;
-
-	@Column(name = "updated_by", length = 50)
-	private String updatedBy;
-
-	public void setAuditFields(String userId) {
-		this.setUpdatedBy(userId);
-		this.setUpdatedOn(new Date());
-		if (StringUtils.isEmpty(id)) {
-			this.setCreatedBy(userId);
-			this.setCreatedOn(new Date());
-		}
-	}
 }

@@ -27,46 +27,28 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
-@Entity
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(exclude = "course")
-@Table(name = "course_payment", uniqueConstraints = @UniqueConstraint(name = "UK_COURSE_PAYMENT", columnNames = {
-		"course_id" }))
+/*@Table(name = "course_payment", uniqueConstraints = @UniqueConstraint(name = "UK_COURSE_PAYMENT", columnNames = {
+		"course_id" })) */
 public class CoursePayment implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length = 36)
-	private String id;
-
 	@EqualsAndHashCode.Include
-	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
 
 	@EqualsAndHashCode.Include
-	@OneToMany(mappedBy = "coursePayment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CoursePaymentItem> paymentItems = new ArrayList<>();
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on")
 	private Date createdOn;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on")
 	private Date updatedOn;
 
-	@Column(name = "created_by")
 	private String createdBy;
 
-	@Column(name = "updated_by")
 	private String updatedBy;
 
-	@OneToOne
-	@JoinColumn(name = "course_id")
-	private Course course;
 
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);

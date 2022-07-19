@@ -1190,214 +1190,197 @@ public class InstituteDaoImpl implements InstituteDao {
 //        return instituteCategoryTypes;
 //    }
 
-	public List<Institute> getInstituteCampuses(String instituteId, String instituteName) throws NotFoundException {
-		log.debug("inside dao.getInstituteCampuses method.");
-		return instituteRepository.findByIdNotAndNameAndIsDeletedFalse(instituteId, instituteName);
-	}
+    public List<Institute> getInstituteCampuses(String instituteId, String instituteName) throws NotFoundException {
+        log.debug("inside dao.getInstituteCampuses method.");
+        return instituteRepository.findByIdNotAndNameAndIsDeletedFalse(instituteId, instituteName);
+    }
 
-	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId, Sort sort) throws NotFoundException {
-		log.debug("inside dao.getInstituteFaculties method.");
-		return instituteRepository.findFacultyWithCourseCountById(instituteId, sort);
-	}
+    public List<InstituteFacultyDto> getInstituteFaculties(String instituteId, Sort sort) throws NotFoundException {
+        log.debug("inside dao.getInstituteFaculties method.");
+        return instituteRepository.findFacultyWithCourseCountById(instituteId, sort);
+    }
 
-	@Override
-	public List<Institute> findByIds(List<UUID> instituteIds) {
-		Query mongoQuery = new Query();
-		mongoQuery.addCriteria(Criteria.where("id").in(instituteIds));
-		return mongoTemplate.find(mongoQuery, Institute.class, "institute");
-	}
+    @Override
+    public List<Institute> findByIds(List<UUID> instituteIds) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("id").in(instituteIds));
+        return mongoTemplate.find(mongoQuery, Institute.class, "institute");
+    }
 
-	@Override
-	public List<Institute> findByReadableIdIn(List<String> readableIds) {
-		Query mongoQuery = new Query();
-		mongoQuery.addCriteria(Criteria.where("readableId").in(readableIds));
-		return mongoTemplate.find(mongoQuery, Institute.class);
-	}
+    @Override
+    public List<Institute> findByReadableIdIn(List<String> readableIds) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("readableId").in(readableIds));
+        return mongoTemplate.find(mongoQuery, Institute.class);
+    }
 
-	@Override
-	public Institute findByReadableId(String readableId) {
-		return instituteRepository.findByReadableId(readableId);
-	}
+    @Override
+    public Institute findByReadableId(String readableId) {
+        return instituteRepository.findByReadableId(readableId);
+    }
 
-	@Override
-	public Map<String, String> getAllInstituteMap() {
-//        Session session = sessionFactory.getCurrentSession();
-//        Query query = session.createSQLQuery("select id, `name`, city_name , country_name from institute");
-//        List instituteList = query.getResultList();
-//        Iterator it = instituteList.iterator();
-//        Map<String, String> instituteListMap = new HashMap<>();
-//
-//        while (it.hasNext()) {
-//            Object[] obj = (Object[]) it.next();
-//            instituteListMap.put(String.valueOf(obj[1]) + "~" + String.valueOf(obj[2]) + "~" + String.valueOf(obj[3]),
-//                    obj[0].toString());
-//        }
+    @Override
+    public Map<String, UUID> getAllInstituteMap() {
+    	Map<String, UUID> instituteListMap = new HashMap<>();
+    	List<Institute> institutes = instituteRepository.findAll();
+    	institutes.stream().forEach(institute -> {
+    		instituteListMap.put(institute.getName() + "~" + institute.getCityName() + "~" + institute.getCountryName(),
+    				institute.getId());
+    	});
+        return instituteListMap;
+    }
 
-		return new HashMap<>();
-	}
+    @Override
+    public Optional<Institute> getInstitute(UUID instituteId) {
+        return instituteRepository.findById(instituteId);
+    }
 
-	@Override
-	public Institute getInstitute(String instituteId) {
-//        Session session = sessionFactory.getCurrentSession();
-//        Criteria criteria = session.createCriteria(Institute.class, "institute");
-//        criteria.add(Restrictions.eq("institute.id", instituteId));
-//        return (Institute) criteria.uniqueResult();
-		return new Institute();
-	}
+    @Override
+    public List<Institute> getByInstituteName(String instituteName) {
+        return instituteRepository.getAllByInstituteName(instituteName);
+    }
 
-	@Override
-	public List<Institute> getByInstituteName(String instituteName) {
-		return instituteRepository.getAllByInstituteName(instituteName);
-	}
+    @Override
+    public List<InstituteFacility> getInstituteFaculties(String instituteId) {
+        return instituteRepository.getFacultiesById(instituteId);
+    }
 
-	@Override
-	public List<InstituteFacility> getInstituteFaculties(String instituteId) {
-		return instituteRepository.getFacultiesById(instituteId);
-	}
+    @Override
+    public Optional<Institute> getInstituteEnglishRequirementsById(String instituteEnglishRequirementsId) {
+        return instituteRepository.getInstituteEnglishRequirementsById(UUID.fromString(instituteEnglishRequirementsId));
+    }
 
-	@Override
-	public Optional<Institute> getInstituteEnglishRequirementsById(String instituteEnglishRequirementsId) {
-		return instituteRepository.getInstituteEnglishRequirementsById(UUID.fromString(instituteEnglishRequirementsId));
-	}
+    @Override
+    public void deleteInstituteEnglishRequirementsById(String instituteEnglishRequirementsId) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("instituteEnglishRequirement").is(instituteEnglishRequirementsId));
+        mongoTemplate.remove(mongoQuery, InstituteEnglishRequirements.class);
+    }
 
-	@Override
-	public void deleteInstituteEnglishRequirementsById(String instituteEnglishRequirementsId) {
-		Query mongoQuery = new Query();
-		mongoQuery.addCriteria(Criteria.where("instituteEnglishRequirement").is(instituteEnglishRequirementsId));
-		mongoTemplate.remove(mongoQuery, InstituteEnglishRequirements.class);
-	}
+    @Override
+    public List<InstituteType> getByCountryName(String countryName) {
+        return instituteRepository.findAllInstituteByCountryName(countryName);
+    }
 
-	@Override
-	public List<InstituteType> getByCountryName(String countryName) {
-		return instituteRepository.findAllInstituteByCountryName(countryName);
-	}
+    @Override
+    public List<String> findIntakesById(String id) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("id").is(id));
+        mongoQuery.fields().include("instituteIntakes");
+        return mongoTemplate.find(mongoQuery, String.class,"institute");
+    }
 
-	@Override
-	public List<String> findIntakesById(String id) {
-		Query mongoQuery = new Query();
-		mongoQuery.addCriteria(Criteria.where("id").is(id));
-		mongoQuery.fields().include("instituteIntakes");
-		return mongoTemplate.find(mongoQuery, String.class, "institute");
-	}
+    @Override
+    public List<InstituteTypeDto> getAllInstituteType() {
+        Query mongoQuery = new Query();
+        mongoQuery.fields().include("instituteType");
+        return mongoTemplate.find(mongoQuery, InstituteTypeDto.class);
+    }
 
-	@Override
-	public List<InstituteTypeDto> getAllInstituteType() {
-		Query mongoQuery = new Query();
-		mongoQuery.fields().include("instituteType");
-		return mongoTemplate.find(mongoQuery, InstituteTypeDto.class);
-	}
+    @Override
+    public List<Institute> getBySearchText(String searchText) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("deletedOn").is(null));
+        if (searchText != null) {
+            mongoQuery.addCriteria(new Criteria().orOperator(
+                    Criteria.where("name").regex(searchText, "i"),
+                    Criteria.where("countryName").regex(searchText, "i"),
+                    Criteria.where("cityName").regex(searchText, "i"), Criteria.where("instituteType").regex(searchText, "i"),
+                    Criteria.where("worldRanking").regex(searchText, "i")
+            ));
+        }
+        return mongoTemplate.find(mongoQuery, Institute.class, "institute");
+    }
 
-	@Override
-	public List<Institute> getBySearchText(String searchText) {
-		Query mongoQuery = new Query();
-		mongoQuery.addCriteria(Criteria.where("deletedOn").is(null));
-		if (searchText != null) {
-			mongoQuery.addCriteria(new Criteria().orOperator(Criteria.where("name").regex(searchText, "i"),
-					Criteria.where("countryName").regex(searchText, "i"),
-					Criteria.where("cityName").regex(searchText, "i"),
-					Criteria.where("instituteType").regex(searchText, "i"),
-					Criteria.where("worldRanking").regex(searchText, "i")));
-		}
-		return mongoTemplate.find(mongoQuery, Institute.class, "institute");
-	}
+    @Override
+    public List<InstituteFacility> getAllInstituteFacility(String instituteId) {
+        return instituteRepository.findAllFacilityById(instituteId);
+    }
 
-	@Override
-	public List<InstituteFacility> getAllInstituteFacility(String instituteId) {
-		return instituteRepository.findAllFacilityById(instituteId);
-	}
+    @Override
+    public void deleteFacilityByIdAndInstituteId(String instituteFacilityId, String instituteId) {
+        instituteRepository.deleteFacilityByIdAndInstituteId(instituteFacilityId, instituteId);
+    }
 
-	@Override
-	public void deleteFacilityByIdAndInstituteId(String instituteFacilityId, String instituteId) {
-		instituteRepository.deleteFacilityByIdAndInstituteId(instituteFacilityId, instituteId);
-	}
+    @Override
+    public List<InstituteServiceDto> saveAll(Institute institute) {
+        instituteRepository.save(institute);
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("id").is(institute.getId()));
+        return mongoTemplate.find(mongoQuery, InstituteServiceDto.class);
+    }
 
-	@Override
-	public List<InstituteServiceDto> saveAll(Institute institute) {
+    @Override
+    public void saveAllInstitutes(List<Institute> institutes) {
+        instituteRepository.save(institutes);
+    }
 
-		instituteRepository.save(institute);
-		Query mongoQuery = new Query();
-		mongoQuery.addCriteria(Criteria.where("id").is(institute.getId()));
-		return mongoTemplate.find(mongoQuery, InstituteServiceDto.class);
-	}
+    @Override
+    public List<com.yuzee.app.bean.Service> getAllServiceByIds(List<String> serviceIds) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("serviceId").in(serviceIds));
+        return mongoTemplate.find(mongoQuery, com.yuzee.app.bean.Service.class);
+    }
 
-	@Override
-	public void saveAllInstitutes(List<Institute> institutes) {
-		Institute institue = new Institute();
-		institue.setId(UUID.randomUUID().toString());
-		institutes.add(institue);
-		instituteRepository.save(institutes);
-	}
+    @Override
+    public Page<com.yuzee.app.bean.Service> getAllServices(Pageable pageable) {
+        Query mongoQuery = new Query();
+        mongoQuery.with(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()));
+        List<com.yuzee.app.bean.Service> list = mongoTemplate.find(mongoQuery, com.yuzee.app.bean.Service.class);
+        return PageableExecutionUtils.getPage(
+                list,
+                pageable,
+                () -> mongoTemplate.count(Query.of(mongoQuery).limit(-1).skip(-1), com.yuzee.app.bean.Service.class));
+    }
 
-	@Override
-	public List<com.yuzee.app.bean.Service> getAllServiceByIds(List<String> serviceIds) {
-		Query mongoQuery = new Query();
-		mongoQuery.addCriteria(Criteria.where("id").in(serviceIds));
-		return mongoTemplate.find(mongoQuery, com.yuzee.app.bean.Service.class);
-	}
+    @Override
+    public com.yuzee.app.bean.Service getServiceById(String facilityId) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("serviceId").is(facilityId));
+        return mongoTemplate.findById(mongoQuery, com.yuzee.app.bean.Service.class, "service");
+    }
 
-	@Override
-	public Page<com.yuzee.app.bean.Service> getAllServices(Pageable pageable) {
-		Query mongoQuery = new Query();
-		mongoQuery.with(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()));
-		List<com.yuzee.app.bean.Service> list = mongoTemplate.find(mongoQuery, com.yuzee.app.bean.Service.class);
-		return PageableExecutionUtils.getPage(list, pageable,
-				() -> mongoTemplate.count(Query.of(mongoQuery).limit(-1).skip(-1), com.yuzee.app.bean.Service.class));
-	}
+    @Override
+    public List<InstituteDomesticRankingHistory> getInstituteDomesticRankingHistories(String instituteId) {
+        Query mongoQuery = new Query();
+        mongoQuery.fields().include("instituteDomesticRankingHistories");
+        mongoQuery.addCriteria(Criteria.where("id").is(instituteId));
+        return mongoTemplate.find(mongoQuery, InstituteDomesticRankingHistory.class, "institute");
+    }
 
-	@Override
-	public com.yuzee.app.bean.Service getServiceById(String facilityId) {
-		Query mongoQuery = new Query();
-		mongoQuery.addCriteria(Criteria.where("id").is(facilityId));
-		return mongoTemplate.findById(mongoQuery, com.yuzee.app.bean.Service.class, "service");
-	}
+    @Override
+    public List<InstituteCampus> findInstituteCampuses(String instituteId) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("id").is(instituteId));
+        return mongoTemplate.find(mongoQuery, InstituteCampus.class, "institute");
+    }
 
-	@Override
-	public List<InstituteDomesticRankingHistory> getInstituteDomesticRankingHistories(String instituteId) {
-		Query mongoQuery = new Query();
-		mongoQuery.fields().include("instituteDomesticRankingHistories");
-		mongoQuery.addCriteria(Criteria.where("id").is(instituteId));
-		return mongoTemplate.find(mongoQuery, InstituteDomesticRankingHistory.class, "institute");
-	}
+    @Override
+    public List<com.yuzee.app.bean.Service> findServiceByName(List<String> allNames) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("name").is(allNames));
+        return mongoTemplate.find(mongoQuery, com.yuzee.app.bean.Service.class, "service");
+    }
 
-	@Override
-	public List<InstituteCampus> findInstituteCampuses(String instituteId) {
-		Query mongoQuery = new Query();
-		mongoQuery.addCriteria(Criteria.where("id").is(instituteId));
-		return mongoTemplate.find(mongoQuery, InstituteCampus.class, "institute");
-	}
+    @Override
+    public List<ServiceDto> addUpdateServices(List<com.yuzee.app.bean.Service> services) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("name").is(services));
+        return mongoTemplate.find(mongoQuery, ServiceDto.class, "service");
+    }
 
-	@Override
-	public List<com.yuzee.app.bean.Service> findServiceByName(List<String> allNames) {
-		Query mongoQuery = new Query();
-		mongoQuery.addCriteria(Criteria.where("name").is(allNames));
-		return mongoTemplate.find(mongoQuery, com.yuzee.app.bean.Service.class, "service");
-	}
+    @Override
+    public InstituteType getInstituteTypeByNameAndCountry(String instituteType, String countryName) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("instituteType").is(instituteType));
+        mongoQuery.addCriteria(Criteria.where("countryName").is(countryName));
+        return mongoTemplate.findOne(mongoQuery, InstituteType.class, "institute");
+    }
 
-	@Override
-	public List<ServiceDto> addUpdateServices(List<com.yuzee.app.bean.Service> services) {
-		Query mongoQuery = new Query();
-		mongoQuery.addCriteria(Criteria.where("name").is(services));
-		return mongoTemplate.find(mongoQuery, ServiceDto.class, "service");
-	}
-
-	@Override
-	public InstituteType getInstituteTypeByNameAndCountry(String instituteType, String countryName) {
-		Query mongoQuery = new Query();
-		mongoQuery.addCriteria(Criteria.where("instituteType").is(instituteType));
-		mongoQuery.addCriteria(Criteria.where("countryName").is(countryName));
-		return mongoTemplate.findOne(mongoQuery, InstituteType.class, "institute");
-	}
-
-	@Override
-	public Institute getInstituteByInstituteEnglishRequirementId(UUID englishRequirementId) {
-		Query mongoQuery = new Query();
-		mongoQuery.addCriteria(Criteria.where("englishRequirementId").is(englishRequirementId));
-		return mongoTemplate.findOne(mongoQuery, Institute.class, "institute");
-	}
-
-	@Override
-	public Optional<com.yuzee.app.bean.Service> findById(String facilityId) {
-		// TODO Auto-generated method stub
-		return serviceRepository.findById(facilityId);
-	}
+    @Override
+    public Institute getInstituteByInstituteEnglishRequirementId(UUID englishRequirementId) {
+        Query mongoQuery = new Query();
+        mongoQuery.addCriteria(Criteria.where("englishRequirementId").is(englishRequirementId));
+        return mongoTemplate.findOne(mongoQuery, Institute.class, "institute");
+    }
 }

@@ -1,91 +1,56 @@
 package com.yuzee.app.dao.impl;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.dao.FacultyDao;
+import com.yuzee.app.repository.FacultyRepository;
 
 @Component
-@SuppressWarnings({ "unchecked", "deprecation" })
 public class FacultyDaoImpl implements FacultyDao {
-
+	
 	@Autowired
-	private SessionFactory sessionFactory;
-
+	private FacultyRepository facultyRepository;
+	
 	@Override
 	public void saveOrUpdateFaculty(final Faculty obj) {
-		Session session = sessionFactory.getCurrentSession();
-		session.saveOrUpdate(obj);
-	}
-
-	@Override
-	public Faculty get(final String id) {
-		Session session = sessionFactory.getCurrentSession();
-		Faculty obj = session.get(Faculty.class, id);
-		return obj;
+		facultyRepository.save(obj);
 	}
 
 	@Override
 	public List<Faculty> getAll() {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Faculty.class);
-		return crit.list();
-	}
-
-	@Override
-	public List<Faculty> getFacultyListByFacultyNames(final List<String> facultyNameList) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Faculty.class, "faculty");
-		crit.add(Restrictions.in("name", facultyNameList));
-		return crit.list();
+		return facultyRepository.findAll();
 	}
 
 	@Override
 	public Faculty getFacultyByFacultyName(String facultyName) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Faculty.class, "faculty");
-		crit.add(Restrictions.in("name", facultyName));
-		Faculty faculty = (Faculty) crit.uniqueResult();
-		return faculty;
+		return facultyRepository.findByNameIgnoreCase(facultyName);
 	}
 
 	@Override
-	public Map<String, String> getFacultyNameIdMap() {
-		Session session = sessionFactory.getCurrentSession();
-        Criteria criteria = session.createCriteria(Faculty.class);
-        ProjectionList projList = Projections.projectionList();
-        projList.add(Projections.property("id"));
-        projList.add(Projections.property("name"));
-        criteria.setProjection(projList);
-        List facultyList = criteria.list();
-		Iterator it=facultyList.iterator();
-		Map<String, String> facultyListMap = new HashMap<>();
-		
-		while(it.hasNext()) {
-			Object[] obj = (Object[])it.next();
-			facultyListMap.put(String.valueOf(obj[1]), obj[0].toString());
-		}
-		
+	public Map<UUID, String> getFacultyNameIdMap() {
+		Map<UUID, String> facultyListMap = new HashMap<>();
+		List<Faculty> faculties = facultyRepository.findAll();
+		faculties.stream().forEach(faculty -> {
+			facultyListMap.put(faculty.getId(), faculty.getName());
+		});
 		return facultyListMap;
+		
 	}
 	
 	@Override
-	public Faculty getFaculty(String id) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(Faculty.class, "faculty");
-		criteria.add(Restrictions.eq("faculty.id", id));
-		return (Faculty) criteria.uniqueResult();
+	public Faculty getFaculty(UUID id) {
+		Optional<Faculty> optFaculty = facultyRepository.findById(id);
+		if (optFaculty.isPresent()) {
+			return optFaculty.get();
+		}
+		return null;
 	}
 }

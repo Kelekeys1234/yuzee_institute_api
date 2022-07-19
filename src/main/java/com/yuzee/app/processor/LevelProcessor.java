@@ -4,9 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.batch.core.Job;
@@ -19,10 +18,10 @@ import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yuzee.app.bean.Level;
@@ -53,7 +52,12 @@ public class LevelProcessor {
 
 	@Transactional
 	public Level getLevel(String id) {
-        return levelDao.getLevel(id);
+        Optional<Level> optLevel = levelDao.getLevel(UUID.fromString(id));
+        if (optLevel.isPresent()) {
+        	return optLevel.get();
+        }
+        return null;
+        
     }
     
 	@Transactional
@@ -65,53 +69,12 @@ public class LevelProcessor {
     	if(!CollectionUtils.isEmpty(levelsFromDB)) {
     		log.info("Levels fetched from DB, start iterating data to make response");
     		levelsFromDB.stream().forEach(level -> {
-    			LevelDto levelDto = new LevelDto(level.getId(), level.getName(), level.getCode(), level.getDescription(), level.getSequenceNo());
+    			var levelDto = new LevelDto(level.getId().toString(), level.getName(), level.getCode(), level.getDescription(), level.getSequenceNo());
     			levelDtos.add(levelDto);
     		});
     	}
         return levelDtos;
     }
-    
-	@Transactional
-    public List<Level> getCourseTypeByCountryId(String countryID) {
-        return levelDao.getCourseTypeByCountryId(countryID);
-    }
-
-	@Transactional
-    public List<Level> getLevelByCountryId(String countryId) {
-        return levelDao.getLevelByCountryId(countryId);
-    }
-
-	@Transactional
-    public List<Level> getAllLevelByCountry() {
-        return levelDao.getAllLevelByCountry();
-    }
-
-	@Transactional
-    public Map<String, Object> getCountryLevel(String countryId) {
-        Map<String, Object> response = new HashMap<>();
-        List<LevelDto> levels = new ArrayList<LevelDto>();
-        try {
-            levels = levelDao.getCountryLevel(countryId);
-            if (levels != null && !levels.isEmpty()) {
-                response.put("status", HttpStatus.OK.value());
-                response.put("message", "Level fetched successfully");
-                response.put("courses", levels);
-            } else {
-                response.put("status", HttpStatus.NOT_FOUND.value());
-                response.put("message", "Level not found");
-            }
-        } catch (Exception exception) {
-            response.put("message", exception.getCause());
-            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        }
-        return response;
-    }
-
-	@Transactional
-	public List<String> getAllLevelNameByInstituteId(String instituteId) {
-		return levelDao.getAllLevelNamesByInstituteId(instituteId);
-	}
 
 	@CacheEvict(cacheNames = {"cacheLevelMap"}, allEntries = true)
 	public void importLevel(final MultipartFile multipartFile) throws IOException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
@@ -129,6 +92,9 @@ public class LevelProcessor {
 
 	public LevelDto getLevelById(String levelId) {
 		Level level = getLevel(levelId);
-		return new LevelDto(level.getId(), level.getName(), level.getCode(), level.getDescription(), level.getSequenceNo());
+		if (!ObjectUtils.isEmpty(level)) {
+			return new LevelDto(level.getId().toString(), level.getName(), level.getCode(), level.getDescription(), level.getSequenceNo());
+		}
+		return new LevelDto();
 	}
 }

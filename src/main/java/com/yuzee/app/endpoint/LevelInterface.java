@@ -15,13 +15,13 @@ public interface LevelInterface {
 	@PostMapping
     public ResponseEntity<?> saveLevel(@RequestBody LevelDto level) throws Exception;
 	
-	@Deprecated
+/*	@Deprecated
 	@GetMapping("/country/{countryId}")
     public ResponseEntity<?> getLevelByCountry(@PathVariable String countryId) throws Exception;
 	
 	@Deprecated
 	@GetMapping("/course/country/{countryId}")
-    public ResponseEntity<?> getCountryLevel(@PathVariable String countryId) throws Exception;
+    public ResponseEntity<?> getCountryLevel(@PathVariable String countryId) throws Exception; */
 	
 	@GetMapping
     public ResponseEntity<?> getAll() throws Exception;

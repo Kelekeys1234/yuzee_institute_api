@@ -1,49 +1,35 @@
 package com.yuzee.app.dao.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.yuzee.app.bean.Level;
 import com.yuzee.app.dao.LevelDao;
 import com.yuzee.app.repository.LevelRepository;
-import com.yuzee.common.lib.dto.institute.LevelDto;
 
 @Component
 @SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
 public class LevelDaoImpl implements LevelDao {
 
     @Autowired
-    private SessionFactory sessionFactory;
-
-    @Autowired
     private LevelRepository levelRepository;
 
     @Override
     public void addUpdateLevel(Level level) {
-        Session session = sessionFactory.getCurrentSession();
-        session.saveOrUpdate(level);
+    	levelRepository.save(level);
     }
 
     @Override
-    public Level getLevel(String levelId) {
-        Session session = sessionFactory.getCurrentSession();
-        Level obj = session.get(Level.class, levelId);
-        return obj;
+    public Optional<Level> getLevel(UUID levelId) {
+    	return levelRepository.findById(levelId);
     }
 
     @Override
@@ -51,7 +37,8 @@ public class LevelDaoImpl implements LevelDao {
         return levelRepository.findAllByOrderBySequenceNoAsc();
     }
 
-    @Override
+    // TODO No use of this method as its not used anywhere
+  /*  @Override
     public List<Level> getCourseTypeByCountryId(String countryID) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("select distinct ct.id, ct.type_txt as courseType from course_type ct  inner join faculty f  on f.course_type_id = ct.id "
@@ -66,9 +53,10 @@ public class LevelDaoImpl implements LevelDao {
             courseTypes.add(obj);
         }
         return courseTypes;
-    }
+    } */
 
-    @Override
+    // TODO API using this method is depricated
+   /* @Override
     public List<Level> getLevelByCountryId(String countryId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("select distinct le.id, le.name as name,le.code as levelkey from level le inner join institute_level il  on il.level_id = le.id "
@@ -83,9 +71,10 @@ public class LevelDaoImpl implements LevelDao {
             level.add(obj);
         }
         return level;
-    }
+    } */
 
-    @Override
+    // TODO API using this method is depricated
+   /* @Override
     public List<Level> getAllLevelByCountry() {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("select distinct le.id, le.name as name,le.code as levelkey,il.country_name from level le  inner join institute_level il  on "
@@ -104,9 +93,10 @@ public class LevelDaoImpl implements LevelDao {
             level.add(obj);
         }
         return level;
-    }
+    } */
 
-    @Override
+    // TODO API using this method is depricated
+ /*   @Override
     public List<LevelDto> getCountryLevel(String countryId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createSQLQuery("select ll.id, ll.name as name,ll.code as levelkey from level ll inner join institute_level il on il.level_id = ll.id" + 
@@ -122,9 +112,10 @@ public class LevelDaoImpl implements LevelDao {
             level.add(obj);
         }
         return level;
-    }
+    } */
     
-    @Override
+    // TODO API using this method is depricated
+  /*  @Override
 	public List<String> getAllLevelNamesByInstituteId(final String instituteId) {
         List<String> list = new ArrayList<String>();
         Session session = sessionFactory.getCurrentSession();
@@ -134,43 +125,26 @@ public class LevelDaoImpl implements LevelDao {
             list.add(new String(row[1].toString()));
         }
         return list;
-    }
+    } */
 
 	@Override
-	public List<Level> findByIdIn(List<String> ids) {
-		return levelRepository.findAllById(ids);
+	public List<Level> findByIdIn(List<UUID> ids) {
+		return  (List<Level>) levelRepository.findAllById(ids);
 	}
 
 	@Override
 	public Level getLevelByLevelCode(String levelCode) {
-		Session session = sessionFactory.getCurrentSession();
-		Level level = null;
-		Criteria criteria = session.createCriteria(Level.class);
-		criteria.add(Restrictions.eq("code", levelCode));
-		List<Level> levels = criteria.list();
-		if (levels != null && !levels.isEmpty()) {
-			level = levels.get(0);
-		}
-		return level;
+		return levelRepository.findByCode(levelCode);
 	}
 	
 	@Override
 	@Transactional
-	public Map<String, String> getAllLevelMap() {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(Level.class, "level");
-		ProjectionList projList = Projections.projectionList();
-		projList.add(Projections.property("level.id"));
-		projList.add(Projections.property("level.code"));
-		criteria.setProjection(projList);
-		List<Level> instituteList = criteria.list();
-		Iterator it = instituteList.iterator();
-		Map<String, String> levelMap = new HashMap<>();
-
-		while (it.hasNext()) {
-			Object[] obj = (Object[]) it.next();
-			levelMap.put(String.valueOf(obj[1]), obj[0].toString());
-		}
-		return levelMap;
+	public Map<String, UUID> getAllLevelMap() {
+		Map<String, UUID> levelMap = new HashMap<>();
+		List<Level> levels = levelRepository.findAll();
+		levels.stream().forEach(level -> {
+			levelMap.put(level.getCode(),level.getId());
+		});
+		return levelMap; 
 	}
 }

@@ -25,10 +25,10 @@ import lombok.ToString;
 
 @Data
 @Entity
-@ToString(exclude = "course")
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "course_career_outcome", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "career_id" }, 
-	   	 name = "UK_CCO_COURSE_ID"), indexes = {@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false)})
+/*@Table(name = "course_career_outcome", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "career_id" }, 
+	   	 name = "UK_CCO_COURSE_ID"), indexes = {@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false)}) */
 public class CourseCareerOutcome implements Serializable {
 
 	private static final long serialVersionUID = 8492390790670110780L;

@@ -2,7 +2,6 @@ package com.yuzee.app.jobs;
 
 import java.io.IOException;
 
-import javax.persistence.EntityManagerFactory;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.batch.core.ItemWriteListener;
@@ -17,13 +16,13 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.batch.item.data.MongoItemWriter;
+import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.dto.uploader.FacultyCSVDto;
@@ -54,10 +53,9 @@ public class FacultyUploadBatchConfig {
 
 	@Bean("facultyItemWriter")
 	@StepScope
-	public JpaItemWriter<Faculty> writer(@Autowired EntityManagerFactory emf) {
-		JpaItemWriter<Faculty> writer = new JpaItemWriter<>();
-		writer.setEntityManagerFactory(emf);
-		return writer;
+	public MongoItemWriter<Faculty> writer(MongoTemplate mongoTemplate) {
+		return new MongoItemWriterBuilder<Faculty>().template(mongoTemplate).collection("faculty")
+                .build();
 	}
 
 	@Bean("facultyStep")
@@ -65,10 +63,10 @@ public class FacultyUploadBatchConfig {
 			@Qualifier("facultyItemReader") ItemReader<FacultyCSVDto> reader,
 			@Qualifier("facultyItemWriter") ItemWriter<Faculty> writer,
 			@Qualifier("facultyItemProcessor") ItemProcessor<FacultyCSVDto, Faculty> processor,@Qualifier("facultyItemWriteListner") ItemWriteListener<Faculty> listner,
-			HibernateTransactionManager hibernateTransactionManager, SkipAnyFailureSkipPolicy skipPolicy) {
+			SkipAnyFailureSkipPolicy skipPolicy) {
 		return stepBuilderFactory.get("facultyStep").<FacultyCSVDto, Faculty>chunk(batchSize).reader(reader).faultTolerant()
 				.skipPolicy(skipPolicy).noRollback(ConstraintViolationException.class).processor(processor).writer(writer).listener(listner)
-				.transactionManager(hibernateTransactionManager).build();
+				.build();
 	}
 	
 	@Bean("importFacultyJob")

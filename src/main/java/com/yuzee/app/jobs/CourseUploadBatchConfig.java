@@ -92,7 +92,6 @@ public class CourseUploadBatchConfig {
     @Bean("curriculumStep")
     public Step curriculumStep(StepBuilderFactory stepBuilderFactory, @Qualifier ("curriculumItemReader") ItemReader<CourseCurriculumDto> reader,
     		@Qualifier ("curriculumItemWriter") ItemWriter<CourseCurriculum> writer,@Qualifier ("curriculumItemProcessor") ItemProcessor<CourseCurriculumDto, CourseCurriculum> processor,
-            HibernateTransactionManager hibernateTransactionManager,
             CourseImportSkipPolicy skipPolicy,@Qualifier("curriculumItemWriterListner") ItemWriteListener<CourseCurriculum> courseItemWriterListner) {
     	return stepBuilderFactory.get("courseStep")
                 .<CourseCurriculumDto, CourseCurriculum> chunk(batchSize)
@@ -100,14 +99,12 @@ public class CourseUploadBatchConfig {
                 .faultTolerant().skipPolicy(skipPolicy).noRollback(ConstraintViolationException.class)
                 .processor(processor)
                 .writer(writer).listener(courseItemWriterListner)
-                .transactionManager(hibernateTransactionManager)
                 .build();
     }
     
     @Bean("courseStep")
     public Step courseStep(StepBuilderFactory stepBuilderFactory, @Qualifier ("courseItemReader") ItemReader<CourseCsvDto> reader,
     		@Qualifier ("courseItemWriter") ItemWriter<Course> writer,@Qualifier ("courseItemProcessor") ItemProcessor<CourseCsvDto, Course> processor,
-            HibernateTransactionManager hibernateTransactionManager,
             CourseImportSkipPolicy skipPolicy,@Qualifier("courseItemWriterListner") ItemWriteListener<Course> courseItemWriterListner) {
         return stepBuilderFactory.get("courseStep")
                 .<CourseCsvDto, Course> chunk(1)
@@ -115,7 +112,6 @@ public class CourseUploadBatchConfig {
                 .faultTolerant().skipPolicy(skipPolicy)
                 .processor(processor)
                 .writer(writer).listener(courseItemWriterListner)
-                .transactionManager(hibernateTransactionManager)
                 .build();
     }
 	

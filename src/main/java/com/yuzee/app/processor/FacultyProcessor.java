@@ -66,11 +66,11 @@ public class FacultyProcessor {
 		log.debug("Inside getFacultyById() method");
 		FacultyDto facultyDto = new FacultyDto();
 		log.info("Fetching faculty from DB having facultyId = "+id);
-		Faculty faculty = facultyDAO.get(id);
+		Faculty faculty = facultyDAO.getFaculty(UUID.fromString(id));
 		if (!ObjectUtils.isEmpty(faculty)) {
 			log.info("Faculty found in DB hence making response");
 			facultyDto.setName(faculty.getName());
-			facultyDto.setId(faculty.getId());
+			facultyDto.setId(faculty.getId().toString());
 			facultyDto.setIcon(CDNServerUtil.getFacultyIconUrl(faculty.getName()));
 		}
 		return facultyDto;
@@ -87,7 +87,7 @@ public class FacultyProcessor {
 			facultiesFromDB.stream().forEach(faculty -> {
 				FacultyDto facultyDto = new FacultyDto();
 				facultyDto.setName(faculty.getName());
-				facultyDto.setId(faculty.getId());
+				facultyDto.setId(faculty.getId().toString());
 				facultyDto.setIcon(CDNServerUtil.getFacultyIconUrl(faculty.getName()));
 				facultyDtos.add(facultyDto);
 			});
@@ -104,7 +104,7 @@ public class FacultyProcessor {
 		if(!ObjectUtils.isEmpty(facultyFromDB)) {
 			log.info("Faculty coming from DB hence start making response");
 			facultyDto.setName(facultyFromDB.getName());
-			facultyDto.setId(facultyFromDB.getId());
+			facultyDto.setId(facultyFromDB.getId().toString());
 			try {
 				facultyDto.setIcon(CDNServerUtil.getFacultyIconUrl(facultyFromDB.getName()));
 			} catch (Exception exception) {
@@ -112,11 +112,6 @@ public class FacultyProcessor {
 			}
 		}
 		return facultyDto;
-	}
-
-	@Transactional
-	public List<Faculty> getFacultyListByName(final List<String> facultyNames) {
-		return facultyDAO.getFacultyListByFacultyNames(facultyNames);
 	}
 	
     public void importFaculty(final MultipartFile multipartFile) throws IOException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
