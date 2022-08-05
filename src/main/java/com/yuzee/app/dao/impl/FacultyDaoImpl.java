@@ -15,10 +15,10 @@ import com.yuzee.app.repository.FacultyRepository;
 
 @Component
 public class FacultyDaoImpl implements FacultyDao {
-	
+
 	@Autowired
 	private FacultyRepository facultyRepository;
-	
+
 	@Override
 	public void saveOrUpdateFaculty(final Faculty obj) {
 		facultyRepository.save(obj);
@@ -42,15 +42,22 @@ public class FacultyDaoImpl implements FacultyDao {
 			facultyListMap.put(faculty.getId(), faculty.getName());
 		});
 		return facultyListMap;
-		
+
 	}
-	
+
 	@Override
-	public Faculty getFaculty(UUID id) {
+	public Faculty getFaculty(String id) {
 		Optional<Faculty> optFaculty = facultyRepository.findById(id);
 		if (optFaculty.isPresent()) {
 			return optFaculty.get();
 		}
 		return null;
 	}
+
+	@Override
+	public Optional<Faculty> get(String facultyId) {
+		// TODO Auto-generated method stub
+		return facultyRepository.findById(facultyId);
+	}
+
 }

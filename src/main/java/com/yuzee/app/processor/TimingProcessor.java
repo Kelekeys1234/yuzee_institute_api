@@ -1,6 +1,13 @@
 package com.yuzee.app.processor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,20 +46,21 @@ public class TimingProcessor {
 
 	@Autowired
 	private ModelMapper modelMapepr;
-	
+
 	@Autowired
 	private CommonProcessor commonProcessor;
-	
+
 	@Autowired
 	private MessageTranslator messageTranslator;
-	
+
 	@Autowired
 	private CourseDao courseDao;
 
 	public List<TimingRequestDto> saveUpdateDeleteTimings(String loggedInUserId, EntityTypeEnum entityType,
 			List<TimingRequestDto> timingRequestDtos, String entityId) throws NotFoundException {
 		log.info("inside TimingProcessor.saveUpdateTimings");
-		List<Timing> dbTimings = timingDao.findByEntityTypeAndEntityIdIn(entityType, Collections.singletonList((entityId)));
+		List<Timing> dbTimings = timingDao.findByEntityTypeAndEntityIdIn(entityType,
+				Collections.singletonList((entityId)));
 		Map<String, Timing> dbTimingsMap = dbTimings.stream().collect(Collectors.toMap(Timing::getId, e -> e));
 		if (!CollectionUtils.isEmpty(timingRequestDtos)) {
 			Set<String> idsToBeUpdated = timingRequestDtos.stream().filter(e -> !StringUtils.isEmpty(e.getId()))
@@ -66,7 +74,7 @@ public class TimingProcessor {
 				if (!StringUtils.isEmpty(timingRequestDto.getId())) {
 					timing = dbTimingsMap.get(timingRequestDto.getId());
 					if (timing == null) {
-						log.error(messageTranslator.toLocale("timing-processor.invalid",Locale.US));
+						log.error(messageTranslator.toLocale("timing-processor.invalid", Locale.US));
 						throw new NotFoundException(messageTranslator.toLocale("timing-processor.invalid"));
 					}
 				}
@@ -88,13 +96,14 @@ public class TimingProcessor {
 	public TimingRequestDto saveUpdateTiming(String loggedInUserId, TimingRequestDto timingRequestDto)
 			throws NotFoundException {
 		log.info("inside TimingProcessor.saveUpdateTimings");
-		Timing timingBeforeUpdate=null;
+		Timing timingBeforeUpdate = null;
 		Timing timing = modelMapepr.map(timingRequestDto, Timing.class);
 		if (!StringUtils.isEmpty(timingRequestDto.getId())) {
 			Optional<Timing> timingO = timingDao.findById(timingRequestDto.getId());
 			if (!timingO.isPresent()) {
-				log.error(messageTranslator.toLocale("timing-processor.invalid", timingRequestDto.getId(),Locale.US));
-				throw new NotFoundException(messageTranslator.toLocale("timing-processor.invalid", timingRequestDto.getId()));
+				log.error(messageTranslator.toLocale("timing-processor.invalid", timingRequestDto.getId(), Locale.US));
+				throw new NotFoundException(
+						messageTranslator.toLocale("timing-processor.invalid", timingRequestDto.getId()));
 			}
 			timing = timingO.get();
 			timingBeforeUpdate = new Timing();
@@ -105,7 +114,7 @@ public class TimingProcessor {
 
 		List<Timing> dbTimings = timingDao.saveAll(Arrays.asList(timing));
 
-		if(!ObjectUtils.isEmpty(timingBeforeUpdate) && !timingBeforeUpdate.equals(timing)
+		if (!ObjectUtils.isEmpty(timingBeforeUpdate) && !timingBeforeUpdate.equals(timing)
 				&& timing.getEntityType().equals(EntityTypeEnum.COURSE)) {
 			log.info("Send course update notification");
 			Course course = courseDao.get(timing.getEntityId());
@@ -181,7 +190,8 @@ public class TimingProcessor {
 	public List<TimingRequestDto> getTimingRequestDtoByEntityTypeAndEntityIdIn(EntityTypeEnum entityType,
 			List<String> entityIds) {
 		log.info("inside TimingProcessor.getTimingRequestDtoByEntityTypeAndEntityIdIn");
-		List<Timing> timings = timingDao.findByEntityTypeAndEntityIdIn(entityType, entityIds.stream().map(String::toString).collect(Collectors.toList()));
+		List<Timing> timings = timingDao.findByEntityTypeAndEntityIdIn(entityType,
+				entityIds.stream().map(String::toString).collect(Collectors.toList()));
 		return timings.stream().map(this::convertTimingToTimingRequestDto).collect(Collectors.toList());
 	}
 
@@ -196,8 +206,7 @@ public class TimingProcessor {
 	public TimingDto getTimingResponseDtoByInstituteId(String string) {
 		log.debug("Inside getTimingResponseDtoByInstituteId() method");
 		log.info("fetching institute timing from DB for instituteId " + string);
-		List<Timing> timings = timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.INSTITUTE,
-				List.of(string));
+		List<Timing> timings = timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.INSTITUTE, List.of(string));
 		Timing timing = CollectionUtils.isEmpty(timings) ? null : timings.get(0);
 		TimingDto instituteTimingResponseDto = new TimingDto();
 		if (!ObjectUtils.isEmpty(timing)) {
@@ -212,7 +221,7 @@ public class TimingProcessor {
 		log.info("inside TimingProcessor.deleteTiming");
 		Timing timing = timingDao.findByEntityTypeAndEntityIdAndId(entityType, entityId, timingId);
 		if (ObjectUtils.isEmpty(timing)) {
-			log.error(messageTranslator.toLocale("timing-processor.invalid", timingId,Locale.US));
+			log.error(messageTranslator.toLocale("timing-processor.invalid", timingId, Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("timing-processor.invalid", timingId));
 		} else {
 			if (!timing.getCreatedBy().equals(userId)) {

@@ -41,7 +41,7 @@ public class ArticleCourse implements Serializable {
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
+	@Column(name = "id", unique = true, nullable = false, length = 36)
 	public String getId() {
 		return this.id;
 	}
@@ -50,8 +50,8 @@ public class ArticleCourse implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "course_id")
+//	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "course_id")
 	public Course getCourse() {
 		return this.course;
 	}

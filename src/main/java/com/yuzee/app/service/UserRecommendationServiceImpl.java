@@ -1,4 +1,4 @@
-	package com.yuzee.app.service;
+package com.yuzee.app.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,22 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.dao.UserRecommendationDao;
 import com.yuzee.app.dto.CourseResponseDto;
 import com.yuzee.app.processor.CourseDeliveryModesProcessor;
 import com.yuzee.app.processor.CourseProcessor;
-import com.yuzee.common.lib.dto.storage.StorageDto;
-import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
-import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.StorageHandler;
 import com.yuzee.common.lib.util.Utils;
 import com.yuzee.local.config.MessageTranslator;
 
 import lombok.extern.apachecommons.CommonsLog;
+
 @Service
 @Transactional(rollbackFor = Throwable.class)
 @CommonsLog
@@ -38,7 +35,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 
 	@Autowired
 	private StorageHandler storageHandler;
-	
+
 	@Autowired
 	private CourseDeliveryModesProcessor courseDeliveryModesProcessor;
 
@@ -56,7 +53,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		String countryId = null;
 		String cityId = null;
 		if (existingCourse.getFaculty() != null) {
-			facultyId = existingCourse.getFaculty().getId();
+			facultyId = existingCourse.getFaculty().getId().toString();
 		}
 //		if (existingCourse.getInstitute() != null) {
 //			instituteId = existingCourse.getInstitute().getId().toString();
@@ -70,13 +67,15 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		 * same faculty , same institute , same country , same city -> with
 		 * usdInternationFee +-2000, +-5000 +-10000
 		 */
-		List<Course> firstCourses = userRecommendationDao.getRecommendCourse(facultyId, instituteId, countryId, cityId, null, Double.valueOf(2000), 2,
-				courseIds);
+		List<Course> firstCourses = userRecommendationDao.getRecommendCourse(facultyId, instituteId, countryId, cityId,
+				null, Double.valueOf(2000), 2, courseIds);
 		if (firstCourses.size() < 2) {
-			firstCourses = userRecommendationDao.getRecommendCourse(facultyId, instituteId, countryId, cityId, null, Double.valueOf(5000), 2, courseIds);
+			firstCourses = userRecommendationDao.getRecommendCourse(facultyId, instituteId, countryId, cityId, null,
+					Double.valueOf(5000), 2, courseIds);
 		}
 		if (firstCourses.size() < 2) {
-			firstCourses = userRecommendationDao.getRecommendCourse(facultyId, instituteId, countryId, cityId, null, Double.valueOf(10000), 2, courseIds);
+			firstCourses = userRecommendationDao.getRecommendCourse(facultyId, instituteId, countryId, cityId, null,
+					Double.valueOf(10000), 2, courseIds);
 		}
 		resultList.addAll(firstCourses);
 
@@ -87,15 +86,15 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		int remainingCourse = 4 - resultList.size();
 		courseIds = resultList.stream().map(Course::getId).collect(Collectors.toList());
 		courseIds.add(courseId);
-		List<Course> secondCourses = userRecommendationDao.getRecommendCourse(facultyId, null, countryId, cityId, null, Double.valueOf(2000), remainingCourse,
-				courseIds);
+		List<Course> secondCourses = userRecommendationDao.getRecommendCourse(facultyId, null, countryId, cityId, null,
+				Double.valueOf(2000), remainingCourse, courseIds);
 		if (secondCourses.size() < remainingCourse) {
-			secondCourses = userRecommendationDao.getRecommendCourse(facultyId, null, countryId, cityId, null, Double.valueOf(5000), remainingCourse,
-					courseIds);
+			secondCourses = userRecommendationDao.getRecommendCourse(facultyId, null, countryId, cityId, null,
+					Double.valueOf(5000), remainingCourse, courseIds);
 		}
 		if (secondCourses.size() < remainingCourse) {
-			secondCourses = userRecommendationDao.getRecommendCourse(facultyId, null, countryId, cityId, null, Double.valueOf(10000), remainingCourse,
-					courseIds);
+			secondCourses = userRecommendationDao.getRecommendCourse(facultyId, null, countryId, cityId, null,
+					Double.valueOf(10000), remainingCourse, courseIds);
 		}
 		resultList.addAll(secondCourses);
 
@@ -108,14 +107,15 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		if (remainingCourse != 0) {
 			courseIds = resultList.stream().map(Course::getId).collect(Collectors.toList());
 			courseIds.add(courseId);
-			thirdCourses = userRecommendationDao.getRecommendCourse(facultyId, null, countryId, null, null, Double.valueOf(2000), remainingCourse, courseIds);
+			thirdCourses = userRecommendationDao.getRecommendCourse(facultyId, null, countryId, null, null,
+					Double.valueOf(2000), remainingCourse, courseIds);
 			if (thirdCourses.size() < remainingCourse) {
-				thirdCourses = userRecommendationDao.getRecommendCourse(facultyId, null, countryId, null, null, Double.valueOf(5000), remainingCourse,
-						courseIds);
+				thirdCourses = userRecommendationDao.getRecommendCourse(facultyId, null, countryId, null, null,
+						Double.valueOf(5000), remainingCourse, courseIds);
 			}
 			if (thirdCourses.size() < remainingCourse) {
-				thirdCourses = userRecommendationDao.getRecommendCourse(facultyId, null, countryId, null, null, Double.valueOf(10000), remainingCourse,
-						courseIds);
+				thirdCourses = userRecommendationDao.getRecommendCourse(facultyId, null, countryId, null, null,
+						Double.valueOf(10000), remainingCourse, courseIds);
 			}
 			resultList.addAll(thirdCourses);
 		}
@@ -129,11 +129,14 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		if (remainingCourse != 0) {
 			courseIds = resultList.stream().map(Course::getId).collect(Collectors.toList());
 			courseIds.add(courseId);
-			forthCourses = userRecommendationDao.getRecommendCourse(facultyId, null, null, null, null, Double.valueOf(2000), remainingCourse, courseIds);
+			forthCourses = userRecommendationDao.getRecommendCourse(facultyId, null, null, null, null,
+					Double.valueOf(2000), remainingCourse, courseIds);
 			if (forthCourses.size() < remainingCourse) {
-				forthCourses = userRecommendationDao.getRecommendCourse(facultyId, null, null, null, null, Double.valueOf(5000), remainingCourse, courseIds);
+				forthCourses = userRecommendationDao.getRecommendCourse(facultyId, null, null, null, null,
+						Double.valueOf(5000), remainingCourse, courseIds);
 			} else if (forthCourses.size() < remainingCourse) {
-				forthCourses = userRecommendationDao.getRecommendCourse(facultyId, null, null, null, null, Double.valueOf(10000), remainingCourse, courseIds);
+				forthCourses = userRecommendationDao.getRecommendCourse(facultyId, null, null, null, null,
+						Double.valueOf(10000), remainingCourse, courseIds);
 			}
 			resultList.addAll(forthCourses);
 		}
@@ -168,7 +171,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		String countryId = null;
 		String cityId = null;
 		if (existingCourse.getFaculty() != null) {
-			facultyId = existingCourse.getFaculty().getId();
+			facultyId = existingCourse.getFaculty().getId().toString();
 		}
 //		if (existingCourse.getInstitute() != null) {
 //			instituteId = existingCourse.getInstitute().getId().toString();
@@ -181,7 +184,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		 * Same CourseName, same faculty , same institute , same country , same city ->
 		 * with usdInternationFee +-2000, +-5000 +-10000
 		 */
-		List<Course> firstCourses = getRelatedCoursesPrice(facultyId, instituteId, countryId, cityId, courseName, null, resultList, courseId);
+		List<Course> firstCourses = getRelatedCoursesPrice(facultyId, instituteId, countryId, cityId, courseName, null,
+				resultList, courseId);
 		resultList.addAll(firstCourses);
 
 		/**
@@ -189,7 +193,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		 * city -> with usdInternationFee +-2000, +-5000 +-10000
 		 */
 		if (resultList.size() < 5) {
-			List<Course> courses = getRelatedCoursesPrice(facultyId, null, countryId, cityId, courseName, null, resultList, courseId);
+			List<Course> courses = getRelatedCoursesPrice(facultyId, null, countryId, cityId, courseName, null,
+					resultList, courseId);
 			resultList.addAll(courses);
 		}
 
@@ -198,7 +203,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		 * different city -> with usdInternationFee +-2000, +-5000 +-10000
 		 */
 		if (resultList.size() < 5) {
-			List<Course> courses = getRelatedCoursesPrice(facultyId, null, countryId, null, courseName, null, resultList, courseId);
+			List<Course> courses = getRelatedCoursesPrice(facultyId, null, countryId, null, courseName, null,
+					resultList, courseId);
 			resultList.addAll(courses);
 		}
 
@@ -207,7 +213,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		 * different city -> with usdInternationFee +-2000, +-5000 +-10000
 		 */
 		if (resultList.size() < 5) {
-			List<Course> courses = getRelatedCoursesPrice(facultyId, null, null, null, courseName, null, resultList, courseId);
+			List<Course> courses = getRelatedCoursesPrice(facultyId, null, null, null, courseName, null, resultList,
+					courseId);
 			resultList.addAll(courses);
 		}
 
@@ -216,7 +223,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		 * usdInternationFee +-2000, +-5000 +-10000
 		 */
 		if (resultList.size() < 5) {
-			List<Course> courses = getRelatedCoursesPrice(facultyId, null, countryId, cityId, null, null, resultList, courseId);
+			List<Course> courses = getRelatedCoursesPrice(facultyId, null, countryId, cityId, null, null, resultList,
+					courseId);
 			resultList.addAll(courses);
 		}
 
@@ -225,7 +233,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		 * usdInternationFee +-2000, +-5000 +-10000
 		 */
 		if (resultList.size() < 5) {
-			List<Course> courses = getRelatedCoursesPrice(facultyId, null, countryId, null, null, null, resultList, courseId);
+			List<Course> courses = getRelatedCoursesPrice(facultyId, null, countryId, null, null, null, resultList,
+					courseId);
 			resultList.addAll(courses);
 		}
 
@@ -234,7 +243,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		 * with usdInternationFee +-2000, +-5000 +-10000
 		 */
 		if (resultList.size() < 5) {
-			List<Course> courses = getRelatedCoursesPrice(facultyId, null, null, null, null, null, resultList, courseId);
+			List<Course> courses = getRelatedCoursesPrice(facultyId, null, null, null, null, null, resultList,
+					courseId);
 			resultList.addAll(courses);
 		}
 
@@ -254,8 +264,9 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	 * @param resultList
 	 * @return
 	 */
-	private List<Course> getRelatedCoursesPrice(final String facultyId, final String instituteId, final String countryId, final String cityId,
-			final String courseName, final Double price, final List<Course> resultList, final String courseId) {
+	private List<Course> getRelatedCoursesPrice(final String facultyId, final String instituteId,
+			final String countryId, final String cityId, final String courseName, final Double price,
+			final List<Course> resultList, final String courseId) {
 		List<String> courseIds = new ArrayList<>();
 		courseIds.add(courseId);
 		if (!resultList.isEmpty()) {
@@ -263,15 +274,15 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			courseIds.addAll(list);
 		}
 		int pageSize = 5 - resultList.size();
-		List<Course> courseList = userRecommendationDao.getRelatedCourse(facultyId, instituteId, countryId, cityId, price, Double.valueOf(2000), pageSize,
-				courseIds, courseName);
+		List<Course> courseList = userRecommendationDao.getRelatedCourse(facultyId, instituteId, countryId, cityId,
+				price, Double.valueOf(2000), pageSize, courseIds, courseName);
 		if (courseList.size() < 5) {
-			courseList = userRecommendationDao.getRelatedCourse(facultyId, instituteId, countryId, cityId, price, Double.valueOf(5000), pageSize, courseIds,
-					courseName);
+			courseList = userRecommendationDao.getRelatedCourse(facultyId, instituteId, countryId, cityId, price,
+					Double.valueOf(5000), pageSize, courseIds, courseName);
 		}
 		if (courseList.size() < 5) {
-			courseList = userRecommendationDao.getRelatedCourse(facultyId, instituteId, countryId, cityId, price, Double.valueOf(10000), pageSize, courseIds,
-					courseName);
+			courseList = userRecommendationDao.getRelatedCourse(facultyId, instituteId, countryId, cityId, price,
+					Double.valueOf(10000), pageSize, courseIds, courseName);
 		}
 		return courseList;
 	}
@@ -336,12 +347,13 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	 * First we find based on faculty and country
 	 */
 	@Override
-	public List<CourseResponseDto> getCourseNoResultRecommendation(final String facultyId, final String countryId, final Integer startIndex,
-			final Integer pageSize) throws ValidationException {
+	public List<CourseResponseDto> getCourseNoResultRecommendation(final String facultyId, final String countryId,
+			final Integer startIndex, final Integer pageSize) throws ValidationException {
 		/**
 		 * Find courses with the same faculty and country
 		 */
-		List<Course> courseList = userRecommendationDao.getCourseNoResultRecommendation(facultyId, countryId, null, startIndex, pageSize);
+		List<Course> courseList = userRecommendationDao.getCourseNoResultRecommendation(facultyId, countryId, null,
+				startIndex, pageSize);
 		/**
 		 * If required courses are not found then we will find courses with any faculty
 		 * but with the same country.
@@ -349,29 +361,33 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		 */
 		if (!courseList.isEmpty() && courseList.size() <= pageSize) {
 			List<Course> courseCountryList = userRecommendationDao.getCourseNoResultRecommendation(null, countryId,
-					courseList.stream().map(Course::getId).collect(Collectors.toList()), startIndex, pageSize - courseList.size());
+					courseList.stream().map(Course::getId).collect(Collectors.toList()), startIndex,
+					pageSize - courseList.size());
 			courseList.addAll(courseCountryList);
 		} else {
-			List<Course> courseCountryList = userRecommendationDao.getCourseNoResultRecommendation(null, countryId, null, startIndex, pageSize);
+			List<Course> courseCountryList = userRecommendationDao.getCourseNoResultRecommendation(null, countryId,
+					null, startIndex, pageSize);
 			courseList.addAll(courseCountryList);
 		}
 		return convertCourseToCourseRespone(courseList);
 	}
 
 	@Override
-	public List<CourseResponseDto> getCheapestCourse(final String facultyId, final String countryId, final String levelId, final String cityId,
-			final Integer startIndex, final Integer pageSize) throws ValidationException {
+	public List<CourseResponseDto> getCheapestCourse(final String facultyId, final String countryId,
+			final String levelId, final String cityId, final Integer startIndex, final Integer pageSize)
+			throws ValidationException {
 		/**
 		 * First we find courses based on same faculty, same country and same level but
 		 * different city
 		 *
 		 */
-		List<Course> courseList = userRecommendationDao.getCheapestCourse(facultyId, countryId, levelId, cityId, null, startIndex, pageSize);
+		List<Course> courseList = userRecommendationDao.getCheapestCourse(facultyId, countryId, levelId, cityId, null,
+				startIndex, pageSize);
 
 		log.info("Filtering distinct courses based on courseId and collect in list");
 		List<Course> courseFilteredList = courseList.stream().filter(Utils.distinctByKey(Course::getId))
 				.collect(Collectors.toList());
-		
+
 		/**
 		 * if required courses not found then other courses find based on same faculty,
 		 * same country but different city
@@ -379,7 +395,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		 */
 		if (!courseFilteredList.isEmpty() && courseFilteredList.size() <= pageSize) {
 			List<Course> moreCourses = userRecommendationDao.getCheapestCourse(facultyId, countryId, null, cityId,
-					courseFilteredList.stream().map(Course::getId).collect(Collectors.toList()), startIndex, pageSize - courseFilteredList.size());
+					courseFilteredList.stream().map(Course::getId).collect(Collectors.toList()), startIndex,
+					pageSize - courseFilteredList.size());
 			courseFilteredList.addAll(moreCourses);
 		}
 
@@ -390,7 +407,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		 */
 		if (!courseFilteredList.isEmpty() && courseFilteredList.size() <= pageSize) {
 			List<Course> moreCourses = userRecommendationDao.getCheapestCourse(null, countryId, null, cityId,
-					courseFilteredList.stream().map(Course::getId).collect(Collectors.toList()), startIndex, pageSize - courseFilteredList.size());
+					courseFilteredList.stream().map(Course::getId).collect(Collectors.toList()), startIndex,
+					pageSize - courseFilteredList.size());
 			courseFilteredList.addAll(moreCourses);
 		}
 

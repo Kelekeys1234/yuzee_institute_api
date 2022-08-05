@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
+
 public class TimingRequestDto {
 
 	@JsonProperty("timing_id")
@@ -28,8 +29,24 @@ public class TimingRequestDto {
 
 //	we cant put this validation as while saving/updating course we cant put the entity_id inthe object 
 //	but while using the timing controller we need it so we need to do it manually 
-//	@NotEmpty(message = "{entity_id.is_required}")
+	@NotEmpty(message = "{entity_id.is_required}")
 	@JsonProperty("entity_id")
 	private String entityId;
+
+	public TimingRequestDto(String id, @NotEmpty(message = "{timings.is_required}") List<DayTimingDto> timings,
+			@NotEmpty(message = "{timing_type.is_required}") String timingType,
+			@NotEmpty(message = "{entity_type.is_required}") String entityType,
+			@NotEmpty(message = "{entity_id.is_required}") String entityId) {
+		super();
+		this.id = id;
+		this.timings = timings;
+		this.timingType = timingType;
+		this.entityType = entityType;
+		this.entityId = entityId;
+	}
+
+	public TimingRequestDto() {
+		super();
+	}
 
 }

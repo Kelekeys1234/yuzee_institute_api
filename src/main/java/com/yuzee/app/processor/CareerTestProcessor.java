@@ -59,7 +59,7 @@ public class CareerTestProcessor {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private MessageTranslator messageTranslator;
 
@@ -77,8 +77,7 @@ public class CareerTestProcessor {
 			careerJobSkillsFromDB.getContent().stream().forEach(careerJobSkill -> {
 
 				CareerJobSkillDto careerJobSkillDto = new CareerJobSkillDto(careerJobSkill.getId(),
-						careerJobSkill.getSkill(), careerJobSkill.getDescription(),
-						careerJobSkill.getCareerJobs().getId(),
+						careerJobSkill.getSkill(), careerJobSkill.getDescription(), careerJobSkill.getId(),
 						favouriteIds.stream().anyMatch(e -> e.equals(careerJobSkill.getId())));
 				careerJobSkillDtos.add(careerJobSkillDto);
 			});
@@ -101,7 +100,7 @@ public class CareerTestProcessor {
 				log.info("Start adding values in DTO class");
 				CareerJobWorkingStyleDto careerJobWorkingStyleDto = new CareerJobWorkingStyleDto(
 						careerJobWorkingStyle.getId(), careerJobWorkingStyle.getWorkStyle(),
-						careerJobWorkingStyle.getCareerJobs().getId(),
+						careerJobWorkingStyle.getId(),
 						favouriteIds.stream().anyMatch(e -> e.equals(careerJobWorkingStyle.getId())));
 				careerJobWorkingStyleDtos.add(careerJobWorkingStyleDto);
 			});
@@ -123,7 +122,7 @@ public class CareerTestProcessor {
 			careerJobSubjects.getContent().stream().forEach(careerJobSubject -> {
 				log.info("Start adding values in DTO class");
 				CareerJobSubjectDto careerJobSubjectDto = new CareerJobSubjectDto(careerJobSubject.getId(),
-						careerJobSubject.getSubject(), careerJobSubject.getCareerJobs().getId(),
+						careerJobSubject.getSubject(), careerJobSubject.getId(),
 						favouriteIds.stream().anyMatch(e -> e.equals(careerJobSubject.getId())));
 				careerJobSubjectDtos.add(careerJobSubjectDto);
 			});
@@ -209,7 +208,7 @@ public class CareerTestProcessor {
 			log.info("Career Jobs fetched from DB, start iterating data");
 			realtedCarrers.stream().forEach(careerJob -> {
 				RelatedCareerDto careerJobDto = new RelatedCareerDto(careerJob.getId(), careerJob.getRelatedCareer(),
-						careerJob.getCareers().getId());
+						careerJob.getCareers().getId().toString());
 				realtedCareerDtos.add(careerJobDto);
 			});
 		}
@@ -249,8 +248,8 @@ public class CareerTestProcessor {
 	public CareerJobDto getCareerJobById(String jobId) throws NotFoundException {
 		Optional<CareerJob> careerJob = careerTestDao.getCareerJob(jobId);
 		if (!careerJob.isPresent()) {
-			log.debug(messageTranslator.toLocale("career_test.job.notfound" , jobId,Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("career_test.job.notfound" , jobId));
+			log.debug(messageTranslator.toLocale("career_test.job.notfound", jobId, Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("career_test.job.notfound", jobId));
 		}
 		return modelMapper.map(careerJob.get(), CareerJobDto.class);
 	}

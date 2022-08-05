@@ -40,7 +40,7 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 	public void saveAll(List<EducationSystem> educationSystems) {
 		educationSystemRepository.saveAll(educationSystems);
 	}
-	
+
 	@Override
 	public void update(final EducationSystem hobbiesObj) {
 		Session session = sessionFactory.getCurrentSession();
@@ -66,12 +66,13 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 	public List<EducationSystem> getAllGlobeEducationSystems() {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery(
-				"select id,name,code,country_id,is_active from education_system  where country_id is null " + "and is_active = 1 order by code");
+				"select id,name,code,country_id,is_active from education_system  where country_id is null "
+						+ "and is_active = 1 order by code");
 		List<Object[]> rows = query.list();
 		List<EducationSystem> list = new ArrayList<>();
 		for (Object[] row : rows) {
 			EducationSystem obj = new EducationSystem();
-			obj.setId(row[0].toString());
+			// obj.setId(row[0].toString());
 			obj.setName(row[1].toString());
 			obj.setCode(row[2].toString());
 			list.add(obj);
@@ -106,7 +107,8 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 	public List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName) {
 		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createSQLQuery(
-				"select es.id,es.country_name,es.name,es.code,es.description,es.state_name,es.grade_type from education_system es where es.country_name='"+countryName+"'and( es.state_name='"+stateName+"' OR es.state_name = 'All' )");
+				"select es.id,es.country_name,es.name,es.code,es.description,es.state_name,es.grade_type from education_system es where es.country_name='"
+						+ countryName + "'and( es.state_name='" + stateName + "' OR es.state_name = 'All' )");
 		List<Object[]> rows = query.list();
 		List<EducationSystemDto> list = new ArrayList<>();
 		List<SubjectDto> subjects = new ArrayList<>();
@@ -120,8 +122,9 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 			obj.setDescription(row[4].toString());
 			obj.setStateName(row[5].toString());
 			obj.setGradeType(GradeType.valueOf(row[6].toString()));
-			
-			Query subjectQuery = session.createSQLQuery("select id,subject_name from subject where education_system_id ='"+row[0].toString()+"'");
+
+			Query subjectQuery = session.createSQLQuery(
+					"select id,subject_name from subject where education_system_id ='" + row[0].toString() + "'");
 			List<Object[]> subjectRows = subjectQuery.list();
 			for (Object[] subjectRow : subjectRows) {
 				SubjectDto subject = new SubjectDto();
@@ -130,17 +133,19 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 				subjects.add(subject);
 				obj.setSubjects(subjects);
 			}
-			
-			Query gradeQuery = session.createSQLQuery("SELECT DISTINCT id,country_name,grade,MIN(gpa_grade) FROM grade_details where education_system_id ='"+row[0].toString()+"' GROUP BY grade;");
+
+			Query gradeQuery = session.createSQLQuery(
+					"SELECT DISTINCT id,country_name,grade,MIN(gpa_grade) FROM grade_details where education_system_id ='"
+							+ row[0].toString() + "' GROUP BY grade;");
 			List<Object[]> gradeRows = gradeQuery.list();
-			for(Object[] gradeRow : gradeRows) {
+			for (Object[] gradeRow : gradeRows) {
 				GradeDto grade = new GradeDto();
 				grade.setId(gradeRow[0].toString());
 				grade.setCountryName(gradeRow[1].toString());
-				if(gradeRow[2] != null) {
+				if (gradeRow[2] != null) {
 					grade.setGrade(gradeRow[2].toString());
 				}
-				if(gradeRow[3].toString() != null) {
+				if (gradeRow[3].toString() != null) {
 					grade.setGpaGrade(gradeRow[3].toString());
 				}
 				gradeDetails.add(grade);

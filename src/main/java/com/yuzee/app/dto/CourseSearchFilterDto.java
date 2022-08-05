@@ -3,8 +3,11 @@ package com.yuzee.app.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+
+@NoArgsConstructor
 public class CourseSearchFilterDto {
 
 	@JsonProperty("price")
@@ -30,4 +33,18 @@ public class CourseSearchFilterDto {
 
 	@JsonProperty("world_ranking")
 	private String worldRanking;
+
+	public CourseSearchFilterDto(String price, String duration, String location, String recognition,
+			String latestCourse, String institute, String course, String worldRanking) {
+		super();
+		this.price = price;
+		this.duration = duration;
+		this.location = location;
+		this.recognition = recognition;
+		this.latestCourse = latestCourse;
+		this.institute = institute;
+		this.course = course;
+		this.worldRanking = worldRanking;
+	}
+
 }

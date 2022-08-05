@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
@@ -29,6 +30,7 @@ import com.yuzee.app.util.FileStorageProperties;
 @EnableEurekaClient
 @ComponentScan(basePackages = "com.yuzee")
 @SpringBootApplication(exclude = { ContextRegionProviderAutoConfiguration.class, ContextStackAutoConfiguration.class })
+@EntityScan(basePackages = { "com.yuzee.app.bean" })
 @EnableConfigurationProperties({ FileStorageProperties.class })
 @EnableAsync
 @EnableCaching

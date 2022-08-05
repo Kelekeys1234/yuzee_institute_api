@@ -115,7 +115,7 @@ public class CourseDeliveryModesProcessor {
 						log.error("invalid course delivery mode id : {}", e.getId());
 						throw new RuntimeNotFoundException("invalid course delivery mode id : " + e.getId());
 					}
-				}else {
+				} else {
 					courseDeliveryModes.add(courseDeliveryMode);
 				}
 				courseDeliveryMode.setCourse(course);
@@ -130,7 +130,7 @@ public class CourseDeliveryModesProcessor {
 				courseDeliveryMode.setAuditFields(userId);
 				saveUpdateCourseFees(userId, courseDeliveryMode, e.getFees());
 				saveUpdateCourseDeliveryModeFunding(userId, courseDeliveryMode, e.getFundings());
-				
+
 			});
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
@@ -150,7 +150,7 @@ public class CourseDeliveryModesProcessor {
 				commonProcessor.notifyCourseUpdates(notificationType, coursesToBeSavedOrUpdated);
 			}
 
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else if (courseDao.documentExistsById(courseId)) {
 			CourseRequest course = courseDao.findDocumentById(courseId).get();
 			courseDeliveryModeDtos.stream().forEach(dto -> {
@@ -171,8 +171,8 @@ public class CourseDeliveryModesProcessor {
 			});
 			course.setCourseDeliveryModes(new ValidList<>(courseDeliveryModeDtos));
 			courseDao.saveDocument(course);
-		}else {
-			log.error(messageTranslator.toLocale("course.id.invalid",Locale.US));
+		} else {
+			log.error(messageTranslator.toLocale("course.id.invalid", Locale.US));
 			throw new ValidationException(messageTranslator.toLocale("course.id.invalid"));
 		}
 	}
@@ -181,7 +181,7 @@ public class CourseDeliveryModesProcessor {
 	public void deleteByCourseDeliveryModeIds(String userId, String courseId, List<String> deliveryModeIds,
 			List<String> linkedCourseIds) throws NotFoundException, ValidationException {
 		log.info("inside CourseDeliveryModesProcessor.deleteByCourseDeliveryModeIds");
-		if(courseDao.existsById(courseId)) {
+		if (courseDao.existsById(courseId)) {
 			Course course = courseDao.get(courseId);
 			List<CourseDeliveryModes> courseDeliveryModes = course.getCourseDeliveryModes();
 			if (courseDeliveryModes.stream().map(CourseDeliveryModes::getId).collect(Collectors.toSet())
@@ -199,25 +199,25 @@ public class CourseDeliveryModesProcessor {
 					coursesToBeSavedOrUpdated
 							.addAll(replicateCourseDeliveryModes(userId, linkedCourseIds, dtosToReplicate));
 				}
-	
+
 				courseDao.saveAll(coursesToBeSavedOrUpdated);
-	
+
 				log.info("Notify course information changed");
 				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-	
-				commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+
+				// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 			} else {
 				log.error("one or more invalid course_delivery_mode_ids");
 				throw new NotFoundException("one or more invalid course_delivery_mode_ids");
 			}
 		} else if (courseDao.documentExistsById(courseId)) {
 			CourseRequest course = courseDao.findDocumentById(courseId).get();
-			if(!CollectionUtils.isEmpty(course.getCourseDeliveryModes())){
-				course.getCourseDeliveryModes().removeIf(e->Utils.contains(deliveryModeIds, e.getId()));
+			if (!CollectionUtils.isEmpty(course.getCourseDeliveryModes())) {
+				course.getCourseDeliveryModes().removeIf(e -> Utils.contains(deliveryModeIds, e.getId()));
 				courseDao.saveDocument(course);
 			}
 		} else {
-			log.error(messageTranslator.toLocale("course.id.invalid",Locale.US));
+			log.error(messageTranslator.toLocale("course.id.invalid", Locale.US));
 			throw new ValidationException(messageTranslator.toLocale("course.id.invalid"));
 		}
 	}
@@ -263,12 +263,13 @@ public class CourseDeliveryModesProcessor {
 	}
 
 	public static boolean contains(List<CourseDeliveryModesDto> lst, CourseDeliveryModes target) {
-		return lst.stream().anyMatch(t -> t.getDeliveryType().equalsIgnoreCase(target.getDeliveryType())
-				&& t.getStudyMode().equalsIgnoreCase(target.getStudyMode())
-				&& t.getIsGovernmentEligible().equals(target.getIsGovernmentEligible())
-				&& t.getAccessibility().equalsIgnoreCase(target.getAccessibility())
-				&& t.getDurationTime().equalsIgnoreCase(target.getDurationTime())
-				&& t.getDuration().equals(target.getDuration()));
+		return lst.stream()
+				.anyMatch(t -> t.getDeliveryType().equalsIgnoreCase(target.getDeliveryType())
+						&& t.getStudyMode().equalsIgnoreCase(target.getStudyMode())
+						&& t.getIsGovernmentEligible().equals(target.getIsGovernmentEligible())
+						&& t.getAccessibility().equalsIgnoreCase(target.getAccessibility())
+						&& t.getDurationTime().equalsIgnoreCase(target.getDurationTime())
+						&& t.getDuration().equals(target.getDuration()));
 	}
 
 	public void saveUpdateCourseFees(String userId, CourseDeliveryModes deliveryMode, List<CourseFeesDto> feesDtos) {
@@ -276,23 +277,22 @@ public class CourseDeliveryModesProcessor {
 			List<CourseFees> fees = deliveryMode.getFees();
 
 			List<String> updateRequestIds = feesDtos.stream().filter(e -> StringUtils.hasText(e.getId()))
-			.map(CourseFeesDto::getId).collect(Collectors.toList());
+					.map(CourseFeesDto::getId).collect(Collectors.toList());
 			fees.removeIf(e -> !Utils.contains(updateRequestIds, e.getId()));
-			
+
 			log.info("preparing map of exsiting course fees");
 			Map<String, CourseFees> existingFeesMap = fees.stream().filter(e -> StringUtils.hasText(e.getId()))
 					.collect(Collectors.toMap(CourseFees::getId, e -> e));
-			feesDtos.stream().forEach(dto->{
+			feesDtos.stream().forEach(dto -> {
 				CourseFees model = new CourseFees();
 				if (StringUtils.hasText(dto.getId())) {
-					log.info(
-							"id is present so going to see if it is present in db if yes then we have to update it");
+					log.info("id is present so going to see if it is present in db if yes then we have to update it");
 					model = existingFeesMap.get(dto.getId());
 					if (ObjectUtils.isEmpty(model)) {
 						log.error("invalid course fees id : {}", dto.getId());
 						throw new RuntimeNotFoundException("invalid course fees id : " + dto.getId());
 					}
-				}else {
+				} else {
 					fees.add(model);
 				}
 				model.setName(dto.getName());
@@ -301,37 +301,36 @@ public class CourseDeliveryModesProcessor {
 				model.setCourseDeliveryMode(deliveryMode);
 				model.setAuditFields(userId);
 			});
-			
+
 		} else {
 			deliveryMode.getFees().clear();
 		}
 	}
 
-	public void saveUpdateCourseDeliveryModeFunding(String userId, CourseDeliveryModes deliveryMode, List<CourseDeliveryModeFundingDto> deliveryModeFundingDtos) {
+	public void saveUpdateCourseDeliveryModeFunding(String userId, CourseDeliveryModes deliveryMode,
+			List<CourseDeliveryModeFundingDto> deliveryModeFundingDtos) {
 		if (!CollectionUtils.isEmpty(deliveryModeFundingDtos)) {
 			List<CourseDeliveryModeFunding> fundings = deliveryMode.getFundings();
-			
-			
+
 			List<String> updateRequestIds = deliveryModeFundingDtos.stream().filter(e -> StringUtils.hasText(e.getId()))
 					.map(CourseDeliveryModeFundingDto::getId).collect(Collectors.toList());
 			fundings.removeIf(e -> !Utils.contains(updateRequestIds, e.getId()));
-					
-			
+
 			log.info("preparing map of exsiting course fundings");
-			Map<String, CourseDeliveryModeFunding> existingFundingMap = fundings.stream().filter(e -> StringUtils.hasText(e.getId()))
+			Map<String, CourseDeliveryModeFunding> existingFundingMap = fundings.stream()
+					.filter(e -> StringUtils.hasText(e.getId()))
 					.collect(Collectors.toMap(CourseDeliveryModeFunding::getId, e -> e));
-			
-			deliveryModeFundingDtos.stream().forEach(dto->{
+
+			deliveryModeFundingDtos.stream().forEach(dto -> {
 				CourseDeliveryModeFunding model = new CourseDeliveryModeFunding();
 				if (StringUtils.hasText(dto.getId())) {
-					log.info(
-							"id is present so going to see if it is present in db if yes then we have to update it");
+					log.info("id is present so going to see if it is present in db if yes then we have to update it");
 					model = existingFundingMap.get(dto.getId());
 					if (ObjectUtils.isEmpty(model)) {
 						log.error("invalid course funding id : {}", dto.getId());
 						throw new RuntimeNotFoundException("invalid course funding id : " + dto.getId());
 					}
-				}else {
+				} else {
 					fundings.add(model);
 				}
 				model.setName(dto.getName());
@@ -341,7 +340,7 @@ public class CourseDeliveryModesProcessor {
 				model.setCourseDeliveryMode(deliveryMode);
 				model.setAuditFields(userId);
 			});
-			
+
 		} else {
 			deliveryMode.getFundings().clear();
 		}

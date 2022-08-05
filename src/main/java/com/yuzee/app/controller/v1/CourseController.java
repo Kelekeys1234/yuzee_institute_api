@@ -3,6 +3,7 @@ package com.yuzee.app.controller.v1;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +31,8 @@ import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.service.UserRecommendationService;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.PaginationUtilDto;
-import com.yuzee.common.lib.dto.storage.StorageDto;
 import com.yuzee.common.lib.dto.transaction.UserMyCourseDto;
 import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
-import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.enumeration.TransactionTypeEnum;
 import com.yuzee.common.lib.exception.ForbiddenException;
@@ -80,10 +79,10 @@ public class CourseController implements CourseInterface {
 	private ViewTransactionHandler viewTransactionHandler;
 
 	public ResponseEntity<?> save(final String userId, String instituteId, final CourseRequest course)
-			throws ValidationException, NotFoundException, ForbiddenException, InvokeException {
+			throws Exception {
 		log.info("Start process to save new course in DB");
 		com.yuzee.app.util.ValidationUtil.validateTimingDtoFromCourseRequest(course);
-		String courseId = courseProcessor.saveOrUpdateCourse(userId, instituteId, course, null);
+		String courseId = courseProcessor.saveOrUpdateCourse(userId, instituteId, course, UUID.randomUUID().toString());
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage(messageTranslator.toLocale("course.added")).create();
 	}
@@ -98,7 +97,7 @@ public class CourseController implements CourseInterface {
 	}
 
 	public ResponseEntity<?> update(final String userId, String instituteId, final CourseRequest course,
-			final String id) throws ValidationException, NotFoundException, ForbiddenException, InvokeException {
+			final String id) throws Exception {
 		log.info("Start process to update existing course in DB");
 		com.yuzee.app.util.ValidationUtil.validateTimingDtoFromCourseRequest(course);
 		String courseId = courseProcessor.saveOrUpdateCourse(userId, instituteId, course, id);
@@ -249,9 +248,8 @@ public class CourseController implements CourseInterface {
 		if (null == instituteResponseDto) {
 			throw new NotFoundException(messageTranslator.toLocale("institute.not_found.id", instituteId));
 		}
-		List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId().toString(),
-				EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES);
-		instituteResponseDto.setStorageList(storageDTOList);
+//		List<StorageDto> storageDTOList = storageHandler.getStorages(instituteResponseDto.getId().toString(),
+//				EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES);
 
 		List<CourseResponseDto> courseList = courseProcessor.getAllCoursesByInstitute(instituteId, request);
 

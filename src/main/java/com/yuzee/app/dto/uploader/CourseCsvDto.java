@@ -5,7 +5,11 @@ import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yuzee.app.bean.CourseLanguage;
+import com.yuzee.app.bean.CoursePrerequisite;
 
 import lombok.Data;
 import lombok.ToString;
@@ -15,7 +19,7 @@ import lombok.ToString;
 public class CourseCsvDto implements Serializable {
 
 	private static final long serialVersionUID = -7711864923352896014L;
-	
+
 	@JsonProperty("course_id")
 	private String id;
 
@@ -39,7 +43,8 @@ public class CourseCsvDto implements Serializable {
 	private String website;
 
 	@JsonProperty("language")
-	private String language;
+	@DBRef
+	private CourseLanguage language;
 
 	@JsonProperty("abbreviation")
 	private String abbreviation;
@@ -210,25 +215,25 @@ public class CourseCsvDto implements Serializable {
 
 	@JsonProperty("global_gpa")
 	private Double globalGpa;
-	
+
 	@JsonProperty("classroom")
 	private String classroom;
-	
+
 	@JsonProperty("blended")
 	private String blended;
-	
+
 	@JsonProperty("online")
 	private String online;
-	
+
 	@JsonProperty("distance")
 	private String distance;
-	
+
 	@JsonProperty("full_time")
 	private String fullTime;
-	
+
 	@JsonProperty("part_time")
 	private String partTime;
-	
+
 	@JsonProperty("duration")
 	private Double duration;
 
@@ -240,86 +245,87 @@ public class CourseCsvDto implements Serializable {
 
 	@JsonProperty("international_fee")
 	private Double internationalFee;
-	
-    private Double ieltsReading;
-    
-    private Double ieltsWriting;
-    
-    private Double ieltsSpeaking; 
-    
-    private Double ieltsListening;
-    
-    private Double ieltsOverall;
-    
-    private Double toflReading;
-    
-    private Double toflWriting;
-    
-    private Double toflSpeaking;
-    
-    private Double toflListening;
-    
-    private Double toflOverall;
-    
-    private String coursePreRequisiteCertificate01;
-    
-    private String coursePreRequisiteCertificate02;
-    
-    private String coursePreRequisiteCertificate03;
-    
-    private String preRequisiteSubject01;
-    
-    private String preRequisiteSubject02;
-    
-    private String preRequisiteSubject03;
-    
-    private String preRequisiteSubject04;
-    
-    private String preRequisiteSubject05;
-    
-    private String preRequisiteSubject06;
-    
-    private String preRequisiteSubject07;
-    
-    private String preRequisiteSubject08;
-    
-    private String preRequisiteSubject09;
-    
-    private String preRequisiteSubject10;
-    
-    private String preRequisiteSubject11;
-    
-    private String preRequisiteSubject12;
-    
-    private String preRequisiteSubject13;
-    
-    private String preRequisiteSubject14;
 
-    private String preRequisiteSubjectGrade01;
+	private Double ieltsReading;
 
-    private String preRequisiteSubjectGrade02;
-    
-    private String preRequisiteSubjectGrade03;
-    
-    private String preRequisiteSubjectGrade04;
-    
-    private String preRequisiteSubjectGrade05;
-    
-    private String preRequisiteSubjectGrade06;
-    
-    private String preRequisiteSubjectGrade07;
-    
-    private String preRequisiteSubjectGrade08;
-    
-    private String preRequisiteSubjectGrade09;
-    
-    private String preRequisiteSubjectGrade10;
-    
-    private String preRequisiteSubjectGrade11;
-    
-    private String preRequisiteSubjectGrade12;
-    
-    private String preRequisiteSubjectGrade13;
-    
-    private String preRequisiteSubjectGrade14;
+	private Double ieltsWriting;
+
+	private Double ieltsSpeaking;
+
+	private Double ieltsListening;
+
+	private Double ieltsOverall;
+
+	private Double toflReading;
+
+	private Double toflWriting;
+
+	private Double toflSpeaking;
+
+	private Double toflListening;
+
+	private Double toflOverall;
+	@DBRef
+	private CoursePrerequisite coursePreRequisiteCertificate01;
+	@DBRef
+	private CoursePrerequisite coursePreRequisiteCertificate02;
+
+	@DBRef
+	private CoursePrerequisite coursePreRequisiteCertificate03;
+
+	private String preRequisiteSubject01;
+
+	private String preRequisiteSubject02;
+
+	private String preRequisiteSubject03;
+
+	private String preRequisiteSubject04;
+
+	private String preRequisiteSubject05;
+
+	private String preRequisiteSubject06;
+
+	private String preRequisiteSubject07;
+
+	private String preRequisiteSubject08;
+
+	private String preRequisiteSubject09;
+
+	private String preRequisiteSubject10;
+
+	private String preRequisiteSubject11;
+
+	private String preRequisiteSubject12;
+
+	private String preRequisiteSubject13;
+
+	private String preRequisiteSubject14;
+
+	private String preRequisiteSubjectGrade01;
+
+	private String preRequisiteSubjectGrade02;
+
+	private String preRequisiteSubjectGrade03;
+
+	private String preRequisiteSubjectGrade04;
+
+	private String preRequisiteSubjectGrade05;
+
+	private String preRequisiteSubjectGrade06;
+
+	private String preRequisiteSubjectGrade07;
+
+	private String preRequisiteSubjectGrade08;
+
+	private String preRequisiteSubjectGrade09;
+
+	private String preRequisiteSubjectGrade10;
+
+	private String preRequisiteSubjectGrade11;
+
+	private String preRequisiteSubjectGrade12;
+
+	private String preRequisiteSubjectGrade13;
+
+	private String preRequisiteSubjectGrade14;
 }

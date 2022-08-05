@@ -51,7 +51,7 @@ public class CourseCareerOutcomeProcessor {
 
 	@Autowired
 	private CareerDao careerDao;
-	
+
 	@Autowired
 	private MessageTranslator messageTranslator;
 
@@ -62,15 +62,16 @@ public class CourseCareerOutcomeProcessor {
 		List<CourseCareerOutcomeDto> courseCareerOutcomeDtos = request.getCourseCareerOutcomeDtos();
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
-			List<CourseCareerOutcome> careerOutcomeBeforeUpdate = course.getCourseCareerOutcomes().stream().map(outcome -> {
-				CourseCareerOutcome clone = new CourseCareerOutcome();
-				BeanUtils.copyProperties(outcome, clone);
-				return clone;
-			}).collect(Collectors.toList());
-			
+			List<CourseCareerOutcome> careerOutcomeBeforeUpdate = course.getCourseCareerOutcomes().stream()
+					.map(outcome -> {
+						CourseCareerOutcome clone = new CourseCareerOutcome();
+						BeanUtils.copyProperties(outcome, clone);
+						return clone;
+					}).collect(Collectors.toList());
+
 			Set<String> careerIds = courseCareerOutcomeDtos.stream().map(CourseCareerOutcomeDto::getCareerId)
 					.collect(Collectors.toSet());
-			Map<String, Careers> careersMap = getCareerByIds(careerIds.stream().collect(Collectors.toList()));
+			List<Careers> careersMap = getCareerByIds(careerIds.stream().collect(Collectors.toList()));
 
 			List<CourseCareerOutcome> courseCareerOutcomes = course.getCourseCareerOutcomes();
 
@@ -86,16 +87,19 @@ public class CourseCareerOutcomeProcessor {
 							"entityId is present so going to see if it is present in db if yes then we have to update it");
 					courseCareerOutcome = existingCourseCareerOutcomesMap.get(e.getId());
 					if (courseCareerOutcome == null) {
-						log.error(messageTranslator.toLocale("course_outcome.id.invalid" , e.getId(),Locale.US));
-						throw new RuntimeNotFoundException(messageTranslator.toLocale("course_outcome.id.invalid" , e.getId()));
+						log.error(messageTranslator.toLocale("course_outcome.id.invalid", e.getId(), Locale.US));
+						throw new RuntimeNotFoundException(
+								messageTranslator.toLocale("course_outcome.id.invalid", e.getId()));
 					}
-				}else {
+				} else {
 					courseCareerOutcomes.add(courseCareerOutcome);
 				}
-				BeanUtils.copyProperties(e, courseCareerOutcome);
-				courseCareerOutcome.setCareer(careersMap.get(e.getCareerId()));
-				courseCareerOutcome.setCourse(course);
-				courseCareerOutcome.setAuditFields(userId);
+				for (Careers r : careersMap) {
+					BeanUtils.copyProperties(e, courseCareerOutcome);
+					courseCareerOutcome.setCareer(r);
+					courseCareerOutcome.setCourse(course);
+					courseCareerOutcome.setAuditFields(userId);
+				}
 			});
 
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
@@ -106,16 +110,16 @@ public class CourseCareerOutcomeProcessor {
 				coursesToBeSavedOrUpdated
 						.addAll(replicateCourseCareerOutcomes(userId, request.getLinkedCourseIds(), dtosToReplicate));
 			}
-			
+
 			log.info("going to save record in db");
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
 
-			if(!careerOutcomeBeforeUpdate.equals(courseCareerOutcomes)) {
+			if (!careerOutcomeBeforeUpdate.equals(courseCareerOutcomes)) {
 				log.info("Notify course information changed");
 				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 			}
-			
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+
+			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error(messageTranslator.toLocale("course_id.invalid", courseId, Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("course_id.invalid", courseId));
@@ -131,7 +135,7 @@ public class CourseCareerOutcomeProcessor {
 		if (courseCareerOutcomes.stream().map(CourseCareerOutcome::getId).collect(Collectors.toSet())
 				.containsAll(careerOutcomeIds)) {
 			if (courseCareerOutcomes.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
-				log.error(messageTranslator.toLocale("career_outcomes.no.access",Locale.US));
+				log.error(messageTranslator.toLocale("career_outcomes.no.access", Locale.US));
 				throw new ForbiddenException(messageTranslator.toLocale("career_outcomes.no.access"));
 			}
 			courseCareerOutcomes.removeIf(e -> Utils.contains(careerOutcomeIds, e.getId()));
@@ -144,22 +148,24 @@ public class CourseCareerOutcomeProcessor {
 						.addAll(replicateCourseCareerOutcomes(userId, linkedCourseIds, dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
-			
+
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-			
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+
+			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
-			log.error(messageTranslator.toLocale("course_career.outcome.id.invalid",Locale.US));
+			log.error(messageTranslator.toLocale("course_career.outcome.id.invalid", Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("course_career.outcome.id.invalid"));
 		}
 	}
 
-	private Map<String, Careers> getCareerByIds(List<String> careerIds) throws ValidationException {
+	private List<Careers> getCareerByIds(List<String> careerIds) throws ValidationException {
 		log.info("inside CourseCareerOutcomeProcessor.getCareerByIds");
-		Map<String, Careers> careersMap = careerDao.findByIdIn(new ArrayList<>(careerIds)).stream()
-				.collect(Collectors.toMap(Careers::getId, e -> e));
+//		Map<UUID, Career> careersMap = careerDao.findByIdIn(new ArrayList<>(careerIds)).stream()
+//				.collect(Collectors.toMap(Careers::getId, e -> e));
+		List<Careers> careersMap = careerDao.findByIdIn(careerIds);
+
 		if (careersMap.size() != careerIds.size()) {
-			log.error(messageTranslator.toLocale("course_career.career.id.invalid",Locale.US));
+			log.error(messageTranslator.toLocale("course_career.career.id.invalid", Locale.US));
 			throw new ValidationException(messageTranslator.toLocale("course_career.career.id.invalid"));
 		} else {
 			return careersMap;
@@ -168,10 +174,10 @@ public class CourseCareerOutcomeProcessor {
 
 	private List<Course> replicateCourseCareerOutcomes(String userId, List<String> courseIds,
 			List<CourseCareerOutcomeDto> courseCareerOutcomeDtos) throws ValidationException, NotFoundException {
-		log.info("inside courseProcessor.replicateCourseCareerOutcomes");
+		log.info("inside courseProcessor.replicateCourseCarerOutcomes");
 		Set<String> careerIds = courseCareerOutcomeDtos.stream().map(CourseCareerOutcomeDto::getCareerId)
 				.collect(Collectors.toSet());
-		Map<String, Careers> careersMap = getCareerByIds(careerIds.stream().collect(Collectors.toList()));
+		List<Careers> careersMap = getCareerByIds(careerIds.stream().collect(Collectors.toList()));
 		if (!CollectionUtils.isEmpty(courseIds)) {
 			List<Course> courses = courseProcessor.validateAndGetCourseByIds(courseIds);
 			courses.stream().forEach(course -> {
@@ -182,7 +188,7 @@ public class CourseCareerOutcomeProcessor {
 				} else {
 					courseCareerOutcomes
 							.removeIf(e -> !Utils.containsIgnoreCase(careerIds.stream().collect(Collectors.toList()),
-									e.getCareer().getId()));
+									e.getCareer().getId().toString()));
 					courseCareerOutcomeDtos.stream().forEach(dto -> {
 						Optional<CourseCareerOutcome> existingScholarshipOp = courseCareerOutcomes.stream()
 								.filter(e -> e.getCareer().getId().equals(dto.getCareerId())).findAny();
@@ -194,8 +200,10 @@ public class CourseCareerOutcomeProcessor {
 							courseCareerOutcome.setCourse(course);
 							courseCareerOutcomes.add(courseCareerOutcome);
 						}
-						courseCareerOutcome.setAuditFields(userId);
-						courseCareerOutcome.setCareer(careersMap.get(dto.getCareerId()));
+						for (Careers r : careersMap) {
+							courseCareerOutcome.setAuditFields(userId);
+							courseCareerOutcome.setCareer(r);
+						}
 					});
 				}
 			});

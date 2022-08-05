@@ -7,8 +7,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -18,7 +16,6 @@ import org.springframework.util.ObjectUtils;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseDeliveryModes;
 import com.yuzee.common.lib.dto.eligibility.FundingResponseDto;
-import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.dto.storage.StorageDto;
 import com.yuzee.common.lib.dto.transaction.ViewTransactionDto;
 import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
@@ -37,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class CommonProcessor {
-	
+
 	@Autowired
 	@Lazy
 	private InstituteProcessor instituteProcessor;
@@ -51,16 +48,16 @@ public class CommonProcessor {
 
 	@Autowired
 	private UserHandler userHandler;
-	
+
 	@Autowired
 	private MessageTranslator messageTranslator;
 
 	@Autowired
 	private PublishSystemEventHandler publishSystemEventHandler;
-	
+
 	@Autowired
 	private ViewTransactionHandler viewTransactionHandler;
-	
+
 	@Autowired
 	private NotificationProcessor notificationProcessor;
 
@@ -72,23 +69,25 @@ public class CommonProcessor {
 			if (!ObjectUtils.isEmpty(c)) {
 				log.info("Notify course information changed");
 				try {
-					List<ViewTransactionDto> favoriteTransactionList = viewTransactionHandler.getAllUsersWhoMarkCourseFavorite(c.getUpdatedBy(), c.getId());
+					List<ViewTransactionDto> favoriteTransactionList = viewTransactionHandler
+							.getAllUsersWhoMarkCourseFavorite(c.getUpdatedBy(), c.getId());
 					notificationProcessor.notifyCourseChanged(c, favoriteTransactionList, notificationType);
 				} catch (InvokeException e) {
-					log.error("error retriving users who marked course as favorite",e);
+					log.error("error retriving users who marked course as favorite", e);
 				}
-			}				
+			}
 		});
 	}
-	
+
 	public boolean checkIfPriceChanged(List<CourseDeliveryModes> beforeUpdate, List<CourseDeliveryModes> afterUpdate) {
-		Map<String, CourseDeliveryModes> afterUpdateMap = afterUpdate.stream().collect(Collectors.toMap(CourseDeliveryModes::getId, e -> e));
+		Map<String, CourseDeliveryModes> afterUpdateMap = afterUpdate.stream()
+				.collect(Collectors.toMap(CourseDeliveryModes::getId, e -> e));
 //		return beforeUpdate.stream().anyMatch(e -> afterUpdateMap.containsKey(e.getId()) && 
 //				!(e.getDomesticFee().equals(afterUpdateMap.get(e.getId()).getDomesticFee()) 
 //						&& e.getInternationalFee().equals(afterUpdateMap.get(e.getId()).getInternationalFee())));
 		return false;
 	}
-	
+
 	public List<StorageDto> getEntityGallery(String entityType, String entityId)
 			throws NotFoundException, InternalServerException {
 		if (EntityTypeEnum.COURSE.name().equals(entityType)) {
@@ -109,7 +108,7 @@ public class CommonProcessor {
 				map = dtos.stream().collect(Collectors.toMap(FundingResponseDto::getFundingNameId, e -> e));
 			}
 			if (validateIds && map.size() != fundingNameIds.size()) {
-				log.error(messageTranslator.toLocale("common.name.notfound",Locale.US));
+				log.error(messageTranslator.toLocale("common.name.notfound", Locale.US));
 				throw new NotFoundException(messageTranslator.toLocale("common.name.notfound"));
 			}
 		}
@@ -126,20 +125,20 @@ public class CommonProcessor {
 				map = dtos.stream().collect(Collectors.toMap(UserInitialInfoDto::getUserId, e -> e));
 			}
 			if (map.size() != userIds.size()) {
-				log.error(messageTranslator.toLocale("common.user.notfound",Locale.US));
+				log.error(messageTranslator.toLocale("common.user.notfound", Locale.US));
 				throw new NotFoundException(messageTranslator.toLocale("common.user.notfound"));
 			}
 		}
 		return map;
 	}
 
-	@Transactional
-	public void saveElasticCourses(List<Course> courses) {
-		log.info("Calling elastic service to save/update courses on elastic index ");
-		if (!CollectionUtils.isEmpty(courses)) {
-			List<CourseSyncDTO> courseElasticDtos = courses.stream()
-					.map(e -> conversionProcessor.convertToCourseSyncDTOSyncDataEntity(e)).collect(Collectors.toList());
-			publishSystemEventHandler.syncCourses(courseElasticDtos);
-		}
-	}
+//	@Transactional
+//	public void saveElasticCourses(List<Course> courses) {
+//		log.info("Calling elastic service to save/update courses on elastic index ");
+//		if (!CollectionUtils.isEmpty(courses)) {
+//			List<CourseSyncDTO> courseElasticDtos = courses.stream()
+//					.map(e -> conversionProcessor.convertToCourseSyncDTOSyncDataEntity(e)).collect(Collectors.toList());
+//			publishSystemEventHandler.syncCourses(courseElasticDtos);
+//		}
+//	}
 }

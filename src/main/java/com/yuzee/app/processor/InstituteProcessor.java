@@ -52,7 +52,6 @@ import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.FaqDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.InstituteServiceDao;
-import com.yuzee.app.dao.ScholarshipDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseScholarshipAndFacultyCountDto;
@@ -148,8 +147,8 @@ public class InstituteProcessor {
 	@Autowired
 	private ReviewHandler reviewHandler;
 
-	@Autowired
-	private ScholarshipDao scholarshipDao;
+//	@Autowired
+//	private ScholarshipDao scholarshipDao;
 
 	@Autowired
 	CommonProcessor commonProcessor;
@@ -477,7 +476,7 @@ public class InstituteProcessor {
 	private void saveIntakesInstituteDetails(final Institute institute, final List<String> intakes) {
 		log.debug("Inside saveIntakesInstituteDetails() method");
 		log.info("deleting existing instituteIntakes from DB for institute having instituteId = " + institute.getId());
-		Institute existingInstitute = instituteDao.getInstitute(institute.getId().toString());
+		Optional<Institute> existingInstitute = instituteDao.getInstitute(institute.getId().toString());
 		if (ObjectUtils.isEmpty(existingInstitute)) {
 			log.error("There is no Institute with id {} : ", institute.getId());
 			throw new NotFoundException("There is no Institute with id");
@@ -1213,7 +1212,7 @@ public class InstituteProcessor {
 		CourseScholarshipAndFacultyCountDto dto = new CourseScholarshipAndFacultyCountDto();
 		dto.setCourseCount(courseDao.getTotalCourseCountForInstitute(instituteId));
 		dto.setFacultyCount(instituteDao.getInstituteFaculties(instituteId).size());
-		dto.setScholarshipCount(scholarshipDao.getCountByInstituteId(instituteId));
+		// dto.setScholarshipCount(scholarshipDao.getCountByInstituteId(instituteId));
 		return dto;
 	}
 

@@ -22,6 +22,11 @@ public class CareerController implements CareerInterface {
 	@Autowired
 	private CareerProcessor careerProcessor;
 
+	public CareerController(CareerProcessor careerProcessor) {
+		super();
+		this.careerProcessor = careerProcessor;
+	}
+
 	@Override
 	public ResponseEntity<?> findByName(@NotNull String name, Integer pageNumber, Integer pageSize) {
 		log.info("inside CareerController.findByName");

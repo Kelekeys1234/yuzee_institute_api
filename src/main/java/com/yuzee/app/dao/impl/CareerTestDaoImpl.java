@@ -68,9 +68,9 @@ public class CareerTestDaoImpl implements CareerTestDao {
 	public Page<CareerJobType> getCareerJobType(List<String> jobIds, Pageable pageable) {
 		return careerJobTypeRepository.findByCareerJobsIdInOrderByJobType(jobIds, pageable);
 	}
-	
+
 	@Override
-	public List<JobIdProjection> getCareerJobIdsByJobTypeId(String jobTypeId){
+	public List<JobIdProjection> getCareerJobIdsByJobTypeId(String jobTypeId) {
 		return careerJobTypeRepository.findJobIdsById(jobTypeId);
 	}
 
@@ -98,7 +98,7 @@ public class CareerTestDaoImpl implements CareerTestDao {
 	public Page<CareerJob> getCareerJobByName(String name, Pageable pageable) {
 		return careerJobRepository.findByJobContainingIgnoreCaseOrderByJob(name, pageable);
 	}
-	
+
 	@Override
 	public Page<CareerJobSkill> getJobSkills(List<String> jobNames, Pageable pageable) {
 		return careerJobSkillRepository.findByCareerJobs_JobIn(jobNames, pageable);

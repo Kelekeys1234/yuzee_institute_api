@@ -3,19 +3,16 @@ package com.yuzee.app.bean;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 @Entity
 @Table(name = "enrollment")
@@ -29,7 +26,7 @@ public class Enrollment implements Serializable {
 	@Id
 	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
 	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
+	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
 //	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
@@ -39,8 +36,7 @@ public class Enrollment implements Serializable {
 	@Column(name = "user_id", nullable = false)
 	private String userId;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-	@JoinColumn(name = "course_id", nullable = false)
+	@DBRef(lazy = true)
 	private Course course;
 
 	@Column(name = "is_international_student", nullable = false)
@@ -700,18 +696,24 @@ public class Enrollment implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Enrollment [id=").append(id).append(", userId=").append(userId).append(", course=")
 				.append(course).append(", isInternationalStudent=").append(isInternationalStudent)
-				.append(", previousInstitute=").append(previousInstitute).append(", previousCourseName=").append(previousCourseName).append(", graduationDate=")
-				.append(graduationDate).append(", status=").append(status).append(", englishQualificaitonTest=").append(englishQualificaitonTest)
-				.append(", latestAcademicQualification=").append(latestAcademicQualification).append(", purposeOfStay=").append(purposeOfStay)
-				.append(", firstName=").append(firstName).append(", lastName=").append(lastName).append(", gender=").append(gender).append(", birthDate=")
-				.append(birthDate).append(", passportNumber=").append(passportNumber).append(", passportIssueDate=").append(passportIssueDate)
-				.append(", passportExpiryDate=").append(passportExpiryDate).append(", officeOfIssue=").append(officeOfIssue).append(", otherName=")
-				.append(otherName).append(", address=").append(address).append(", town=").append(town).append(", state=").append(state).append(", country=")
-				.append(getCountryName()).append(", zipCode=").append(zipCode).append(", phoneNumber=").append(phoneNumber).append(", email=").append(email)
-				.append(", assignee=").append(assignee).append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn).append(", createdBy=")
-				.append(createdBy).append(", updatedBy=").append(updatedBy).append(", isArchive=").append(isArchive).append("]");
+				.append(", previousInstitute=").append(previousInstitute).append(", previousCourseName=")
+				.append(previousCourseName).append(", graduationDate=").append(graduationDate).append(", status=")
+				.append(status).append(", englishQualificaitonTest=").append(englishQualificaitonTest)
+				.append(", latestAcademicQualification=").append(latestAcademicQualification).append(", purposeOfStay=")
+				.append(purposeOfStay).append(", firstName=").append(firstName).append(", lastName=").append(lastName)
+				.append(", gender=").append(gender).append(", birthDate=").append(birthDate).append(", passportNumber=")
+				.append(passportNumber).append(", passportIssueDate=").append(passportIssueDate)
+				.append(", passportExpiryDate=").append(passportExpiryDate).append(", officeOfIssue=")
+				.append(officeOfIssue).append(", otherName=").append(otherName).append(", address=").append(address)
+				.append(", town=").append(town).append(", state=").append(state).append(", country=")
+				.append(getCountryName()).append(", zipCode=").append(zipCode).append(", phoneNumber=")
+				.append(phoneNumber).append(", email=").append(email).append(", assignee=").append(assignee)
+				.append(", createdOn=").append(createdOn).append(", updatedOn=").append(updatedOn)
+				.append(", createdBy=").append(createdBy).append(", updatedBy=").append(updatedBy)
+				.append(", isArchive=").append(isArchive).append("]");
 		return builder.toString();
 	}
+
 //.append(", institute=").append(institute)
 	@Column(name = "country_name")
 	public String getCountryName() {

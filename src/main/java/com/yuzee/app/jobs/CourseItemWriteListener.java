@@ -17,26 +17,26 @@ import com.yuzee.common.lib.util.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class CourseItemWriteListener implements ItemWriteListener<Course>{
-	
+public class CourseItemWriteListener implements ItemWriteListener<Course> {
+
 	@Autowired
 	private CommonProcessor commonProcessor;
-	
+
 	@Autowired
 	private LogFileProcessor logFileProcessor;
-	
+
 	@Value("#{jobParameters['execution-id']}")
 	private String executionId;
-	
+
 	@Override
 	public void afterWrite(List<? extends Course> items) {
 		log.info("Calling elastic search to add course");
-		commonProcessor.saveElasticCourses((List<Course>)items);
+		// commonProcessor.saveElasticCourses((List<Course>)items);
 	}
 
 	@Override
 	public void beforeWrite(List<? extends Course> items) {
-		log.debug("Before writing course item to db {} ",items.size());
+		log.debug("Before writing course item to db {} ", items.size());
 	}
 
 	@Transactional

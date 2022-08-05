@@ -1,5 +1,6 @@
 package com.yuzee.app.processor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -90,15 +91,16 @@ public class OffCampusCourseProcessor {
 		courseResponse.setName(course.getName());
 		courseResponse.setCourseRanking(course.getWorldRanking());
 		courseResponse.setStars(Double.valueOf(course.getStars() == null ? 0 : course.getStars()));
-	//	courseResponse.setInstituteId(course.getInstitute().getId().toString());
-	//	courseResponse.setInstituteName(course.getInstitute().getName());
+		// courseResponse.setInstituteId(course.getInstitute().getId().toString());
+		// courseResponse.setInstituteName(course.getInstitute().getName());
 		courseResponse.setCurrencyCode(course.getCurrency());
 		courseResponse.setCourseDescription(course.getDescription());
 		courseResponse.setPhoneNumber(course.getPhoneNumber());
 		courseResponse.setWebsite(course.getWebsite());
 		courseResponse.setEmail(course.getEmail());
 
-		List<CourseLanguage> courseLanguages = course.getCourseLanguages();
+		List<CourseLanguage> courseLanguages = new ArrayList<>();
+//		courseLanguages.add(course.getCourseLanguages());
 		if (!CollectionUtils.isEmpty(courseLanguages)) {
 			log.info("courseLanguage is fetched from DB, hence adding englishEligibilities in response");
 			courseResponse.setLanguage(

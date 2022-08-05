@@ -39,10 +39,10 @@ public class CourseContactPersonProcessor {
 
 	@Autowired
 	private CommonProcessor commonProcessor;
-	
+
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private MessageTranslator messageTranslator;
 
@@ -53,9 +53,8 @@ public class CourseContactPersonProcessor {
 		List<CourseContactPersonDto> courseContactPersonDtos = request.getCourseContactPersonDtos();
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		log.info("going to see if user ids are valid");
-		
-		commonProcessor.validateAndGetUsersByUserIds(
-				userId,
+
+		commonProcessor.validateAndGetUsersByUserIds(userId,
 				courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
 		log.debug("going to process the request");
 		List<CourseContactPerson> courseContactPersons = course.getCourseContactPersons();
@@ -67,7 +66,7 @@ public class CourseContactPersonProcessor {
 			courseContactPersons.add(courseContactPerson);
 		});
 		log.debug("going to save the list in db");
-		
+
 		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 		coursesToBeSavedOrUpdated.add(course);
 		if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
@@ -77,13 +76,13 @@ public class CourseContactPersonProcessor {
 					.addAll(replicateCourseContactPersons(userId, request.getLinkedCourseIds(), dtosToReplicate));
 		}
 		courseDao.saveAll(coursesToBeSavedOrUpdated);
-		
-		if(!CollectionUtils.isEmpty(coursesToBeSavedOrUpdated)) {
+
+		if (!CollectionUtils.isEmpty(coursesToBeSavedOrUpdated)) {
 			log.info("Notify course information changed");
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 		}
 
-		commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+		// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 	}
 
 	@Transactional
@@ -96,9 +95,9 @@ public class CourseContactPersonProcessor {
 		if (courseContactPersons.stream().map(CourseContactPerson::getUserId).collect(Collectors.toSet())
 				.containsAll(userIds)) {
 			if (courseContactPersons.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
-				log.error(messageTranslator.toLocale("course_contact_person.delete.no.access" , userId,Locale.US));
-				throw new ForbiddenException(messageTranslator.toLocale(
-						"course_contact_person.delete.no.access" , userId));
+				log.error(messageTranslator.toLocale("course_contact_person.delete.no.access", userId, Locale.US));
+				throw new ForbiddenException(
+						messageTranslator.toLocale("course_contact_person.delete.no.access", userId));
 			}
 			courseContactPersons.removeIf(e -> Utils.contains(userIds, e.getUserId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
@@ -111,9 +110,9 @@ public class CourseContactPersonProcessor {
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
-			log.error(messageTranslator.toLocale("course_contact_person.user.id.invalid",Locale.US));
+			log.error(messageTranslator.toLocale("course_contact_person.user.id.invalid", Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("course_contact_person.user.id.invalid"));
 		}
 	}

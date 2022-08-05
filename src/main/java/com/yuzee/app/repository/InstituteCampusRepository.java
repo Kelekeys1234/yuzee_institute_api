@@ -7,4 +7,5 @@ import com.yuzee.app.bean.InstituteCampus;
 
 @Repository
 public interface InstituteCampusRepository extends MongoRepository<InstituteCampus, String> {
+	// Optional<InstituteCampus> findById(String instituteId);
 }

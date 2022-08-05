@@ -52,19 +52,19 @@ public class CourseOtherRequirementProcessor {
 
 	@Autowired
 	private CourseVaccineRequirementDao vaccineDao;
-	
+
 	@Autowired
 	private CourseWorkExperienceRequirementDao workExperienceDao;
-	
+
 	@Autowired
 	private CourseWorkPlacementRequirementDao workPlacementDao;
-	
+
 	@Autowired
 	private CommonHandler commonHandler;
-	
+
 	@Autowired
 	MessageTranslator messageTranslator;
-	
+
 	@Transactional
 	public void saveOrUpdateOtherRequirements(String userId, String courseId,
 			@Valid CourseOtherRequirementDto courseOtherRequirementDto) {
@@ -73,7 +73,7 @@ public class CourseOtherRequirementProcessor {
 		if (!ObjectUtils.isEmpty(course)) {
 
 			CourseVaccineRequirement vaccine = course.getCourseVaccineRequirement();
-			
+
 			if (!ObjectUtils.isEmpty(courseOtherRequirementDto.getVaccine())) {
 				if (ObjectUtils.isEmpty(vaccine)) {
 					vaccine = new CourseVaccineRequirement();
@@ -81,28 +81,31 @@ public class CourseOtherRequirementProcessor {
 				vaccine.setAuditFields(userId);
 				vaccine.setCourse(course);
 				vaccine.setDescription(courseOtherRequirementDto.getVaccine().getDescription());
-				if(!CollectionUtils.isEmpty(courseOtherRequirementDto.getVaccine().getVaccination())) {
-					Set<String>  vaccinationIds = courseOtherRequirementDto.getVaccine().getVaccination().stream().map(vaccination -> {
-						return vaccination.get_id().toString();
-					}).collect(Collectors.toSet());
-					PaginationResponseDto<List<VaccinationDto>> vaccinationPaggination = commonHandler.getVaccinationByFilters(1, vaccinationIds.size(), vaccinationIds);
-					if(CollectionUtils.isEmpty(vaccinationPaggination.getResponse()) || 
-							vaccinationPaggination.getResponse().size() != vaccinationIds.size()) {
+				if (!CollectionUtils.isEmpty(courseOtherRequirementDto.getVaccine().getVaccination())) {
+					Set<String> vaccinationIds = courseOtherRequirementDto.getVaccine().getVaccination().stream()
+							.map(vaccination -> {
+								return vaccination.get_id().toString();
+							}).collect(Collectors.toSet());
+					PaginationResponseDto<List<VaccinationDto>> vaccinationPaggination = commonHandler
+							.getVaccinationByFilters(1, vaccinationIds.size(), vaccinationIds);
+					if (CollectionUtils.isEmpty(vaccinationPaggination.getResponse())
+							|| vaccinationPaggination.getResponse().size() != vaccinationIds.size()) {
 						log.error(messageTranslator.toLocale("vaccination.ids.invalid", Locale.US));
 						throw new ValidationException(messageTranslator.toLocale("vaccination.ids.invalid"));
 					}
 					vaccine.setVaccinationIds(vaccinationIds);
-				}else if(!CollectionUtils.isEmpty(vaccine.getVaccinationIds())) {
+				} else if (!CollectionUtils.isEmpty(vaccine.getVaccinationIds())) {
 					vaccine.getVaccinationIds().clear();
 				}
 				course.setCourseVaccineRequirement(vaccine);
 			} else {
 				if (!ObjectUtils.isEmpty(vaccine)) {
-					vaccineDao.deleteById(vaccine.getId());;
+					vaccineDao.deleteById(vaccine.getId());
+					;
 				}
 				course.setCourseVaccineRequirement(null);
 			}
-			
+
 			CourseWorkExperienceRequirement workExperience = course.getCourseWorkExperienceRequirement();
 			if (!ObjectUtils.isEmpty(courseOtherRequirementDto.getWorkExperience())) {
 				if (ObjectUtils.isEmpty(workExperience)) {
@@ -117,7 +120,8 @@ public class CourseOtherRequirementProcessor {
 				course.setCourseWorkExperienceRequirement(workExperience);
 			} else {
 				if (!ObjectUtils.isEmpty(workExperience)) {
-					workExperienceDao.deleteById(workExperience.getId());;
+					workExperienceDao.deleteById(workExperience.getId());
+					;
 				}
 				course.setCourseWorkExperienceRequirement(null);
 			}
@@ -136,7 +140,8 @@ public class CourseOtherRequirementProcessor {
 				course.setCourseWorkPlacementRequirement(workPlacement);
 			} else {
 				if (!ObjectUtils.isEmpty(workPlacement)) {
-					workPlacementDao.deleteById(workPlacement.getId());;
+					workPlacementDao.deleteById(workPlacement.getId());
+					;
 				}
 				course.setCourseWorkPlacementRequirement(null);
 			}
@@ -167,7 +172,7 @@ public class CourseOtherRequirementProcessor {
 			log.info("Send notification for course content updates");
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("invalid course id: {}", courseId);
 			throw new NotFoundException("invalid course id: " + courseId);
@@ -186,11 +191,12 @@ public class CourseOtherRequirementProcessor {
 				CourseVaccineRequirementDto dto = new CourseVaccineRequirementDto();
 				dto.setId(model.getId());
 				dto.setDescription(model.getDescription());
-				if(!CollectionUtils.isEmpty(model.getVaccinationIds())) {
+				if (!CollectionUtils.isEmpty(model.getVaccinationIds())) {
 					var wrapperObject = new Object() {
-						Map<UUID, String> mapOfVaccinationIdwithName =  null;
+						Map<UUID, String> mapOfVaccinationIdwithName = null;
 					};
-					PaginationResponseDto<List<VaccinationDto>> vaccinationPaggination = commonHandler.getVaccinationByFilters(1, model.getVaccinationIds().size(), model.getVaccinationIds());
+					PaginationResponseDto<List<VaccinationDto>> vaccinationPaggination = commonHandler
+							.getVaccinationByFilters(1, model.getVaccinationIds().size(), model.getVaccinationIds());
 
 					if (!CollectionUtils.isEmpty(vaccinationPaggination.getResponse())) {
 						wrapperObject.mapOfVaccinationIdwithName = vaccinationPaggination.getResponse().stream()
@@ -200,15 +206,16 @@ public class CourseOtherRequirementProcessor {
 					dto.setVaccination(model.getVaccinationIds().stream().map(vaccine -> {
 						VaccinationDto vaccinationDto = new VaccinationDto();
 						vaccinationDto.set_id(UUID.fromString(vaccine));
-						if(!MapUtils.isEmpty(wrapperObject.mapOfVaccinationIdwithName) 
+						if (!MapUtils.isEmpty(wrapperObject.mapOfVaccinationIdwithName)
 								&& wrapperObject.mapOfVaccinationIdwithName.containsKey(UUID.fromString(vaccine))) {
-							vaccinationDto.setName(wrapperObject.mapOfVaccinationIdwithName.get(UUID.fromString(vaccine)));
+							vaccinationDto
+									.setName(wrapperObject.mapOfVaccinationIdwithName.get(UUID.fromString(vaccine)));
 						}
 
 						return vaccinationDto;
 					}).collect(Collectors.toSet()));
 				}
-				
+
 				otherRequirementDto.setVaccine(dto);
 			}
 

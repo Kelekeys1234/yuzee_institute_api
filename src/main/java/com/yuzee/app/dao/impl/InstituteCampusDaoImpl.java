@@ -1,19 +1,20 @@
 package com.yuzee.app.dao.impl;
 
-import com.yuzee.app.bean.InstituteCampus;
-import com.yuzee.app.dao.InstituteCampusDao;
-import com.yuzee.app.repository.InstituteCampusRepository;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import com.yuzee.app.bean.InstituteCampus;
+import com.yuzee.app.dao.InstituteCampusDao;
+import com.yuzee.app.repository.InstituteCampusRepository;
 
 @Service
-@SuppressWarnings({"deprecation", "rawtypes", "unchecked"})
+@SuppressWarnings({ "deprecation", "rawtypes", "unchecked" })
 public class InstituteCampusDaoImpl implements InstituteCampusDao {
 
 	@Autowired

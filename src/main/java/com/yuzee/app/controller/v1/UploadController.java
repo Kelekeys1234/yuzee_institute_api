@@ -21,7 +21,6 @@ import com.yuzee.app.processor.GradeDetailProcessor;
 import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.processor.InstituteTypeProcessor;
 import com.yuzee.app.processor.LevelProcessor;
-import com.yuzee.app.processor.ScholarshipProcessor;
 import com.yuzee.app.processor.ServiceProcessor;
 import com.yuzee.app.processor.SubjectProcessor;
 import com.yuzee.common.lib.exception.IOException;
@@ -40,8 +39,8 @@ public class UploadController implements UploadInterface {
 	@Autowired
 	private InstituteProcessor instituteProcessor;
 
-	@Autowired
-	private ScholarshipProcessor scholarshipProcessor;
+//	@Autowired
+//	private ScholarshipProcessor scholarshipProcessor;
 
 	@Autowired
 	private SubjectProcessor subjectProcessor;
@@ -61,21 +60,22 @@ public class UploadController implements UploadInterface {
 
 	@Autowired
 	private EducationSystemProcessor educationSystemProcessor;
-	
+
 	@Autowired
 	private GradeDetailProcessor gradeDetailProcessor;
-	
+
 	@Autowired
 	private LevelProcessor levelProcessor;
 
 	@Override
 	public ResponseEntity<Object> uploadInstituteType(final MultipartFile multipartFile)
-			throws JobExecutionAlreadyRunningException, JobRestartException,
-			JobInstanceAlreadyCompleteException, JobParametersInvalidException, java.io.IOException, ParseException {
+			throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException,
+			JobParametersInvalidException, java.io.IOException, ParseException {
 		log.info("Started process to Upload Activity");
 		instituteTypeProcessor.importInstituteType(multipartFile);
-		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("upload.institute_type.uploader"))
-				.setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder()
+				.setMessage(messageTranslator.toLocale("upload.institute_type.uploader")).setStatus(HttpStatus.OK)
+				.create();
 	}
 
 	@Override
@@ -90,8 +90,8 @@ public class UploadController implements UploadInterface {
 
 	@Override
 	public ResponseEntity<Object> uploadCourse(final MultipartFile multipartFile)
-			throws JobExecutionAlreadyRunningException, JobRestartException,
-			JobInstanceAlreadyCompleteException, JobParametersInvalidException, IOException {
+			throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException,
+			JobParametersInvalidException, IOException {
 		log.info("Started process to Upload Course");
 		courseProcessor.uploadCourseData(multipartFile);
 		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("upload.courses.uploader"))
@@ -102,13 +102,14 @@ public class UploadController implements UploadInterface {
 	public ResponseEntity<Object> uploadCourseKeyword(final MultipartFile multipartFile) {
 		log.info("Started process to Upload CourseKeyword");
 		courseProcessor.importCourseKeyword(multipartFile);
-		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("upload.course_keywords.uploader"))
-				.setStatus(HttpStatus.OK).create();
+		return new GenericResponseHandlers.Builder()
+				.setMessage(messageTranslator.toLocale("upload.course_keywords.uploader")).setStatus(HttpStatus.OK)
+				.create();
 	}
 
 	@Override
-	public ResponseEntity<Object> uploadInstitute(final MultipartFile multipartFile) throws 
-			ParseException, JobExecutionAlreadyRunningException, JobRestartException,
+	public ResponseEntity<Object> uploadInstitute(final MultipartFile multipartFile)
+			throws ParseException, JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException, java.io.IOException {
 		log.info("Started process to Upload Institute");
 		instituteProcessor.importInstitute(multipartFile);
@@ -122,7 +123,8 @@ public class UploadController implements UploadInterface {
 		log.info("Started process to Upload Scholarship");
 //		scholarshipProcessor.importScholarship(multipartFile);
 		return new GenericResponseHandlers.Builder()
-				.setMessage(messageTranslator.toLocale("upload.scholarship.uploader")).setStatus(HttpStatus.OK).create();
+				.setMessage(messageTranslator.toLocale("upload.scholarship.uploader")).setStatus(HttpStatus.OK)
+				.create();
 	}
 
 	@Override
@@ -130,8 +132,8 @@ public class UploadController implements UploadInterface {
 		log.info("Started process to Upload Grade");
 		educationSystemProcessor.importEducationSystem(multipartFile);
 		gradeDetailProcessor.uploadGrade(multipartFile);
-		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("upload.grades.uploader")).setStatus(HttpStatus.OK)
-				.create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("upload.grades.uploader"))
+				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
@@ -157,8 +159,8 @@ public class UploadController implements UploadInterface {
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		log.info("Started process to Upload Level");
 		levelProcessor.importLevel(multipartFile);
-		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("upload.level.uploader")).setStatus(HttpStatus.OK)
-				.create();
+		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("upload.level.uploader"))
+				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override

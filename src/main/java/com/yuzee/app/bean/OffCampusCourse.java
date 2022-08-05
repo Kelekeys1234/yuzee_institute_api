@@ -1,6 +1,12 @@
 package com.yuzee.app.bean;
 
 import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Id;
+
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,13 +15,19 @@ import lombok.ToString;
 @Data
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-/*@Table(name = "off_campus_course", uniqueConstraints = {
-		@UniqueConstraint(columnNames = { "title" }, name = "UK_OFF_CAMPUS_TITLE"),
-		@UniqueConstraint(columnNames = { "course_id" }, name = "UK_COURSE") }) */
+@Document("off_campus_course")
+/*
+ * @Table(name = "off_campus_course", uniqueConstraints = {
+ * 
+ * @UniqueConstraint(columnNames = { "title" }, name = "UK_OFF_CAMPUS_TITLE"),
+ * 
+ * @UniqueConstraint(columnNames = { "course_id" }, name = "UK_COURSE") })
+ */
 public class OffCampusCourse implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	@Id
+	private String id;
 	@EqualsAndHashCode.Include
 	private String title;
 
@@ -51,8 +63,14 @@ public class OffCampusCourse implements Serializable {
 
 	@EqualsAndHashCode.Include
 	private Boolean skipLocation;
-	
+
 	@EqualsAndHashCode.Include
 	private String referenceCourseId;
-	
+	@EqualsAndHashCode.Include
+	private Date startDate;
+	@EqualsAndHashCode.Include
+	private Date endDate;
+	@DBRef
+	private Course course;
+
 }

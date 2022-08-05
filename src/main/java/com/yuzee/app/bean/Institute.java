@@ -1,14 +1,10 @@
 package com.yuzee.app.bean;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-
-
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -16,10 +12,12 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -30,148 +28,134 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Institute implements Serializable {
 
-    
-
 	@Id
-    private String id;
+	private String id;
 
-    private String readableId;
+	private String readableId;
 
-    private String instituteType;
+	private String instituteType;
 
-    @Indexed(unique = true)
-    private String name;
+	@Indexed(unique = true)
+	private String name;
 
-    private Boolean isActive;
+	private Boolean isActive;
 
-    private Date createdOn;
+	private Date createdOn;
 
-    private Date updatedOn;
+	private Date updatedOn;
 
-    private Date deletedOn;
+	private Date deletedOn;
 
-    private String createdBy;
+	private String createdBy;
 
-    private String updatedBy;
+	private String updatedBy;
 
-    private Boolean isDeleted;
+	private Boolean isDeleted;
 
-    private Integer worldRanking;
+	private Integer worldRanking;
 
-    private String phoneNumber;
+	private String phoneNumber;
 
-    private String email;
+	private String email;
 
-    private String website;
+	private String website;
 
-    private Double latitude;
+	private Double latitude;
 
-    private Double longitude;
+	private Double longitude;
 
-    private String address;
+	private String address;
 
-    private String description;
+	private String description;
 
-    @Indexed(unique = true)
-    private String countryName;
+	@Indexed(unique = true)
+	private String countryName;
 
-    @Indexed(unique = true)
-    private String cityName;
+	@Indexed(unique = true)
+	private String cityName;
 
-    private String avgCostOfLiving;
+	private String avgCostOfLiving;
 
-    private String tuitionFeesPaymentPlan;
-    private String enrolmentLink;
+	private String tuitionFeesPaymentPlan;
+	private String enrolmentLink;
 
-    private String aboutInfo;
+	private String aboutInfo;
 
-    private String courseStart;
+	private String courseStart;
 
-    private String whatsNo;
+	private String whatsNo;
 
-    private InstituteCategoryType instituteCategoryType;
+	private InstituteCategoryType instituteCategoryType;
 
-    private String scholarshipFinancingAssistance;
+	private String scholarshipFinancingAssistance;
 
-    private Integer domesticRanking;
+	private Integer domesticRanking;
 
-    private String admissionEmail;
+	private String admissionEmail;
 
-    private String boardingAvailable;
+	private String boardingAvailable;
 
-    private String boarding;
+	private String boarding;
 
-    private String state;
+	private String state;
 
-    private Integer postalCode;
+	private Integer postalCode;
 
-    private String englishPartners;
+	private String englishPartners;
 
-    private String imageCount;
+	private String imageCount;
 
-    private String climate;
+	private String climate;
 
-    private String youtubeLink;
+	private String youtubeLink;
 
-    private String internationalPhoneNumber;
+	private String internationalPhoneNumber;
 
-    private String domesticPhoneNumber;
+	private String domesticPhoneNumber;
 
-    private String accreditation;
+	private String accreditation;
 
-    private String officeHoursFrom;
+	private String officeHoursFrom;
 
-    private String officeHoursTo;
+	private String officeHoursTo;
 
-    private String link;
+	private String link;
 
-    private String contact;
+	private String contact;
 
-    private String curriculum;
+	private String curriculum;
 
-    private Double domesticBoardingFee;
+	private Double domesticBoardingFee;
 
-    private Double internationalBoardingFee;
+	private Double internationalBoardingFee;
 
-    private String tagLine;
+	private String tagLine;
+
+	private Boolean showSuggestion;
+
+	@DBRef
+	private List<InstituteEnglishRequirements> instituteEnglishRequirements = new ArrayList<>();
+
+	@DBRef
+	private List<InstituteCampus> instituteCampuses = new ArrayList<>();
+	@DBRef
+	private InstituteAdditionalInfo instituteAdditionalInfo;
+	@DBRef
+	private List<InstituteDomesticRankingHistory> instituteDomesticRankingHistories = new ArrayList<>();
+	@DBRef
+	private List<InstituteFacility> instituteFacilities = new ArrayList<>();
+
+	@DBRef
+	private List<InstituteService> instituteServices = new ArrayList<>();
+	@DBRef
+	private List<String> instituteIntakes = new ArrayList<>();
+	@DBRef
+	private List<InstituteWorldRankingHistory> instituteWorldRankingHistories = new ArrayList<>();
+	@DBRef
+	private List<String> instituteFundings = new ArrayList<>();
+	@DBRef
+	private List<InstituteProviderCode> instituteProviderCodes = new ArrayList<>();
+
+	private boolean verified;
 
-    private Boolean showSuggestion;
-
-    @DBRef
-    private List<InstituteEnglishRequirements> instituteEnglishRequirements = new ArrayList<>();
-
-    @DBRef
-    private List<InstituteCampus> instituteCampuses = new ArrayList<>();
-
-    private InstituteAdditionalInfo instituteAdditionalInfo;
-
-    private List<InstituteDomesticRankingHistory> instituteDomesticRankingHistories = new ArrayList<>();
-
-    private List<InstituteFacility> instituteFacilities = new ArrayList<>();
-
-    @DBRef
-    private List<InstituteService> instituteServices = new ArrayList<>();
-
-    private List<String> instituteIntakes = new ArrayList<>();
-
-    private List<InstituteWorldRankingHistory> instituteWorldRankingHistories = new ArrayList<>();
-
-    private List<String> instituteFundings = new ArrayList<>();
-
-    private List<InstituteProviderCode> instituteProviderCodes = new ArrayList<>();
-
-    private boolean verified;
-
-	
-
-	
-
-	
-
-
-	
-	
-   
-
-	
 }

@@ -41,26 +41,24 @@ public class CareerUploadProcessor {
 
 	@Autowired
 	private CareerUploadDao careerJobDao;
-	
+
 	@Autowired
 	private LevelDao levelDao;
-	
+
 	public void uploadCareerJobs(MultipartFile multipartFile) {
 		log.debug("Inside uploadCareers() data");
 		try {
 			InputStream inputStream = multipartFile.getInputStream();
 			log.info("Reading multipart data and start converting CSV data to bean class");
 			CsvToBean<CareerCSVDto> csvToBean = new CsvToBeanBuilder<CareerCSVDto>(new InputStreamReader(inputStream))
-	                .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
-	                .withType(CareerCSVDto.class)
-	                .build();
+					.withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).withType(CareerCSVDto.class).build();
 			List<CareerCSVDto> careerJobsDtos = csvToBean.parse();
-			if(!CollectionUtils.isEmpty(careerJobsDtos)) {
+			if (!CollectionUtils.isEmpty(careerJobsDtos)) {
 				log.info("Data parsing done, start massaging data to add careers and jobs in DB");
 				dataMassagingForCareers(careerJobsDtos);
 			}
 		} catch (IOException e) {
-			log.error("Exception while uploading Careers having exception "+e);
+			log.error("Exception while uploading Careers having exception " + e);
 		}
 	}
 
@@ -73,18 +71,19 @@ public class CareerUploadProcessor {
 		CareerJob careerJobs = null;
 		log.info("Start iterating career jobs data to make data massaging");
 		int i = 1;
-		for(CareerCSVDto careerJobsDto : careerJobsDtos) {
-			log.info("uploaded ======== {}/{}",++i,careerJobsDtos.size() );
-			if(!ObjectUtils.isEmpty(careerJobsDto.getCourseLevel())) {
+		for (CareerCSVDto careerJobsDto : careerJobsDtos) {
+			log.info("uploaded ======== {}/{}", ++i, careerJobsDtos.size());
+			if (!ObjectUtils.isEmpty(careerJobsDto.getCourseLevel())) {
 				log.info("assigning value to courseLevel");
 				courseLevel = careerJobsDto.getCourseLevel();
 			}
-			if(!career.equalsIgnoreCase(careerJobsDto.getCareerList()) && !careerJobsDto.getCareerList().equalsIgnoreCase("-")) {
+			if (!career.equalsIgnoreCase(careerJobsDto.getCareerList())
+					&& !careerJobsDto.getCareerList().equalsIgnoreCase("-")) {
 				log.info("Career name is different, adding new career data in DB");
 				career = careerJobsDto.getCareerList();
-				log.info("Extracting Career from DB for careerName {}",career);
+				log.info("Extracting Career from DB for careerName {}", career);
 				careersToSave = careerJobDao.getCareer(career);
-				if(ObjectUtils.isEmpty(careersToSave)) {
+				if (ObjectUtils.isEmpty(careersToSave)) {
 					log.info("Career is not present in DB, adding new Career in DB");
 					careersToSave = new Careers();
 					careersToSave.setCareer(career);
@@ -94,75 +93,79 @@ public class CareerUploadProcessor {
 					careerJobDao.saveCareerList(careersToSave);
 				}
 			}
-			if(!ObjectUtils.isEmpty(careersToSave) && !StringUtils.isEmpty(careerJobsDto.getRelatedCareers()) 
+			if (!ObjectUtils.isEmpty(careersToSave) && !StringUtils.isEmpty(careerJobsDto.getRelatedCareers())
 					&& !careerJobsDto.getRelatedCareers().equalsIgnoreCase("-")) {
-				log.info("Extracting related careers from DB for careerId {} and relatedCareer {}",careersToSave.getId(), 
-						careerJobsDto.getRelatedCareers());
-				if(ObjectUtils.isEmpty(careerJobDao.getRelatedCareer(careersToSave.getId(), careerJobsDto.getRelatedCareers()))) {
+				log.info("Extracting related careers from DB for careerId {} and relatedCareer {}",
+						careersToSave.getId(), careerJobsDto.getRelatedCareers());
+				if (ObjectUtils.isEmpty(careerJobDao.getRelatedCareer(careersToSave.getId().toString(),
+						careerJobsDto.getRelatedCareers()))) {
 					log.info("Related Career is not present in DB, adding new Related Career in DB");
-					RelatedCareer relatedCareer = new RelatedCareer(careerJobsDto.getRelatedCareers(), careersToSave, "API", new Date());
+					RelatedCareer relatedCareer = new RelatedCareer(careerJobsDto.getRelatedCareers(), careersToSave,
+							"API", new Date());
 					log.info("Calling DAO layer to add related careers in DB");
 					careerJobDao.saveRelatedCareers(relatedCareer);
 				}
 			}
-			if(!jobName.equalsIgnoreCase(careerJobsDto.getJobs()) && !careerJobsDto.getJobs().equalsIgnoreCase("-")) {
+			if (!jobName.equalsIgnoreCase(careerJobsDto.getJobs()) && !careerJobsDto.getJobs().equalsIgnoreCase("-")) {
 				log.info("Job name is different, adding new jobs data in DB");
 				jobName = careerJobsDto.getJobs();
-				log.info("Extracting Job from DB for jobName {}",jobName);
+				log.info("Extracting Job from DB for jobName {}", jobName);
 				careerJobs = careerJobDao.getJob(careerJobsDto.getJobs());
-				if(ObjectUtils.isEmpty(careerJobs)) {
+				if (ObjectUtils.isEmpty(careerJobs)) {
 					log.info("Jobs data is not present in DB, adding new Job data in DB");
-					careerJobs = new CareerJob(careerJobsDto.getJobs(), careerJobsDto.getJobDescription(), careerJobsDto.getJobResponsibility(), careersToSave, courseLevel,
-							new Date(), "API");
+					careerJobs = new CareerJob(careerJobsDto.getJobs(), careerJobsDto.getJobDescription(),
+							careerJobsDto.getJobResponsibility(), courseLevel, new Date(), "API");
 					log.info("Calling DAO layer to add job in DB");
 					careerJobDao.saveJobsData(careerJobs);
 				}
 			}
-			
+
 			// Saving job course search keyword
-			if(!ObjectUtils.isEmpty(careerJobs) && !StringUtils.isEmpty(careerJobsDto.getCourseSearchKeywords())) {
+			if (!ObjectUtils.isEmpty(careerJobs) && !StringUtils.isEmpty(careerJobsDto.getCourseSearchKeywords())) {
 				log.info("Massaging data to save Job Course Search Keywords in DB");
 				saveCareerJobCourseSearchKeyword(careerJobs, careerJobsDto.getCourseSearchKeywords());
 			}
 			// Saving job level
-			if(!ObjectUtils.isEmpty(careerJobs) && !StringUtils.isEmpty(careerJobsDto.getLevels())) {
+			if (!ObjectUtils.isEmpty(careerJobs) && !StringUtils.isEmpty(careerJobsDto.getLevels())) {
 				log.info("Massaging data to save Job Levels in DB");
 				saveCareerJobLevel(careerJobs, careerJobsDto.getLevels());
 			}
 			// Saving Job skills
-			if(!ObjectUtils.isEmpty(careerJobs) && !StringUtils.isEmpty(careerJobsDto.getSkills())) {
+			if (!ObjectUtils.isEmpty(careerJobs) && !StringUtils.isEmpty(careerJobsDto.getSkills())) {
 				log.info("Massaging data to save Job Skills in DB");
 				saveCareerJobSkills(careerJobs, careerJobsDto.getSkills());
 			}
 			// Saving Job Subjects
-			if(!ObjectUtils.isEmpty(careerJobs) && !StringUtils.isEmpty(careerJobsDto.getSubjects())) {
+			if (!ObjectUtils.isEmpty(careerJobs) && !StringUtils.isEmpty(careerJobsDto.getSubjects())) {
 				log.info("Massaging data to save Job Subjects in DB");
 				saveCareerJobSubjects(careerJobs, careerJobsDto.getSubjects());
 			}
 			// Saving Job types
-			if(!ObjectUtils.isEmpty(careerJobs) && !StringUtils.isEmpty(careerJobsDto.getJobTypes())) {
+			if (!ObjectUtils.isEmpty(careerJobs) && !StringUtils.isEmpty(careerJobsDto.getJobTypes())) {
 				log.info("Massaging data to save Job Types in DB");
 				saveCareerJobTypes(careerJobs, careerJobsDto.getJobTypes());
 			}
 			// Saving Job Working Activity
-			if(!ObjectUtils.isEmpty(careerJobs) && !StringUtils.isEmpty(careerJobsDto.getWorkActivities())) {
+			if (!ObjectUtils.isEmpty(careerJobs) && !StringUtils.isEmpty(careerJobsDto.getWorkActivities())) {
 				log.info("Massaging data to save Working Activities in DB");
 				saveCareerJobWorkingActivities(careerJobs, careerJobsDto.getWorkActivities());
 			}
 			// Saving Job Working Style
-			if(!ObjectUtils.isEmpty(careerJobs) && !StringUtils.isEmpty(careerJobsDto.getWorkStyles())) {
+			if (!ObjectUtils.isEmpty(careerJobs) && !StringUtils.isEmpty(careerJobsDto.getWorkStyles())) {
 				log.info("Massaging data to save Working Styles in DB");
 				saveCareerJobWorkingStyles(careerJobs, careerJobsDto.getWorkStyles());
 			}
 		}
 	}
-	
+
 	private void saveCareerJobCourseSearchKeyword(CareerJob careerJobs, String courseSearchKeyword) {
 		log.debug("Inside saveCareerJobCourseSearchKeyword() data");
-		if(!courseSearchKeyword.equalsIgnoreCase("-")) {
-			log.info("Extracting Job Course Search Keyword having jobId {}, courseSearchKeyword{}",careerJobs.getId(), courseSearchKeyword);
-			if(ObjectUtils.isEmpty(careerJobDao.getJobCourseSearchKeyword(careerJobs.getId(), courseSearchKeyword))) {
-				log.info("Job Course Search Keyword is not present in DB for passed jobId and searchKeyword, adding new Course Search Keywords in DB");
+		if (!courseSearchKeyword.equalsIgnoreCase("-")) {
+			log.info("Extracting Job Course Search Keyword having jobId {}, courseSearchKeyword{}", careerJobs.getId(),
+					courseSearchKeyword);
+			if (ObjectUtils.isEmpty(careerJobDao.getJobCourseSearchKeyword(careerJobs.getId(), courseSearchKeyword))) {
+				log.info(
+						"Job Course Search Keyword is not present in DB for passed jobId and searchKeyword, adding new Course Search Keywords in DB");
 				CareerJobCourseSearchKeyword careerJobCourseSearchKeyword = new CareerJobCourseSearchKeyword();
 				careerJobCourseSearchKeyword.setCareerJobs(careerJobs);
 				careerJobCourseSearchKeyword.setCourseSearchKeyword(courseSearchKeyword);
@@ -173,16 +176,16 @@ public class CareerUploadProcessor {
 			}
 		}
 	}
-	
+
 	private void saveCareerJobLevel(CareerJob careerJobs, String levelCode) {
 		log.debug("Inside saveCareerJobLevel() data");
-		if(!levelCode.equalsIgnoreCase("-")) {
-			log.info("Extracting Level from DB having levelCode {} ",levelCode);
+		if (!levelCode.equalsIgnoreCase("-")) {
+			log.info("Extracting Level from DB having levelCode {} ", levelCode);
 			Level levelFromDB = levelDao.getLevelByLevelCode(levelCode);
-			if(!ObjectUtils.isEmpty(levelFromDB)) {
+			if (!ObjectUtils.isEmpty(levelFromDB)) {
 				log.info("Level data fetched from DB, extracting existing job level for jobId {} and levelId {}",
 						careerJobs.getId(), levelFromDB.getId());
-				if(ObjectUtils.isEmpty(careerJobDao.getJobLevel(careerJobs.getId(), levelFromDB.getId()))) {
+				if (ObjectUtils.isEmpty(careerJobDao.getJobLevel(careerJobs.getId(), levelFromDB.getId()))) {
 					log.info("Job Level is not present in DB for passed jobId and levelId, adding new Job Level in DB");
 					CareerJobLevel careerJobLevel = new CareerJobLevel();
 					careerJobLevel.setCareerJobs(careerJobs);
@@ -195,19 +198,19 @@ public class CareerUploadProcessor {
 			}
 		}
 	}
-	
+
 	private void saveCareerJobSkills(CareerJob careerJobs, String skillName) {
 		log.debug("Inside saveCareerJobSkills() data");
-		
+
 		if (!skillName.equalsIgnoreCase("-")) {
 			log.info("Extracting existing job skills for jobId {} and skillName {}", careerJobs.getId(), skillName);
 			String name = "";
 			String description = "";
-			int indexOfNameSeperator =  skillName.indexOf("-");
-			if (indexOfNameSeperator>0) {
-				if (skillName.length()>indexOfNameSeperator) {
+			int indexOfNameSeperator = skillName.indexOf("-");
+			if (indexOfNameSeperator > 0) {
+				if (skillName.length() > indexOfNameSeperator) {
 					name = skillName.substring(0, indexOfNameSeperator).strip();
-					description = skillName.substring(indexOfNameSeperator+1).strip();			
+					description = skillName.substring(indexOfNameSeperator + 1).strip();
 				}
 			}
 			if (ObjectUtils.isEmpty(careerJobDao.getJobSkill(careerJobs.getId(), name))) {
@@ -223,14 +226,15 @@ public class CareerUploadProcessor {
 			}
 		}
 	}
-	
+
 	private void saveCareerJobSubjects(CareerJob careerJobs, String subjectName) {
 		log.debug("Inside saveCareerJobSubjects() data");
-		if(!subjectName.equalsIgnoreCase("-")) {
-			log.info("Extracting existing job subjects from DB for jobId {} and subjectName {}",
-					careerJobs.getId(), subjectName);
-			if(ObjectUtils.isEmpty(careerJobDao.getJobSubject(careerJobs.getId(), subjectName))) {
-				log.info("Job Subject is not present in DB for passed jobId and subjectName, adding new Job Subject in DB");
+		if (!subjectName.equalsIgnoreCase("-")) {
+			log.info("Extracting existing job subjects from DB for jobId {} and subjectName {}", careerJobs.getId(),
+					subjectName);
+			if (ObjectUtils.isEmpty(careerJobDao.getJobSubject(careerJobs.getId(), subjectName))) {
+				log.info(
+						"Job Subject is not present in DB for passed jobId and subjectName, adding new Job Subject in DB");
 				CareerJobSubject careerJobSubject = new CareerJobSubject();
 				careerJobSubject.setCareerJobs(careerJobs);
 				careerJobSubject.setSubject(subjectName);
@@ -241,13 +245,12 @@ public class CareerUploadProcessor {
 			}
 		}
 	}
-	
+
 	private void saveCareerJobTypes(CareerJob careerJobs, String jobType) {
 		log.debug("Inside saveCareerJobTypes() data");
-		if(!jobType.equalsIgnoreCase("-")) {
-			log.info("Extracting existing job types from DB for jobId {} and jobType {}",
-					careerJobs.getId(), jobType);
-			if(ObjectUtils.isEmpty(careerJobDao.getJobType(careerJobs.getId(), jobType))) {
+		if (!jobType.equalsIgnoreCase("-")) {
+			log.info("Extracting existing job types from DB for jobId {} and jobType {}", careerJobs.getId(), jobType);
+			if (ObjectUtils.isEmpty(careerJobDao.getJobType(careerJobs.getId(), jobType))) {
 				log.info("Job type is not present in DB for passed jobId and jobType, adding new Job Type in DB");
 				CareerJobType careerJobType = new CareerJobType();
 				careerJobType.setCareerJobs(careerJobs);
@@ -259,14 +262,15 @@ public class CareerUploadProcessor {
 			}
 		}
 	}
-	
+
 	private void saveCareerJobWorkingActivities(CareerJob careerJobs, String workActivities) {
 		log.debug("Inside saveCareerJobWorkingActivities() data");
-		if(!workActivities.equalsIgnoreCase("-")) {
+		if (!workActivities.equalsIgnoreCase("-")) {
 			log.info("Extracting existing job working activity from DB for jobId {} and workActivities {}",
 					careerJobs.getId(), workActivities);
-			if(ObjectUtils.isEmpty(careerJobDao.getJobWorkingActivity(careerJobs.getId(), workActivities))) {
-				log.info("Working Activity is not present in DB for passed jobId and workActivity, adding new Job Type in DB");
+			if (ObjectUtils.isEmpty(careerJobDao.getJobWorkingActivity(careerJobs.getId(), workActivities))) {
+				log.info(
+						"Working Activity is not present in DB for passed jobId and workActivity, adding new Job Type in DB");
 				CareerJobWorkingActivity careerJobWorkingActivity = new CareerJobWorkingActivity();
 				careerJobWorkingActivity.setCareerJobs(careerJobs);
 				careerJobWorkingActivity.setWorkActivities(workActivities);
@@ -277,14 +281,15 @@ public class CareerUploadProcessor {
 			}
 		}
 	}
-	
+
 	private void saveCareerJobWorkingStyles(CareerJob careerJobs, String workStyles) {
 		log.debug("Inside saveCareerJobWorkingStyles() data");
-		if(!workStyles.equalsIgnoreCase("-")) {
-			log.info("Extracting existing job working style from DB for jobId {} and workStyles {}",
-					careerJobs.getId(), workStyles);
-			if(ObjectUtils.isEmpty(careerJobDao.getJobWorkingStyle(careerJobs.getId(), workStyles))) {
-				log.info("Working Style is not present in DB for passed jobId and workStyles, adding new Job Type in DB");
+		if (!workStyles.equalsIgnoreCase("-")) {
+			log.info("Extracting existing job working style from DB for jobId {} and workStyles {}", careerJobs.getId(),
+					workStyles);
+			if (ObjectUtils.isEmpty(careerJobDao.getJobWorkingStyle(careerJobs.getId(), workStyles))) {
+				log.info(
+						"Working Style is not present in DB for passed jobId and workStyles, adding new Job Type in DB");
 				CareerJobWorkingStyle careerJobWorkingStyle = new CareerJobWorkingStyle();
 				careerJobWorkingStyle.setCareerJobs(careerJobs);
 				careerJobWorkingStyle.setWorkStyle(workStyles);

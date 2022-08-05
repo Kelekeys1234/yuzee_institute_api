@@ -86,10 +86,12 @@ public class SubjectProcessor {
 
 	private List<Subject> dtoToModel(List<SubjectCsvDto> subjectDtoList) {
 		List<Subject> subjects = new ArrayList<>();
-		subjectDtoList.stream().forEach(dto->{
-			EducationSystem educationSystem = educationSystemDao.findByNameAndCountryNameAndStateName(dto.getEducationSystemName(), dto.getCountryName(), dto.getStateName());
+		subjectDtoList.stream().forEach(dto -> {
+			EducationSystem educationSystem = educationSystemDao.findByNameAndCountryNameAndStateName(
+					dto.getEducationSystemName(), dto.getCountryName(), dto.getStateName());
 			if (!ObjectUtils.isEmpty(educationSystem)) {
-				Subject subject = subjectDao.findByNameAndEducationSystemId(dto.getName(), educationSystem.getId());
+				Subject subject = subjectDao.findByNameAndEducationSystemId(dto.getName(),
+						educationSystem.getId().toString());
 				if (ObjectUtils.isEmpty(subject)) {
 					subject = new Subject();
 					subject.setCreatedBy("API");

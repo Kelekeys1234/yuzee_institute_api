@@ -11,16 +11,16 @@ import com.yuzee.app.bean.Level;
 
 public interface LevelDao {
 
-    public void addUpdateLevel(Level level);
+	public void addUpdateLevel(Level level);
 
-    public Optional<Level> getLevel(UUID levelId);
+	public Optional<Level> getLevel(UUID uuid);
 
-    public List<Level> getAll();
-    
-	public List<Level> findByIdIn(List<UUID> ids);
-	
+	public List<Level> getAll();
+
+	public List<Level> findByIdIn(List<String> ids);
+
 	public Level getLevelByLevelCode(String levelCode);
-	
+
 	@Cacheable(value = "cacheLevelMap", unless = "#result == null")
 	public Map<String, UUID> getAllLevelMap();
 

@@ -9,13 +9,8 @@ import org.modelmapper.ModelMapper;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.Institute;
-import com.yuzee.app.bean.Scholarship;
-import com.yuzee.app.bean.ScholarshipCountry;
-import com.yuzee.app.bean.ScholarshipEligibleNationality;
-import com.yuzee.app.bean.ScholarshipLanguage;
 import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
-import com.yuzee.common.lib.dto.institute.ScholarshipSyncDto;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,19 +45,19 @@ public class DTOUtils {
 
 	}
 
-	public static ScholarshipSyncDto convertScholarshipToScholarshipDTOElasticSearchEntity(Scholarship scholarship) {
-		log.info("inside DTOUtils.convertToCourseDTOElasticSearchEntity");
-		ModelMapper modelMapper = new ModelMapper();
-
-		ScholarshipSyncDto scholarshipElasticDto = modelMapper.map(scholarship, ScholarshipSyncDto.class);
-		scholarshipElasticDto.setLanguages(scholarship.getScholarshipLanguages().stream()
-				.map(ScholarshipLanguage::getName).collect(Collectors.toList()));
-		scholarshipElasticDto.setEligibleNationalities(scholarship.getScholarshipEligibleNationalities().stream()
-				.map(ScholarshipEligibleNationality::getCountryName).collect(Collectors.toList()));
-		scholarshipElasticDto.setCountryNames(scholarship.getScholarshipCountries().stream()
-				.map(ScholarshipCountry::getCountryName).collect(Collectors.toList()));
-		//scholarshipElasticDto.setInstitute(convertToInstituteElasticSearchDTOEntity(scholarship.getInstitute()));
-		return scholarshipElasticDto;
-	}
+//	public static ScholarshipSyncDto convertScholarshipToScholarshipDTOElasticSearchEntity(Scholarship scholarship) {
+//		log.info("inside DTOUtils.convertToCourseDTOElasticSearchEntity");
+//		ModelMapper modelMapper = new ModelMapper();
+//
+//		ScholarshipSyncDto scholarshipElasticDto = modelMapper.map(scholarship, ScholarshipSyncDto.class);
+//		scholarshipElasticDto.setLanguages(scholarship.getScholarshipLanguages().stream()
+//				.map(ScholarshipLanguage::getName).collect(Collectors.toList()));
+//		scholarshipElasticDto.setEligibleNationalities(scholarship.getScholarshipEligibleNationalities().stream()
+//				.map(ScholarshipEligibleNationality::getCountryName).collect(Collectors.toList()));
+//		scholarshipElasticDto.setCountryNames(scholarship.getScholarshipCountries().stream()
+//				.map(ScholarshipCountry::getCountryName).collect(Collectors.toList()));
+//		//scholarshipElasticDto.setInstitute(convertToInstituteElasticSearchDTOEntity(scholarship.getInstitute()));
+//		return scholarshipElasticDto;
+//	}
 
 }

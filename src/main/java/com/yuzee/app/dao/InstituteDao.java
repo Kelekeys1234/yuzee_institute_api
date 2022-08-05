@@ -116,10 +116,10 @@ public interface InstituteDao {
 	public Institute findByReadableId(String readableId);
 
 	@Cacheable(value = "cacheInstituteMap", unless = "#result == null")
-	public Map<String, UUID> getAllInstituteMap();
+	public Map<String, String> getAllInstituteMap();
 
-	@Cacheable(value = "cacheInstitute", key = "#instituteId", unless = "#result == null", condition="#instituteId!=null")
-	public Optional<Institute> getInstitute(UUID instituteId);
+	@Cacheable(value = "cacheInstitute", key = "#instituteId", unless = "#result == null", condition = "#instituteId!=null")
+	public Optional<Institute> getInstitute(String instituteId);
 
 	List<Institute> getByInstituteName(String instituteName);
 

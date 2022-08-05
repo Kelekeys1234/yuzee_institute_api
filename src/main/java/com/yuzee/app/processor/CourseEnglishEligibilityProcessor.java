@@ -53,7 +53,7 @@ public class CourseEnglishEligibilityProcessor {
 
 	@Autowired
 	private CommonProcessor commonProcessor;
-	
+
 	@Autowired
 	private MessageTranslator messageTranslator;
 
@@ -81,12 +81,12 @@ public class CourseEnglishEligibilityProcessor {
 		List<CourseEnglishEligibilityDto> courseEnglishEligibilityDtos = request.getCourseEnglishEligibilityDtos();
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
-			List<CourseEnglishEligibility> courseEnglishEligibilityBeforeUpdate = course.getCourseEnglishEligibilities().stream().map(eligibility -> {
-				CourseEnglishEligibility clone = new CourseEnglishEligibility();
-				BeanUtils.copyProperties(eligibility, clone);
-				return clone;
-			}).collect(Collectors.toList());
-			
+			List<CourseEnglishEligibility> courseEnglishEligibilityBeforeUpdate = course.getCourseEnglishEligibilities()
+					.stream().map(eligibility -> {
+						CourseEnglishEligibility clone = new CourseEnglishEligibility();
+						BeanUtils.copyProperties(eligibility, clone);
+						return clone;
+					}).collect(Collectors.toList());
 
 			log.info("preparing map of exsiting course english eligibilities");
 			Map<String, CourseEnglishEligibility> existingCourseEnglishEligibilitysMap = course
@@ -103,8 +103,9 @@ public class CourseEnglishEligibilityProcessor {
 							"entityId is present so going to see if it is present in db if yes then we have to update it");
 					courseEnglishEligibility = existingCourseEnglishEligibilitysMap.get(e.getId());
 					if (courseEnglishEligibility == null) {
-						log.error(messageTranslator.toLocale("english_eligibility.id.invalid",e.getId(),Locale.US));
-						throw new RuntimeNotFoundException(messageTranslator.toLocale("english_eligibility.id.invalid",e.getId()));
+						log.error(messageTranslator.toLocale("english_eligibility.id.invalid", e.getId(), Locale.US));
+						throw new RuntimeNotFoundException(
+								messageTranslator.toLocale("english_eligibility.id.invalid", e.getId()));
 					}
 				}
 				BeanUtils.copyProperties(e, courseEnglishEligibility);
@@ -124,15 +125,15 @@ public class CourseEnglishEligibilityProcessor {
 						replicateCourseEnglishEligibilities(userId, request.getLinkedCourseIds(), dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
-			
-			if(!courseEnglishEligibilityBeforeUpdate.equals(courseEnglishEligibilities)) {
+
+			if (!courseEnglishEligibilityBeforeUpdate.equals(courseEnglishEligibilities)) {
 				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 			}
 
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
-			log.error(messageTranslator.toLocale("english_eligibility.course.id.invalid",courseId,Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("english_eligibility.course.id.invalid",courseId));
+			log.error(messageTranslator.toLocale("english_eligibility.course.id.invalid", courseId, Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("english_eligibility.course.id.invalid", courseId));
 		}
 	}
 
@@ -145,7 +146,7 @@ public class CourseEnglishEligibilityProcessor {
 		if (courseEnglishEligibilities.stream().map(CourseEnglishEligibility::getId).collect(Collectors.toSet())
 				.containsAll(englishEligibilityIds)) {
 			if (courseEnglishEligibilities.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
-				log.error(messageTranslator.toLocale("english_eligibility.delete.no.access",Locale.US));
+				log.error(messageTranslator.toLocale("english_eligibility.delete.no.access", Locale.US));
 				throw new ForbiddenException(messageTranslator.toLocale("english_eligibility.delete.no.access"));
 			}
 			courseEnglishEligibilities.removeIf(e -> Utils.contains(englishEligibilityIds, e.getId()));
@@ -158,12 +159,12 @@ public class CourseEnglishEligibilityProcessor {
 						.addAll(replicateCourseEnglishEligibilities(userId, linkedCourseIds, dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
-			
+
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-			
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+
+			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
-			log.error(messageTranslator.toLocale("english_eligibility.ids.invalid",Locale.US));
+			log.error(messageTranslator.toLocale("english_eligibility.ids.invalid", Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("english_eligibility.ids.invalid"));
 		}
 	}

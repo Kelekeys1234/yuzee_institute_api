@@ -1,15 +1,15 @@
 package com.yuzee.app.processor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,13 +37,13 @@ public class CoursePrerequisiteProcessor {
 
 	@Autowired
 	private CourseProcessor courseProcessor;
-	
+
 	@Autowired
 	private CourseDao courseDao;
-	
+
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Transactional
 	public List<CoursePreRequisiteDto> saveUpdatePreRequisites(String userId, String courseId,
 			@Valid CoursePreRequisiteRequestWrapper request)
@@ -52,17 +52,24 @@ public class CoursePrerequisiteProcessor {
 		List<CoursePreRequisiteDto> coursePreRequisiteDtos = request.getCoursePreRequisiteDtos();
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
-			List<CoursePrerequisite> coursePrerequisiteBeforeUpdate = course.getCoursePrerequisites().stream().map(deliveryMode -> {
-				CoursePrerequisite clone = new CoursePrerequisite();
-				BeanUtils.copyProperties(deliveryMode, clone);
-				return clone;
-			}).collect(Collectors.toList());
-			
+			List<CoursePrerequisite> coursePrerequisiteBeforeUpdate = course.getCoursePrerequisites().stream()
+					.map(deliveryMode -> {
+						CoursePrerequisite clone = new CoursePrerequisite();
+						try {
+							BeanUtils.copyProperties(deliveryMode, clone);
+						} catch (IllegalAccessException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (InvocationTargetException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						return clone;
+					}).collect(Collectors.toList());
 
 			log.info("preparing map of exsiting course delivery modes");
-			Map<String, CoursePrerequisite> existingCoursePrerequisiteMap = course.getCoursePrerequisites().stream()
-					.collect(Collectors.toMap(CoursePrerequisite::getId, e -> e));
-
+			List<CoursePrerequisite> existingCoursePrerequisiteMap = course.getCoursePrerequisites();
+			//
 			List<CoursePrerequisite> coursePrerequisites = course.getCoursePrerequisites();
 
 			log.info("loop the requested list to collect the entitities to be saved/updated");
@@ -71,7 +78,7 @@ public class CoursePrerequisiteProcessor {
 				if (!StringUtils.isEmpty(e.getId())) {
 					log.info(
 							"entityId is present so going to see if it is present in db if yes then we have to update it");
-					coursePrerequisite = existingCoursePrerequisiteMap.get(e.getId());
+
 					if (ObjectUtils.isEmpty(coursePrerequisite)) {
 						log.error("invalid course Prerequisite id : {}", e.getId());
 						throw new RuntimeNotFoundException("invalid course Prerequisite id : " + e.getId());
@@ -88,14 +95,15 @@ public class CoursePrerequisiteProcessor {
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			coursesToBeSavedOrUpdated = courseDao.saveAll(coursesToBeSavedOrUpdated);
-			return coursesToBeSavedOrUpdated.get(0).getCoursePrerequisites().stream().map(e->modelMapper.map(e,CoursePreRequisiteDto.class)).toList();
+			return coursesToBeSavedOrUpdated.get(0).getCoursePrerequisites().stream()
+					.map(e -> modelMapper.map(e, CoursePreRequisiteDto.class)).toList();
 
 		} else {
 			log.error("invalid course id: {}", courseId);
 			throw new NotFoundException("invalid course id: " + courseId);
 		}
 	}
-	
+
 	@Transactional
 	public void deleteByPreRequisiteIds(String userId, String courseId, List<String> deliveryModeIds,
 			List<String> linkedCourseIds) throws NotFoundException, ValidationException {
@@ -111,9 +119,9 @@ public class CoursePrerequisiteProcessor {
 			coursePrerequisite.removeIf(e -> Utils.contains(deliveryModeIds, e.getId()));
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
-			
+
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
-			
+
 			log.info("Notify course information changed");
 		} else {
 			log.error("one or more invalid course_delivery_mode_ids");

@@ -24,20 +24,20 @@ public class CourseInstituteDaoImpl implements CourseInstituteDao {
 
 	@Autowired
 	private MessageTranslator messageTranslator;
-	
+
 	@Override
 	public List<CourseInstitute> saveAll(List<CourseInstitute> courseInstitutes) throws ValidationException {
 		try {
 			return courseInstituteRepository.saveAll(courseInstitutes);
 		} catch (DataIntegrityViolationException e) {
-			log.error("course-institute.already.exist",Locale.US);
+			log.error("course-institute.already.exist", Locale.US);
 			throw new ValidationException(messageTranslator.toLocale("course-institute.already.exist"));
 		}
 	}
 
 	@Override
 	public List<CourseInstitute> findLinkedInstitutes(String courseId) {
-		return courseInstituteRepository.findLinkedInstitutes(courseId);
+		return courseInstituteRepository.getById(courseId);
 	}
 
 	@Override

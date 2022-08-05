@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -104,7 +105,7 @@ public class CommonUtil {
 	}
 
 	public static void copyCourseToCourseRequest(final Course course, CourseRequest courseRequest) {
-		courseRequest.setId(course.getId());
+		courseRequest.setId(UUID.fromString(course.getId()));
 
 		if (course.getWorldRanking() != null) {
 			courseRequest.setWorldRanking(String.valueOf(course.getWorldRanking()));
@@ -116,7 +117,7 @@ public class CommonUtil {
 		}
 		courseRequest.setName(course.getName());
 		if (course.getFaculty() != null) {
-			courseRequest.setFacultyId(course.getFaculty().getId());
+			courseRequest.setFacultyId(course.getFaculty().getId().toString());
 		}
 		courseRequest.setCurrency(course.getCurrency());
 		courseRequest.setWebsite(course.getWebsite());
@@ -132,7 +133,7 @@ public class CommonUtil {
 //						.setIntakes(course.getInstitute().getInstituteIntakes());
 //		}
 		if (course.getLevel() != null) {
-			courseRequest.setLevelId(course.getLevel().getId());
+			courseRequest.setLevelIds(course.getLevel().getId().toString());
 		}
 		if (course.getCourseIntake() != null) {
 			courseRequest.getIntake().setDates(course.getCourseIntake().getDates());

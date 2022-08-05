@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.batch.item.ItemProcessor;
@@ -15,11 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Course;
-import com.yuzee.app.bean.CourseCurriculum;
 import com.yuzee.app.bean.CourseDeliveryModes;
 import com.yuzee.app.bean.CourseEnglishEligibility;
-import com.yuzee.app.bean.CourseLanguage;
-import com.yuzee.app.bean.CoursePrerequisite;
 import com.yuzee.app.dao.CourseCurriculumDao;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.FacultyDao;
@@ -35,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> {
-	
+
 	@Autowired
 	private InstituteDao institueDao;
 
@@ -44,33 +40,33 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 
 	@Autowired
 	private LevelDao levelDao;
-	
+
 	@Autowired
 	private CourseCurriculumDao courseCurriculumDao;
-	
+
 	@Autowired
 	private CourseDao courseDao;
-	
+
 	@Autowired
 	private CommonHandler commonHandler;
-	
+
 	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
+
 	@Override
 	public Course process(CourseCsvDto courseDto) throws Exception {
 		log.info("Fetching all level from db");
 		Map<String, UUID> levelMap = levelDao.getAllLevelMap();
 		log.info("Fetching all institute from db");
-		Map<String, UUID> instituteMap = institueDao.getAllInstituteMap();
+		Map<String, String> instituteMap = institueDao.getAllInstituteMap();
 		log.info("Fetching all faculty from db");
 		Map<UUID, String> facultyMap = facultyDao.getFacultyNameIdMap();
-	
+
 		Course course = new Course();
-		course.setId(UUID.randomUUID());
+		course.setId(UUID.randomUUID().toString());
 		course.setAbbreviation(courseDto.getAbbreviation());
 		course.setWorldRanking(courseDto.getWorldRanking());
 		course.setName(courseDto.getName());
-		if(!StringUtils.isEmpty(courseDto.getCurriculum())) {
+		if (!StringUtils.isEmpty(courseDto.getCurriculum())) {
 			course.setCourseCurriculum(courseDto.getCurriculum());
 		}
 		course.setRemarks(courseDto.getRemarks());
@@ -78,8 +74,8 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 		course.setStars(courseDto.getStars());
 		course.setDescription(courseDto.getDescription());
 		course.setFaculty(facultyDao.getFaculty(facultyMap.get(courseDto.getFacultyName())));
-		course.setInstitute(institueDao.getInstitute(
-				instituteMap.get(courseDto.getInstituteName() + "~" + courseDto.getCityName() + "~" + StringUtils.trim(courseDto.getCountryName()))).get());
+		course.setInstitute(institueDao.getInstitute(instituteMap.get(courseDto.getInstituteName() + "~"
+				+ courseDto.getCityName() + "~" + StringUtils.trim(courseDto.getCountryName()))).get());
 		course.setIsActive(true);
 		course.setRecognition(courseDto.getRecognition());
 		course.setRecognitionType(courseDto.getRecognitionType());
@@ -107,44 +103,48 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 		log.info("Adding englist eligibility into course");
 		if (courseDto.getIeltsOverall() != null) {
 			log.info("Associating IELTS score with course");
-			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility("IELTS", courseDto.getIeltsReading(), courseDto.getIeltsWriting(), courseDto.getIeltsSpeaking(), courseDto.getIeltsListening(), courseDto.getIeltsOverall(), true);
+			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility("IELTS",
+					courseDto.getIeltsReading(), courseDto.getIeltsWriting(), courseDto.getIeltsSpeaking(),
+					courseDto.getIeltsListening(), courseDto.getIeltsOverall(), true, course, "APIS", "AUTO");
 			course.getCourseEnglishEligibilities().add(courseEnglishEligibility);
 		}
-		
+
 		if (courseDto.getToflOverall() != null) {
 			log.info("Associating TOEFL score with course");
-			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility("TOEFL", courseDto.getToflReading(), courseDto.getToflWriting(), courseDto.getToflSpeaking(), courseDto.getToflListening(), courseDto.getToflOverall(), true);
+			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility("TOEFL",
+					courseDto.getToflReading(), courseDto.getToflWriting(), courseDto.getToflSpeaking(),
+					courseDto.getToflListening(), courseDto.getToflOverall(), true, course, "APIS", "AUTO");
 			course.getCourseEnglishEligibilities().add(courseEnglishEligibility);
 		}
-		
+
 //		if (!org.springframework.util.ObjectUtils.isEmpty(course.getInstitute())) {
 //			log.info("Institute not null saving world ranking");
 //			saveWorldRanking(course, courseDto.getWorldRanking());
 //		}
-		
-		if (!StringUtils.isEmpty(courseDto.getLanguage())) {
+
+		if (!ObjectUtils.isEmpty(courseDto.getLanguage())) {
 			log.info("Saving course language into DB");
-			course.setCourseLanguages(Arrays.asList(courseDto.getLanguage().split(",")));
+			course.setCourseLanguages(Arrays.asList(courseDto.getLanguage()));
 		}
-		
+
 		List<String> deliveryModes = new ArrayList<>();
-		
-		if(!StringUtils.isEmpty(courseDto.getClassroom()) && courseDto.getClassroom().equalsIgnoreCase("Yes") ) {
+
+		if (!StringUtils.isEmpty(courseDto.getClassroom()) && courseDto.getClassroom().equalsIgnoreCase("Yes")) {
 			deliveryModes.add("Classroom");
 		}
-		if(!StringUtils.isEmpty(courseDto.getOnline()) && courseDto.getOnline().equalsIgnoreCase("Yes") ) {
+		if (!StringUtils.isEmpty(courseDto.getOnline()) && courseDto.getOnline().equalsIgnoreCase("Yes")) {
 			deliveryModes.add("Online");
 		}
-		if(!StringUtils.isEmpty(courseDto.getBlended()) && courseDto.getBlended().equalsIgnoreCase("Yes")) {
+		if (!StringUtils.isEmpty(courseDto.getBlended()) && courseDto.getBlended().equalsIgnoreCase("Yes")) {
 			deliveryModes.add("Blended");
 		}
 		log.info("Calling saveCourseDeliveryModes() method");
 		this.saveCourseDeliveryModes(deliveryModes, courseDto, course);
 		log.info("Calling populateUsdPrices method()");
-		this.populateUsdPrices(course,courseDto);
+		this.populateUsdPrices(course, courseDto);
 		return course;
 	}
-	
+
 	private void saveWorldRanking(final Course course, final Integer worldRanking) {
 //		if (course.getInstitute().getWorldRanking() == null) {
 //			log.info("World Ranking {} for institute id {}: ", worldRanking, course.getInstitute().getId());
@@ -231,22 +231,21 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 		}
 		return content.toString();
 	}
-	
-	
+
 	private void saveCourseDeliveryModes(List<String> deliveryModes, CourseCsvDto courseDto, Course course) {
 		List<CourseDeliveryModes> courseDeliveryModes = new ArrayList<>();
 		deliveryModes.stream().forEach(deliveryMode -> {
-			
-			if(courseDto.getFullTime().equalsIgnoreCase("Yes")) {
+
+			if (courseDto.getFullTime().equalsIgnoreCase("Yes")) {
 				CourseDeliveryModes courseDeliveryModeWithFullTime = new CourseDeliveryModes();
 				courseDeliveryModeWithFullTime.setDeliveryType(deliveryMode);
 				courseDeliveryModeWithFullTime.setStudyMode("Full Time");
 				courseDeliveryModeWithFullTime.setDuration(courseDto.getDuration());
 				courseDeliveryModeWithFullTime.setDurationTime(courseDto.getDurationTime());
 				courseDeliveryModes.add(courseDeliveryModeWithFullTime);
-	 		}
-			
-			if(courseDto.getPartTime().equalsIgnoreCase("Yes")) {
+			}
+
+			if (courseDto.getPartTime().equalsIgnoreCase("Yes")) {
 				CourseDeliveryModes courseDeliveryModeWithPartTime = new CourseDeliveryModes();
 				courseDeliveryModeWithPartTime.setDeliveryType(deliveryMode);
 				courseDeliveryModeWithPartTime.setStudyMode("Part Time");
@@ -255,11 +254,10 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 				courseDeliveryModes.add(courseDeliveryModeWithPartTime);
 			}
 		});
-		this.populateCourseUsdFee(courseDeliveryModes, course.getCurrency() );
+		this.populateCourseUsdFee(courseDeliveryModes, course.getCurrency());
 		course.setCourseDeliveryModes(courseDeliveryModes);
 	}
-	
-	
+
 	private void populateCourseUsdFee(List<CourseDeliveryModes> listOfCourseDeliveryModes, String currencyCode) {
 		listOfCourseDeliveryModes.stream().forEach(courseDeliveryMode -> {
 			log.info("fetching currency rate based on currencyCode {}", currencyCode);
@@ -296,21 +294,24 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 //			}
 		});
 	}
-	
-	private void populateCoursePrerequisiteCertificate (CourseCsvDto courseDto, Course course) {
-		if (!courseDto.getCoursePreRequisiteCertificate01().equalsIgnoreCase("0") && !StringUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate01())) {
+
+	private void populateCoursePrerequisiteCertificate(CourseCsvDto courseDto, Course course) {
+		if (!ObjectUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate01())
+				&& !!ObjectUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate01())) {
 			course.getCoursePrerequisites().add(courseDto.getCoursePreRequisiteCertificate01());
 		}
-		
-		if (!courseDto.getCoursePreRequisiteCertificate02().equalsIgnoreCase("0")  && !StringUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate02())) {
+
+		if (!ObjectUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate02())
+				&& !!ObjectUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate02())) {
 			course.getCoursePrerequisites().add(courseDto.getCoursePreRequisiteCertificate02());
 		}
-		
-		if (!courseDto.getCoursePreRequisiteCertificate03().equalsIgnoreCase("0") && !StringUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate03())) {
+
+		if (!ObjectUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate03())
+				&& !!ObjectUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate03())) {
 			course.getCoursePrerequisites().add(courseDto.getCoursePreRequisiteCertificate03());
 		}
 	}
-	
+
 	private void populateUsdPrices(Course course, CourseCsvDto courseDto) {
 		log.info("fetching currency rate based on currencyCode {}", courseDto.getCurrency());
 		CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(courseDto.getCurrency());
@@ -325,7 +326,7 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 //				log.error("Exception while fetching currencyRate", e);
 //			}
 //		}
-		
+
 		if (!ObjectUtils.isEmpty(course.getDomesticApplicationFee())) {
 			Double convertedRate = currencyRate.getConversionRate();
 			log.info("converting domestic application Fee on basis of conviersionRate {}", convertedRate);
@@ -342,9 +343,9 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 				log.info("converting internationalApplicationFee into usdInternationalApplicationFee");
 				Double usdInternationalApplicationFee = course.getInternationalApplicationFee() / convertedRate;
 				course.setUsdInternationalApplicationFee(usdInternationalApplicationFee);
-				
+
 			}
-		}	
+		}
 		if (!ObjectUtils.isEmpty(course.getDomesticEnrollmentFee())) {
 			Double convertedRate = currencyRate.getConversionRate();
 			log.info("converting domestic enrollment Fee on basis of conviersionRate {}", convertedRate);
@@ -360,11 +361,11 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 			if (convertedRate != null) {
 				log.info("converting internationalEnrollmentFee into usdInternationalEnrollmentFee");
 				Double usdInternationalEnrollmentFee = course.getInternationalEnrollmentFee() / convertedRate;
-				course.setUsdInternationalEnrollmentFee(usdInternationalEnrollmentFee);	
+				course.setUsdInternationalEnrollmentFee(usdInternationalEnrollmentFee);
 			}
 		}
 	}
-	
+
 	private void setReadableIdForCourse(Course course) {
 		log.info("going to generate code for course");
 		boolean reGenerateCode = false;

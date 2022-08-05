@@ -9,17 +9,13 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import com.yuzee.app.dto.CategoryDto;
 import com.yuzee.app.dto.SubCategoryDto;
@@ -57,6 +53,7 @@ public class Articles implements Serializable {
 	private String cityName;
 //	private Faculty faculty;
 //	private Institute institute;
+	@DBRef(lazy = false)
 	private Course course;
 	private String articleType;
 	private String companyName;
@@ -82,9 +79,10 @@ public class Articles implements Serializable {
 	public Articles() {
 	}
 
-	public Articles(final Category category, final SubCategory subcategory, final String userInfo, final String addType, final String heading,
-			final String content, final String url, final String imagepath, final BigInteger type, final Boolean active, final Date deletedOn,
-			final Date createdAt, final BigInteger shared, final BigInteger reviewed, final BigInteger likes, final String link, final Date updatedAt,
+	public Articles(final Category category, final SubCategory subcategory, final String userInfo, final String addType,
+			final String heading, final String content, final String url, final String imagepath, final BigInteger type,
+			final Boolean active, final Date deletedOn, final Date createdAt, final BigInteger shared,
+			final BigInteger reviewed, final BigInteger likes, final String link, final Date updatedAt,
 			final Faculty faculty, final Institute institute, final Course courses, final String gender,
 			final String articleType, final String companyName, final String companyWebsite) {
 		this.category = category;
@@ -104,8 +102,8 @@ public class Articles implements Serializable {
 		this.likes = likes;
 		this.link = link;
 		this.updatedAt = updatedAt;
-		//this.faculty = faculty;
-		//this.institute = institute;
+		// this.faculty = faculty;
+		// this.institute = institute;
 		this.course = courses;
 		this.articleType = articleType;
 		this.companyName = companyName;
@@ -113,9 +111,7 @@ public class Articles implements Serializable {
 	}
 
 	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
+
 	public String getId() {
 		return this.id;
 	}
@@ -124,8 +120,6 @@ public class Articles implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "category_id")
 	public Category getCategory() {
 		return this.category;
 	}
@@ -134,8 +128,6 @@ public class Articles implements Serializable {
 		this.category = category;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "subcategory_id")
 	public SubCategory getSubcategory() {
 		return this.subcategory;
 	}
@@ -144,7 +136,6 @@ public class Articles implements Serializable {
 		this.subcategory = subcategory;
 	}
 
-	@Column(name = "user_id", length=36)
 	public String getUserId() {
 		return this.userId;
 	}
@@ -153,7 +144,6 @@ public class Articles implements Serializable {
 		this.userId = userInfo;
 	}
 
-	@Column(name = "add_type", length = 100)
 	public String getAddType() {
 		return this.addType;
 	}
@@ -162,7 +152,6 @@ public class Articles implements Serializable {
 		this.addType = addType;
 	}
 
-	@Column(name = "heading", length = 200)
 	public String getHeading() {
 		return this.heading;
 	}
@@ -171,7 +160,6 @@ public class Articles implements Serializable {
 		this.heading = heading;
 	}
 
-	@Column(name = "content", length = 500)
 	public String getContent() {
 		return this.content;
 	}
@@ -180,7 +168,6 @@ public class Articles implements Serializable {
 		this.content = content;
 	}
 
-	@Column(name = "url", length = 500)
 	public String getUrl() {
 		return this.url;
 	}
@@ -189,7 +176,6 @@ public class Articles implements Serializable {
 		this.url = url;
 	}
 
-	@Column(name = "imagepath", length = 500)
 	public String getImagepath() {
 		return this.imagepath;
 	}
@@ -207,7 +193,6 @@ public class Articles implements Serializable {
 		this.type = type;
 	}
 
-	@Column(name = "active")
 	public Boolean getActive() {
 		return this.active;
 	}
@@ -216,8 +201,6 @@ public class Articles implements Serializable {
 		this.active = active;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "deleted_on", length = 19)
 	public Date getDeletedOn() {
 		return this.deletedOn;
 	}
@@ -226,8 +209,6 @@ public class Articles implements Serializable {
 		this.deletedOn = deletedOn;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_at", length = 19)
 	public Date getCreatedAt() {
 		return this.createdAt;
 	}
@@ -236,7 +217,6 @@ public class Articles implements Serializable {
 		this.createdAt = createdAt;
 	}
 
-	@Column(name = "shared")
 	public BigInteger getShared() {
 		return this.shared;
 	}
@@ -245,7 +225,6 @@ public class Articles implements Serializable {
 		this.shared = shared;
 	}
 
-	@Column(name = "reviewed")
 	public BigInteger getReviewed() {
 		return this.reviewed;
 	}
@@ -254,7 +233,6 @@ public class Articles implements Serializable {
 		this.reviewed = reviewed;
 	}
 
-	@Column(name = "likes")
 	public BigInteger getLikes() {
 		return this.likes;
 	}
@@ -263,7 +241,6 @@ public class Articles implements Serializable {
 		this.likes = likes;
 	}
 
-	@Column(name = "link")
 	public String getLink() {
 		return this.link;
 	}
@@ -272,8 +249,6 @@ public class Articles implements Serializable {
 		this.link = link;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_at", length = 19)
 	public Date getUpdatedAt() {
 		return this.updatedAt;
 	}
@@ -288,7 +263,7 @@ public class Articles implements Serializable {
 //		return this.faculty;
 //	}
 
-	//public void setFaculty(final Faculty faculty) {
+	// public void setFaculty(final Faculty faculty) {
 //		this.faculty = faculty;
 //	}
 
@@ -298,12 +273,10 @@ public class Articles implements Serializable {
 //		return this.institute;
 //	}
 
-	//public void setInstitute(final Institute institute) {
+	// public void setInstitute(final Institute institute) {
 //		this.institute = institute;
 //	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "courses")
 	public Course getCourse() {
 		return this.course;
 	}
@@ -312,7 +285,6 @@ public class Articles implements Serializable {
 		this.course = courses;
 	}
 
-	@Column(name = "article_type", length = 100)
 	public String getArticleType() {
 		return this.articleType;
 	}
@@ -321,7 +293,6 @@ public class Articles implements Serializable {
 		this.articleType = articleType;
 	}
 
-	@Column(name = "company_name", length = 100)
 	public String getCompanyName() {
 		return this.companyName;
 	}
@@ -330,7 +301,6 @@ public class Articles implements Serializable {
 		this.companyName = companyName;
 	}
 
-	@Column(name = "company_website", length = 500)
 	public String getCompanyWebsite() {
 		return this.companyWebsite;
 	}
@@ -390,7 +360,7 @@ public class Articles implements Serializable {
 		result = prime * result + (heading == null ? 0 : heading.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
 		result = prime * result + (imagepath == null ? 0 : imagepath.hashCode());
-	//	result = prime * result + (institute == null ? 0 : institute.hashCode());
+		// result = prime * result + (institute == null ? 0 : institute.hashCode());
 		result = prime * result + (likes == null ? 0 : likes.hashCode());
 		result = prime * result + (link == null ? 0 : link.hashCode());
 		result = prime * result + (reviewed == null ? 0 : reviewed.hashCode());
@@ -618,22 +588,27 @@ public class Articles implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("SeekaArticles [id=").append(id).append(", category=").append(category).append(", subcategory=").append(subcategory).append(", userId=")
-				.append(userId).append(", addType=").append(addType).append(", heading=").append(heading).append(", content=").append(content).append(", url=")
-				.append(url).append(", imagepath=").append(imagepath).append(", type=").append(type).append(", active=").append(active).append(", deletedOn=")
-				.append(deletedOn).append(", createdAt=").append(createdAt).append(", shared=").append(shared).append(", reviewed=").append(reviewed)
-				.append(", likes=").append(likes).append(", link=").append(link).append(", updatedAt=").append(updatedAt).append(", country=").append(getCountryName())
-				.append(", city=").append(getCityName()).append(", courses=")
-				.append(course).append(", articleType=").append(articleType).append(", companyName=").append(companyName).append(", companyWebsite=")
-				.append(companyWebsite).append(", subCategoryDropDownDto=").append(subCategoryDropDownDto).append(", categoryobj=").append(categoryobj)
-				.append(", author=").append(author).append(", postDate=").append(postDate).append(", expireyDate=").append(expireDate).append(", enabled=")
-				.append(enabled).append(", published=").append(published).append(", featured=").append(featured).append(", notes=").append(notes)
-				.append(", websiteUrl=").append(websiteUrl).append(", seekaRecommended=").append(seekaRecommended).append(", tags=").append(tags)
-				.append(", status=").append(status).append("]");
+		builder.append("SeekaArticles [id=").append(id).append(", category=").append(category).append(", subcategory=")
+				.append(subcategory).append(", userId=").append(userId).append(", addType=").append(addType)
+				.append(", heading=").append(heading).append(", content=").append(content).append(", url=").append(url)
+				.append(", imagepath=").append(imagepath).append(", type=").append(type).append(", active=")
+				.append(active).append(", deletedOn=").append(deletedOn).append(", createdAt=").append(createdAt)
+				.append(", shared=").append(shared).append(", reviewed=").append(reviewed).append(", likes=")
+				.append(likes).append(", link=").append(link).append(", updatedAt=").append(updatedAt)
+				.append(", country=").append(getCountryName()).append(", city=").append(getCityName())
+				.append(", courses=").append(course).append(", articleType=").append(articleType)
+				.append(", companyName=").append(companyName).append(", companyWebsite=").append(companyWebsite)
+				.append(", subCategoryDropDownDto=").append(subCategoryDropDownDto).append(", categoryobj=")
+				.append(categoryobj).append(", author=").append(author).append(", postDate=").append(postDate)
+				.append(", expireyDate=").append(expireDate).append(", enabled=").append(enabled).append(", published=")
+				.append(published).append(", featured=").append(featured).append(", notes=").append(notes)
+				.append(", websiteUrl=").append(websiteUrl).append(", seekaRecommended=").append(seekaRecommended)
+				.append(", tags=").append(tags).append(", status=").append(status).append("]");
 		return builder.toString();
 	}
+
 //.append(", institute=").append(institute)
-	//.append(", faculty=").append(faculty)
+	// .append(", faculty=").append(faculty)
 	/**
 	 * @return the author
 	 */

@@ -1,8 +1,8 @@
 package com.yuzee.app.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.yuzee.app.bean.CourseFunding;
 
-public interface CourseFundingRepository extends JpaRepository<CourseFunding, String> {
+public interface CourseFundingRepository extends MongoRepository<CourseFunding, String> {
 }

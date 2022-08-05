@@ -85,7 +85,7 @@ public class CourseSemesterProcessor {
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("invalid course id: {}", courseId);
 			throw new NotFoundException("invalid course id: " + courseId);
@@ -108,35 +108,35 @@ public class CourseSemesterProcessor {
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("one or more invalid course_subject_ids");
 			throw new NotFoundException("one or more invalid course_subject_ids");
 		}
 	}
-	
+
 	public void saveUpdateSubjects(String userId, CourseSemester courseSemester, List<SemesterSubjectDto> subjectDtos) {
 		if (!CollectionUtils.isEmpty(subjectDtos)) {
 			List<SemesterSubject> subjects = courseSemester.getSubjects();
 
 			List<String> updateRequestIds = subjectDtos.stream().filter(e -> StringUtils.hasText(e.getId()))
-			.map(SemesterSubjectDto::getId).collect(Collectors.toList());
+					.map(SemesterSubjectDto::getId).collect(Collectors.toList());
 			subjects.removeIf(e -> !Utils.contains(updateRequestIds, e.getId()));
-			
+
 			log.info("preparing map of exsiting course fees");
-			Map<String, SemesterSubject> existingSubjectMap = subjects.stream().filter(e -> StringUtils.hasText(e.getId()))
+			Map<String, SemesterSubject> existingSubjectMap = subjects.stream()
+					.filter(e -> StringUtils.hasText(e.getId()))
 					.collect(Collectors.toMap(SemesterSubject::getId, e -> e));
-			subjectDtos.stream().forEach(dto->{
+			subjectDtos.stream().forEach(dto -> {
 				SemesterSubject model = new SemesterSubject();
 				if (StringUtils.hasText(dto.getId())) {
-					log.info(
-							"id is present so going to see if it is present in db if yes then we have to update it");
+					log.info("id is present so going to see if it is present in db if yes then we have to update it");
 					model = existingSubjectMap.get(dto.getId());
 					if (ObjectUtils.isEmpty(model)) {
 						log.error("invalid course fees id : {}", dto.getId());
 						throw new RuntimeNotFoundException("invalid course fees id : " + dto.getId());
 					}
-				}else {
+				} else {
 					subjects.add(model);
 				}
 				model.setName(dto.getName());
@@ -144,7 +144,7 @@ public class CourseSemesterProcessor {
 				model.setAuditFields(userId);
 				model.setCourseSemester(courseSemester);
 			});
-			
+
 		} else {
 			courseSemester.getSubjects().clear();
 		}

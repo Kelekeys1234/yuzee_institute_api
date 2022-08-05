@@ -39,20 +39,20 @@ public class FacultyProcessor {
 
 	@Autowired
 	private JobLauncher jobLauncher;
-	
+
 	@Autowired
 	@Qualifier("importFacultyJob")
 	private Job job;
-	
+
 	@Autowired
 	@Qualifier("exportFacultyToElastic")
 	private Job exportFacultyJob;
-	
+
 	@Transactional
 	public void saveFaculty(final FacultyDto facultyDto) {
 		log.debug("Inside saveFaculty() method");
 		Faculty faculty = new Faculty();
-		log.info("saving faculty data in DB having facultyName = "+facultyDto.getName());
+		log.info("saving faculty data in DB having facultyName = " + facultyDto.getName());
 		faculty.setName(facultyDto.getName());
 		faculty.setIsActive(true);
 		faculty.setCreatedBy("API");
@@ -65,8 +65,8 @@ public class FacultyProcessor {
 	public FacultyDto getFacultyById(final String id) {
 		log.debug("Inside getFacultyById() method");
 		FacultyDto facultyDto = new FacultyDto();
-		log.info("Fetching faculty from DB having facultyId = "+id);
-		Faculty faculty = facultyDAO.getFaculty(UUID.fromString(id));
+		log.info("Fetching faculty from DB having facultyId = " + id);
+		Faculty faculty = facultyDAO.getFaculty(id);
 		if (!ObjectUtils.isEmpty(faculty)) {
 			log.info("Faculty found in DB hence making response");
 			facultyDto.setName(faculty.getName());
@@ -82,7 +82,7 @@ public class FacultyProcessor {
 		List<FacultyDto> facultyDtos = new ArrayList<>();
 		log.info("Fetching all faculties from DB");
 		List<Faculty> facultiesFromDB = facultyDAO.getAll();
-		if(!CollectionUtils.isEmpty(facultiesFromDB)) {
+		if (!CollectionUtils.isEmpty(facultiesFromDB)) {
 			log.info("FAculties fetched from DB start iterating to make response");
 			facultiesFromDB.stream().forEach(faculty -> {
 				FacultyDto facultyDto = new FacultyDto();
@@ -94,43 +94,46 @@ public class FacultyProcessor {
 		}
 		return facultyDtos;
 	}
-	
+
 	@Transactional
 	public FacultyDto getFacultyByFacultyName(String facultyName) {
 		log.debug("Inside getFacultyByFacultyName() method");
 		FacultyDto facultyDto = new FacultyDto();
-		log.info("Fetching faculty from DB having facultyName = "+facultyName);
+		log.info("Fetching faculty from DB having facultyName = " + facultyName);
 		Faculty facultyFromDB = facultyDAO.getFacultyByFacultyName(facultyName);
-		if(!ObjectUtils.isEmpty(facultyFromDB)) {
+		if (!ObjectUtils.isEmpty(facultyFromDB)) {
 			log.info("Faculty coming from DB hence start making response");
 			facultyDto.setName(facultyFromDB.getName());
 			facultyDto.setId(facultyFromDB.getId().toString());
 			try {
 				facultyDto.setIcon(CDNServerUtil.getFacultyIconUrl(facultyFromDB.getName()));
 			} catch (Exception exception) {
-				log.error("Exception while fetching faculty icon URL = "+exception);
+				log.error("Exception while fetching faculty icon URL = " + exception);
 			}
 		}
 		return facultyDto;
 	}
-	
-    public void importFaculty(final MultipartFile multipartFile) throws IOException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
-    	log.debug("Inside importFaculty() method");
-    	log.info("Calling methiod to save faculty data");
-		
+
+	public void importFaculty(final MultipartFile multipartFile)
+			throws IOException, JobExecutionAlreadyRunningException, JobRestartException,
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+		log.debug("Inside importFaculty() method");
+		log.info("Calling methiod to save faculty data");
+
 		File f = File.createTempFile("faculty", ".csv");
 		multipartFile.transferTo(f);
-		
+
 		JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
 		jobParametersBuilder.addString("csv-file", f.getAbsolutePath());
 		jobParametersBuilder.addString("execution-id", UUID.randomUUID().toString());
 		jobLauncher.run(job, jobParametersBuilder.toJobParameters());
 	}
-    
-    public void exportFacultyToElastic() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+
+	public void exportFacultyToElastic() throws JobExecutionAlreadyRunningException, JobRestartException,
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		log.debug("Inside exportFacultyToElastic() method");
-		jobLauncher.run(exportFacultyJob, new JobParametersBuilder()
-                .addLong("time",System.currentTimeMillis(), true).toJobParameters());
+		jobLauncher.run(exportFacultyJob,
+				new JobParametersBuilder().addLong("time", System.currentTimeMillis(), true).toJobParameters());
 
 	}
 }

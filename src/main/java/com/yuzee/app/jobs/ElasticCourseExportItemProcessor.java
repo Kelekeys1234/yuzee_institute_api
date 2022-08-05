@@ -22,12 +22,13 @@ public class ElasticCourseExportItemProcessor implements ItemProcessor<Course, C
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start("DTOUtills.convertToCourseDTOElasticSearchEntity");
 		try {
-			return conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course);
+
 		} finally {
 			stopWatch.stop();
 			log.info("DTOUtills.convertToCourseDTOElasticSearchEntity process completed in ::: {}",
 					stopWatch.getTotalTimeSeconds());
 		}
+		return null;
 
 	}
 }

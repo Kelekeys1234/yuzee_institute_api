@@ -34,56 +34,59 @@ import lombok.extern.apachecommons.CommonsLog;
 @CommonsLog
 public class LevelProcessor {
 
-    @Autowired
-    private LevelDao levelDao;
+	@Autowired
+	private LevelDao levelDao;
 
-    @Autowired
+	@Autowired
 	private JobLauncher jobLauncher;
 
 	@Autowired
 	@Qualifier("importlevelJob")
 	private Job job;
-	
+
 	@Transactional
-    public void addUpdateLevel(LevelDto levelDto) {
-    	Level level = new Level(null, levelDto.getName(), levelDto.getCode(), null,levelDto.getSequenceNo(), true, new Date(), null, null, "API", null, null);
-    	levelDao.addUpdateLevel(level);
-    }
+	public void addUpdateLevel(LevelDto levelDto) {
+		Level level = new Level(null, levelDto.getName(), levelDto.getCode(), null, levelDto.getSequenceNo(), true,
+				new Date(), null, null, "API", null, null);
+		levelDao.addUpdateLevel(level);
+	}
 
 	@Transactional
 	public Level getLevel(String id) {
-        Optional<Level> optLevel = levelDao.getLevel(UUID.fromString(id));
-        if (optLevel.isPresent()) {
-        	return optLevel.get();
-        }
-        return null;
-        
-    }
-    
-	@Transactional
-    public List<LevelDto> getAllLevels() {
-    	log.debug("Inside getAllLevels() method");
-    	List<LevelDto> levelDtos = new ArrayList<>();
-    	log.info("Fetching all levels from DB");
-    	List<Level> levelsFromDB = levelDao.getAll();
-    	if(!CollectionUtils.isEmpty(levelsFromDB)) {
-    		log.info("Levels fetched from DB, start iterating data to make response");
-    		levelsFromDB.stream().forEach(level -> {
-    			var levelDto = new LevelDto(level.getId().toString(), level.getName(), level.getCode(), level.getDescription(), level.getSequenceNo());
-    			levelDtos.add(levelDto);
-    		});
-    	}
-        return levelDtos;
-    }
+		Optional<Level> optLevel = levelDao.getLevel(UUID.fromString(id));
+		if (optLevel.isPresent()) {
+			return optLevel.get();
+		}
+		return null;
 
-	@CacheEvict(cacheNames = {"cacheLevelMap"}, allEntries = true)
-	public void importLevel(final MultipartFile multipartFile) throws IOException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+	}
+
+	@Transactional
+	public List<LevelDto> getAllLevels() {
+		log.debug("Inside getAllLevels() method");
+		List<LevelDto> levelDtos = new ArrayList<>();
+		log.info("Fetching all levels from DB");
+		List<Level> levelsFromDB = levelDao.getAll();
+		if (!CollectionUtils.isEmpty(levelsFromDB)) {
+			log.info("Levels fetched from DB, start iterating data to make response");
+			levelsFromDB.stream().forEach(level -> {
+				var levelDto = new LevelDto(level.getId().toString(), level.getName(), level.getCode(),
+						level.getDescription(), level.getSequenceNo());
+				levelDtos.add(levelDto);
+			});
+		}
+		return levelDtos;
+	}
+
+	@CacheEvict(cacheNames = { "cacheLevelMap" }, allEntries = true)
+	public void importLevel(final MultipartFile multipartFile) throws IOException, JobExecutionAlreadyRunningException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		log.debug("Inside importLevel() method");
 		log.info("Calling methiod to save level data");
-		
+
 		File f = File.createTempFile("levels", ".csv");
 		multipartFile.transferTo(f);
-		
+
 		JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
 		jobParametersBuilder.addString("csv-file", f.getAbsolutePath());
 		jobParametersBuilder.addString("execution-id", UUID.randomUUID().toString());
@@ -93,7 +96,8 @@ public class LevelProcessor {
 	public LevelDto getLevelById(String levelId) {
 		Level level = getLevel(levelId);
 		if (!ObjectUtils.isEmpty(level)) {
-			return new LevelDto(level.getId().toString(), level.getName(), level.getCode(), level.getDescription(), level.getSequenceNo());
+			return new LevelDto(level.getId().toString(), level.getName(), level.getCode(), level.getDescription(),
+					level.getSequenceNo());
 		}
 		return new LevelDto();
 	}

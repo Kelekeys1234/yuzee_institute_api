@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import com.yuzee.app.bean.CareerJobSkill;
 import com.yuzee.app.dao.CareerTestDao;
@@ -23,10 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Transactional
 public class JobSkillProcessor {
-	
+
 	@Autowired
 	private CareerTestDao careerTestDao;
-	
+
 	@Autowired
 	CareerTestProcessor careerTestProcessor;
 
@@ -38,16 +37,15 @@ public class JobSkillProcessor {
 		log.info("Extracting job skills from DB for jobNames ", jobNames);
 
 		Page<CareerJobSkill> jobSkillsFromDB = careerTestDao.getJobSkills(jobNames, pageable);
-		if (!CollectionUtils.isEmpty(jobSkillsFromDB.getContent())) {
-			log.info("Career JobSkills fetched from DB, start iterating data to make final response");
-			jobSkillsFromDB.getContent().stream().forEach(careerJobSkill -> {
-				CareerJobSkillDto careerJobSkillDto = new CareerJobSkillDto(careerJobSkill.getId(),
-						careerJobSkill.getSkill(), careerJobSkill.getDescription(),
-						careerJobSkill.getCareerJobs().getId(),
-						false);
-				careerJobSkillDtos.add(careerJobSkillDto);
-			});
-		}
+//		if (!CollectionUtils.isEmpty(jobSkillsFromDB.getContent())) {
+//			log.info("Career JobSkills fetched from DB, start iterating data to make final response");
+//			jobSkillsFromDB.getContent().stream().forEach(careerJobSkill -> {
+//				CareerJobSkillDto careerJobSkillDto = new CareerJobSkillDto(careerJobSkill.get),
+//						careerJobSkill.getSkill(), careerJobSkill.getDescription(),
+//						careerJobSkill.getCareerJobs().getId(),
+//						false);
+//				careerJobSkillDtos.add(careerJobSkillDto);
+//			});
 		return PaginationUtil.calculatePaginationAndPrepareResponse(jobSkillsFromDB, careerJobSkillDtos);
 	}
 }

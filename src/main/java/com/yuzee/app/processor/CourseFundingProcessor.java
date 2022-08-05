@@ -1,6 +1,13 @@
 package com.yuzee.app.processor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -48,7 +55,7 @@ public class CourseFundingProcessor {
 
 	@Autowired
 	private CommonProcessor commonProcessor;
-	
+
 	@Autowired
 	private MessageTranslator messageTranslator;
 
@@ -71,17 +78,18 @@ public class CourseFundingProcessor {
 				courseFundings.add(courseFunding);
 			});
 			List<CourseFunding> saved = courseFundingDao.saveAll(courseFundings);
-			
+
 			log.info("Send notifications to all course");
 			List<Course> courseToBeNotified = new ArrayList<>();
-			Map<String, List<CourseFunding>> courseWiseFundings = saved.stream().collect(Collectors.groupingBy(funding ->  funding.getCourse().getId()));
+			Map<String, List<CourseFunding>> courseWiseFundings = saved.stream()
+					.collect(Collectors.groupingBy(funding -> funding.getCourse().getId()));
 			courseWiseFundings.keySet().stream().forEach(courseId -> {
-					courseToBeNotified.add(courseDao.get(courseId));
+				courseToBeNotified.add(courseDao.get(courseId));
 			});
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", courseToBeNotified);
 		} else {
-			log.error(messageTranslator.toLocale("course_funding.institute.id.invalid",instituteId,Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("course_funding.institute.id.invalid",instituteId));
+			log.error(messageTranslator.toLocale("course_funding.institute.id.invalid", instituteId, Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("course_funding.institute.id.invalid", instituteId));
 		}
 	}
 
@@ -94,7 +102,8 @@ public class CourseFundingProcessor {
 		if (!ObjectUtils.isEmpty(course)) {
 			log.info("going to see if funding id is valid");
 			commonProcessor.getFundingsByFundingNameIds(
-					courseFundingDtos.stream().map(CourseFundingDto::getFundingNameId).collect(Collectors.toList()), true);
+					courseFundingDtos.stream().map(CourseFundingDto::getFundingNameId).collect(Collectors.toList()),
+					true);
 			List<CourseFunding> courseFundings = course.getCourseFundings();
 			courseFundingDtos.stream().forEach(e -> {
 				CourseFunding courseFunding = new CourseFunding();
@@ -115,14 +124,14 @@ public class CourseFundingProcessor {
 						.addAll(replicateCourseFundings(userId, request.getLinkedCourseIds(), dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
-			
+
 			log.info("Send notification for course content updates");
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-			
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+
+			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
-			log.error(messageTranslator.toLocale("course_funding.course.id.invalid",courseId,Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("course_funding.course.id.invalid",courseId));
+			log.error(messageTranslator.toLocale("course_funding.course.id.invalid", courseId, Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("course_funding.course.id.invalid", courseId));
 		}
 	}
 
@@ -135,8 +144,8 @@ public class CourseFundingProcessor {
 		if (courseFundings.stream().map(CourseFunding::getFundingNameId).collect(Collectors.toSet())
 				.containsAll(fundingNameIds)) {
 			if (courseFundings.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
-				log.error(messageTranslator.toLocale("course_funding.delete.no.access",userId,Locale.US));
-				throw new ForbiddenException(messageTranslator.toLocale("course_funding.delete.no.access",userId));
+				log.error(messageTranslator.toLocale("course_funding.delete.no.access", userId, Locale.US));
+				throw new ForbiddenException(messageTranslator.toLocale("course_funding.delete.no.access", userId));
 			}
 
 			courseFundings.removeIf(e -> Utils.contains(fundingNameIds, e.getFundingNameId()));
@@ -148,12 +157,12 @@ public class CourseFundingProcessor {
 				coursesToBeSavedOrUpdated.addAll(replicateCourseFundings(userId, linkedCourseIds, dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
-			
+
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
-			log.error(messageTranslator.toLocale("course_funding.ids.invalid",Locale.US));
+			log.error(messageTranslator.toLocale("course_funding.ids.invalid", Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("course_funding.ids.invalid"));
 		}
 	}

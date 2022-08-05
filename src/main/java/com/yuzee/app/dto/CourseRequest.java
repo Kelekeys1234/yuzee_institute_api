@@ -3,12 +3,13 @@ package com.yuzee.app.dto;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yuzee.common.lib.dto.application.ProcedureDto;
@@ -31,25 +32,25 @@ import com.yuzee.common.lib.dto.storage.StorageDto;
 import lombok.Data;
 import lombok.ToString;
 
-@Data
 @ToString
-@Document("course")
+@Data
 public class CourseRequest {
 
-	@JsonProperty("course_id")
-	private String id;
+	@JsonProperty("id")
 
-	@JsonProperty("institute_id")
+	private UUID id;
+
+	@JsonProperty("instituteId")
 	private String instituteId;
 
-	@JsonProperty("faculty_id")
+	@JsonProperty("facultyId")
 	@NotBlank(message = "{faculty_id.is_required}")
 	private String facultyId;
 
 	@JsonProperty("faculty")
 	private FacultyDto faculty;
 
-	@JsonProperty("curriculum_id")
+	@JsonProperty("curriculumId")
 	private String curriculumId;
 
 	@JsonProperty("name")
@@ -89,18 +90,18 @@ public class CourseRequest {
 	@JsonProperty("cost")
 	private String cost;
 
-	@JsonProperty("total_count")
+	@JsonProperty("totalcount")
 	private String totalCount;
-	
+
 	@JsonProperty("currency")
 	private String currency;
 
-	@JsonProperty("currency_time")
+	@JsonProperty("currencytime")
 	private String currencyTime;
 
-	@JsonProperty("level_id")
+	@JsonProperty("levelIds")
 	@NotBlank(message = "{level_id.is_required}")
-	private String levelId;
+	private String levelIds;
 
 	@JsonProperty("level")
 	private LevelDto level;
@@ -111,7 +112,7 @@ public class CourseRequest {
 	@JsonProperty("recognition")
 	private String recognition;
 
-	@JsonProperty("recognition_type")
+	@JsonProperty("recognitionType")
 	private String recognitionType;
 
 	@JsonProperty("abbreviation")
@@ -123,7 +124,7 @@ public class CourseRequest {
 	@JsonProperty("applied")
 	private Boolean applied;
 
-	@JsonProperty("view_course")
+	@JsonProperty("viewCourse")
 	private Boolean viewCourse;
 
 	@JsonProperty("latitude")
@@ -132,31 +133,36 @@ public class CourseRequest {
 	@JsonProperty("longitude")
 	private Double longitude;
 
-	@JsonProperty("country_name")
+	@JsonProperty("countryName")
 	private String countryName;
 
-	@JsonProperty("city_name")
+	@JsonProperty("cityName")
 	private String cityName;
 
-	@JsonProperty("storage_list")
+	@DBRef
+	@JsonProperty("storageList")
 	private List<StorageDto> storageList = new ArrayList<>();
 
 	@Valid
-	@JsonProperty("course_delivery_modes")
+
+	@JsonProperty("courseDeliveryModes")
+	@DBRef
 	private ValidList<CourseDeliveryModesDto> courseDeliveryModes = new ValidList<>();
 
 	@Valid
-	@JsonProperty("course_prerequisites")
+	@JsonProperty("prerequisites")
+	@DBRef
 	private List<CoursePreRequisiteDto> prerequisites;
 
 	@Valid
-	@JsonProperty("english_eligibility")
+	@JsonProperty("englishEligibility")
+	@DBRef
 	private ValidList<CourseEnglishEligibilityDto> englishEligibility = new ValidList<>();
 
-	@JsonProperty("examination_board")
+	@JsonProperty("examinationBoard")
 	private String examinationBoard;
 
-	@JsonProperty("domestic_application_fee")
+	@JsonProperty("domestic_applicationFee")
 	private Double domesticApplicationFee;
 
 	@JsonProperty("international_application_fee")
@@ -200,7 +206,7 @@ public class CourseRequest {
 
 	@JsonProperty("reviews_count")
 	private Long reviewsCount;
-	
+
 	@JsonProperty("audience")
 	private String audience;
 
@@ -208,59 +214,73 @@ public class CourseRequest {
 	private int fundingsCount;
 
 	@JsonProperty("off_campus_course")
+	@DBRef
 	private OffCampusCourseDto offCampusCourse;
 
 	@Valid
 	@JsonProperty("course_semesters")
 	@NotNull(message = "{course_semesters.is_required}")
+	@DBRef
 	private ValidList<CourseSemesterDto> courseSemesters = new ValidList<>();
 
 	@Valid
 	@JsonProperty("course_timings")
 	@NotNull(message = "{course_timings.is_required}")
+	@DBRef
 	private ValidList<TimingRequestDto> courseTimings = new ValidList<>();
 
 	@Valid
 	@JsonProperty("course_career_outcomes")
+	@DBRef
 	private ValidList<CourseCareerOutcomeDto> courseCareerOutcomes = new ValidList<>();
 
 	@Valid
 	@JsonProperty("course_fundings")
+	@DBRef
 	private ValidList<CourseFundingDto> courseFundings = new ValidList<>();
 
 	@JsonProperty("course_payment")
+	@DBRef
 	private CoursePaymentDto coursePayment;
 
 	@Valid
 	@JsonProperty("institute")
+	@DBRef
 	private InstituteResponseDto institute;
 
 	@Valid
 	@JsonProperty("course_contact_persons")
 	@NotNull(message = "{course_contact_persons.is_required}")
+	@DBRef
 	private ValidList<CourseContactPersonDto> courseContactPersons = new ValidList<>();
-	
+
 	@Valid
 	@JsonProperty("provider_codes")
+	@DBRef
 	private ValidList<ProviderCodeDto> providerCodes = new ValidList<>();
-	
+
 	@JsonProperty("course_intake")
+	@DBRef
 	private CourseIntakeDto intake;
-	
+
 	@JsonProperty("international_student_procedure")
+	@DBRef
 	private ProcedureDto internationalStudentProcedure;
-	
+
 	@JsonProperty("domestic_student_procedure")
+	@DBRef
 	private ProcedureDto domesticStudentProcedure;
-	
+
 	@JsonProperty("international_student_procedure_id")
 	private String internationalStudentProcedureId;
-	
+
 	@JsonProperty("domestic_student_procedure_id")
 	private String domesticStudentProcedureId;
-	
-	@Valid 
+
+	@Valid
 	@NotNull(message = "{course_min_requirements.is_required}")
 	@JsonProperty("course_min_requirements")
+	@DBRef
 	ValidList<CourseMinRequirementDto> courseMinRequirementDtos;
+
 }

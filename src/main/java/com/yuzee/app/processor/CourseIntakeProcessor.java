@@ -38,10 +38,10 @@ public class CourseIntakeProcessor {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private CommonProcessor commonProcessor;
-	
+
 	@Autowired
 	private MessageTranslator messageTranslator;
 
@@ -68,10 +68,10 @@ public class CourseIntakeProcessor {
 			log.info("Send notification for course content updates");
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
-			log.error(messageTranslator.toLocale("course_intake.course.id.invalid",courseId,Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("course_intake.course.id.invalid",courseId));
+			log.error(messageTranslator.toLocale("course_intake.course.id.invalid", courseId, Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("course_intake.course.id.invalid", courseId));
 		}
 	}
 
@@ -90,7 +90,7 @@ public class CourseIntakeProcessor {
 
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		}
 	}
 }

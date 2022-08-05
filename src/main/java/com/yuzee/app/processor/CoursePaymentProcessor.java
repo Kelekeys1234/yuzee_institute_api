@@ -43,13 +43,13 @@ public class CoursePaymentProcessor {
 
 	@Autowired
 	private PublishSystemEventHandler publishSystemEventHandler;
-	
+
 	@Autowired
 	private CommonProcessor commonProcessor;
-	
+
 	@Autowired
 	private ConversionProcessor conversionProcessor;
-	
+
 	@Autowired
 	private MessageTranslator messageTranslator;
 
@@ -59,14 +59,14 @@ public class CoursePaymentProcessor {
 		log.info("inside CoursePaymentProcessor.saveUpdateCoursePayment");
 		Course course = getCourseById(courseId);
 		if (!course.getCreatedBy().equals(userId)) {
-			log.error(messageTranslator.toLocale("course_payment.add.no.access",Locale.US));
+			log.error(messageTranslator.toLocale("course_payment.add.no.access", Locale.US));
 			throw new ForbiddenException(messageTranslator.toLocale("course_payment.add.no.access"));
 		} else {
 			CoursePayment coursePayment = course.getCoursePayment();
 			if (ObjectUtils.isEmpty(coursePayment)) {
 				coursePayment = new CoursePayment();
 			}
-			
+
 			List<CoursePaymentItemDto> paymentItemDtos = coursePaymentDto.getPaymentItems();
 			List<CoursePaymentItem> dbCoursePaymentItems = coursePayment.getPaymentItems();
 
@@ -77,9 +77,10 @@ public class CoursePaymentProcessor {
 				BeanUtils.copyProperties(item, clone);
 				return clone;
 			}).collect(Collectors.toList());
-			
+
 			log.info("remove the payment items not present in request");
-			dbCoursePaymentItems.removeIf(e -> paymentItemDtos.stream().noneMatch(t -> e.getName().equalsIgnoreCase(t.getName())));
+			dbCoursePaymentItems
+					.removeIf(e -> paymentItemDtos.stream().noneMatch(t -> e.getName().equalsIgnoreCase(t.getName())));
 			final CoursePayment finalCoursePayment = coursePayment;
 			paymentItemDtos.stream().forEach(e -> {
 				Optional<CoursePaymentItem> existingCoursePaymentItemOp = dbCoursePaymentItems.stream()
@@ -104,14 +105,14 @@ public class CoursePaymentProcessor {
 			coursePayment.setAuditFields(userId);
 			log.info("going to save record in db");
 			coursePaymentDao.save(coursePayment);
-			
-			if(! (coursePaymentBeforeUpdate.equals(coursePayment) &&
-					coursePaymentItemsBeforeUpdate.equals(coursePayment.getPaymentItems()))) {
+
+			if (!(coursePaymentBeforeUpdate.equals(coursePayment)
+					&& coursePaymentItemsBeforeUpdate.equals(coursePayment.getPaymentItems()))) {
 				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", Arrays.asList(course));
 			}
-			
+
 			log.info("Calling elastic service to save/update course on elastic index having courseId: ", courseId);
-			publishSystemEventHandler.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
+			// publishSystemEventHandler.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
 		}
 	}
 
@@ -120,7 +121,7 @@ public class CoursePaymentProcessor {
 			throws ForbiddenException, NotFoundException, InternalServerException {
 		Course course = getCourseById(courseId);
 		if (!course.getCreatedBy().equals(userId)) {
-			log.error(messageTranslator.toLocale("course_payment.delete.no.access",Locale.US));
+			log.error(messageTranslator.toLocale("course_payment.delete.no.access", Locale.US));
 			throw new ForbiddenException(messageTranslator.toLocale("course_payment.delete.no.access"));
 		}
 		CoursePayment coursePayment = course.getCoursePayment();
@@ -128,18 +129,18 @@ public class CoursePaymentProcessor {
 			course.setCoursePayment(null);
 			try {
 				courseDao.addUpdateCourse(course);
-				
+
 				log.info("Send notification for course content updates");
 				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", Arrays.asList(course));
-				
+
 				log.info("Calling elastic service to save/update course on elastic index having courseId: ", courseId);
-				publishSystemEventHandler.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
+				// publishSystemEventHandler.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
 			} catch (ValidationException e) {
-				log.error(messageTranslator.toLocale("course_payment.delete.error",Locale.US));
+				log.error(messageTranslator.toLocale("course_payment.delete.error", Locale.US));
 				throw new InternalServerException(messageTranslator.toLocale("course_payment.delete.error"));
 			}
 		} else {
-			log.error(messageTranslator.toLocale("course_payment.notfound",Locale.US));
+			log.error(messageTranslator.toLocale("course_payment.notfound", Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("course_payment.notfound"));
 		}
 	}
@@ -147,8 +148,8 @@ public class CoursePaymentProcessor {
 	private Course getCourseById(String courseId) throws NotFoundException {
 		Course course = courseDao.get(courseId);
 		if (ObjectUtils.isEmpty(course)) {
-			log.error(messageTranslator.toLocale("course_payment.course.id.invalid",courseId,Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("course_payment.course.id.invalid",courseId));
+			log.error(messageTranslator.toLocale("course_payment.course.id.invalid", courseId, Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("course_payment.course.id.invalid", courseId));
 		}
 		return course;
 	}

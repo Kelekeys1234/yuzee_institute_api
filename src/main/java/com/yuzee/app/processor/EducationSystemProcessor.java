@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -52,13 +53,13 @@ public class EducationSystemProcessor {
 
 	@Autowired
 	private LevelDao levelDao;
-	
+
 	@Autowired
 	private GradeDao gradeDao;
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private MessageTranslator messageTranslator;
 
@@ -72,9 +73,10 @@ public class EducationSystemProcessor {
 		if (!CollectionUtils.isEmpty(educationSystems)) {
 			log.info("Education system fetched from DB based on countryName");
 			educationSystems.stream().forEach(educationSystem -> {
-				log.info("Fetching education subject from DB based on educationSystemIn = "+educationSystem.getId());
-				List<Subject> subjects = educationSystemDAO.getSubjectByEducationSystem(educationSystem.getId());
-				if(!CollectionUtils.isEmpty(subjects)) {
+				log.info("Fetching education subject from DB based on educationSystemIn = " + educationSystem.getId());
+				List<Subject> subjects = educationSystemDAO
+						.getSubjectByEducationSystem(educationSystem.getId().toString());
+				if (!CollectionUtils.isEmpty(subjects)) {
 					log.info("Subjects fetched from DB start iterating data");
 					subjects.stream().forEach(subject -> {
 						SubjectDto subjectDto = new SubjectDto(subject.getId(), subject.getName());
@@ -82,10 +84,10 @@ public class EducationSystemProcessor {
 					});
 				}
 				log.info("Adding values in esducation system DTO");
-				EducationSystemDto educationSystemDto = new EducationSystemDto(educationSystem.getId(),
+				EducationSystemDto educationSystemDto = new EducationSystemDto(educationSystem.getId().toString(),
 						educationSystem.getCountryName(), educationSystem.getName(), educationSystem.getCode(),
-						educationSystem.getDescription(), educationSystem.getStateName(), subjectDtos, null, null, null, null,null,
-						modelMapper.map(educationSystem.getLevel(), LevelDto.class));
+						educationSystem.getDescription(), educationSystem.getStateName(), subjectDtos, null, null, null,
+						null, null, modelMapper.map(educationSystem.getLevel(), LevelDto.class));
 				educationSystemDtos.add(educationSystemDto);
 
 			});
@@ -93,12 +95,14 @@ public class EducationSystemProcessor {
 		return educationSystemDtos;
 	}
 
-	public void saveEducationSystems(final EducationSystemDto educationSystem) throws ValidationException, NotFoundException {
+	public void saveEducationSystems(final EducationSystemDto educationSystem)
+			throws ValidationException, NotFoundException {
 		log.debug("Inside saveEducationSystems() method");
-		Level level = levelDao.getLevel(educationSystem.getLevelId());
+		Level level = levelDao.getLevel(UUID.fromString(educationSystem.getLevelId())).get();
 		if (ObjectUtils.isEmpty(level)) {
-			log.info(messageTranslator.toLocale("system.level.id.notfound",educationSystem.getLevelId(),Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("system.level.id.notfound",educationSystem.getLevelId()));
+			log.info(messageTranslator.toLocale("system.level.id.notfound", educationSystem.getLevelId(), Locale.US));
+			throw new NotFoundException(
+					messageTranslator.toLocale("system.level.id.notfound", educationSystem.getLevelId()));
 		}
 		if (!ObjectUtils.isEmpty(educationSystem) && !StringUtils.isEmpty(educationSystem.getId())) {
 			log.info("Education system Id found in request, hence Fetching education system from"
@@ -116,13 +120,12 @@ public class EducationSystemProcessor {
 					educationSystemFromDB.setCountryName(educationSystem.getCountryName());
 					educationSystemDAO.save(educationSystemFromDB);
 				} else {
-					log.error(messageTranslator.toLocale("system.country.name.required",Locale.US));
+					log.error(messageTranslator.toLocale("system.country.name.required", Locale.US));
 					throw new ValidationException(messageTranslator.toLocale("system.country.name.required"));
 				}
 			} else {
-				log.error(messageTranslator.toLocale("system.id.notfound",educationSystem.getId(),Locale.US));
-				throw new NotFoundException(
-						messageTranslator.toLocale("system.id.notfound",educationSystem.getId()));
+				log.error(messageTranslator.toLocale("system.id.notfound", educationSystem.getId(), Locale.US));
+				throw new NotFoundException(messageTranslator.toLocale("system.id.notfound", educationSystem.getId()));
 			}
 		} else {
 			log.info("Education system Id not found in request, hencce going to save new education system in DB");
@@ -139,7 +142,7 @@ public class EducationSystemProcessor {
 				system.setLevel(level);
 				educationSystemDAO.save(system);
 			} else {
-				log.error(messageTranslator.toLocale("system.country.name.required",Locale.US));
+				log.error(messageTranslator.toLocale("system.country.name.required", Locale.US));
 				throw new ValidationException(messageTranslator.toLocale("system.country.name.required"));
 			}
 		}
@@ -153,9 +156,10 @@ public class EducationSystemProcessor {
 			Double gpaGrade = 0.0;
 			List<String> gpaGrades = new ArrayList<>();
 			for (String grade : gradeDto.getSubjectGrades()) {
-				log.info("Fetching grade details from DB having countryName = "+ gradeDto.getCountryName() +
-						" and systemId = " + gradeDto.getEducationSystemId() + "and grade = "+grade);
-				gpaGrades.add(gradeDao.getGradeDetails(gradeDto.getCountryName(), gradeDto.getEducationSystemId(), grade));
+				log.info("Fetching grade details from DB having countryName = " + gradeDto.getCountryName()
+						+ " and systemId = " + gradeDto.getEducationSystemId() + "and grade = " + grade);
+				gpaGrades.add(
+						gradeDao.getGradeDetails(gradeDto.getCountryName(), gradeDto.getEducationSystemId(), grade));
 			}
 			for (String grade : gpaGrades) {
 				gpaGrade = gpaGrade + Double.valueOf(grade);
@@ -165,7 +169,7 @@ public class EducationSystemProcessor {
 				averageGpa = Double.valueOf(decimalFormat.format(averageGpa));
 			}
 		} catch (Exception exception) {
-			log.error("Exception while calculating grade having exception = "+exception);
+			log.error("Exception while calculating grade having exception = " + exception);
 		}
 		return averageGpa;
 	}
@@ -173,23 +177,23 @@ public class EducationSystemProcessor {
 	public List<GradeDto> getGrades(final String countryName, final String systemId) {
 		log.debug("Inside getGrades() method");
 		List<GradeDto> gradeDtos = new ArrayList<>();
-		log.info("Fetching Grade details from DB having countryName =" + countryName + " and systemId ="+systemId);
+		log.info("Fetching Grade details from DB having countryName =" + countryName + " and systemId =" + systemId);
 		List<GradeDetails> grades = gradeDao.getGrades(countryName, systemId);
-		 if(!CollectionUtils.isEmpty(grades)) {
-			 log.info("Grade details fetched from DB, start iterating data to make final response");
-			 grades.stream().forEach(grade -> {
-				 GradeDto gradeDto = new GradeDto(grade.getId(), grade.getCountryName(), systemId, null ,
-						 grade.getGrade(), grade.getGpaGrade());
-				 gradeDtos.add(gradeDto);
-			 });
-		 }
+		if (!CollectionUtils.isEmpty(grades)) {
+			log.info("Grade details fetched from DB, start iterating data to make final response");
+			grades.stream().forEach(grade -> {
+				GradeDto gradeDto = new GradeDto(grade.getId(), grade.getCountryName(), systemId, null,
+						grade.getGrade(), grade.getGpaGrade());
+				gradeDtos.add(gradeDto);
+			});
+		}
 		return gradeDtos;
 	}
-	
+
 	public List<EducationSystemDto> getEducationSystemByCountryNameAndStateName(String countryName, String stateName) {
 		return educationSystemDAO.getEducationSystemByCountryNameAndStateName(countryName, stateName);
 	}
-	
+
 	public void importEducationSystem(final MultipartFile multipartFile) {
 		try {
 			InputStream inputStream = multipartFile.getInputStream();
@@ -202,7 +206,7 @@ public class EducationSystemProcessor {
 			columnMapping.put("state", "stateName");
 			columnMapping.put("Grades_Display", "gradeTypeCode");
 			columnMapping.put("Student_TYPE", "levelCode");
-			
+
 			HeaderColumnNameTranslateMappingStrategy<EducationSystemDto> beanStrategy = new HeaderColumnNameTranslateMappingStrategy<>();
 			beanStrategy.setType(EducationSystemDto.class);
 			beanStrategy.setColumnMapping(columnMapping);
@@ -218,14 +222,15 @@ public class EducationSystemProcessor {
 			log.info("Closing input stream");
 			inputStream.close();
 		} catch (IOException e) {
-			log.error("Exception in importEducationSystem {}",e);
+			log.error("Exception in importEducationSystem {}", e);
 		}
 	}
-	
+
 	private void saveEducationSystems(List<EducationSystemDto> educationSystemDtos) {
 		List<EducationSystem> educationSystems = educationSystemDtos.stream().map(dto -> {
 			Level level = levelDao.getLevelByLevelCode(dto.getLevelCode());
-			EducationSystem system = educationSystemDAO.findByNameAndCountryNameAndStateName(dto.getName(), dto.getCountryName(), dto.getStateName());
+			EducationSystem system = educationSystemDAO.findByNameAndCountryNameAndStateName(dto.getName(),
+					dto.getCountryName(), dto.getStateName());
 			if (ObjectUtils.isEmpty(system)) {
 				system = new EducationSystem();
 				system.setCreatedBy("API");

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.EntityListeners;
 import javax.persistence.Id;
@@ -37,7 +36,7 @@ public class Course implements Serializable {
 	private static final long serialVersionUID = 8492390790670110780L;
 
 	@Id
-	private UUID id;
+	private String id;
 
 	private String readableId;
 
@@ -47,7 +46,7 @@ public class Course implements Serializable {
 	@DBRef
 	private Institute institute;
 
-	@DBRef
+	@DBRef(lazy = true)
 	private Level level;
 
 	private String courseCurriculum;
@@ -172,24 +171,25 @@ public class Course implements Serializable {
 	private CourseIntake courseIntake;
 
 	// Delete course language model
-	private List<String> courseLanguages = new ArrayList<>();
+	private List<CourseLanguage> courseLanguages = new ArrayList<>();
 
 	private List<CourseMinRequirement> courseMinRequirements = new ArrayList<>();
 
 	// Delete CoursePrerequisite model
-	private List<String> coursePrerequisites = new ArrayList<>();
+	@DBRef
+	private List<CoursePrerequisite> coursePrerequisites = new ArrayList<>();
 
 	// Delete CourseCareerOutcome model
 	@DBRef
-	private List<Careers> courseCareerOutcomes = new ArrayList<>();
-
+	private List<CourseCareerOutcome> courseCareerOutcomes = new ArrayList<>();
+	@DBRef
 	private List<CourseSemester> courseSemesters = new ArrayList<>();
 
 	// Delete CourseFunding model
-	private List<String> courseFundings = new ArrayList<>();
+	private List<CourseFunding> courseFundings = new ArrayList<>();
 
 	// Delete CourseContactPerson model
-	private List<String> courseContactPersons = new ArrayList<>();
+	private List<CourseContactPerson> courseContactPersons = new ArrayList<>();
 
 	// Delete CourseScholarship model
 	private String courseScholarshipId;
@@ -203,7 +203,7 @@ public class Course implements Serializable {
 	private CourseWorkPlacementRequirement courseWorkPlacementRequirement;
 
 	// Delete CourseResearchProposalRequirement model
-	private String courseResearchProposalRequirement;
+	private CourseResearchProposalRequirement courseResearchProposalRequirement;
 
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);

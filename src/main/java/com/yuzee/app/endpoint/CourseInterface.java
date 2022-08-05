@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.app.dto.AdvanceSearchDto;
 import com.yuzee.app.dto.CourseFilterDto;
@@ -25,34 +26,37 @@ import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 
+@RestController
 @RequestMapping(path = "/api/v1")
 public interface CourseInterface {
 
 	@PostMapping("/institute/{instituteId}/course")
-	public ResponseEntity<?> save(@RequestHeader(required = true) final String userId, @PathVariable String instituteId,
-			@Valid @RequestBody final CourseRequest course)
-			throws ValidationException, NotFoundException, ForbiddenException, InvokeException;
+	public ResponseEntity<?> save(@RequestHeader("userId") final String userId,
+			@PathVariable("instituteId") String instituteId, @Valid @RequestBody final CourseRequest course)
+			throws Exception;
 
 	@PutMapping("/institute/{instituteId}/course/{id}")
 	public ResponseEntity<?> update(@RequestHeader(required = true) final String userId,
 			@PathVariable String instituteId, @Valid @RequestBody final CourseRequest course,
 			@PathVariable final String id)
-			throws ValidationException, NotFoundException, ForbiddenException, InvokeException;
+			throws ValidationException, NotFoundException, ForbiddenException, InvokeException, Exception;
 
 	@GetMapping("/course/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getAllCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize)
-			throws Exception;
+	public ResponseEntity<?> getAllCourse(@PathVariable("pageNumber") final Integer pageNumber,
+			@PathVariable("pageSize") final Integer pageSize) throws Exception;
 
 	@GetMapping("/course/autoSearch/{searchKey}/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> autoSearch(@PathVariable final String searchKey, @PathVariable final Integer pageNumber,
 			@PathVariable final Integer pageSize) throws Exception;
 
-	@DeleteMapping("/course/{id}")
+	@DeleteMapping("/course/{id}/{linked_course_ids}")
 	public ResponseEntity<?> delete(@RequestHeader(required = true) final String userId,
+
 			@Valid @PathVariable final String id,
-			@RequestParam(value = "linked_course_ids", required = false) final List<String> linkedCourseIds)
+			@PathVariable(value = "linked_course_ids") final List<String> linkedCourseIds)
 			throws ForbiddenException, NotFoundException;
 
+//yet to implement
 	@GetMapping("/course/search/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<?> searchCourse(@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
 			@RequestParam(required = false) final List<String> countryIds,
@@ -90,17 +94,17 @@ public interface CourseInterface {
 	public ResponseEntity<?> getAllCourseByInstituteID(@Valid @PathVariable final String instituteId,
 			@Valid @RequestBody final CourseSearchDto request) throws Exception;
 
-	@GetMapping(value = "/course/keyword")
-	public ResponseEntity<?> searchCourseKeyword(@RequestParam(value = "keyword") final String keyword)
+	@GetMapping(value = "/course/keyword/{keyword}")
+	public ResponseEntity<?> searchCourseKeyword(@PathVariable(value = "keyword") final String keyword)
 			throws Exception;
 
+///yet to implements
 	@GetMapping(value = "/course/faculty/{facultyId}")
 	public ResponseEntity<?> getCoursesByFacultyId(@Valid @PathVariable final String facultyId) throws Exception;
 
-	@GetMapping(value = "/course/user")
-	public ResponseEntity<?> getUserCourses(@RequestBody final List<String> courseIds,
-			@RequestParam(required = false) final String sortBy,
-			@RequestParam(required = false) final String sortAsscending) throws ValidationException;
+	@GetMapping(value = "/course/user/{courseIds}/{sortBy}/{sortAsscending}")
+	public ResponseEntity<?> getUserCourses(@PathVariable final List<String> courseIds,
+			@PathVariable final String sortBy, @PathVariable final String sortAsscending) throws ValidationException;
 
 	@PostMapping(value = "/course/filter")
 	public ResponseEntity<?> courseFilter(@RequestHeader(required = true) final String userId,
@@ -112,22 +116,23 @@ public interface CourseInterface {
 
 	@GetMapping(value = "/course/noResult/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<Object> getCourseNoResultRecommendation(@PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam(required = true) final String facultyId,
-			@RequestParam(required = true) final String countryId,
-			@RequestParam(required = true) final String userCountry)
+			@PathVariable final Integer pageSize, @RequestParam(required = false) final String facultyId,
+			@RequestParam(required = false) final String countryId,
+			@RequestParam(required = false) final String userCountry)
 			throws ValidationException, InvokeException, NotFoundException;
 
 	@GetMapping(value = "/course/keyword/recommendatation/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<Object> getCourseKeywordRecommendation(@PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam(required = true) final String facultyId,
-			@RequestParam(required = true) final String countryId, @RequestParam(required = true) final String levelId)
-			throws ValidationException;
+			@PathVariable final Integer pageSize, @RequestParam(required = false) final String facultyId,
+			@RequestParam(required = false) final String countryId,
+			@RequestParam(required = false) final String levelId) throws ValidationException;
 
 	@GetMapping(value = "/course/cheapest/pageNumber/{pageNumber}/pageSize/{pageSize}")
 	public ResponseEntity<Object> getCheapestCourse(@PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize, @RequestParam(required = true) final String facultyId,
-			@RequestParam(required = true) final String countryId, @RequestParam(required = true) final String levelId,
-			@RequestParam(required = true) final String cityId) throws ValidationException;
+			@PathVariable final Integer pageSize, @RequestParam(required = false) final String facultyId,
+			@RequestParam(required = false) final String countryId,
+			@RequestParam(required = false) final String levelId, @RequestParam(required = false) final String cityId)
+			throws ValidationException;
 
 	@GetMapping(value = "/course/getCourseCountByLevel")
 	public ResponseEntity<Object> getCourseCountByLevel();
@@ -157,13 +162,14 @@ public interface CourseInterface {
 
 	@PutMapping(value = "/course/status/{courseId}")
 	public ResponseEntity<?> changeStatus(@RequestHeader("userId") final String userId,
-			@PathVariable final String courseId, @RequestParam(name = "status", required = true) final boolean status)
+			@PathVariable final String courseId, @RequestParam(name = "status", required = false) final boolean status)
 			throws Exception;
 
 	@GetMapping(value = "/course/institute/pageNumber/{pageNumber}/pageSize/{pageSize}/{instituteId}")
 	public ResponseEntity<?> getCourseByInstituteId(@PathVariable Integer pageNumber, @PathVariable Integer pageSize,
 			@PathVariable final String instituteId) throws NotFoundException;
 
+///// YET  TO IMPLEMENTS
 	@PostMapping(value = "/course/nearest", produces = "application/json")
 	public ResponseEntity<?> getNearestCourseList(@RequestBody final AdvanceSearchDto courseSearchDto) throws Exception;
 
@@ -197,24 +203,24 @@ public interface CourseInterface {
 
 	@PutMapping("/course/procedure_id")
 	public ResponseEntity<?> updateProcedureIdInCourse(
-			@RequestParam(name = "course_ids", required = true) List<String> courseIds,
-			@RequestParam(name = "student_type", required = true) String studentType,
-			@RequestParam(name = "procedure_id", required = true) String procedureId);
+			@RequestParam(name = "course_ids", required = false) List<String> courseIds,
+			@RequestParam(name = "student_type", required = false) String studentType,
+			@RequestParam(name = "procedure_id", required = false) String procedureId);
 
-	@PutMapping("/course/procedure_id/institute_id")
-	public ResponseEntity<?> updateProcedureIdInCourseByInstituteId(
-			@RequestParam(name = "institute_id", required = true) String instituteId,
-			@RequestParam(name = "student_type", required = true) String studentType,
-			@RequestParam(name = "procedure_id", required = true) String procedureId);
+	@PutMapping("/course/procedure_id/institute_id/{instituteIds}/{studentType}/{procedureId}")
+	public ResponseEntity<?> updateProcedureIdInCourseByInstituteId(@PathVariable("instituteIds") String instituteIds,
+			@PathVariable String studentType, @PathVariable String procedureId);
 
 	@PostMapping(value = "/course/draft/publish/{courseId}")
-	public ResponseEntity<?> publishDraftCourse(@RequestHeader(value = "userId", required = true) String userId, @PathVariable final String courseId);
+	public ResponseEntity<?> publishDraftCourse(@RequestHeader(value = "userId", required = true) String userId,
+			@PathVariable final String courseId);
 
-	@GetMapping(value = "/course/draft/pageNumber/{pageNumber}/pageSize/{pageSize}")
-	public ResponseEntity<?> getDraftCourses(@RequestHeader(value = "userId", required = true) String userId,
-			@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize,
-			@RequestParam(name = "name", required = true) String name, @RequestParam(name = "institute_id", required = true) String instituteId);
+	@GetMapping(value = "/course/draft/pageNumber/{pageNumber}/pageSize/{pageSize}/{name}/{instituteId}")
+	public ResponseEntity<?> getDraftCourses(@RequestHeader(value = "userId") String userId,
+			@PathVariable final Integer pageNumber, @PathVariable final Integer pageSize, @PathVariable String name,
+			@PathVariable String instituteId);
 
 	@DeleteMapping(value = "/course/draft/{courseId}")
-	public ResponseEntity<?> discardDraftCourse(@RequestHeader(value = "userId", required = true) String userId, @PathVariable final String courseId);
+	public ResponseEntity<?> discardDraftCourse(@RequestHeader(value = "userId", required = true) String userId,
+			@PathVariable final String courseId);
 }

@@ -14,7 +14,6 @@ import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.Top10Course;
 import com.yuzee.app.dao.ITop10CourseDAO;
 import com.yuzee.app.dto.CourseResponseDto;
-import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.app.processor.FacultyProcessor;
 import com.yuzee.app.util.IConstant;
 import com.yuzee.common.lib.dto.institute.FacultyDto;
@@ -23,6 +22,7 @@ import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.StorageHandler;
 
 @Service
@@ -62,11 +62,13 @@ public class Top10CourseService implements ITop10CourseService {
 	@Override
 	public List<String> getTop10CourseKeyword(final String facultyId) {
 		FacultyDto faculty = facultyProcessor.getFacultyById(facultyId);
-		return iTop10CourseDao.getTop10CourseKeyword(faculty.getName()).stream().map(Top10Course::getCourse).collect(Collectors.toList());
+		return iTop10CourseDao.getTop10CourseKeyword(faculty.getName()).stream().map(Top10Course::getCourse)
+				.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<CourseResponseDto> getTop10RandomCoursesForGlobalSearchLandingPage() throws ValidationException, NotFoundException, InvokeException {
+	public List<CourseResponseDto> getTop10RandomCoursesForGlobalSearchLandingPage()
+			throws ValidationException, NotFoundException, InvokeException {
 		List<String> countryListForCourses = IConstant.COUNTRY_LIST_FOR_COURSES_GLOBAL_SEARCH_LANDING_PAGE;
 		List<String> levelList = IConstant.LEVEL_LIST_FOR_COURSES_GLOBAL_SEARCH_LANDING_PAGE;
 		List<CourseResponseDto> listOfTop10Course = new ArrayList<>();
@@ -77,13 +79,16 @@ public class Top10CourseService implements ITop10CourseService {
 			if ((top10CourseIds == null) || top10CourseIds.isEmpty()) {
 				setTop10CourseIdList();
 			}
-			List<Course> courseList = iTop10CourseDao.getRandomCourseFromTop10Course(countryName, levelList, top10CourseIds);
+			List<Course> courseList = iTop10CourseDao.getRandomCourseFromTop10Course(countryName, levelList,
+					top10CourseIds);
 			if ((courseList != null) && !courseList.isEmpty()) {
 				for (Course course : courseList) {
 					CourseResponseDto courseResponseDto = new CourseResponseDto();
 					BeanUtils.copyProperties(course, courseResponseDto);
-					courseResponseDto.setFacultyName(course.getFaculty() != null ? course.getFaculty().getName() : null);
-					courseResponseDto.setFacultyId(course.getFaculty() != null ? course.getFaculty().getId() : null);
+					courseResponseDto
+							.setFacultyName(course.getFaculty() != null ? course.getFaculty().getName() : null);
+					courseResponseDto
+							.setFacultyId(course.getFaculty() != null ? course.getFaculty().getId().toString() : null);
 //					courseResponseDto.setInstituteName(course.getInstitute() != null ? course.getInstitute().getName() : null);
 //					courseResponseDto.setInstituteId(course.getInstitute() != null ? course.getInstitute().getId().toString() : null);
 					listOfTop10Course.add(courseResponseDto);
@@ -92,8 +97,8 @@ public class Top10CourseService implements ITop10CourseService {
 			}
 		}
 		if ((responseCourseIds != null) && !responseCourseIds.isEmpty()) {
-			List<StorageDto> storageList = storageHandler.getStorages(responseCourseIds,
-					EntityTypeEnum.COURSE, EntitySubTypeEnum.IMAGES);
+			List<StorageDto> storageList = storageHandler.getStorages(responseCourseIds, EntityTypeEnum.COURSE,
+					EntitySubTypeEnum.IMAGES);
 			for (CourseResponseDto courseResponseDto : listOfTop10Course) {
 				List<StorageDto> s = new ArrayList<>();
 				for (StorageDto storageDto : storageList) {

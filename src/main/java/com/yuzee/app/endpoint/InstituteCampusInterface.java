@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 
+@RestController
 @RequestMapping(path = "/api/v1")
 @Consumes({ "application/json", "application/xml" })
 @Produces({ "application/json", "application/xml" })
@@ -25,7 +27,7 @@ public interface InstituteCampusInterface {
 
 	@PostMapping("campus/instituteId/{instituteId}")
 	public ResponseEntity<?> addCampus(@RequestHeader("userId") final String userId,
-			@PathVariable final String instituteId, @RequestBody final  List<String> instituteIds)
+			@PathVariable final String instituteId, @RequestBody final List<String> instituteIds)
 			throws NotFoundException, ValidationException;
 
 	@GetMapping("/campus/instituteId/{instituteId}")

@@ -19,4 +19,5 @@ public class CourseEnglishEligibilityDaoImpl implements CourseEnglishEligibility
 	public List<CourseEnglishEligibility> getAllEnglishEligibilityByCourse(final String courseID) {
 		return courseEnglishEligibilityRepository.findByCourseId(courseID);
 	}
+
 }
