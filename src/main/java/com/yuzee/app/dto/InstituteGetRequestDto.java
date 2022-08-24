@@ -1,7 +1,6 @@
 package com.yuzee.app.dto;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
 
@@ -11,67 +10,67 @@ import lombok.Data;
 
 @Data
 public class InstituteGetRequestDto {
-    
+
 	@JsonProperty("institute_id")
 	private String id;
-	
+
 	@JsonProperty("country_name")
 	@NotBlank(message = "{country_name.is_required}")
-    private String countryName;
-	
+	private String countryName;
+
 	@JsonProperty("city_name")
 	@NotBlank(message = "{city_name.is_required}")
-    private String cityName;
-	
+	private String cityName;
+
 	@JsonProperty("institute_type")
-    private String instituteType;
-	
+	private String instituteType;
+
 	@JsonProperty("name")
 	@NotBlank(message = "{name.is_required}")
-    private String name;
-	
+	private String name;
+
 	@JsonProperty("institute_youtubes")
-    private List<String> instituteYoutubes;
-	
+	private List<String> instituteYoutubes;
+
 	@JsonProperty("course_count")
-    private Integer courseCount;
-	
+	private Integer courseCount;
+
 	@JsonProperty("latitude")
-    private Double latitude;
-	
+	private Double latitude;
+
 	@JsonProperty("longitude")
-    private Double longitude;
-	
+	private Double longitude;
+
 	@JsonProperty("total_student")
-    private Integer totalStudent;
-	
+	private Integer totalStudent;
+
 	@JsonProperty("world_ranking")
-    private Integer worldRanking;
-	
+	private Integer worldRanking;
+
 	@JsonProperty("accreditation")
-    private String accreditation;
-	
+	private String accreditation;
+
 	@JsonProperty("email")
-    private String email;
-	
+	private String email;
+
 	@JsonProperty("phone_number")
-    private String phoneNumber;
-	
+	private String phoneNumber;
+
 	@JsonProperty("website")
-    private String website;
-	
+	private String website;
+
 	@JsonProperty("address")
-    private String address;
-	
+	private String address;
+
 	@JsonProperty("avg_cost_of_living")
-    private String avgCostOfLiving;
-	
+	private String avgCostOfLiving;
+
 	@JsonProperty("description")
-    private String description;
-	
+	private String description;
+
 	@JsonProperty("tag_line")
 	private String tagLine;
-	
+
 	@JsonProperty("verified")
 	private boolean verified;
 

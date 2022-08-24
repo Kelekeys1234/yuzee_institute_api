@@ -60,9 +60,11 @@ public class Institute implements Serializable {
 
 	private String website;
 
-	private Double latitude;
+//	private Double latitude;
+//
+//	private Double longitude;
 
-	private Double longitude;
+	Location location;
 
 	private String address;
 

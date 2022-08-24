@@ -183,7 +183,7 @@ public class CourseController {
 		couseRequest.setWebsite("website Url");
 		couseRequest.setLastUpdated("Apis");
 		couseRequest.setInstituteName("Institute Name");
-		couseRequest.setLocation("INDIA");
+		// couseRequest.setLocations("INDIA");
 		couseRequest.setWorldRanking("12345");
 		couseRequest.setStars(22.0);
 		couseRequest.setCost("cost ...");
@@ -335,7 +335,7 @@ public class CourseController {
 		couseRequest.setWebsite("website Url");
 		couseRequest.setLastUpdated("Apis");
 		couseRequest.setInstituteName("Institute Name");
-		couseRequest.setLocation("INDIA");
+		// couseRequest.setLocations("INDIA");
 		couseRequest.setWorldRanking("12345");
 		couseRequest.setStars(22.0);
 		couseRequest.setCost("cost ...");
@@ -760,6 +760,14 @@ public class CourseController {
 
 	@DisplayName(value = "getCourseCountByLevel")
 	@Test
+	public void SearchCourses() {
+		Map<String, String> params = new HashMap<>();
+		params.put("countryIds", COURSE_IDS);
+
+	}
+
+	@DisplayName(value = "getCourseCountByLevel")
+	@Test
 	public void getDistinctCourses() {
 		Integer pageNumber = 1;
 		Integer pageSize = 1;
@@ -853,6 +861,7 @@ public class CourseController {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
+
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
 				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "institute" + PATH_SEPARATOR + "pageNumber"
@@ -890,6 +899,7 @@ public class CourseController {
 		advanceSearch.setDeliveryMethods(Arrays.asList("deliveringMode"));
 		advanceSearch.setInstituteId(instituteId);
 		advanceSearch.setLongitude(12.00);
+		advanceSearch.setLatitude(15.00);
 		advanceSearch.setInitialRadius(12);
 
 		HttpHeaders headers = new HttpHeaders();
@@ -1058,7 +1068,7 @@ public class CourseController {
 		couseRequest.setWebsite("website Url");
 		couseRequest.setLastUpdated("Apis");
 		couseRequest.setInstituteName("Institute Name");
-		couseRequest.setLocation("INDIA");
+		// couseRequest.setLocations("INDIA");
 		couseRequest.setWorldRanking("12345");
 		couseRequest.setStars(22.0);
 		couseRequest.setCost("cost ...");
@@ -1210,7 +1220,7 @@ public class CourseController {
 		couseRequest.setWebsite("website Url");
 		couseRequest.setLastUpdated("Apis");
 		couseRequest.setInstituteName("Institute Name");
-		couseRequest.setLocation("INDIA");
+		// couseRequest.setLocations("INDIA");
 		couseRequest.setWorldRanking("12345");
 		couseRequest.setStars(22.0);
 		couseRequest.setCost("cost ...");

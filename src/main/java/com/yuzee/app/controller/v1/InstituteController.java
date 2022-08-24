@@ -152,19 +152,28 @@ public class InstituteController implements InstituteInterface {
 				} catch (NotFoundException | InvokeException e) {
 					log.error("Error invoking Storage service having exception = {}", e);
 				}
+
 				log.info("fetching instituteTiming from DB for instituteId ={}", instituteResponseDto.getId());
 				TimingDto instituteTimingResponseDto = timingProcessor
 						.getTimingResponseDtoByInstituteId(instituteResponseDto.getId().toString());
 				instituteResponseDto.setInstituteTiming(instituteTimingResponseDto);
+				log.info("fetching institutelocations from DB for instituteId ={}", instituteResponseDto.getId());
+				// GeoJsonPoint locationPoint = new
+				// GeoJsonPoint(instituteResponseDto.getLatitude(),
+				// instituteResponseDto.getLongitude());
 				if (!ObjectUtils.isEmpty(request.getLatitude()) && !ObjectUtils.isEmpty(request.getLongitude())
 						&& !ObjectUtils.isEmpty(instituteResponseDto.getLatitude())
-						&& !ObjectUtils.isEmpty(instituteResponseDto.getLongitude())) {
+						&& !ObjectUtils.isEmpty(instituteResponseDto.getLatitude())) {
+
 					log.info("Calculating distance between institutes lat and long and user lat and long");
+					// for (Location locations : instituteResponseDto.getLocations()) {
 					double distance = CommonUtil.getDistanceFromLatLonInKm(request.getLatitude(),
 							request.getLongitude(), instituteResponseDto.getLatitude(),
-							instituteResponseDto.getLongitude());
+							instituteResponseDto.getLatitude());
+
 					instituteResponseDto.setDistance(distance);
 				}
+
 			});
 		}
 		log.info("Fetching totalCount of institutes from DB based on passed filters to calculate pagination");

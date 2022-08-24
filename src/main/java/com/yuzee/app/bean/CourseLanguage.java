@@ -3,7 +3,6 @@ package com.yuzee.app.bean;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@Entity
+
 @ToString(exclude = "course")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor

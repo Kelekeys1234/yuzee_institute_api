@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +47,7 @@ import com.yuzee.app.bean.InstituteDomesticRankingHistory;
 import com.yuzee.app.bean.InstituteProviderCode;
 //import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.bean.InstituteWorldRankingHistory;
+import com.yuzee.app.bean.Location;
 import com.yuzee.app.constant.FaqEntityType;
 import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CourseDao;
@@ -420,8 +422,11 @@ public class InstituteProcessor {
 		institute.setAddress(instituteRequest.getAddress());
 		institute.setEmail(instituteRequest.getEmail());
 		institute.setPhoneNumber(instituteRequest.getPhoneNumber());
-		institute.setLatitude(instituteRequest.getLatitude());
-		institute.setLongitude(instituteRequest.getLongitude());
+		// institute.setLatitude(instituteRequest.getLatitude());
+//		institute.setLongitude(instituteRequest.getLongitude());
+		Location location = new Location(UUID.randomUUID().toString(),
+				new GeoJsonPoint(instituteRequest.getLatitude(), instituteRequest.getLongitude()));
+		institute.setLocation(location);
 		institute.setEnrolmentLink(instituteRequest.getEnrolmentLink());
 		institute.setTuitionFeesPaymentPlan(instituteRequest.getTuitionFessPaymentPlan());
 		institute.setScholarshipFinancingAssistance(instituteRequest.getScholarshipFinancingAssistance());
@@ -1224,15 +1229,20 @@ public class InstituteProcessor {
 	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
 	public List<InstituteResponseDto> getInstitutesByIdList(List<String> instituteIds) throws Exception {
 		log.info("inside InstituteProcessor.getInstitutesByIdList");
-		List<InstituteResponseDto> instituteResponseDtos = null;
+		List<InstituteResponseDto> instituteResponseDtos = new ArrayList<>();
 		List<UUID> uuidIds = instituteIds.stream().map(UUID::fromString).collect(Collectors.toList());
 		List<Institute> institutes = instituteDao.findByIds(uuidIds);
 		if (!CollectionUtils.isEmpty(institutes)) {
-			instituteResponseDtos = institutes.stream()
-					.map(e -> new InstituteResponseDto(e.getName(), e.getWorldRanking(), e.getCityName(),
-							e.getCountryName(), e.getWebsite(), e.getAboutInfo(), e.getLatitude(), e.getLongitude(),
-							e.getPhoneNumber(), e.getEmail(), e.getDomesticRanking(), e.getCreatedOn()))
-					.collect(Collectors.toList());
+			for (Institute e : institutes) {
+				// for (Location r : e.getLocation()) {
+
+				instituteResponseDtos.add(new InstituteResponseDto(e.getName(), e.getWorldRanking(), e.getCityName(),
+						e.getCountryName(), e.getWebsite(), e.getAboutInfo(), e.getLocation().getLocation().getY(),
+						e.getLocation().getLocation().getX(), e.getPhoneNumber(), e.getEmail(), e.getDomesticRanking(),
+						e.getCreatedOn()));
+
+				// }
+			}
 		}
 		List<StorageDto> instituteLogos = storageHandler.getStorages(instituteIds, EntityTypeEnum.INSTITUTE,
 				EntitySubTypeEnum.LOGO);

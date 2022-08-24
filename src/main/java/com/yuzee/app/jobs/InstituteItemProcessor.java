@@ -2,23 +2,37 @@ package com.yuzee.app.jobs;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.yuzee.app.bean.*;
-import com.yuzee.app.dao.ServiceDao;
-import com.yuzee.common.lib.exception.NotFoundException;
-import com.yuzee.common.lib.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import com.yuzee.app.bean.Institute;
+import com.yuzee.app.bean.InstituteAdditionalInfo;
+import com.yuzee.app.bean.InstituteCategoryType;
+import com.yuzee.app.bean.InstituteFacility;
+import com.yuzee.app.bean.InstituteService;
+import com.yuzee.app.bean.Service;
+import com.yuzee.app.bean.Timing;
 import com.yuzee.app.dao.InstituteDao;
+import com.yuzee.app.dao.ServiceDao;
 import com.yuzee.app.dto.uploader.InstituteCsvDto;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.exception.ConstraintVoilationException;
+import com.yuzee.common.lib.exception.NotFoundException;
+import com.yuzee.common.lib.util.DateUtil;
 import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,29 +45,33 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 
 	@Autowired
 	InstituteDao instituteDao;
-	
+
 //	@Autowired
 //	InstituteTypeDao instituteTypeDao;
-	
+
 	Map<String, Service> services = new HashMap<>();
-	
+
 	@Override
 	public Institute process(InstituteCsvDto instituteDto) throws Exception {
 		Institute institute = new Institute();
 		try {
 			this.services = serviceDao.getAll().stream().collect(Collectors.toMap(Service::getName, service -> service))
-					.entrySet().parallelStream().collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), Map.Entry::getValue));
+					.entrySet().parallelStream()
+					.collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), Map.Entry::getValue));
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			institute.setCreatedOn(dateFormat.parse(dateFormat.format(new Date())));
 			if (!StringUtils.isEmpty(instituteDto.getType())) {
 				institute.setInstituteCategoryType(new InstituteCategoryType(instituteDto.getType(), new Date()));
 			}
-			if(!StringUtils.isEmpty(instituteDto.getInstituteType())
-					&& !ObjectUtils.isEmpty(instituteDao.getInstituteTypeByNameAndCountry(instituteDto.getInstituteType(), instituteDto.getCountryName()))) {
+			if (!StringUtils.isEmpty(instituteDto.getInstituteType())
+					&& !ObjectUtils.isEmpty(instituteDao.getInstituteTypeByNameAndCountry(
+							instituteDto.getInstituteType(), instituteDto.getCountryName()))) {
 				institute.setInstituteType(instituteDto.getInstituteType());
 			} else {
-				log.error("Institute type {} not found for institute {}",instituteDto.getInstituteType(), instituteDto.getName());
-				throw new NotFoundException(String.format("Institute type %s not found for institute %s",instituteDto.getInstituteType(), instituteDto.getName()));
+				log.error("Institute type {} not found for institute {}", instituteDto.getInstituteType(),
+						instituteDto.getName());
+				throw new NotFoundException(String.format("Institute type %s not found for institute %s",
+						instituteDto.getInstituteType(), instituteDto.getName()));
 			}
 			institute.setId(UUID.randomUUID().toString());
 			institute.setCityName(instituteDto.getCityName());
@@ -78,20 +96,22 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 			institute.setYoutubeLink(instituteDto.getYoutubeLink());
 			institute.setDomesticPhoneNumber(instituteDto.getDomesticPhoneNumber());
 			institute.setInternationalPhoneNumber(instituteDto.getInternationalPhoneNumber());
-			if (instituteDto.getLatitude() != null) {
-				if (instituteDto.getLatitude().contains(",")) {
-					institute.setLatitude(Double.parseDouble(instituteDto.getLatitude().replace(",", "")));
-				} else {
-					institute.setLatitude(Double.parseDouble(instituteDto.getLatitude()));
-				}
-			}
-			if (instituteDto.getLongitude() != null) {
-				if (instituteDto.getLongitude().contains(",")) {
-					institute.setLongitude(Double.parseDouble(instituteDto.getLongitude().replace(",", "")));
-				} else {
-					institute.setLongitude(Double.parseDouble(instituteDto.getLongitude()));
-				}
-			}
+			// for (Location location : institute.getLocation())
+//				if (location.getLatitute() != null || location.getLongtitute() != null) {
+//					// instituteRequestDto.setLatitude(location.getLongtitute());
+//					Location locations = new Location(UUID.randomUUID().toString(), location.getLatitute(),
+//							location.getLongtitute());
+//					List<Location> list = new ArrayList<>();
+//					list.add(locations);
+			institute.setLocation(institute.getLocation());
+
+//			if (instituteDto.getLongitude() != null) {
+//				if (instituteDto.getLongitude().contains(",")) {
+//					institute.setLongitude(Double.parseDouble(instituteDto.getLongitude().replace(",", "")));
+//				} else {
+//					institute.setLongitude(Double.parseDouble(instituteDto.getLongitude()));
+//				}
+			// }
 
 			if (!ObjectUtils.isEmpty(instituteDto.getTotalStudent())) {
 				institute.setInstituteAdditionalInfo(getInstituteAdditionalInfo(institute, instituteDto));
@@ -102,55 +122,55 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 			institute.setUpdatedBy("AUTO");
 			institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 
-			if(!ObjectUtils.isEmpty(instituteDto.getWorldRanking())) {
+			if (!ObjectUtils.isEmpty(instituteDto.getWorldRanking())) {
 				institute.setWorldRanking(instituteDto.getWorldRanking());
 			}
 
-			if(!ObjectUtils.isEmpty(instituteDto.getDomesticRanking())) {
+			if (!ObjectUtils.isEmpty(instituteDto.getDomesticRanking())) {
 				institute.setDomesticRanking(instituteDto.getDomesticRanking());
 			}
 
-			if(!ObjectUtils.isEmpty(instituteDto.getAdmissionEmail())) {
+			if (!ObjectUtils.isEmpty(instituteDto.getAdmissionEmail())) {
 				institute.setAdmissionEmail(instituteDto.getAdmissionEmail());
 			}
 
-			if(!ObjectUtils.isEmpty(instituteDto.getBoarding())) {
+			if (!ObjectUtils.isEmpty(instituteDto.getBoarding())) {
 				institute.setBoarding(instituteDto.getBoarding());
 			}
 
-			if(!ObjectUtils.isEmpty(instituteDto.getState())) {
+			if (!ObjectUtils.isEmpty(instituteDto.getState())) {
 				institute.setState(instituteDto.getState());
 			}
 
-			if(!ObjectUtils.isEmpty(instituteDto.getPostalCode())) {
+			if (!ObjectUtils.isEmpty(instituteDto.getPostalCode())) {
 				institute.setPostalCode(instituteDto.getPostalCode());
 			}
 
-			if(!ObjectUtils.isEmpty(instituteDto.getBoardingAvailable())) {
+			if (!ObjectUtils.isEmpty(instituteDto.getBoardingAvailable())) {
 				institute.setBoardingAvailable(instituteDto.getBoardingAvailable());
 			}
 			institute.setInstituteFacilities(getInstituteFacility(institute, instituteDto));
 			institute.setInstituteIntakes(getInstituteIntake(institute, instituteDto));
-			//TODO removing as we have removed this table
-		//	institute.setInstituteTiming(getInstituteTiming(institute, instituteDto));
+			// TODO removing as we have removed this table
+			// institute.setInstituteTiming(getInstituteTiming(institute, instituteDto));
 			institute.setInstituteServices(getInstituteService(institute, instituteDto));
 		} finally {
 			services.clear();
 		}
 		return institute;
 	}
-	
+
 	private List<InstituteService> getInstituteService(final Institute institute, final InstituteCsvDto instituteDto) {
 		List<InstituteService> instituteServiceList = new ArrayList<>();
-		//Import Services
+		// Import Services
 		if (!ObjectUtils.isEmpty(instituteDto.getServices())) {
 			log.debug("Institute Services");
 			String[] instituteService = instituteDto.getServices().split(",");
-			if(!ObjectUtils.isEmpty(instituteService)) {
-				List<String> instituteServiceStrList =  Arrays.asList(instituteService);
-				instituteServiceStrList.forEach(instituteServiceName ->{
+			if (!ObjectUtils.isEmpty(instituteService)) {
+				List<String> instituteServiceStrList = Arrays.asList(instituteService);
+				instituteServiceStrList.forEach(instituteServiceName -> {
 					Service service = services.get(StringUtils.trim(instituteServiceName).toLowerCase());
-					if(!ObjectUtils.isEmpty(service)) {
+					if (!ObjectUtils.isEmpty(service)) {
 						instituteServiceList.add(new InstituteService(null, service, service.getDescription(), null));
 					}
 				});
@@ -158,8 +178,8 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 		}
 		return instituteServiceList;
 	}
-	
-	@Transactional(rollbackFor = {ConstraintVoilationException.class,Exception.class})
+
+	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
 	private void setReadableIdForInsitute(Institute institute) {
 		log.info("going to generate code for institute");
 		boolean reGenerateCode = false;
@@ -177,35 +197,36 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 			}
 		} while (reGenerateCode);
 	}
-	
-	private List<InstituteFacility> getInstituteFacility(final Institute institute, final InstituteCsvDto instituteDto) {
+
+	private List<InstituteFacility> getInstituteFacility(final Institute institute,
+			final InstituteCsvDto instituteDto) {
 		List<InstituteFacility> instituteFacilityList = new ArrayList<>();
-		//Import Facilities
+		// Import Facilities
 		if (!ObjectUtils.isEmpty(instituteDto.getFacilities())) {
 			log.debug("Institute Facilities");
 			String[] facilities = instituteDto.getFacilities().split(",");
-			if(!ObjectUtils.isEmpty(facilities)) {
-				List<String> facilityList =  Arrays.asList(facilities);
-				facilityList.forEach(facility ->{
-					if(!StringUtils.isEmpty(facility) && !facility.equals("0")) {
+			if (!ObjectUtils.isEmpty(facilities)) {
+				List<String> facilityList = Arrays.asList(facilities);
+				facilityList.forEach(facility -> {
+					if (!StringUtils.isEmpty(facility) && !facility.equals("0")) {
 						Service service = services.get(StringUtils.trim(facility).toLowerCase());
-						if(!ObjectUtils.isEmpty(service)) {
+						if (!ObjectUtils.isEmpty(service)) {
 							instituteFacilityList.add(new InstituteFacility(institute.getId(), service));
-						}						
+						}
 					}
-				});				
+				});
 			}
 		}
-		//Import Sports Facilities
+		// Import Sports Facilities
 		if (!ObjectUtils.isEmpty(instituteDto.getFacilities())) {
 			log.debug("Institute Sport Facilities");
 			String[] facilities = instituteDto.getSportFacilities().split(",");
-			if(!ObjectUtils.isEmpty(facilities)) {
-				List<String> facilityList =  Arrays.asList(facilities);
-				facilityList.forEach(facility ->{
-					if(!StringUtils.isEmpty(facility) && !facility.equals("0")) {
+			if (!ObjectUtils.isEmpty(facilities)) {
+				List<String> facilityList = Arrays.asList(facilities);
+				facilityList.forEach(facility -> {
+					if (!StringUtils.isEmpty(facility) && !facility.equals("0")) {
 						Service service = services.get(StringUtils.trim(facility).toLowerCase());
-						if(!ObjectUtils.isEmpty(service)) {
+						if (!ObjectUtils.isEmpty(service)) {
 							instituteFacilityList.add(new InstituteFacility(institute.getId(), service));
 						}
 					}
@@ -214,7 +235,7 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 		}
 		return instituteFacilityList;
 	}
-	
+
 //	private List<InstituteService> getInstituteServices(final Institute institute,final InstituteDto instituteDto) {
 //		List<InstituteService> services = new ArrayList<>();
 //		if (instituteDto.getPersonalCount() == 1) {
@@ -291,7 +312,7 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 //		}
 //	    return services;
 //	}
-	
+
 //	private InstituteService getInstituteService(Institute institute, String serviceName) {
 //		InstituteService instituteServiceDetails = new InstituteService();
 //		instituteServiceDetails.setInstitute(institute);
@@ -304,42 +325,44 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 //		return instituteServiceDetails;
 //	}
 
-	
 	private Timing getInstituteTiming(Institute institute, InstituteCsvDto instituteDto) {
 		Timing instituteTiming = new Timing();
 		instituteTiming.setEntityType(EntityTypeEnum.INSTITUTE);
-		instituteTiming.setMonday((instituteDto.getMonday() == null || 
-				StringUtils.isEmpty(instituteDto.getMonday()) || 
-				StringUtils.equalsIgnoreCase(instituteDto.getMonday(), "NULL")) ? "08:00 AM - 06:00 PM" : instituteDto.getMonday());
-		
-		instituteTiming.setTuesday((instituteDto.getTuesday() == null) || 
-				StringUtils.isEmpty(instituteDto.getTuesday()) || 
-				StringUtils.equalsIgnoreCase(instituteDto.getTuesday(), "NULL") ? "08:00 AM - 06:00 PM" : instituteDto.getTuesday());
-		
-		instituteTiming.setThursday((instituteDto.getWednesday() == null) || 
-				StringUtils.isEmpty(instituteDto.getWednesday()) || 
-				StringUtils.equalsIgnoreCase(instituteDto.getWednesday(), "NULL") ? "08:00 AM - 06:00 PM" : instituteDto.getWednesday());
-		
-		instituteTiming.setFriday((instituteDto.getThursday() == null) || 
-				StringUtils.isEmpty(instituteDto.getThursday()) || 
-				StringUtils.equalsIgnoreCase(instituteDto.getThursday(), "NULL") ? "08:00 AM - 06:00 PM" : instituteDto.getThursday());
-		
-		instituteTiming.setWednesday((instituteDto.getFriday() == null) || 
-				StringUtils.isEmpty(instituteDto.getFriday()) || 
-				StringUtils.equalsIgnoreCase(instituteDto.getFriday(), "NULL") ? "08:00 AM - 06:00 PM" : instituteDto.getFriday());
-		
-		instituteTiming.setSaturday((instituteDto.getSaturday() == null) || 
-				StringUtils.isEmpty(instituteDto.getSaturday()) || 
-				StringUtils.equalsIgnoreCase(instituteDto.getSaturday(), "NULL") ? "CLOSED" : instituteDto.getSaturday());
-		
-		instituteTiming.setSunday((instituteDto.getSunday() == null) || 
-				StringUtils.isEmpty(instituteDto.getSunday()) || 
-				StringUtils.equalsIgnoreCase(instituteDto.getSunday(), "NULL") ? "CLOSED" : instituteDto.getSunday());
+		instituteTiming.setMonday((instituteDto.getMonday() == null || StringUtils.isEmpty(instituteDto.getMonday())
+				|| StringUtils.equalsIgnoreCase(instituteDto.getMonday(), "NULL")) ? "08:00 AM - 06:00 PM"
+						: instituteDto.getMonday());
+
+		instituteTiming.setTuesday((instituteDto.getTuesday() == null) || StringUtils.isEmpty(instituteDto.getTuesday())
+				|| StringUtils.equalsIgnoreCase(instituteDto.getTuesday(), "NULL") ? "08:00 AM - 06:00 PM"
+						: instituteDto.getTuesday());
+
+		instituteTiming
+				.setThursday((instituteDto.getWednesday() == null) || StringUtils.isEmpty(instituteDto.getWednesday())
+						|| StringUtils.equalsIgnoreCase(instituteDto.getWednesday(), "NULL") ? "08:00 AM - 06:00 PM"
+								: instituteDto.getWednesday());
+
+		instituteTiming
+				.setFriday((instituteDto.getThursday() == null) || StringUtils.isEmpty(instituteDto.getThursday())
+						|| StringUtils.equalsIgnoreCase(instituteDto.getThursday(), "NULL") ? "08:00 AM - 06:00 PM"
+								: instituteDto.getThursday());
+
+		instituteTiming.setWednesday((instituteDto.getFriday() == null) || StringUtils.isEmpty(instituteDto.getFriday())
+				|| StringUtils.equalsIgnoreCase(instituteDto.getFriday(), "NULL") ? "08:00 AM - 06:00 PM"
+						: instituteDto.getFriday());
+
+		instituteTiming
+				.setSaturday((instituteDto.getSaturday() == null) || StringUtils.isEmpty(instituteDto.getSaturday())
+						|| StringUtils.equalsIgnoreCase(instituteDto.getSaturday(), "NULL") ? "CLOSED"
+								: instituteDto.getSaturday());
+
+		instituteTiming.setSunday((instituteDto.getSunday() == null) || StringUtils.isEmpty(instituteDto.getSunday())
+				|| StringUtils.equalsIgnoreCase(instituteDto.getSunday(), "NULL") ? "CLOSED"
+						: instituteDto.getSunday());
 		instituteTiming.setCreatedBy("API");
 		instituteTiming.setCreatedOn(new Date());
 		return instituteTiming;
 	}
-	
+
 	private List<String> getInstituteIntake(final Institute institute, final InstituteCsvDto dto) {
 		Set<String> intakes = new HashSet<>();
 		List<String> intakeList = new ArrayList<>();

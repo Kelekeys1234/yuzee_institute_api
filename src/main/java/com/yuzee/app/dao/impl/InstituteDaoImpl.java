@@ -443,7 +443,7 @@ public class InstituteDaoImpl implements InstituteDao {
 		Sort sort = Sort.by(Sort.Direction.DESC, "createdOn");
 		mongoQuery.with(sort);
 		mongoQuery.addCriteria(Criteria.where("isActive").is(status)).addCriteria(Criteria.where("deletedOn").is(null));
-		return mongoTemplate.find(mongoQuery, InstituteGetRequestDto.class, "institute");
+		return mongoTemplate.find(mongoQuery, InstituteGetRequestDto.class, "newInstitute");
 	}
 
 	private List<InstituteGetRequestDto> getInstituteData(final List<Object[]> rows) {

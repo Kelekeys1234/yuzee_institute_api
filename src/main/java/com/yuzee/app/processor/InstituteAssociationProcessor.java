@@ -1,6 +1,11 @@
 package com.yuzee.app.processor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,60 +36,84 @@ import lombok.extern.apachecommons.CommonsLog;
 @Service
 @CommonsLog
 public class InstituteAssociationProcessor {
- 
+
 	@Autowired
 	private InstituteAssociationDao instituteAssociationDao;
-	
+
 	@Autowired
 	private InstituteDao iInstituteDAO;
-	
+
 	@Autowired
 	private UserInstituteAccessRoleHandler userInstituteAccessRoleHandler;
-	
+
 	@Autowired
 	private StorageHandler storageHandler;
-	
+
 	@Value("${rejection.count}")
 	public Integer rejectionCount;
-	
+
 	@Value("${association.message}")
 	public String associationMessage;
 
 	@Autowired
 	private MessageTranslator messageTranslator;
-	
-	public void addInstituteAssociation (String userId , InstituteAssociationDto instituteAssociationDto) throws Exception {
+
+	public void addInstituteAssociation(String userId, InstituteAssociationDto instituteAssociationDto)
+			throws Exception {
 		log.debug("Inside addInstituteAssociation() method ");
 		// TODO check user id have access for institute id (source institute id)
-		log.info("Getting source institute having institute id "+instituteAssociationDto.getSourceInstituteId());
-		Optional<Institute> sourceInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(instituteAssociationDto.getSourceInstituteId()));
+		log.info("Getting source institute having institute id " + instituteAssociationDto.getSourceInstituteId());
+		Optional<Institute> sourceInstituteFromDB = iInstituteDAO
+				.getInstituteByInstituteId(UUID.fromString(instituteAssociationDto.getSourceInstituteId()));
 		if (sourceInstituteFromDB.isEmpty()) {
-			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteAssociationDto.getSourceInstituteId(),Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notFound",instituteAssociationDto.getSourceInstituteId()));
+			log.error(messageTranslator.toLocale("institute_info.id.notfound",
+					instituteAssociationDto.getSourceInstituteId(), Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notFound",
+					instituteAssociationDto.getSourceInstituteId()));
 		}
-		log.info("Getting destination institute having institute id "+instituteAssociationDto.getSourceInstituteId());
-		Optional<Institute> destinationInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(instituteAssociationDto.getDestinationInstituteId()));
+		log.info("Getting destination institute having institute id " + instituteAssociationDto.getSourceInstituteId());
+		Optional<Institute> destinationInstituteFromDB = iInstituteDAO
+				.getInstituteByInstituteId(UUID.fromString(instituteAssociationDto.getDestinationInstituteId()));
 		if (destinationInstituteFromDB.isEmpty()) {
-			log.error(messageTranslator.toLocale("institute_info.id.notFound",instituteAssociationDto.getDestinationInstituteId(),Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notFound",instituteAssociationDto.getDestinationInstituteId()));
+			log.error(messageTranslator.toLocale("institute_info.id.notFound",
+					instituteAssociationDto.getDestinationInstituteId(), Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notFound",
+					instituteAssociationDto.getDestinationInstituteId()));
 		}
-		log.info("Getting user access for institute id "+instituteAssociationDto.getDestinationInstituteId());
-		List<UserInstituteAccessInternalResponseDto> listOfUserInstituteAccessInternalResponseDto = userInstituteAccessRoleHandler.getUserInstituteAccessInternal(instituteAssociationDto.getDestinationInstituteId(), "ACTIVE");
-		
-		if (CollectionUtils.isEmpty(listOfUserInstituteAccessInternalResponseDto) || !listOfUserInstituteAccessInternalResponseDto.stream().anyMatch(x -> x.getRole().equalsIgnoreCase("super admin") || x.getRole().equalsIgnoreCase("admin")) ) {
-			log.error(messageTranslator.toLocale("institute_association.no.admin",instituteAssociationDto.getDestinationInstituteId(),Locale.US));
-			throw new InternalServerException(messageTranslator.toLocale("institute_association.no.admin",instituteAssociationDto.getDestinationInstituteId()));
+		log.info("Getting user access for institute id " + instituteAssociationDto.getDestinationInstituteId());
+		List<UserInstituteAccessInternalResponseDto> listOfUserInstituteAccessInternalResponseDto = userInstituteAccessRoleHandler
+				.getUserInstituteAccessInternal(instituteAssociationDto.getDestinationInstituteId(), "ACTIVE");
+
+		if (CollectionUtils.isEmpty(listOfUserInstituteAccessInternalResponseDto)
+				|| !listOfUserInstituteAccessInternalResponseDto.stream().anyMatch(
+						x -> x.getRole().equalsIgnoreCase("super admin") || x.getRole().equalsIgnoreCase("admin"))) {
+			log.error(messageTranslator.toLocale("institute_association.no.admin",
+					instituteAssociationDto.getDestinationInstituteId(), Locale.US));
+			throw new InternalServerException(messageTranslator.toLocale("institute_association.no.admin",
+					instituteAssociationDto.getDestinationInstituteId()));
 		}
-		
-		log.info("Getting association between institute id"+instituteAssociationDto.getSourceInstituteId()+ " and institute id"+instituteAssociationDto.getDestinationInstituteId()+ " association type "+instituteAssociationDto.getAssociationType());
-		InstituteAssociation instituteAssociationFromDb = instituteAssociationDao.getInstituteAssociationBasedOnAssociationType(instituteAssociationDto.getSourceInstituteId(), instituteAssociationDto.getDestinationInstituteId(), InstituteAssociationType.valueOf(instituteAssociationDto.getAssociationType()));
+
+		log.info("Getting association between institute id" + instituteAssociationDto.getSourceInstituteId()
+				+ " and institute id" + instituteAssociationDto.getDestinationInstituteId() + " association type "
+				+ instituteAssociationDto.getAssociationType());
+		InstituteAssociation instituteAssociationFromDb = instituteAssociationDao
+				.getInstituteAssociationBasedOnAssociationType(instituteAssociationDto.getSourceInstituteId(),
+						instituteAssociationDto.getDestinationInstituteId(),
+						InstituteAssociationType.valueOf(instituteAssociationDto.getAssociationType()));
 		if (ObjectUtils.isEmpty(instituteAssociationFromDb)) {
-			log.info("association not found between institute id"+instituteAssociationDto.getSourceInstituteId()+ " and institute id"+instituteAssociationDto.getDestinationInstituteId()+ " for association type "+instituteAssociationDto.getAssociationType()+ " creating new association");
-			InstituteAssociation instituteAssociation = new InstituteAssociation(instituteAssociationDto.getSourceInstituteId(), instituteAssociationDto.getDestinationInstituteId(), InstituteAssociationType.valueOf(instituteAssociationDto.getAssociationType()), InstituteAssociationStatus.PENDING,0, new Date(), new Date(), "API", "API");
+			log.info("association not found between institute id" + instituteAssociationDto.getSourceInstituteId()
+					+ " and institute id" + instituteAssociationDto.getDestinationInstituteId()
+					+ " for association type " + instituteAssociationDto.getAssociationType()
+					+ " creating new association");
+			InstituteAssociation instituteAssociation = new InstituteAssociation(
+					instituteAssociationDto.getSourceInstituteId(), instituteAssociationDto.getDestinationInstituteId(),
+					InstituteAssociationType.valueOf(instituteAssociationDto.getAssociationType()),
+					InstituteAssociationStatus.PENDING, 0, new Date(), new Date(), "API", "API");
 			instituteAssociationDao.addInstituteAssociation(instituteAssociation);
 			listOfUserInstituteAccessInternalResponseDto.forEach(userInstituteAccess -> {
-				if (userInstituteAccess.getRole().equalsIgnoreCase("super admin") || userInstituteAccess.getRole().equalsIgnoreCase("admin")) {
-					log.info("sending push notification for association to user id "+userInstituteAccess.getUserId());
+				if (userInstituteAccess.getRole().equalsIgnoreCase("super admin")
+						|| userInstituteAccess.getRole().equalsIgnoreCase("admin")) {
+					log.info("sending push notification for association to user id " + userInstituteAccess.getUserId());
 					/*
 					 * try { iUserService.sendPushNotification(userInstituteAccess.getUserId(),
 					 * associationMessage, NotificationType.ASSOCIATION_NOTIFICATION.toString()); }
@@ -92,25 +121,42 @@ public class InstituteAssociationProcessor {
 					 * log.error("Exception occured sending push notificaton to user id "
 					 * +userInstituteAccess.getUserId()); }
 					 */
-				}	
+				}
 			});
-			
-		} else if (instituteAssociationFromDb.getInstituteAssociationStatus().equals(InstituteAssociationStatus.valueOf("PENDING"))) {
-			log.info("association has been already established between institute id"+instituteAssociationDto.getSourceInstituteId()+ " and institute id"+instituteAssociationDto.getDestinationInstituteId()+ " for association type "+instituteAssociationDto.getAssociationType()+ " creating new association");
-		} else if (instituteAssociationFromDb.getInstituteAssociationStatus().equals(InstituteAssociationStatus.valueOf("ACTIVE"))) {
-			log.info("association has been already established between institute id"+instituteAssociationDto.getSourceInstituteId()+ " and institute id"+instituteAssociationDto.getDestinationInstituteId()+ " for association type "+instituteAssociationDto.getAssociationType()+ " creating new association");
-		} else if (instituteAssociationFromDb.getInstituteAssociationStatus().equals(InstituteAssociationStatus.valueOf("REJECTED"))) {
-			log.warn("association has been rejected between institute id"+instituteAssociationDto.getSourceInstituteId()+ " and institute id"+instituteAssociationDto.getDestinationInstituteId()+ " for association type "+instituteAssociationDto.getAssociationType()+ " creating new association");
-			log.info("Checking if reject counter is less than "+rejectionCount);
+
+		} else if (instituteAssociationFromDb.getInstituteAssociationStatus()
+				.equals(InstituteAssociationStatus.valueOf("PENDING"))) {
+			log.info("association has been already established between institute id"
+					+ instituteAssociationDto.getSourceInstituteId() + " and institute id"
+					+ instituteAssociationDto.getDestinationInstituteId() + " for association type "
+					+ instituteAssociationDto.getAssociationType() + " creating new association");
+		} else if (instituteAssociationFromDb.getInstituteAssociationStatus()
+				.equals(InstituteAssociationStatus.valueOf("ACTIVE"))) {
+			log.info("association has been already established between institute id"
+					+ instituteAssociationDto.getSourceInstituteId() + " and institute id"
+					+ instituteAssociationDto.getDestinationInstituteId() + " for association type "
+					+ instituteAssociationDto.getAssociationType() + " creating new association");
+		} else if (instituteAssociationFromDb.getInstituteAssociationStatus()
+				.equals(InstituteAssociationStatus.valueOf("REJECTED"))) {
+			log.warn("association has been rejected between institute id"
+					+ instituteAssociationDto.getSourceInstituteId() + " and institute id"
+					+ instituteAssociationDto.getDestinationInstituteId() + " for association type "
+					+ instituteAssociationDto.getAssociationType() + " creating new association");
+			log.info("Checking if reject counter is less than " + rejectionCount);
 			if (instituteAssociationFromDb.getRejectionCounter() <= rejectionCount) {
 				Integer counter = instituteAssociationFromDb.getRejectionCounter() + 1;
-				log.info("changing status of association to pending between institute id "+instituteAssociationDto.getSourceInstituteId()+ " and institute id"+instituteAssociationDto.getDestinationInstituteId()+ " for association type"+instituteAssociationDto.getAssociationType());
+				log.info("changing status of association to pending between institute id "
+						+ instituteAssociationDto.getSourceInstituteId() + " and institute id"
+						+ instituteAssociationDto.getDestinationInstituteId() + " for association type"
+						+ instituteAssociationDto.getAssociationType());
 				instituteAssociationFromDb.setInstituteAssociationStatus(InstituteAssociationStatus.PENDING);
 				instituteAssociationFromDb.setRejectionCounter(counter);
 				instituteAssociationDao.addInstituteAssociation(instituteAssociationFromDb);
 				listOfUserInstituteAccessInternalResponseDto.stream().forEach(userInstituteAccess -> {
-					if (userInstituteAccess.getRole().equalsIgnoreCase("super admin") || userInstituteAccess.getRole().equalsIgnoreCase("admin")) {
-						log.info("sending push notification for association to user id "+userInstituteAccess.getUserId());
+					if (userInstituteAccess.getRole().equalsIgnoreCase("super admin")
+							|| userInstituteAccess.getRole().equalsIgnoreCase("admin")) {
+						log.info("sending push notification for association to user id "
+								+ userInstituteAccess.getUserId());
 						/*
 						 * try { iUserService.sendPushNotification(userInstituteAccess.getUserId(),
 						 * associationMessage, NotificationType.ASSOCIATION_NOTIFICATION.toString()); }
@@ -118,24 +164,35 @@ public class InstituteAssociationProcessor {
 						 * log.error("Exception occured sending push notificaton to user id "
 						 * +userInstituteAccess.getUserId()); }
 						 */
-					}	
+					}
 				});
 			} else {
-				log.error(messageTranslator.toLocale("institute_association.request.count.greater",rejectionCount+"",Locale.US));
-				throw new InternalServerException(messageTranslator.toLocale("institute_association.request.count.greater",rejectionCount+""));
+				log.error(messageTranslator.toLocale("institute_association.request.count.greater", rejectionCount + "",
+						Locale.US));
+				throw new InternalServerException(
+						messageTranslator.toLocale("institute_association.request.count.greater", rejectionCount + ""));
 			}
-		} else if (instituteAssociationFromDb.getInstituteAssociationStatus().equals(InstituteAssociationStatus.valueOf("REVOKED"))) {
-			log.warn("association has been revoked between institute id"+instituteAssociationDto.getSourceInstituteId()+ " and institute id"+instituteAssociationDto.getDestinationInstituteId()+ " for association type "+instituteAssociationDto.getAssociationType()+ " creating new association");
-			log.info("Checking if reject counter is less than "+rejectionCount);
+		} else if (instituteAssociationFromDb.getInstituteAssociationStatus()
+				.equals(InstituteAssociationStatus.valueOf("REVOKED"))) {
+			log.warn("association has been revoked between institute id"
+					+ instituteAssociationDto.getSourceInstituteId() + " and institute id"
+					+ instituteAssociationDto.getDestinationInstituteId() + " for association type "
+					+ instituteAssociationDto.getAssociationType() + " creating new association");
+			log.info("Checking if reject counter is less than " + rejectionCount);
 			if (instituteAssociationFromDb.getRejectionCounter() <= rejectionCount) {
 				Integer counter = instituteAssociationFromDb.getRejectionCounter() + 1;
-				log.info("changing status of association to pending between institute id "+instituteAssociationDto.getSourceInstituteId()+ " and institute id"+instituteAssociationDto.getDestinationInstituteId()+ " for association type"+instituteAssociationDto.getAssociationType());
+				log.info("changing status of association to pending between institute id "
+						+ instituteAssociationDto.getSourceInstituteId() + " and institute id"
+						+ instituteAssociationDto.getDestinationInstituteId() + " for association type"
+						+ instituteAssociationDto.getAssociationType());
 				instituteAssociationFromDb.setInstituteAssociationStatus(InstituteAssociationStatus.PENDING);
 				instituteAssociationFromDb.setRejectionCounter(counter);
 				instituteAssociationDao.addInstituteAssociation(instituteAssociationFromDb);
 				listOfUserInstituteAccessInternalResponseDto.forEach(userInstituteAccess -> {
-					if (userInstituteAccess.getRole().equalsIgnoreCase("super admin") || userInstituteAccess.getRole().equalsIgnoreCase("admin")) {
-						log.info("sending push notification for association to user id "+userInstituteAccess.getUserId());
+					if (userInstituteAccess.getRole().equalsIgnoreCase("super admin")
+							|| userInstituteAccess.getRole().equalsIgnoreCase("admin")) {
+						log.info("sending push notification for association to user id "
+								+ userInstituteAccess.getUserId());
 						/*
 						 * try { iUserService.sendPushNotification(userInstituteAccess.getUserId(),
 						 * associationMessage, NotificationType.ASSOCIATION_NOTIFICATION.toString()); }
@@ -143,82 +200,137 @@ public class InstituteAssociationProcessor {
 						 * log.error("Exception occured sending push notificaton to user id "
 						 * +userInstituteAccess.getUserId()); }
 						 */
-					}	
+					}
 				});
 			} else {
-				log.error(messageTranslator.toLocale("institute_association.request.count.greater",rejectionCount+"",Locale.US));
-				throw new InternalServerException(messageTranslator.toLocale("institute_association.request.count.greater",rejectionCount+""));
+				log.error(messageTranslator.toLocale("institute_association.request.count.greater", rejectionCount + "",
+						Locale.US));
+				throw new InternalServerException(
+						messageTranslator.toLocale("institute_association.request.count.greater", rejectionCount + ""));
 			}
-		}			
-	}
-	
-	public List<InstituteAssociationResponseDto> getInstituteAssociationByAssociationType(String userId ,String instituteId,
-			String associationType, String status, String caller) {
-		if (caller.equalsIgnoreCase("PRIVATE")) {
-			//TODO check user id have appropriated access for institute id
 		}
-		
+	}
+
+	public List<InstituteAssociationResponseDto> getInstituteAssociationByAssociationType(String userId,
+			String instituteId, String associationType, String status, String caller) {
+		if (caller.equalsIgnoreCase("PRIVATE")) {
+			// TODO check user id have appropriated access for institute id
+		}
+
 		List<InstituteAssociationResponseDto> listOfUserInstituteAssociationResponseDto = new ArrayList<InstituteAssociationResponseDto>();
 		log.info("Getting association for institute id " + instituteId + " having association type " + associationType
 				+ " and status Active");
-		List<InstituteAssociation> listOfInstituteAssociation = instituteAssociationDao
-				.getInstituteAssociation(instituteId, InstituteAssociationType.valueOf(associationType), InstituteAssociationStatus.valueOf(status));
+		List<InstituteAssociation> listOfInstituteAssociation = instituteAssociationDao.getInstituteAssociation(
+				instituteId, InstituteAssociationType.valueOf(associationType),
+				InstituteAssociationStatus.valueOf(status));
 		if (!CollectionUtils.isEmpty(listOfInstituteAssociation)) {
 			listOfInstituteAssociation.forEach(userAssociation -> {
-				 List<StorageDto> listOfStorageDto = null;
+				List<StorageDto> listOfStorageDto = null;
 				if (userAssociation.getDestinationInstituteId().equals(instituteId)) {
 					try {
-						 log.info("calling storage to get logo for institute id "+userAssociation.getSourceInstituteId());
-						 listOfStorageDto = storageHandler.getStorages(userAssociation.getSourceInstituteId(),EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.LOGO);
+						log.info("calling storage to get logo for institute id "
+								+ userAssociation.getSourceInstituteId());
+						listOfStorageDto = storageHandler.getStorages(userAssociation.getSourceInstituteId(),
+								EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.LOGO);
 					} catch (Exception e) {
-						log.error("Error occured while fetching logo for institute id "+userAssociation.getSourceInstituteId());
+						log.error("Error occured while fetching logo for institute id "
+								+ userAssociation.getSourceInstituteId());
 					}
-					log.info("Getting institute for institute id "+userAssociation.getSourceInstituteId());
-					Optional<Institute> sourceInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(userAssociation.getSourceInstituteId()));
+					log.info("Getting institute for institute id " + userAssociation.getSourceInstituteId());
+					Optional<Institute> sourceInstituteFromDB = iInstituteDAO
+							.getInstituteByInstituteId(UUID.fromString(userAssociation.getSourceInstituteId()));
 					if (sourceInstituteFromDB.isPresent()) {
-						log.info("Institute from DB found for institute id "+userAssociation.getSourceInstituteId());
-						InstituteAssociationResponseDto instituteAssociationResponseDto = new InstituteAssociationResponseDto(userAssociation.getId(), sourceInstituteFromDB.get().getLatitude(), sourceInstituteFromDB.get().getLongitude(), sourceInstituteFromDB.get().getName(), sourceInstituteFromDB.get().getCityName(), sourceInstituteFromDB.get().getCountryName(),
-							!CollectionUtils.isEmpty(listOfStorageDto) ?listOfStorageDto.get(0).getFileURL() : null, userAssociation.getInstituteAssociationType().toString());
+						// Location location = new Location();
+						log.info("Institute from DB found for institute id " + userAssociation.getSourceInstituteId());
+						// for (Location locations : sourceInstituteFromDB.get().getLocation()) {
+						// if (location.getLatitute() != null || location.getLongtitute() != null) {
+//								Location locations = new Location(UUID.randomUUID().toString(), location.getLocation(),
+//										location.getLongtitute());
+//								List<Location> list = new ArrayList<>();
+//								list.add(locations);
+
+						InstituteAssociationResponseDto instituteAssociationResponseDto = new InstituteAssociationResponseDto(
+								userAssociation.getId(), sourceInstituteFromDB.get().getLocation().getLocation().getY(),
+								sourceInstituteFromDB.get().getLocation().getLocation().getX(),
+								sourceInstituteFromDB.get().getName(), sourceInstituteFromDB.get().getCityName(),
+								sourceInstituteFromDB.get().getCountryName(),
+								!CollectionUtils.isEmpty(listOfStorageDto) ? listOfStorageDto.get(0).getFileURL()
+										: null,
+								userAssociation.getInstituteAssociationType().toString());
 						listOfUserInstituteAssociationResponseDto.add(instituteAssociationResponseDto);
+						// }
+
 					}
 				} else {
-					log.info("calling storage to get logo for institute id "+userAssociation.getDestinationInstituteId());
+					log.info("calling storage to get logo for institute id "
+							+ userAssociation.getDestinationInstituteId());
 					try {
-						 log.info("calling storage to get logo for institute id "+userAssociation.getDestinationInstituteId());
-						 listOfStorageDto = storageHandler.getStorages(userAssociation.getDestinationInstituteId(), EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.LOGO);
+						log.info("calling storage to get logo for institute id "
+								+ userAssociation.getDestinationInstituteId());
+						listOfStorageDto = storageHandler.getStorages(userAssociation.getDestinationInstituteId(),
+								EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.LOGO);
 					} catch (Exception e) {
-						log.error("Error occured while fetching logo for institute id "+userAssociation.getDestinationInstituteId());
+						log.error("Error occured while fetching logo for institute id "
+								+ userAssociation.getDestinationInstituteId());
 					}
-					log.info("Getting institute for institute id "+userAssociation.getDestinationInstituteId());
-					Optional<Institute> destinationInstituteFromDB = iInstituteDAO.getInstituteByInstituteId(UUID.fromString(userAssociation.getDestinationInstituteId()));
+					log.info("Getting institute for institute id " + userAssociation.getDestinationInstituteId());
+					Optional<Institute> destinationInstituteFromDB = iInstituteDAO
+							.getInstituteByInstituteId(UUID.fromString(userAssociation.getDestinationInstituteId()));
 					if (destinationInstituteFromDB.isPresent()) {
-						log.info("Institute from DB found for institute id "+userAssociation.getDestinationInstituteId());
-						InstituteAssociationResponseDto instituteAssociationResponseDto = new InstituteAssociationResponseDto(userAssociation.getId(), destinationInstituteFromDB.get().getLatitude(), destinationInstituteFromDB.get().getLongitude(), destinationInstituteFromDB.get().getName(), destinationInstituteFromDB.get().getCityName(), destinationInstituteFromDB.get().getCountryName(), !CollectionUtils.isEmpty(listOfStorageDto) ?listOfStorageDto.get(0).getFileURL() : null, userAssociation.getInstituteAssociationType().toString());
+
+						log.info("Institute from DB found for institute id "
+								+ userAssociation.getDestinationInstituteId());
+						// for (Location locations : destinationInstituteFromDB.get().getLocation()) {
+
+//								Location locations = new Location(UUID.randomUUID().toString(), location.getLatitute(),
+//										location.getLongtitute());
+//								List<Location> list = new ArrayList<>();
+//								list.add(locations);
+//								for (Location rr : list) {
+						InstituteAssociationResponseDto instituteAssociationResponseDto = new InstituteAssociationResponseDto(
+								userAssociation.getId(),
+								destinationInstituteFromDB.get().getLocation().getLocation().getY(),
+								destinationInstituteFromDB.get().getLocation().getLocation().getX(),
+								destinationInstituteFromDB.get().getName(),
+								destinationInstituteFromDB.get().getCityName(),
+								destinationInstituteFromDB.get().getCountryName(),
+								!CollectionUtils.isEmpty(listOfStorageDto) ? listOfStorageDto.get(0).getFileURL()
+										: null,
+								userAssociation.getInstituteAssociationType().toString());
 						listOfUserInstituteAssociationResponseDto.add(instituteAssociationResponseDto);
+
+						// }
 					}
+
 				}
 			});
 		}
 		return listOfUserInstituteAssociationResponseDto;
+
 	}
-	
-	public void updateInstituteAssociation (String instituteAssociationId , String instituteId , String userId, String status) throws Exception {
-		log.debug("Inside updateInstituteAssociation() method "); 
-		//TODO check userId have access to institute id
-		Optional<InstituteAssociation> optionalInstituteAssociation = instituteAssociationDao.getInstituteAssociationById(instituteAssociationId);
+
+	public void updateInstituteAssociation(String instituteAssociationId, String instituteId, String userId,
+			String status) throws Exception {
+		log.debug("Inside updateInstituteAssociation() method ");
+		// TODO check userId have access to institute id
+		Optional<InstituteAssociation> optionalInstituteAssociation = instituteAssociationDao
+				.getInstituteAssociationById(instituteAssociationId);
 		if (!optionalInstituteAssociation.isPresent()) {
-			log.error(messageTranslator.toLocale("institute_association.id.notfound",Locale.US));
+			log.error(messageTranslator.toLocale("institute_association.id.notfound", Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute_association.id.notfound"));
 		}
-		
-		InstituteAssociation instituteAssociation  = optionalInstituteAssociation.get();
-	
-		if (!instituteAssociation.getSourceInstituteId().equalsIgnoreCase(instituteId) && !instituteAssociation.getDestinationInstituteId().equalsIgnoreCase(instituteId)) {
-			log.error(messageTranslator.toLocale("institute_association.id.notmatch",instituteId,Locale.US));
-			throw new InternalServerException(messageTranslator.toLocale("institute_association.id.notmatch",instituteId));
+
+		InstituteAssociation instituteAssociation = optionalInstituteAssociation.get();
+
+		if (!instituteAssociation.getSourceInstituteId().equalsIgnoreCase(instituteId)
+				&& !instituteAssociation.getDestinationInstituteId().equalsIgnoreCase(instituteId)) {
+			log.error(messageTranslator.toLocale("institute_association.id.notmatch", instituteId, Locale.US));
+			throw new InternalServerException(
+					messageTranslator.toLocale("institute_association.id.notmatch", instituteId));
 		}
-		
-		log.info("changing status of institute association with id "+instituteAssociationId+ " from status "+instituteAssociation.getInstituteAssociationStatus().toString()+ " to "+status);
+
+		log.info("changing status of institute association with id " + instituteAssociationId + " from status "
+				+ instituteAssociation.getInstituteAssociationStatus().toString() + " to " + status);
 		instituteAssociation.setInstituteAssociationStatus(InstituteAssociationStatus.valueOf(status));
 		instituteAssociation.setUpdatedBy("API");
 		instituteAssociation.setUpdatedOn(new Date());

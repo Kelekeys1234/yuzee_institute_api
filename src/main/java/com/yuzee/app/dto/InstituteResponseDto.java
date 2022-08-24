@@ -12,11 +12,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Id;
-
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class InstituteResponseDto extends InstituteDto {
 
 	@JsonProperty("id")
@@ -54,11 +52,11 @@ public class InstituteResponseDto extends InstituteDto {
 
 	@JsonProperty("institute_timing")
 	private TimingDto instituteTiming;
-	
+
 	public InstituteResponseDto(String name, Integer worldRanking, String cityName, String countryName,
-			String stateName, String website, String aboutUs,
-			Double latitude, Double longitude, String phoneNumber, String whatsNo, Long totalCourses, String email, String address,
-			Integer domesticRanking, String tagLine, Date createdOn) {
+			String stateName, String website, String aboutUs, Double latitute, Double longtitute, String phoneNumber,
+			String whatsNo, Long totalCourses, String email, String address, Integer domesticRanking, String tagLine,
+			Date createdOn) {
 		super.setName(name);
 		super.setWorldRanking(worldRanking);
 		super.setCityName(cityName);
@@ -67,8 +65,8 @@ public class InstituteResponseDto extends InstituteDto {
 		super.setWebsite(website);
 		this.aboutUs = aboutUs;
 		super.setTotalCourses(totalCourses.intValue());
-		super.setLatitude(latitude);
-		super.setLongitude(longitude);
+		super.setLatitude(latitute);
+		super.setLongitude(longtitute);
 		super.setPhoneNumber(phoneNumber);
 		super.setWhatsNo(whatsNo);
 		super.setEmail(email);
@@ -77,18 +75,18 @@ public class InstituteResponseDto extends InstituteDto {
 		super.setTagLine(tagLine);
 		super.setCreatedOn(createdOn);
 	}
-	public InstituteResponseDto(String name, Integer worldRanking, String cityName, String countryName
-			   					, String website, String aboutUs,
-								Double latitude, Double longitude, String phoneNumber, String email,
-								Integer domesticRanking, Date createdOn) {
+
+	public InstituteResponseDto(String name, Integer worldRanking, String cityName, String countryName, String website,
+			String aboutUs, Double latitute, Double longtitute, String phoneNumber, String email,
+			Integer domesticRanking, Date createdOn) {
 		super.setName(name);
 		super.setWorldRanking(worldRanking);
 		super.setCityName(cityName);
 		super.setCountryName(countryName);
 		super.setWebsite(website);
 		this.aboutUs = aboutUs;
-		super.setLatitude(latitude);
-		super.setLongitude(longitude);
+		super.setLatitude(latitute);
+		super.setLongitude(longtitute);
 		super.setPhoneNumber(phoneNumber);
 		super.setEmail(email);
 		super.setDomesticRanking(domesticRanking);

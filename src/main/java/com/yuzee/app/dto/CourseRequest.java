@@ -29,11 +29,15 @@ import com.yuzee.common.lib.dto.institute.OffCampusCourseDto;
 import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
 import com.yuzee.common.lib.dto.storage.StorageDto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @ToString
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CourseRequest {
 
 	@JsonProperty("id")
@@ -78,8 +82,8 @@ public class CourseRequest {
 	@JsonProperty("institute_name")
 	private String instituteName;
 
-	@JsonProperty("location")
-	private String location;
+//	@JsonProperty("location")
+//	private String locations;
 
 	@JsonProperty("world_ranking")
 	private String worldRanking;

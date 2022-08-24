@@ -72,14 +72,20 @@ public class CommonUtil {
 		if (institute.getInstituteType() != null) {
 			instituteRequestDto.setInstituteType(institute.getInstituteType());
 		}
-		if (institute.getLatitude() != null) {
-			instituteRequestDto.setLatitude(institute.getLatitude());
-		}
-		if (institute.getLongitude() != null) {
-			instituteRequestDto.setLongitude(institute.getLongitude());
-		}
+
+//		for (Location location : institute.getLocation()) {
+//		
+		instituteRequestDto.setLatitude(institute.getLocation().getLocation().getY());
+		;
+		instituteRequestDto.setLatitude(institute.getLocation().getLocation().getY());
+
+//	}
+//		if (institute.getLongitude() != null) {
+//			instituteRequestDto.setLongitude(institute.getLongitude());
+//		}
 		instituteRequestDto.setAddress(institute.getAddress());
 		instituteRequestDto.setPhoneNumber(institute.getPhoneNumber());
+
 		InstituteAdditionalInfo instituteAdditionalInfo = institute.getInstituteAdditionalInfo();
 		if (!ObjectUtils.isEmpty(instituteAdditionalInfo)) {
 			instituteRequestDto.setTotalStudent(instituteAdditionalInfo.getNumberOfStudent());
