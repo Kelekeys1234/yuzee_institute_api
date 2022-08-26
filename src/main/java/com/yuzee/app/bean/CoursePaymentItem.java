@@ -25,8 +25,7 @@ import lombok.ToString;
 public class CoursePaymentItem implements Serializable {
 
 	private static final long serialVersionUID = 8492390790670110780L;
-	@Id
-	private String id;
+	
 	@EqualsAndHashCode.Include
 	private String name;
 
@@ -40,9 +39,5 @@ public class CoursePaymentItem implements Serializable {
 	private String createdBy;
 
 	private String updatedBy;
-	private String auditFields;
-	@DBRef
-	private Course course;
-	@DBRef
-	private CoursePayment coursePayment;
+
 }

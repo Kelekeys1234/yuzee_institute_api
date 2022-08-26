@@ -28,22 +28,19 @@ import lombok.ToString;
 public class CourseMinRequirement implements Serializable {
 
 	private static final long serialVersionUID = 6903674843134844883L;
-	@Id
-	private String id;
+	
 	@EqualsAndHashCode.Include
 	private String countryName;
 
 	@EqualsAndHashCode.Include
-	private String stateName;
+	private String stateName; 
 
 	@EqualsAndHashCode.Include
 	private Double gradePoint;
 
 	@DBRef
 	private EducationSystem educationSystem;
-	@DBRef
-	private Course course;
-	private String auditFields;
+
 
 	@EqualsAndHashCode.Include
 	private List<CourseMinRequirementSubject> courseMinRequirementSubjects = new ArrayList<>();

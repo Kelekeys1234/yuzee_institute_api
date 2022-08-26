@@ -24,7 +24,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @EntityListeners(CourseUpdateListener.class)
-@Document(collection = "course")
+@Document("course")
 public class Course implements Serializable {
 //	, @UniqueConstraint(name = "UK_COURSE_F_L_I_N_C", columnNames = {})	, columnNames = { "faculty_id",
 //		"level_id", "institute_id", "name", "code" }), indexes = {
@@ -178,7 +178,6 @@ public class Course implements Serializable {
 	private List<CourseMinRequirement> courseMinRequirements = new ArrayList<>();
 
 	// Delete CoursePrerequisite model
-	@DBRef
 	private List<CoursePrerequisite> coursePrerequisites = new ArrayList<>();
 
 	// Delete CourseCareerOutcome model
@@ -205,7 +204,7 @@ public class Course implements Serializable {
 	private CourseWorkPlacementRequirement courseWorkPlacementRequirement;
 
 	// Delete CourseResearchProposalRequirement model
-	private CourseResearchProposalRequirement courseResearchProposalRequirement;
+	private String courseResearchProposalRequirement;
 
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);

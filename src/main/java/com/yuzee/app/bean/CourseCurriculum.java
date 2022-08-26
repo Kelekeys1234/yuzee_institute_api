@@ -20,9 +20,4 @@ public class CourseCurriculum implements Serializable {
 
 	private Boolean isActive;
 
-	private Date createdOn;
-	private Date updatedOn;
-	private String createdBy;
-	private String updatedBy;
-
 }
