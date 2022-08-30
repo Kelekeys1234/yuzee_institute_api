@@ -85,7 +85,7 @@ public class InstituteFacilityProcessor {
 	@Transactional(rollbackOn = Throwable.class)
 	public void deleteInstituteFacilities(String instituteId, List<String> instituteFacilitiesId) {
 		log.debug("inside deleteInstituteFacilities() method");
-		// userAccessUtils.validateUserAccess(userId, instituteId, "facility page",
+		 //userAccessUtils.validateUserAccess(userId, instituteId, "facility page",
 		// "delete");
 
 		if (!CollectionUtils.isEmpty(instituteFacilitiesId)) {

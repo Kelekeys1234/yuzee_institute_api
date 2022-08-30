@@ -35,19 +35,8 @@ public class InstituteEnglishRequirementDaoImpl implements InstituteEnglishRequi
     @Override
     public InstituteEnglishRequirements getInstituteEnglishRequirementsById(UUID englishRequirementsId) {
 		
-		  Query mongoQuery = new Query();
-		  mongoQuery.addCriteria(Criteria.where("id").is(englishRequirementsId));
-		  return
-		  instituteEnglishRequirementRepository.find(englishRequirementsId.toString());
-		 
+		 return   instituteEnglishRequirementRepository.findById(englishRequirementsId.toString()).get();
 		
-			/*
-			 * Optional<InstituteEnglishRequirements> institute
-			 * =instituteEnglishRequirementRepository.findById(englishRequirementsId.
-			 * toString()); if (institute.isPresent()) { return institute.get(); } return
-			 * null; }
-			 */
-		 
 
 }
 
@@ -55,4 +44,17 @@ public class InstituteEnglishRequirementDaoImpl implements InstituteEnglishRequi
     public void deleteInstituteEnglishRequirementsById(UUID englishRequirementsId) {
         instituteEnglishRequirementRepository.deleteById(englishRequirementsId.toString());
     }
+
+	@Override
+	public List<InstituteEnglishRequirements> getAll() {
+		return instituteEnglishRequirementRepository.findAll();
+	}
+
+	@Override
+	public List<InstituteEnglishRequirements> getListInstituteEnglishRequirementsById(UUID englishRequirementsId) {
+		org.springframework.data.mongodb.core.query.Query mongoQuery = new org.springframework.data.mongodb.core.query.Query();
+		mongoQuery.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("id").in(englishRequirementsId.toString()));
+		List<InstituteEnglishRequirements> getId= mongoTemplate.find(mongoQuery, InstituteEnglishRequirements.class,"InstituteEnglishRequirements");
+		return getId;
+	}
 }

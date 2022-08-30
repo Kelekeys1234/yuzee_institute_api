@@ -357,11 +357,15 @@ public class InstituteProcessor {
 
 		log.info("instituteId is null, creating object and setting values in it");
 		institute = new Institute();
-		institute.setId(instituteRequest.getInstituteId());
+		 if (id != null) {
+	            log.info("if instituteId in not null, then getInstitute from DB for id = " + id);
+	            institute = instituteDao.get(UUID.fromString(id));
+	        } else {
 		institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 		institute.setCreatedBy("API");
 		institute.setIsActive(true);
-
+		institute.setId(instituteRequest.getInstituteId());
+	        } 
 		institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		institute.setUpdatedBy("API");
 		if (!StringUtils.isEmpty(instituteRequest.getName())) {
@@ -371,16 +375,16 @@ public class InstituteProcessor {
 			throw new ValidationException(messageTranslator.toLocale("institute-processor.required.name"));
 		}
 
-//        Institute insituteWithSameId = instituteDao.findByReadableId(instituteRequest.getReadableId());
-//        if (ObjectUtils.isEmpty(insituteWithSameId)
-//                || (ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId().toString()))
-//                || (!ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId().toString())
-//                && institute.getId().equals(insituteWithSameId.getId()))) {
-//            institute.setReadableId(instituteRequest.getReadableId());
-//        } else {
-//            log.info("Institute with same readable_id already exists.");
-//            throw new ValidationException("Institute with same readable_id already exists.");
-//        }
+        Institute insituteWithSameId = instituteDao.findByReadableId(instituteRequest.getReadableId());
+        if (ObjectUtils.isEmpty(insituteWithSameId)
+                || (ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId().toString()))
+                || (!ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId().toString())
+                && institute.getId().equals(insituteWithSameId.getId()))) {
+            institute.setReadableId(instituteRequest.getReadableId());
+        } else {
+            log.info("Institute with same readable_id already exists.");
+            throw new ValidationException("Institute with same readable_id already exists.");
+        }
 
 		institute.setDescription(instituteRequest.getDescription());
 		if (!StringUtils.isEmpty(instituteRequest.getCountryName())) {

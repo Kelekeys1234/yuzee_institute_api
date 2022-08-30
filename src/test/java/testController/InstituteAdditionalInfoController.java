@@ -36,6 +36,7 @@ import com.yuzee.app.dto.InstituteAdditionalInfoDto;
 import com.yuzee.app.dto.InstituteFundingDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.common.lib.dto.GenericWrapperDto;
 import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
@@ -75,6 +76,8 @@ public class InstituteAdditionalInfoController {
 	private StorageHandler storageHandler;
 	@Autowired
 	InstituteRepository instituteRepository;
+	@Autowired
+	InstituteProcessor instituteProcessor;
 
 	@BeforeClass
 	public static void main() {
@@ -135,6 +138,7 @@ public class InstituteAdditionalInfoController {
 			try {
 				InstituteAdditionalInfoDto instituteAdditionalInfoDto = new InstituteAdditionalInfoDto();
 				instituteAdditionalInfoDto.setNumberOfClassRoom(20);
+				instituteAdditionalInfoDto.setAboutInfo("About testing");
 				instituteAdditionalInfoDto.setNumberOfEmployee(8);
 				instituteAdditionalInfoDto.setNumberOfLectureHall(2);
 				instituteAdditionalInfoDto.setNumberOfFaculty(4);
@@ -158,7 +162,7 @@ public class InstituteAdditionalInfoController {
 				ResponseEntity<String> responses = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}
@@ -227,7 +231,7 @@ public class InstituteAdditionalInfoController {
 			ResponseEntity<String> response = testRestTemplate.exchange(
 					INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteRequestDto.getInstituteId(), HttpMethod.DELETE, null,
 					String.class);
-			instituteRepository.deleteById(instituteRequestDto.getInstituteId());
+			instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		}
 	}

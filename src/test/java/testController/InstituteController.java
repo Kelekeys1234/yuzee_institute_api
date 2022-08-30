@@ -44,9 +44,11 @@ import com.yuzee.app.dto.InstituteResponseDto;
 import com.yuzee.app.dto.InstituteTypeDto;
 import com.yuzee.app.dto.InstituteWorldRankingHistoryDto;
 import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.common.lib.dto.GenericWrapperDto;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
+import com.yuzee.common.lib.dto.connection.FollowerCountDto;
 import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
 import com.yuzee.common.lib.dto.storage.StorageDto;
 import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
@@ -91,7 +93,7 @@ public class InstituteController {
 	@MockBean
 	private StorageHandler storageHandler;
 	@Autowired
-	InstituteRepository instituteRepository;
+	InstituteProcessor instituteProcessor;
 	@MockBean
 	PaginationUtil paginationUtil;
 
@@ -167,7 +169,7 @@ public class InstituteController {
 				header.set(USER_ID, userId);
 				Map<String, Boolean> params = new HashMap<>();
 				params.put("status", status);
-				HttpEntity<ValidList<InstituteRequestDto>> entitys = new HttpEntity<>(null, header);
+				HttpEntity<String> entitys = new HttpEntity<>(null, header);
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PATH + PATH_SEPARATOR + "status" + PATH_SEPARATOR + data.getInstituteId(),
 						HttpMethod.PUT, entitys, String.class, params);
@@ -177,7 +179,7 @@ public class InstituteController {
 				ResponseEntity<String> responses = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}
@@ -254,7 +256,7 @@ public class InstituteController {
 				ResponseEntity<String> responses = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}
@@ -318,10 +320,10 @@ public class InstituteController {
 			header.set("instituteId", data.getInstituteId());
 			header.setContentType(MediaType.APPLICATION_JSON);
 			Map<String, String> params = new HashMap<>();
-			params.put("instituteType", "SCHOOL");
+			params.put("countryName", "INDIA");
 			HttpEntity<InstituteTypeDto> entitys = new HttpEntity<>(instituteTypeDto, header);
 			ResponseEntity<String> responses = testRestTemplate.exchange(
-					INSTITUTE_PRE_PATH + PATH_SEPARATOR + "instituteType", HttpMethod.POST, entitys, String.class,
+					INSTITUTE_PRE_PATH + PATH_SEPARATOR + "type", HttpMethod.GET, entitys, String.class,
 					params);
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 			try {
@@ -341,7 +343,7 @@ public class InstituteController {
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+					instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}
@@ -497,7 +499,7 @@ public class InstituteController {
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}
@@ -619,15 +621,15 @@ public class InstituteController {
 		for (InstituteRequestDto data : r) {
 
 			try {
-				Map<String, String> params = new HashMap<>();
-				params.put("instituteId", data.getInstituteId());
-//instituteID= 6f91fa9b-6911-4fd3-beec-894d83545f35
+				HttpHeaders header = new HttpHeaders();
+				header.setContentType(MediaType.APPLICATION_JSON);
+				header.add("userId", userId);
 				instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
 				headers.setContentType(MediaType.APPLICATION_JSON);
-				HttpEntity<InstituteRequestDto> entitys = new HttpEntity<>(instituteRequestDto, headers);
+				HttpEntity<InstituteRequestDto> entitys = new HttpEntity<>(instituteRequestDto, header);
 				ResponseEntity<String> responses = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.PUT, entitys,
-						String.class, params);
+						String.class);
 				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 			} finally {
 				// clean up code
@@ -635,7 +637,7 @@ public class InstituteController {
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 			}
@@ -704,7 +706,7 @@ public class InstituteController {
 
 			ResponseEntity<String> respons = testRestTemplate.exchange(
 					INSTITUTE_PRE_PATH + PATH_SEPARATOR + IDS.toString(), HttpMethod.DELETE, null, String.class);
-			instituteRepository.deleteById(IDS.toString());
+			instituteProcessor.deleteInstitute(IDS.toString());
 			assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		}
@@ -772,7 +774,7 @@ public class InstituteController {
 
 			ResponseEntity<String> respons = testRestTemplate.exchange(
 					INSTITUTE_PRE_PATH + PATH_SEPARATOR + IDS.toString(), HttpMethod.DELETE, null, String.class);
-			instituteRepository.deleteById(IDS.toString());
+			instituteProcessor.deleteInstitute(IDS.toString());
 			assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		}
@@ -803,7 +805,7 @@ public class InstituteController {
 		Mockito.when(storageHandler.getStorages(id, EntityTypeEnum.INSTITUTE, news))
 				.thenReturn(new ArrayList<StorageDto>());
 		// Mockito.when(connectionHandler.getFollowersCount(UUID.randomUUID().toString()))
-		// .thenReturn(new FollowerCountDto(1L));
+		 //.thenReturn(new FollowerCountDto(1L));
 		Mockito.when(reviewHandler.getAverageReview("newInstitute", id)).thenReturn(new HashMap());
 
 		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
@@ -854,7 +856,7 @@ public class InstituteController {
 
 			ResponseEntity<String> respons = testRestTemplate.exchange(
 					INSTITUTE_PRE_PATH + PATH_SEPARATOR + IDS.toString(), HttpMethod.DELETE, null, String.class);
-			instituteRepository.deleteById(IDS.toString());
+			instituteProcessor.deleteInstitute(IDS.toString());
 			assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		}
@@ -930,7 +932,7 @@ public class InstituteController {
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 			}
@@ -1077,7 +1079,7 @@ public class InstituteController {
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 			}
@@ -1153,7 +1155,7 @@ public class InstituteController {
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 
 				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -1229,7 +1231,7 @@ public class InstituteController {
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 			}

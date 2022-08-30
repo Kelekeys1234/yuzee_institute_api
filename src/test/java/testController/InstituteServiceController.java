@@ -34,6 +34,7 @@ import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.InstituteServiceDto;
 import com.yuzee.app.dto.ServiceDto;
 import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.app.repository.InstituteServiceRepository;
 import com.yuzee.app.repository.ServiceRepository;
@@ -71,7 +72,7 @@ public class InstituteServiceController {
 	@Autowired
 	private InstituteServiceRepository instituteServiceRepository;
 	@Autowired
-	private InstituteRepository instituteRepository;
+	private InstituteProcessor instituteProcessor;
 	@Autowired
 	private ServiceRepository serviceRepository;
 
@@ -151,9 +152,8 @@ public class InstituteServiceController {
 			ResponseEntity<String> response = testRestTemplate.exchange(
 					INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteRequestDto.getInstituteId(), HttpMethod.DELETE, null,
 					String.class);
-			instituteRepository.deleteById(instituteRequestDto.getInstituteId());
-			instituteServiceRepository.deleteById(r.getInstituteServiceId());
-			// serviceRepository.deleteById(service.getServiceId());
+			instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
+		    
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		}
 	}

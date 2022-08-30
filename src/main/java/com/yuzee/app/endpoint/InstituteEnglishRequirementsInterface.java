@@ -23,13 +23,13 @@ import com.yuzee.app.dto.InstituteEnglishRequirementsDto;
 public interface InstituteEnglishRequirementsInterface {
 
 	@PostMapping("/englishRequirements/{instituteId}")
-	public ResponseEntity<?> addInstituteEnglishRequirements(@RequestHeader("userId") final String userId,@PathVariable final String instituteId, @RequestBody InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception;
+	public ResponseEntity<?> addInstituteEnglishRequirements(@RequestHeader("userId") final String userId,@PathVariable final String instituteId,@Valid @RequestBody InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception;
 
 	@PutMapping("/englishRequirements/{instituteId}")
-	public ResponseEntity<?> updateInstituteEnglishRequirements(@RequestHeader("userId") final String userId,@PathVariable("instituteId") final String instituteId, @RequestBody InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception;
+	public ResponseEntity<?> updateInstituteEnglishRequirements(@RequestHeader("userId") final String userId,@PathVariable("instituteId") final String instituteId,@Valid @RequestBody InstituteEnglishRequirementsDto instituteEnglishRequirementsDto) throws Exception;
 	
 	@GetMapping("/englishRequirements/{instituteId}")
-	public ResponseEntity<?> getInstituteEnglishRequirementsByInstituteId (@RequestHeader(value ="userId") final String userId,@PathVariable("instituteId") final String instituteId) throws Exception;
+	public ResponseEntity<?> getInstituteEnglishRequirementsByInstituteId (@RequestHeader("userId") final String userId,@PathVariable() final String instituteId) throws Exception;
 	
 	@GetMapping("/public/englishRequirements/{instituteId}")
 	public ResponseEntity<?> getInstitutePublicEnglishRequirementsByInstituteId (@PathVariable final String instituteId) throws Exception;

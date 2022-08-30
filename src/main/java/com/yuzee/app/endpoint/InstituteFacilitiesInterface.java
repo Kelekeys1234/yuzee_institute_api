@@ -29,11 +29,11 @@ public interface InstituteFacilitiesInterface {
 
 	@PostMapping("/institute/facilities/{instituteId}")
 	public ResponseEntity<?> addInstituteFacilities(@PathVariable final String instituteId,
-			@RequestBody InstituteFacilityDto instituteFacilityDto) throws NotFoundException;
+			@RequestBody @Valid InstituteFacilityDto instituteFacilityDto) throws NotFoundException;
 
 	@DeleteMapping("/institute/facilities/{instituteId}")
 	public ResponseEntity<?> deleteInstituteFacilitiesById(@PathVariable final String instituteId,
-			@RequestParam(value = "institute_facility_id", required = false) List<String> institutefacilitiesId);
+			@RequestParam(value = "institute_facility_id", required = true) List<String> institutefacilitiesId);
 
 	@GetMapping("/institute/getFacilities/{instituteId}")
 	public ResponseEntity<?> getInstituteFacilities(@PathVariable final String instituteId);

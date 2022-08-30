@@ -37,6 +37,7 @@ import com.yuzee.app.bean.Location;
 import com.yuzee.app.dto.InstituteFundingDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.common.lib.dto.GenericWrapperDto;
 import com.yuzee.common.lib.dto.institute.InstituteBasicInfoDto;
@@ -80,6 +81,8 @@ public class InstituteBasicInfoController {
 	private StorageHandler storageHandler;
 	@Autowired
 	InstituteRepository instituteRepository;
+	@Autowired
+	InstituteProcessor instituteProcessor;
 
 	@BeforeClass
 	public static void main() {
@@ -137,28 +140,13 @@ public class InstituteBasicInfoController {
 		for (InstituteRequestDto data : r) {
 
 			try {
-				InstituteBasicInfoDto instituteBasicInfoDto = new InstituteBasicInfoDto();
-				instituteBasicInfoDto.setInstituteLogoPath("logo path");
-				instituteBasicInfoDto.setNameOfUniversity("Oxford");
-				instituteBasicInfoDto.setInstituteCategoryTypeName("categories name");
-				instituteBasicInfoDto.setInstituteCategoryTypeId(INSTITUTE_ID);
-				instituteBasicInfoDto.setDescription("this is descriptions");
-				instituteBasicInfoDto.setCountryName("INdia");
-				instituteBasicInfoDto.setCityName("Amedded");
-				instituteBasicInfoDto.setStateName("newYork");
-				instituteBasicInfoDto.setAddress("12 okdoew");
-				instituteBasicInfoDto.setCreatedBy("by AZGuards");
-				instituteBasicInfoDto.setWorldRanking(3);
-				instituteBasicInfoDto.setDomesticRanking(2);
-				instituteBasicInfoDto.setTotalCourses(40);
-				instituteBasicInfoDto.setStars(30.0);
-				instituteBasicInfoDto.setReviewsCount(1234567890L);
-				instituteBasicInfoDto.setVerified(true);
-
+				InstituteBasicInfoDto instituteBasicInfoDto = new InstituteBasicInfoDto("logo path","OXFORD","NAME OF CATEGORIES",INSTITUTE_ID,"This is Decription"
+					,"INDIA","Amedded","newYork","12 okdoew","by AZGuards",3,2,40,30.0,12345L,true);
+			
 				HttpHeaders header = new HttpHeaders();
 				header.setContentType(MediaType.APPLICATION_JSON);
-				headers.set("userId", userId);
-				HttpEntity<InstituteRequestDto> entitys = new HttpEntity<>(instituteRequestDto, headers);
+				header.set("userId", userId);
+				HttpEntity<InstituteBasicInfoDto> entitys = new HttpEntity<>(instituteBasicInfoDto, header);
 				String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "basic" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
 						+ data.getInstituteId();
 				ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.POST, entitys,
@@ -169,7 +157,7 @@ public class InstituteBasicInfoController {
 				ResponseEntity<String> responses = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}
@@ -228,7 +216,7 @@ public class InstituteBasicInfoController {
 		assertThat(responseInstitute.getStatusCode()).isEqualTo(HttpStatus.OK);
 		try {
 			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "basic" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
-					+ IDS.toString();
+					+ instituteRequestDto.getInstituteId();
 			HttpHeaders headers = new HttpHeaders();
 			createHeaders.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("userId", userId);
@@ -239,7 +227,7 @@ public class InstituteBasicInfoController {
 			// clean up code
 			ResponseEntity<String> responses = testRestTemplate.exchange(
 					INSTITUTE_PRE_PATH + PATH_SEPARATOR + IDS.toString(), HttpMethod.DELETE, null, String.class);
-			instituteRepository.deleteById(IDS.toString());
+			instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 		}
 	}
@@ -314,7 +302,7 @@ public class InstituteBasicInfoController {
 			ResponseEntity<String> response = testRestTemplate.exchange(
 					INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteRequestDto.getInstituteId(), HttpMethod.DELETE, null,
 					String.class);
-			instituteRepository.deleteById(instituteRequestDto.getInstituteId());
+			instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		}
 	}

@@ -35,6 +35,7 @@ import com.yuzee.app.bean.Location;
 import com.yuzee.app.dto.InstituteFundingDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.repository.InstituteCampusRepository;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.common.lib.dto.GenericWrapperDto;
@@ -64,8 +65,9 @@ public class InstituteCampusController {
 	InstituteRepository instituteRepository;
 	@MockBean
 	private PublishSystemEventHandler publishSystemEventHandler;
+
 	@Autowired
-	InstituteCampusRepository instituteCampusRepository;
+	private InstituteProcessor instituteProcessor;
 
 	@BeforeClass
 	public static void main() {
@@ -138,14 +140,11 @@ public class InstituteCampusController {
 				assertThat(responsess.getStatusCode()).isEqualTo(HttpStatus.OK);
 			} finally {
 				// clean up code
-				/*
-				 * ResponseEntity<String> responses = testRestTemplate.exchange(
-				 * INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(),
-				 * HttpMethod.DELETE, null, String.class); //
-				 * instituteRepository.deleteById(data.getInstituteId()); //
-				 * instituteCampusRepository.deleteById(instituteCampus.getId());
-				 * assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-				 */
+				ResponseEntity<String> responses = testRestTemplate.exchange(
+						INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteRequestDto.getInstituteId(), HttpMethod.DELETE, null,
+						String.class);
+				instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
+				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}
 	}
@@ -230,17 +229,16 @@ public class InstituteCampusController {
 				assertThat(responsess.getStatusCode()).isEqualTo(HttpStatus.OK);
 			} finally {
 				// clean up code
-				ResponseEntity<String> responsess = testRestTemplate.exchange(
-						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
+				ResponseEntity<String> responses = testRestTemplate.exchange(
+						INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteRequestDto.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				// instituteRepository.deleteById(data.getInstituteId());
-				// instituteCampusRepository.deleteById(instituteCampus.getId());
-				assertThat(responsess.getStatusCode()).isEqualTo(HttpStatus.OK);
+				instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
+				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}
 	}
 
-	@DisplayName("getInstituteCampuses test success")
+	@DisplayName("deleteInstituteCampuses test success")
 	@Test
 	public void removeCampus() throws IOException {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
@@ -290,42 +288,35 @@ public class InstituteCampusController {
 		ValidList<InstituteRequestDto> r = genericResponse.getData();
 		for (InstituteRequestDto data : r) {
 			// create new campus institute
-			HttpHeaders header = new HttpHeaders();
-
-			header.set("userId", userId);
-			header.setContentType(MediaType.APPLICATION_JSON);
-			List<String> instituteIds = Arrays.asList(userId, data.getInstituteId());
-			HttpEntity<List<String>> entitys = new HttpEntity<>(instituteIds, header);
-			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "campus" + PATH_SEPARATOR + "instituteId"
-					+ PATH_SEPARATOR + PATH_SEPARATOR + data.getInstituteId();
-			ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.POST, entitys, String.class);
-			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-			GenericWrapperDto<List<String>> genericResponses = ObjectMapperHelper.readValueFromJSON(response.getBody(),
-					new TypeReference<GenericWrapperDto<List<String>>>() {
-					});
-			List<String> y = genericResponses.getData();
-			InstituteCampus instituteCampus = new InstituteCampus();
-
+			HttpHeaders headerr = new HttpHeaders();
+			headerr.set("userId", userId);
+			headerr.setContentType(MediaType.APPLICATION_JSON);
+			List<String> instituteIdss = Arrays.asList(userId, data.getInstituteId());
+			HttpEntity<List<String>> entityss = new HttpEntity<>(instituteIdss, headerr);
+			String paths = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "campus" + PATH_SEPARATOR + "instituteId"
+					+ PATH_SEPARATOR + data.getInstituteId();
+			ResponseEntity<String> responsess = testRestTemplate.exchange(paths, HttpMethod.GET, entityss,
+					String.class);
+			assertThat(responsess.getStatusCode()).isEqualTo(HttpStatus.OK);
 			try {
-				instituteCampus.setId(UUID.randomUUID().toString());
+			
 				HttpHeaders heade = new HttpHeaders();
 				heade.set("userId", userId);
 				heade.setContentType(MediaType.APPLICATION_JSON);
-				List<String> instituteIdss = Arrays.asList(userId, instituteId, data.getInstituteId());
-				HttpEntity<List<String>> entityss = new HttpEntity<>(instituteIdss, heade);
-				String paths = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "campus" + PATH_SEPARATOR + "instituteId"
+				List<String> instituteIds = Arrays.asList(userId, instituteId, data.getInstituteId());
+				HttpEntity<List<String>> entitys = new HttpEntity<>(instituteIds, heade);
+				String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "campus" + PATH_SEPARATOR + "instituteId"
 						+ PATH_SEPARATOR + data.getInstituteId();
-				ResponseEntity<String> responsess = testRestTemplate.exchange(paths, HttpMethod.DELETE, entityss,
+				ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.DELETE, entitys,
 						String.class);
-				assertThat(responsess.getStatusCode()).isEqualTo(HttpStatus.OK);
+				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 			} finally {
 				// clean up code
-				ResponseEntity<String> respons = testRestTemplate.exchange(
-						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
+				ResponseEntity<String> responses = testRestTemplate.exchange(
+						INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteRequestDto.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
-				// instituteCampusRepository.deleteById(instituteCampus.getId());
-				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
+				instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
+				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 			}
 		}

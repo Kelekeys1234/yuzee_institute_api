@@ -14,6 +14,8 @@ public interface InstituteEnglishRequirementDao {
             InstituteEnglishRequirements instituteEnglishRequirements) throws ValidationException;
 
     public InstituteEnglishRequirements getInstituteEnglishRequirementsById(UUID englishRequirementsId);
+    public List<InstituteEnglishRequirements> getListInstituteEnglishRequirementsById(UUID englishRequirementsId);
+    List<InstituteEnglishRequirements>getAll();
 
     public void deleteInstituteEnglishRequirementsById(UUID englishRequirementsId);
 }

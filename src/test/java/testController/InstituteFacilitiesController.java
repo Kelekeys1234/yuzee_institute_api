@@ -38,6 +38,7 @@ import com.yuzee.app.dto.InstituteFacilityDto;
 import com.yuzee.app.dto.InstituteFundingDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.common.lib.dto.GenericWrapperDto;
 import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
@@ -73,7 +74,7 @@ public class InstituteFacilitiesController {
 	@MockBean
 	private PublishSystemEventHandler publishSystemEventHandler;
 	@Autowired
-	private InstituteRepository instituteRepository;
+	private InstituteProcessor instituteProcessor;
 
 	@BeforeClass
 	public static void main() {
@@ -138,6 +139,7 @@ public class InstituteFacilitiesController {
 						"378b5724-8500-419f-80d4-fff7cbec3a2f"));
 				InstituteFacilityDto instituteFacilityDto = new InstituteFacilityDto();
 				instituteFacilityDto.setFacilities(facilityDtoList);
+				
 				HttpHeaders header = new HttpHeaders();
 				createHeaders.setContentType(MediaType.APPLICATION_JSON);
 				String paths = INSTITUTE_PATH + PATH_SEPARATOR + "facilities" + PATH_SEPARATOR
@@ -152,7 +154,7 @@ public class InstituteFacilitiesController {
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 			}
@@ -238,7 +240,7 @@ public class InstituteFacilitiesController {
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}
@@ -311,11 +313,11 @@ public class InstituteFacilitiesController {
 				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 				Map<String, List<String>> params = new HashMap<>();
-				params.put("institute_facility_id", Arrays.asList(data.getInstituteId(),
-						"6f91fa9b-6911-4fd3-beec-894d83545f35", "a2a00b2a-6b2d-41f1-8501-8ba882ee2b2a"));
+				params.put("institute_facility_id", Arrays.asList(
+						"6f91fa9b-6911-4fd3-beec-894d83545f35"));
 				HttpHeaders headers = new HttpHeaders();
 				createHeaders.setContentType(MediaType.APPLICATION_JSON);
-				String path = INSTITUTE_PATH + "facilities" + data.getInstituteId();
+				String path = INSTITUTE_PATH  + PATH_SEPARATOR + "facilities"  + PATH_SEPARATOR+ data.getInstituteId();
 				HttpEntity<List<FacilityDto>> entity = new HttpEntity<>(null, headers);
 				ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.DELETE, entity,
 						String.class, params);
@@ -326,7 +328,7 @@ public class InstituteFacilitiesController {
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}
@@ -412,7 +414,7 @@ public class InstituteFacilitiesController {
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}

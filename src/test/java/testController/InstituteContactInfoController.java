@@ -35,6 +35,7 @@ import com.yuzee.app.dto.InstituteContactInfoDto;
 import com.yuzee.app.dto.InstituteFundingDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.common.lib.dto.GenericWrapperDto;
 import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
@@ -64,7 +65,7 @@ public class InstituteContactInfoController {
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 	@Autowired
-	InstituteRepository instituteRepository;
+	InstituteProcessor instituteProcessor;
 
 	@MockBean
 	private PublishSystemEventHandler publishSystemEventHandler;
@@ -134,8 +135,9 @@ public class InstituteContactInfoController {
 				InstituteContactInfoDto instituteContactInfoDto = new InstituteContactInfoDto();
 				instituteContactInfoDto.setEmail("testController@email.com");
 				instituteContactInfoDto.setContactNumber("5423957");
-				instituteContactInfoDto.setLatitude(89.334);
-				instituteContactInfoDto.setLongitude(67.321);
+				Location locations = new Location(UUID.randomUUID().toString(), new GeoJsonPoint(25.32, 12.56));
+				instituteContactInfoDto.setLatitude(location.getLocation().getX());
+				instituteContactInfoDto.setLongitude(location.getLocation().getY());
 				instituteContactInfoDto.setWebsite("testWebsite.com");
 				instituteContactInfoDto.setAddress("test t-8, new test road, testNagar");
 				instituteContactInfoDto.setAverageLivingCost("2000$");
@@ -152,7 +154,7 @@ public class InstituteContactInfoController {
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}
@@ -214,7 +216,7 @@ public class InstituteContactInfoController {
 				HttpHeaders header = new HttpHeaders();
 				header.setContentType(MediaType.APPLICATION_JSON);
 				header.set("userId", userId);
-				HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(null, headers);
+				HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(null, header);
 				ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.GET, entitys,
 						String.class);
 				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -223,7 +225,7 @@ public class InstituteContactInfoController {
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}
@@ -293,7 +295,7 @@ public class InstituteContactInfoController {
 				ResponseEntity<String> responses = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-				instituteRepository.deleteById(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}

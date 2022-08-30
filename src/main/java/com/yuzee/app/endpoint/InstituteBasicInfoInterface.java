@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.yuzee.common.lib.dto.institute.InstituteBasicInfoDto;
 
 @RequestMapping(path = "/api/v1")
-//@Consumes({ "application/json", "application/xml" })
-//@Produces({ "application/json", "application/xml" })
+@Consumes({ "application/json", "application/xml" })
+@Produces({ "application/json", "application/xml" })
 public interface InstituteBasicInfoInterface {
 
 	@PostMapping("/basic/info/{instituteId}")
-	public ResponseEntity<?> addUpdateInstituteBasicInfo (@RequestHeader("userId" ) final String userId,@PathVariable final String instituteId, @RequestBody InstituteBasicInfoDto instituteBasicInfoDto) throws Exception;
+	public ResponseEntity<?> addUpdateInstituteBasicInfo (@RequestHeader("userId") final String userId,@PathVariable final String instituteId, @RequestBody @Valid  InstituteBasicInfoDto instituteBasicInfoDto) throws Exception;
 
 	@GetMapping("/basic/info/{instituteId}")
 	public ResponseEntity<?> getInstituteBasicInfo (@RequestHeader("userId") final String userId,@PathVariable final String instituteId) throws Exception;
