@@ -28,7 +28,7 @@ public class InstituteBasicInfoController implements InstituteBasicInfoInterface
 	
 	@Override
 	public ResponseEntity<?> addUpdateInstituteBasicInfo(String userId, String instituteId,
-			 InstituteBasicInfoDto instituteBasicInfoDto) throws Exception {
+			@RequestBody @Valid  InstituteBasicInfoDto instituteBasicInfoDto) throws Exception {
 		instituteBasicInfoProcessor.addUpdateInstituteBasicInfo(userId, instituteId, instituteBasicInfoDto);
 		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute_basic_info.added"))
 				.setStatus(HttpStatus.OK).create();

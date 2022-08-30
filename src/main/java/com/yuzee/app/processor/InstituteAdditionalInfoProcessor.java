@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;

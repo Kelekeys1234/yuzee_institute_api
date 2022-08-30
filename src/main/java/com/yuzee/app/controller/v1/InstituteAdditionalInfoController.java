@@ -25,7 +25,7 @@ public class InstituteAdditionalInfoController implements InstituteAdditionalInf
 
 	@Override
 	public ResponseEntity<?> addInstituteAdditionalInfo(String userId, String instituteId,
-		 InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws Exception {
+			@Valid InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws Exception {
 		instituteAdditionalInfoProcessor.addUpdateInstituteAdditionalInfo(userId, instituteId,
 				instituteAdditionalInfoDto);
 		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute_info.added"))

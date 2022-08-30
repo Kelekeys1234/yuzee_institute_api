@@ -31,7 +31,7 @@ public class InstituteFacilitiesController implements InstituteFacilitiesInterfa
 	
 	@Override
 	public ResponseEntity<?> addInstituteFacilities(String instituteId,
-		 InstituteFacilityDto instituteFacilityDto) throws NotFoundException {
+			@RequestBody @Valid InstituteFacilityDto instituteFacilityDto) throws NotFoundException {
 		log.info("Adding facilities for institute Id {}", instituteId);
 
 		instituteFacilityProcessor.addInstituteFacility(instituteId, instituteFacilityDto);
