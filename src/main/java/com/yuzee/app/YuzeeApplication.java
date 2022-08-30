@@ -30,7 +30,6 @@ import com.yuzee.app.util.FileStorageProperties;
 @EnableEurekaClient
 @ComponentScan(basePackages = "com.yuzee")
 @SpringBootApplication(exclude = { ContextRegionProviderAutoConfiguration.class, ContextStackAutoConfiguration.class })
-@EntityScan(basePackages = { "com.yuzee.app.bean" })
 @EnableConfigurationProperties({ FileStorageProperties.class })
 @EnableAsync
 @EnableCaching
