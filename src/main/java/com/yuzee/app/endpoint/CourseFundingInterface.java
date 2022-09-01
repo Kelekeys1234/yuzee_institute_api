@@ -26,19 +26,19 @@ public interface CourseFundingInterface {
 	@PostMapping("/course/funding/instituteId/{instituteId}/add-funding-to-all-courses")
 	public ResponseEntity<?> addFundingToAllInstituteCourses(
 			@RequestHeader(value = "userId", required = true) final String userId,
-			@PathVariable final String instituteId, @Valid @RequestBody final CourseFundingDto courseFundingDto)
+			@PathVariable final String instituteId, @Valid @RequestBody final List<String> fundingNameId)
 			throws ValidationException, NotFoundException, InvokeException;
 
 	@PostMapping("/course/{courseId}/funding")
 	public ResponseEntity<?> saveAll(@RequestHeader(value = "userId", required = true) final String userId,
 			@PathVariable final String courseId,
-			@Valid @RequestBody(required = true) final CourseFundingRequestWrapper request)
+			 @RequestBody(required = true) final CourseFundingRequestWrapper request)
 			throws ValidationException, NotFoundException, InvokeException ;
 
 	@DeleteMapping("/course/{courseId}/funding")
 	public ResponseEntity<?> deleteByFundingNameIds(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
 			@RequestParam(value = "funding_name_ids", required = true) final List<String> fundingNameIds,
-			@RequestParam(value = "linked_course_ids", required = false) final List<String> linkedCourseIds)
+			@RequestParam(value = "linked_course_ids", required =false) final List<String> linkedCourseIds)
 			throws ValidationException, NotFoundException, ForbiddenException;
 }
