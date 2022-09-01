@@ -131,12 +131,9 @@ public class CourseFundingProcessor {
 		  log.info("checking if course with Id exist");
 			if (!ObjectUtils.isEmpty(course)) { 
 				log.info("removing fundingNameId");
-           
-				fundingNameIds.stream().forEach(p->{
                fundingId.removeIf(x->fundingNameIds.contains(x));
-        	
         	  course.setCourseFundings(fundingId);
-           });
+          
             	
             	log.info("coursesToBeAdded");
                 List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
