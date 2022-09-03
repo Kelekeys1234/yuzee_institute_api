@@ -2,13 +2,13 @@ package com.yuzee.app.bean;
 
 import java.io.Serializable;
 
+
 // Generated 7 Jun, 2019 2:45:49 PM by Hibernate Tools 4.3.1
 
 import java.util.Date;
 import java.util.UUID;
 
-import javax.persistence.Id;
-
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -31,7 +31,7 @@ public class EducationSystem implements Serializable {
 	private static final long serialVersionUID = 4954893670488436110L;
 
 	@Id
-	private UUID id;
+	private String id;
 
 	private String countryName;
 

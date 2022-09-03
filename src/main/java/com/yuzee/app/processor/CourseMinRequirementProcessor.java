@@ -1,6 +1,7 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -27,7 +28,6 @@ import com.yuzee.app.bean.CourseMinRequirement;
 import com.yuzee.app.bean.CourseMinRequirementSubject;
 import com.yuzee.app.bean.EducationSystem;
 import com.yuzee.app.dao.CourseDao;
-import com.yuzee.app.dao.CourseMinRequirementDao;
 import com.yuzee.app.dao.EducationSystemDao;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.institute.CourseMinRequirementDto;
@@ -45,8 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class CourseMinRequirementProcessor {
-	@Autowired
-	private CourseMinRequirementDao courseMinRequirementDao;
+
 
 	@Autowired
 	private CourseDao courseDao;
@@ -72,75 +71,75 @@ public class CourseMinRequirementProcessor {
 			@Valid List<CourseMinRequirementDto> courseMinRequirementDtos) {
 		log.info("inside CourseMinRequirementProcessor.saveCourseMinRequirement for courseId : {}", courseId);
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
+		List<Course> savedCourses=null;
 		if (!course.getCreatedBy().equals(userId)) {
 			log.error(messageTranslator.toLocale("min_requirement.add.no.access", Locale.US));
 			throw new ForbiddenException(messageTranslator.toLocale("min_requirement.add.no.access"));
 		}
 		saveUpdateCourseMinRequirements(userId, course, courseMinRequirementDtos, false);
-
 		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 		coursesToBeSavedOrUpdated.add(course);
 
-		List<Course> savedCourses = courseDao.saveAll(coursesToBeSavedOrUpdated);
+		savedCourses = courseDao.saveAll(coursesToBeSavedOrUpdated);
 
 		log.info("Send notification for course content updates");
-		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-
+		//commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+           
 		// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		return savedCourses.get(0).getCourseMinRequirements().stream().map(e -> modelToDto(e)).toList();
 	}
-
+	
 	public void saveUpdateCourseMinRequirements(String userId, Course course,
 			@Valid List<CourseMinRequirementDto> courseMinRequirementDtos, boolean deleteMissing)
 			throws ForbiddenException, NotFoundException, ValidationException {
 		List<CourseMinRequirement> courseMinRequirements = course.getCourseMinRequirements();
 		Map<String, CourseMinRequirement> existingCourseMinRequirementMap = courseMinRequirements.stream()
-				.collect(Collectors.toMap(CourseMinRequirement::getId, e -> e));
-		if (!CollectionUtils.isEmpty(courseMinRequirementDtos)) {
-			if (deleteMissing) {
-				Set<String> updateRequestIds = courseMinRequirementDtos.stream()
-						.filter(e -> StringUtils.hasText(e.getId())).map(CourseMinRequirementDto::getId)
-						.collect(Collectors.toSet());
-				courseMinRequirements.removeIf(e -> !updateRequestIds.contains(e.getId()));
-			}
-			courseMinRequirementDtos.stream().forEach(dto -> {
-				CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
-				if (StringUtils.hasText(dto.getId())) {
-					log.info(
-							"entityId is present so going to see if it is present in db if yes then we have to update it");
-					courseMinRequirement = existingCourseMinRequirementMap.get(dto.getId());
-					if (ObjectUtils.isEmpty(courseMinRequirement)) {
-						log.error("invalid course min requirement id : {}", dto.getId());
-						throw new RuntimeNotFoundException("invalid course min requirement id : " + dto.getId());
-					}
-				}
-				courseMinRequirement.setCountryName(dto.getCountryName());
-				courseMinRequirement.setStateName(dto.getStateName());
-				courseMinRequirement.setGradePoint(dto.getGradePoint());
-				courseMinRequirement.setEducationSystem(validateAndGetEducationSystem(dto.getEducationSystemId()));
-				courseMinRequirement.setCourse(course);
-				saveUpdateSubjects(userId, courseMinRequirement, dto.getMinRequirementSubjects());
-				courseMinRequirement.setAuditFields(userId);
-				courseMinRequirement.setStudyLanguages(dto.getStudyLanguages());
-				log.info("going to save record in db");
-				courseMinRequirements.add(courseMinRequirement);
-			});
-		} else if (deleteMissing) {
+				.collect(Collectors.toMap(CourseMinRequirement::getCourseMinRequirementsId, e -> e));
+	           for(CourseMinRequirementDto dto :courseMinRequirementDtos) {
+	        	   log.info("checking if CourseMinRequirementId exist in dataBase");
+	        		if (!CollectionUtils.isEmpty(courseMinRequirementDtos)) {
+	        			if (deleteMissing) {
+	        				Set<String> updateRequestIds = courseMinRequirementDtos.stream()
+	        						.filter(e -> StringUtils.hasText(e.getCourseMinRequirementsId())).map(e->e.getCourseMinRequirementsId())
+	        						.collect(Collectors.toSet());
+	        				courseMinRequirements.removeIf(e -> !updateRequestIds.contains(e.getCourseMinRequirementsId()));
+	        			}
+	        			courseMinRequirementDtos.stream().forEach(dtos -> {
+	        				CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
+	        				if (StringUtils.hasText(dtos.getCourseMinRequirementsId())) {
+	        					log.info(
+	        							"entityId is present so going to see if it is present in db if yes then we have to update it");
+	        					courseMinRequirement = existingCourseMinRequirementMap.get(dtos.getCourseMinRequirementsId());
+	        					if (ObjectUtils.isEmpty(courseMinRequirement)) {
+	        						log.error("invalid course min requirement id : {}", dtos.getCourseMinRequirementsId());
+	        						throw new RuntimeNotFoundException("invalid course min requirement id : " + dtos.getCourseMinRequirementsId());
+	        					}
+	        				}   
+	        			});
+	       	 courseMinRequirements.addAll(
+	       	 courseMinRequirementDtos.stream().map(e->new CourseMinRequirement(e.getCourseMinRequirementsId(),e.getCountryName(),e.getStateName(),e.getGradePoint(),e.getStudyLanguages())).collect(Collectors.toList()));
+	       	 log.info("inserting inside saveUpdateSubjects" );
+	         saveUpdateSubjects(userId,new CourseMinRequirement(dto.getCourseMinRequirementsId(),dto.getCountryName(),dto.getStateName(),dto.getGradePoint(),dto.getStudyLanguages())
+	 						,dto.getMinRequirementSubjects());
+	       		 course.setCourseMinRequirements(courseMinRequirements);
+	        		
+	        		}	   	 
+		else if (deleteMissing) {
 			courseMinRequirements.clear();
+		
 		}
+	           }
 	}
 
+
 	@Transactional
-	public PaginationResponseDto getAllCourseMinimumRequirements(String userId, String courseId, Integer pageNumber,
-			Integer pageSize) {
-		log.info("inside CourseMinRequirementProcessor.getAllCourseMinimumRequirements");
-		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-		Page<CourseMinRequirement> courseMinRequirementPage = courseMinRequirementDao.findByCourseId(courseId,
-				pageable);
-		List<CourseMinRequirementDto> courseMinRequirementDtos = courseMinRequirementPage.getContent().stream()
-				.map(e -> modelToDto(e)).collect(Collectors.toList());
-		return PaginationUtil.calculatePaginationAndPrepareResponse(PaginationUtil.getStartIndex(pageNumber, pageSize),
-				pageSize, ((Long) courseMinRequirementPage.getTotalElements()).intValue(), courseMinRequirementDtos);
+	public List<CourseMinRequirementDto> getAllCourseMinimumRequirements(String userId, String courseId ) {
+		log.info("inside Course.getAllCourseMinimumRequirements");
+	
+	    Course course = courseDao.get(courseId);
+		List<CourseMinRequirement> courseMinRequirement= course.getCourseMinRequirements();
+		List<CourseMinRequirementDto> dtos =courseMinRequirement.stream().map(e->modelToDto(e)).collect(Collectors.toList());
+		return dtos;
 
 	}
 
@@ -155,7 +154,8 @@ public class CourseMinRequirementProcessor {
 		}
 
 		List<CourseMinRequirement> courseMinRequirements = course.getCourseMinRequirements();
-		courseMinRequirements.removeIf(e -> Utils.contains(courseMinRequirementIds, e.getId()));
+		courseMinRequirements.removeIf(e -> courseMinRequirementIds.contains(e.getCourseMinRequirementsId()));
+		course.setCourseMinRequirements(courseMinRequirements);
 		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 		coursesToBeSavedOrUpdated.add(course);
 		if (!CollectionUtils.isEmpty(linkedCourseIds)) {
@@ -169,16 +169,7 @@ public class CourseMinRequirementProcessor {
 		// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 	}
 
-	private EducationSystem validateAndGetEducationSystem(String educationSystemId) throws NotFoundException {
-		EducationSystem educationSystem = eudcationSystemDao.get(educationSystemId);
-		if (!ObjectUtils.isEmpty(educationSystem)) {
-			return educationSystem;
-		} else {
-			log.error(messageTranslator.toLocale("min_requirement.system.id.invalid", educationSystemId, Locale.US));
-			throw new NotFoundException(
-					messageTranslator.toLocale("min_requirement.system.id.invalid", educationSystemId));
-		}
-	}
+	
 
 	private List<Course> replicateCourseMinRequirements(String userId, List<String> courseIds,
 			List<CourseMinRequirementDto> courseMinRequirementDtos) throws ValidationException, NotFoundException {
@@ -203,7 +194,6 @@ public class CourseMinRequirementProcessor {
 							courseMinRequirement = existingMinRequirementOp.get();
 						} else {
 							courseMinRequirement = new CourseMinRequirement();
-							courseMinRequirement.setCourse(course);
 							courseMinRequirements.add(courseMinRequirement);
 						}
 						saveUpdateSubjects(userId, courseMinRequirement, dto.getMinRequirementSubjects());
@@ -211,7 +201,7 @@ public class CourseMinRequirementProcessor {
 						courseMinRequirement.setStateName(dto.getStateName());
 						courseMinRequirement.setGradePoint(dto.getGradePoint());
 						courseMinRequirement.setStudyLanguages(dto.getStudyLanguages());
-						courseMinRequirement.setAuditFields(userId);
+					
 					});
 				}
 			});

@@ -1,6 +1,7 @@
 package com.yuzee.app.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.yuzee.app.bean.EducationSystem;
 import com.yuzee.app.bean.Subject;
@@ -8,13 +9,13 @@ import com.yuzee.common.lib.dto.institute.EducationSystemDto;
 
 public interface EducationSystemDao {
 
-	public void save(final EducationSystem hobbiesObj);
+	public EducationSystem save(final EducationSystem hobbiesObj);
 	
 	public void saveAll(List<EducationSystem> educationSystems);
 
 	public void update(final EducationSystem hobbiesObj);
 
-	public EducationSystem get(final String id);
+	public Optional<EducationSystem> get(final String id);
 
 	public List<EducationSystem> getAll();
 

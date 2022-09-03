@@ -10,11 +10,18 @@ import javax.persistence.Id;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import com.yuzee.common.lib.dto.ValidList;
+import com.yuzee.common.lib.dto.institute.CourseMinRequirementSubjectDto;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
+
+@NoArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 /*
@@ -29,6 +36,7 @@ public class CourseMinRequirement implements Serializable {
 
 	private static final long serialVersionUID = 6903674843134844883L;
 	
+	private String courseMinRequirementsId;
 	@EqualsAndHashCode.Include
 	private String countryName;
 
@@ -37,8 +45,7 @@ public class CourseMinRequirement implements Serializable {
 
 	@EqualsAndHashCode.Include
 	private Double gradePoint;
-
-	@DBRef
+    @DBRef
 	private EducationSystem educationSystem;
 
 
@@ -46,4 +53,15 @@ public class CourseMinRequirement implements Serializable {
 	private List<CourseMinRequirementSubject> courseMinRequirementSubjects = new ArrayList<>();
 
 	private Set<String> studyLanguages = new HashSet<>();
+
+	public CourseMinRequirement(String courseMinRequirementsId, String countryName, String stateName, Double gradePoint, Set<String> studyLanguages) {
+		super();
+		this.courseMinRequirementsId = courseMinRequirementsId;
+		this.countryName = countryName;
+		this.stateName = stateName;
+		this.gradePoint = gradePoint;
+		this.studyLanguages = studyLanguages;
+	}
+	
+	
 }

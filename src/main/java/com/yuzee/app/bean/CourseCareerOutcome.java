@@ -24,7 +24,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
-@Entity
+
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 /*@Table(name = "course_career_outcome", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id", "career_id" }, 
@@ -33,33 +33,33 @@ public class CourseCareerOutcome implements Serializable {
 
 	private static final long serialVersionUID = 8492390790670110780L;
 	
-	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
+//	@Id
+//	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+//	@GeneratedValue(generator = "generator")
+//	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 	
-	@EqualsAndHashCode.Include
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "career_id")
+//	@EqualsAndHashCode.Include
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "career_id")
 	private Careers career;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "course_id", nullable = false)
+//	
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "course_id", nullable = false)
 	private Course course;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
+//	
+//	@Temporal(TemporalType.TIMESTAMP)
+//	@Column(name = "created_on", length = 19)
 	private Date createdOn;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
+//	@Temporal(TemporalType.TIMESTAMP)
+//	@Column(name = "updated_on", length = 19)
 	private Date updatedOn;
 
-	@Column(name = "created_by", length = 50)
+//	@Column(name = "created_by", length = 50)
 	private String createdBy;
 
-	@Column(name = "updated_by", length = 50)
+//	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 	
 	public void setAuditFields(String userId) {

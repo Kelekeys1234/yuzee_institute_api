@@ -187,7 +187,7 @@ public class Course implements Serializable {
 	private List<CourseSemester> courseSemesters = new ArrayList<>();
 
 	// Delete CourseFunding model
-	private List<CourseFunding> courseFundings = new ArrayList<>();
+	private List<String> courseFundings = new ArrayList<>();
 
 	// Delete CourseContactPerson model
 	private List<CourseContactPerson> courseContactPersons = new ArrayList<>();

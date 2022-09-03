@@ -16,7 +16,7 @@ public class CourseMinRequirementRequestWrapper {
 	@Valid
 	@NotEmpty(message = "{course_min_requirements.is_required}")
 	@JsonProperty("course_min_requirements")
-	ValidList<CourseMinRequirementDto> coursePreRequisiteDtos;
+	List<CourseMinRequirementDto> coursePreRequisiteDtos;
 
 	@NotNull(message = "{linked_course_ids.is_required}")
 	@JsonProperty("linked_course_ids")

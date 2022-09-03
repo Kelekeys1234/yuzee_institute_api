@@ -18,7 +18,7 @@ public interface EducationSystemInterface {
 	public ResponseEntity<?> getEducationSystems(@PathVariable final String countryName) throws Exception;
 	
 	@PostMapping
-	public ResponseEntity<?> saveEducationSystems(@Valid @RequestBody final EducationSystemDto educationSystem) throws Exception;
+	public ResponseEntity<?> saveEducationSystems( @RequestBody final EducationSystemDto educationSystem) throws Exception;
 	
 	@GetMapping("/grades/{countryName}/{systemId}")
 	public ResponseEntity<?> getGrades(@PathVariable final String countryName, @PathVariable final String systemId) throws Exception;

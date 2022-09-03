@@ -30,10 +30,9 @@ public interface CourseMinRequirementInterface {
 			@Valid @RequestBody(required = true) final CourseMinRequirementRequestWrapper request)
 			throws ValidationException, NotFoundException, ForbiddenException;
 
-	@GetMapping("/pageNumber/{pageNumber}/pageSize/{pageSize}")
+	@GetMapping
 	public ResponseEntity<Object> getAllCourseMinimumRequirements(@RequestHeader(value = "userId") final String userId,
-			@PathVariable final String courseId, @PathVariable final Integer pageNumber,
-			@PathVariable final Integer pageSize) throws InternalServerException, NotFoundException, ForbiddenException;
+			@PathVariable final String courseId ) throws InternalServerException, NotFoundException, ForbiddenException;
 
 	@DeleteMapping
 	public ResponseEntity<Object> deleteCourseMinRequirements(@RequestHeader(value = "userId") final String userId,

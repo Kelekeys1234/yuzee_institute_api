@@ -285,6 +285,6 @@ public class CourseRequest {
 	@NotNull(message = "{course_min_requirements.is_required}")
 	@JsonProperty("course_min_requirements")
 	@DBRef
-	ValidList<CourseMinRequirementDto> courseMinRequirementDtos;
+	List<CourseMinRequirementDto> courseMinRequirementDtos;
 
 }

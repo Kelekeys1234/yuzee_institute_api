@@ -36,12 +36,11 @@ public class CourseMinRequirementController implements CourseMinRequirementInter
 	}
 
 	@Override
-	public ResponseEntity<Object> getAllCourseMinimumRequirements(String userId, String courseId, Integer pageNumber,
-			Integer pageSize) {
+	public ResponseEntity<Object> getAllCourseMinimumRequirements(String userId, String courseId) {
 		log.info("inside CourseMinRequirementController.getAllCourseMinimumRequirements");
 		return new GenericResponseHandlers.Builder()
 				.setMessage(messageTranslator.toLocale("course_min.req.retrieved")).setData(courseMinRequirementProcessor
-						.getAllCourseMinimumRequirements(userId, courseId, pageNumber, pageSize))
+						.getAllCourseMinimumRequirements(userId, courseId))
 				.setStatus(HttpStatus.OK).create();
 	}
 

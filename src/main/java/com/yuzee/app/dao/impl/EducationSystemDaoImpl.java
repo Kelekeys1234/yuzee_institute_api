@@ -2,6 +2,7 @@ package com.yuzee.app.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -32,9 +33,8 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 	private EducationSystemRepository educationSystemRepository;
 
 	@Override
-	public void save(final EducationSystem hobbiesObj) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(hobbiesObj);
+	public EducationSystem save(final EducationSystem hobbiesObj) {
+		return educationSystemRepository.save(hobbiesObj);
 	}
 
 	public void saveAll(List<EducationSystem> educationSystems) {
@@ -49,10 +49,8 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 
 	@Transactional
 	@Override
-	public EducationSystem get(final String id) {
-		Session session = sessionFactory.getCurrentSession();
-		EducationSystem obj = session.get(EducationSystem.class, id);
-		return obj;
+	public Optional<EducationSystem> get(final String id) {
+		return educationSystemRepository.findById(id);
 	}
 
 	@Override
