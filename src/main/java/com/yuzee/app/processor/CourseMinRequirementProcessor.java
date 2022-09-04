@@ -104,6 +104,16 @@ public class CourseMinRequirementProcessor {
 	        						.collect(Collectors.toSet());
 	        				courseMinRequirements.removeIf(e -> !updateRequestIds.contains(e.getCourseMinRequirementsId()));
 	        			}
+						
+						courseMinRequirementDtos.stream().forEach(dtos -> {
+	        				CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
+	        				if (StringUtils.hasText(dtos.getCourseMinRequirementsId())) {
+	        					log.info(
+	        							"entityId is present so going to see if it is present in db if yes then we have to update it");
+	        					courseMinRequirement = existingCourseMinRequirementMap.get(dtos.getCourseMinRequirementsId());
+	        					
+	        				}   
+	        			});
 	        			
 	       	 courseMinRequirements.addAll(
 	       	 courseMinRequirementDtos.stream().map(e->new CourseMinRequirement(e.getCourseMinRequirementsId(),e.getCountryName(),e.getStateName(),e.getGradePoint(),e.getStudyLanguages())).collect(Collectors.toList()));
