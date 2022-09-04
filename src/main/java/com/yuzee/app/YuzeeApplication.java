@@ -60,10 +60,5 @@ public class YuzeeApplication {
 		return modelMapper;
 	}
 
-	@Bean
-	RestTemplate restTemplate() {
-
-		return new RestTemplate();
-
-	}
+	
 }
