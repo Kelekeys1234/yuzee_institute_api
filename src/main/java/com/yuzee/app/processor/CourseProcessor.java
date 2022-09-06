@@ -556,35 +556,35 @@ public class CourseProcessor {
 			List<CourseEnglishEligibilityDto> courseEnglishEligibilityDtos) throws ValidationException {
 		log.info("inside courseProcessor.saveUpdateCourseEnglishEligibilities");
 		List<CourseEnglishEligibility> dbEnglishEligibilities = course.getCourseEnglishEligibilities();
-		if (!CollectionUtils.isEmpty(courseEnglishEligibilityDtos)) {
+//		if (!CollectionUtils.isEmpty(courseEnglishEligibilityDtos)) {
 
-			log.info("Creating the list to save/update course subjects in DB");
-			dbEnglishEligibilities.removeIf(e -> courseEnglishEligibilityDtos.stream()
-					.noneMatch(t -> e.getEnglishType().equalsIgnoreCase(t.getEnglishType())));
+//			log.info("Creating the list to save/update course subjects in DB");
+//			dbEnglishEligibilities.removeIf(e -> courseEnglishEligibilityDtos.stream()
+//					.noneMatch(t -> e.getEnglishType().equalsIgnoreCase(t.getEnglishType())));
 
-			courseEnglishEligibilityDtos.stream().forEach(e -> {
-				Optional<CourseEnglishEligibility> existingCousrseEnglishEligibilityOp = dbEnglishEligibilities.stream()
-						.filter(t -> e.getEnglishType().equalsIgnoreCase(t.getEnglishType())).findAny();
-				CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
-				String existingId = null;
-				if (existingCousrseEnglishEligibilityOp.isPresent()) {
-					courseEnglishEligibility = existingCousrseEnglishEligibilityOp.get();
-					// existingId = courseEnglishEligibility.getId();
-				}
-				BeanUtils.copyProperties(e, courseEnglishEligibility);
-				courseEnglishEligibility.setId(existingId);
-				courseEnglishEligibility.setCourse(course);
-				if (StringUtils.isEmpty(courseEnglishEligibility.getId())) {
-					dbEnglishEligibilities.add(courseEnglishEligibility);
-					course.setCourseEnglishEligibilities(dbEnglishEligibilities);
-//					courseDao.addUpdateCourse(course);
-				}
-				courseEnglishEligibility.setAuditFields(loggedInUserId);
-			});
-
-		} else {
-			dbEnglishEligibilities.clear();
-		}
+//			courseEnglishEligibilityDtos.stream().forEach(e -> {
+//				Optional<CourseEnglishEligibility> existingCousrseEnglishEligibilityOp = dbEnglishEligibilities.stream()
+//						.filter(t -> e.getEnglishType().equalsIgnoreCase(t.getEnglishType())).findAny();
+//				CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
+//				String existingId = null;
+//				if (existingCousrseEnglishEligibilityOp.isPresent()) {
+//					courseEnglishEligibility = existingCousrseEnglishEligibilityOp.get();
+//					// existingId = courseEnglishEligibility.getId();
+//				}
+//				BeanUtils.copyProperties(e, courseEnglishEligibility);
+//				courseEnglishEligibility.setId(existingId);
+//				courseEnglishEligibility.setCourse(course);
+//				if (StringUtils.isEmpty(courseEnglishEligibility.getId())) {
+//					dbEnglishEligibilities.add(courseEnglishEligibility);
+//					course.setCourseEnglishEligibilities(dbEnglishEligibilities);
+////					courseDao.addUpdateCourse(course);
+//				}
+//				courseEnglishEligibility.setAuditFields(loggedInUserId);
+//			});
+//
+//		} else {
+//			dbEnglishEligibilities.clear();
+//		}
 	}
 
 	private void saveUpdateCourseDeliveryModes(String loggedInUserId, Course course,
@@ -616,7 +616,7 @@ public class CourseProcessor {
 					courseDeliveryMode = existingCourseDeliveryModeOp.get();
 				}
 
-				courseDeliveryMode.setCourse(course);
+//				courseDeliveryMode.setCourse(course);
 				log.info("Adding additional infos like deliveryType, studyMode etc");
 
 				courseDeliveryMode.setDeliveryType(e.getDeliveryType());
@@ -626,14 +626,14 @@ public class CourseProcessor {
 				courseDeliveryMode.setStudyMode(e.getStudyMode());
 				courseDeliveryMode.setDuration(e.getDuration());
 				courseDeliveryMode.setDurationTime(e.getDurationTime());
-				courseDeliveryMode.setCourse(course);
+//				courseDeliveryMode.setCourse(course);
 				courseDeliveryModesProcessor.saveUpdateCourseFees(loggedInUserId, courseDeliveryMode, e.getFees());
 				courseDeliveryModesProcessor.saveUpdateCourseDeliveryModeFunding(loggedInUserId, courseDeliveryMode,
 						e.getFundings());
-				if (StringUtils.isEmpty(courseDeliveryMode.getId())) {
-					dbCourseDeliveryModes.add(courseDeliveryMode);
-				}
-				courseDeliveryMode.setAuditFields(loggedInUserId);
+//				if (StringUtils.isEmpty(courseDeliveryMode.getId())) {
+//					dbCourseDeliveryModes.add(courseDeliveryMode);
+//				}
+//				courseDeliveryMode.setAuditFields(loggedInUserId);
 				course.setCourseDeliveryModes(dbCourseDeliveryModes);
 				courseDao.addUpdateCourse(course);
 
@@ -2099,7 +2099,7 @@ public class CourseProcessor {
 		CourseIntake courseIntake = course.getCourseIntake();
 		if (ObjectUtils.isEmpty(intakeDto)) {
 			if (!ObjectUtils.isEmpty(courseIntake)) {
-				courseIntakeDao.deleteById(course.getCourseIntake().getId());
+//				courseIntakeDao.deleteById(course.getCourseIntake().getId());
 				courseIntake = null;
 			}
 		} else {

@@ -90,18 +90,18 @@ public class CoursePaymentProcessor {
 				if (existingCoursePaymentItemOp.isPresent()) {
 					log.info("payment item already present so going to update");
 					coursePaymentItem = existingCoursePaymentItemOp.get();
-					existingId = coursePaymentItem.getId();
+//					existingId = coursePaymentItem.getId();
 				}
 				BeanUtils.copyProperties(e, coursePaymentItem);
-				coursePaymentItem.setId(existingId);
-				coursePaymentItem.setCoursePayment(finalCoursePayment);
-				coursePaymentItem.setAuditFields(userId);
-				if (StringUtils.isEmpty(coursePaymentItem.getId())) {
-					dbCoursePaymentItems.add(coursePaymentItem);
-				}
+//				coursePaymentItem.setId(existingId);
+//				coursePaymentItem.setCoursePayment(finalCoursePayment);
+//				coursePaymentItem.setAuditFields(userId);
+//				if (StringUtils.isEmpty(coursePaymentItem.getId())) {
+//					dbCoursePaymentItems.add(coursePaymentItem);
+//				}
 			});
 			coursePayment.setDescription(coursePaymentDto.getDescription());
-			coursePayment.setCourse(course);
+//			coursePayment.setCourse(course);
 			coursePayment.setAuditFields(userId);
 			log.info("going to save record in db");
 			coursePaymentDao.save(coursePayment);

@@ -53,9 +53,9 @@ public class CoursePayment implements Serializable {
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());
-		if (StringUtils.isEmpty(id)) {
-			this.setCreatedBy(userId);
-			this.setCreatedOn(new Date());
-		}
+//		if (StringUtils.isEmpty(id)) {
+//			this.setCreatedBy(userId);
+//			this.setCreatedOn(new Date());
+//		}
 	}
 }

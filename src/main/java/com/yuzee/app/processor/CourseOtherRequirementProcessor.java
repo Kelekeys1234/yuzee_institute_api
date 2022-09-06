@@ -78,8 +78,8 @@ public class CourseOtherRequirementProcessor {
 				if (ObjectUtils.isEmpty(vaccine)) {
 					vaccine = new CourseVaccineRequirement();
 				}
-				vaccine.setAuditFields(userId);
-				vaccine.setCourse(course);
+//				vaccine.setAuditFields(userId);
+//				vaccine.setCourse(course);
 				vaccine.setDescription(courseOtherRequirementDto.getVaccine().getDescription());
 				if (!CollectionUtils.isEmpty(courseOtherRequirementDto.getVaccine().getVaccination())) {
 					Set<String> vaccinationIds = courseOtherRequirementDto.getVaccine().getVaccination().stream()
@@ -100,7 +100,7 @@ public class CourseOtherRequirementProcessor {
 				course.setCourseVaccineRequirement(vaccine);
 			} else {
 				if (!ObjectUtils.isEmpty(vaccine)) {
-					vaccineDao.deleteById(vaccine.getId());
+//					vaccineDao.deleteById(vaccine.getId());
 					;
 				}
 				course.setCourseVaccineRequirement(null);
@@ -111,8 +111,8 @@ public class CourseOtherRequirementProcessor {
 				if (ObjectUtils.isEmpty(workExperience)) {
 					workExperience = new CourseWorkExperienceRequirement();
 				}
-				workExperience.setAuditFields(userId);
-				workExperience.setCourse(course);
+//				workExperience.setAuditFields(userId);
+//				workExperience.setCourse(course);
 				workExperience.setDescription(courseOtherRequirementDto.getWorkExperience().getDescription());
 				workExperience.setDuration(courseOtherRequirementDto.getWorkExperience().getDuration());
 				workExperience.setDurationType(courseOtherRequirementDto.getWorkExperience().getDurationType());
@@ -120,7 +120,7 @@ public class CourseOtherRequirementProcessor {
 				course.setCourseWorkExperienceRequirement(workExperience);
 			} else {
 				if (!ObjectUtils.isEmpty(workExperience)) {
-					workExperienceDao.deleteById(workExperience.getId());
+//					workExperienceDao.deleteById(workExperience.getId());
 					;
 				}
 				course.setCourseWorkExperienceRequirement(null);
@@ -131,8 +131,8 @@ public class CourseOtherRequirementProcessor {
 				if (ObjectUtils.isEmpty(workPlacement)) {
 					workPlacement = new CourseWorkPlacementRequirement();
 				}
-				workPlacement.setAuditFields(userId);
-				workPlacement.setCourse(course);
+//				workPlacement.setAuditFields(userId);
+//				workPlacement.setCourse(course);
 				workPlacement.setDescription(courseOtherRequirementDto.getWorkPlacement().getDescription());
 				workPlacement.setDuration(courseOtherRequirementDto.getWorkPlacement().getDuration());
 				workPlacement.setDurationType(courseOtherRequirementDto.getWorkPlacement().getDurationType());
@@ -140,24 +140,24 @@ public class CourseOtherRequirementProcessor {
 				course.setCourseWorkPlacementRequirement(workPlacement);
 			} else {
 				if (!ObjectUtils.isEmpty(workPlacement)) {
-					workPlacementDao.deleteById(workPlacement.getId());
+//					workPlacementDao.deleteById(workPlacement.getId());
 					;
 				}
 				course.setCourseWorkPlacementRequirement(null);
 			}
 
-			if (!ObjectUtils.isEmpty(courseOtherRequirementDto.getResearchProposal())) {
-				CourseResearchProposalRequirement researchProposal = course.getCourseResearchProposalRequirement();
-				if (ObjectUtils.isEmpty(researchProposal)) {
-					researchProposal = new CourseResearchProposalRequirement();
-				}
-				researchProposal.setAuditFields(userId);
-				researchProposal.setCourse(course);
-				researchProposal.setDescription(courseOtherRequirementDto.getResearchProposal().getDescription());
-				course.setCourseResearchProposalRequirement(researchProposal);
-			} else {
-				course.setCourseResearchProposalRequirement(null);
-			}
+//			if (!ObjectUtils.isEmpty(courseOtherRequirementDto.getResearchProposal())) {
+//				CourseResearchProposalRequirement researchProposal = course.getCourseResearchProposalRequirement();
+//				if (ObjectUtils.isEmpty(researchProposal)) {
+//					researchProposal = new CourseResearchProposalRequirement();
+//				}
+//				researchProposal.setAuditFields(userId);
+//				researchProposal.setCourse(course);
+//				researchProposal.setDescription(courseOtherRequirementDto.getResearchProposal().getDescription());
+//				course.setCourseResearchProposalRequirement(researchProposal);
+//			} else {
+//				course.setCourseResearchProposalRequirement(null);
+//			}
 
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
@@ -189,7 +189,7 @@ public class CourseOtherRequirementProcessor {
 			if (!ObjectUtils.isEmpty(course.getCourseVaccineRequirement())) {
 				CourseVaccineRequirement model = course.getCourseVaccineRequirement();
 				CourseVaccineRequirementDto dto = new CourseVaccineRequirementDto();
-				dto.setId(model.getId());
+//				dto.setId(model.getId());
 				dto.setDescription(model.getDescription());
 				if (!CollectionUtils.isEmpty(model.getVaccinationIds())) {
 					var wrapperObject = new Object() {
@@ -222,7 +222,7 @@ public class CourseOtherRequirementProcessor {
 			if (!ObjectUtils.isEmpty(course.getCourseWorkExperienceRequirement())) {
 				CourseWorkExperienceRequirement model = course.getCourseWorkExperienceRequirement();
 				CourseWorkExperienceRequirementDto dto = new CourseWorkExperienceRequirementDto();
-				dto.setId(model.getId());
+//				dto.setId(model.getId());
 				dto.setDescription(model.getDescription());
 				dto.setDuration(model.getDuration());
 				dto.setDurationType(model.getDurationType());
@@ -233,7 +233,7 @@ public class CourseOtherRequirementProcessor {
 			if (!ObjectUtils.isEmpty(course.getCourseWorkPlacementRequirement())) {
 				CourseWorkPlacementRequirement model = course.getCourseWorkPlacementRequirement();
 				CourseWorkPlacementRequirementDto dto = new CourseWorkPlacementRequirementDto();
-				dto.setId(model.getId());
+//				dto.setId(model.getId());
 				dto.setDescription(model.getDescription());
 				dto.setDuration(model.getDuration());
 				dto.setDurationType(model.getDurationType());
@@ -242,10 +242,10 @@ public class CourseOtherRequirementProcessor {
 			}
 
 			if (!ObjectUtils.isEmpty(course.getCourseResearchProposalRequirement())) {
-				CourseResearchProposalRequirement model = course.getCourseResearchProposalRequirement();
+//				CourseResearchProposalRequirement model = course.getCourseResearchProposalRequirement();
 				CourseResearchProposalRequirementDto dto = new CourseResearchProposalRequirementDto();
-				dto.setId(model.getId());
-				dto.setDescription(model.getDescription());
+//				dto.setId(model.getId());
+//				dto.setDescription(model.getDescription());
 				otherRequirementDto.setResearchProposal(dto);
 			}
 		} else {
