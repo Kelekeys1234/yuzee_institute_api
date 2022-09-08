@@ -49,6 +49,7 @@ import com.yuzee.app.bean.Careers;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseCareerOutcome;
 import com.yuzee.app.bean.CourseCurriculum;
+import com.yuzee.app.bean.CourseDeliveryModeFunding;
 import com.yuzee.app.bean.CourseDeliveryModes;
 import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.bean.CourseFunding;
@@ -493,30 +494,30 @@ public class CourseProcessor {
 			List<ProviderCodeDto> providesCodeDtos) throws ValidationException, NotFoundException, InvokeException {
 		List<CourseProviderCode> courseProviderCodes = course.getCourseProviderCodes();
 		if (!CollectionUtils.isEmpty(providesCodeDtos)) {
-
-			log.info("see if some names are not present then we have to delete them.");
-			Set<String> updateRequestNames = providesCodeDtos.stream()
-					.filter(e -> org.springframework.util.StringUtils.hasText(e.getName()))
-					.map(ProviderCodeDto::getName).collect(Collectors.toSet());
-			courseProviderCodes.removeIf(e -> !updateRequestNames.contains(e.getName()));
-
-			Map<String, CourseProviderCode> existingProviderCodes = courseProviderCodes.stream()
-					.collect(Collectors.toMap(CourseProviderCode::getName, e -> e));
-			providesCodeDtos.stream().forEach(e -> {
-				CourseProviderCode providerCode = existingProviderCodes.get(e.getName());
-				if (ObjectUtils.isEmpty(providerCode)) {
-					providerCode = new CourseProviderCode();
-					// providerCode.setCreatedBy(loggedInUserId);
-					// providerCode.setCreatedOn(new Date());
+            log.info("see if some names are not present then we have to delete them.");
+            Set<String> updateRequestNames = providesCodeDtos.stream()
+                    .filter(e -> org.springframework.util.StringUtils.hasText(e.getName()))
+                    .map(ProviderCodeDto::getName).collect(Collectors.toSet());
+            courseProviderCodes.removeIf(e -> !updateRequestNames.contains(e.getName()));
+			providesCodeDtos.stream().forEach(dto -> {
+				Optional<CourseProviderCode> existingProviderCodesOp = courseProviderCodes.stream()
+						.filter(e -> e.getName().equalsIgnoreCase(dto.getName()))
+						.findAny();
+				CourseProviderCode code = new CourseProviderCode();
+                boolean flage = false;
+				if (existingProviderCodesOp.isPresent()) {
+					code = existingProviderCodesOp.get();
+					flage=true;
 				}
-				// providerCode.setUpdatedBy(loggedInUserId);
-				// providerCode.setUpdatedOn(new Date());
-				providerCode.setName(e.getName());
-				providerCode.setValue(e.getValue());
-				// providerCode.setCourse(course);
-				if (!org.springframework.util.StringUtils.hasText(providerCode.getName())) {
-					courseProviderCodes.add(providerCode);
+
+				BeanUtils.copyProperties(dto,code );
+
+				if (flage == false) {
+					courseProviderCodes.add(code);
+
 				}
+
+
 			});
 
 		} else {
