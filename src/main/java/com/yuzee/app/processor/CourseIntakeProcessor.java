@@ -56,8 +56,7 @@ public class CourseIntakeProcessor {
 			if (ObjectUtils.isEmpty(courseIntake)) {
 				courseIntake = new CourseIntake();
 			}
-			courseIntake.setAuditFields(userId);
-			courseIntake.setCourse(course);
+		
 			courseIntake.setType(IntakeType.valueOf(courseIntakeDto.getType()));
 			courseIntake.setDates(courseIntakeDto.getDates());
 			course.setCourseIntake(courseIntake);
@@ -81,7 +80,7 @@ public class CourseIntakeProcessor {
 		log.info("inside CourseIntakeProcessor.deleteByCourseIntakeIds");
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		if (!ObjectUtils.isEmpty(course.getCourseIntake())) {
-			courseIntakeDao.deleteById(course.getCourseIntake().getId());
+		//	courseIntakeDao.deleteById(course.getCourseIntake().getId());
 			course.setCourseIntake(null);
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);

@@ -173,24 +173,24 @@ public class Course implements Serializable {
 	private CourseIntake courseIntake;
 
 	// Delete course language model
-	private List<CourseLanguage> courseLanguages = new ArrayList<>();
+	private List<String> courseLanguages = new ArrayList<>();
 
 	private List<CourseMinRequirement> courseMinRequirements = new ArrayList<>();
 
 	// Delete CoursePrerequisite model
-	private List<CoursePrerequisite> coursePrerequisites = new ArrayList<>();
+	private List<String> coursePrerequisites = new ArrayList<>();
 
 	// Delete CourseCareerOutcome model
 	@DBRef
-	private List<CourseCareerOutcome> courseCareerOutcomes = new ArrayList<>();
-	@DBRef
+	private List<Careers> courseCareerOutcomes = new ArrayList<>();
+
 	private List<CourseSemester> courseSemesters = new ArrayList<>();
 
 	// Delete CourseFunding model
 	private List<String> courseFundings = new ArrayList<>();
 
 	// Delete CourseContactPerson model
-	private List<CourseContactPerson> courseContactPersons = new ArrayList<>();
+	private List<String> courseContactPersons = new ArrayList<>();
 
 	// Delete CourseScholarship model
 	private String courseScholarshipId;

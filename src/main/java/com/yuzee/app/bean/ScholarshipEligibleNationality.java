@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@Entity
+//@Entity
 @NoArgsConstructor
 @ToString(exclude = "scholarship")
 @Table(name = "scholarship_eligible_nationality", uniqueConstraints = @UniqueConstraint(columnNames = { "country_name",
@@ -33,31 +33,31 @@ public class ScholarshipEligibleNationality implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length = 36)
+//	@Id
+//	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
+//	@GeneratedValue(generator = "generator")
+//	@Column(name = "id", unique = true, nullable = false, length = 36)
 	private String id;
 
-	@Column(name = "country_name")
+//	@Column(name = "country_name")
 	private String countryName;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "scholarship_id")
+//
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "scholarship_id")
 	private Scholarship scholarship;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
+//	@Temporal(TemporalType.TIMESTAMP)
+//	@Column(name = "created_on", length = 19)
 	private Date createdOn;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
+//
+//	@Temporal(TemporalType.TIMESTAMP)
+//	@Column(name = "updated_on", length = 19)
 	private Date updatedOn;
 
-	@Column(name = "created_by", length = 50)
+	//@Column(name = "created_by", length = 50)
 	private String createdBy;
 
-	@Column(name = "updated_by", length = 50)
+	//@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 
 	public void setAuditFields(String userId, ScholarshipEligibleNationality existingScholarshipNationality) {

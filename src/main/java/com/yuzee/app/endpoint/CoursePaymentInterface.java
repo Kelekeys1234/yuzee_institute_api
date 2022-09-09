@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,7 @@ import com.yuzee.common.lib.exception.ValidationException;
 public interface CoursePaymentInterface {
 
 	@PostMapping("/course/{courseId}/payment")
-	public ResponseEntity<?> saveUpdateCoursePayment(
+	public ResponseEntity<?> saveCoursePayment(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
 			@Valid @RequestBody(required = true) final CoursePaymentDto coursePaymentDto)
 			throws ValidationException, NotFoundException, ForbiddenException;

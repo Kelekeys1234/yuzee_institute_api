@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@Entity
+//@Entity
 //@Table(name = "scholarship", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "institute_id",
 //		"faculty_id" }, name = "UK_SCHOLARSHIP_N_FI_II"), indexes = {
 //				@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false),

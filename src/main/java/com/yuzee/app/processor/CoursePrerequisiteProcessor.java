@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,30 +69,13 @@ public class CoursePrerequisiteProcessor {
 					}).collect(Collectors.toList());
 
 			log.info("preparing map of exsiting course delivery modes");
-			List<CoursePrerequisite> existingCoursePrerequisiteMap = course.getCoursePrerequisites();
-			//
-			List<CoursePrerequisite> coursePrerequisites = course.getCoursePrerequisites();
+		
+			List<String> coursePrerequisites = course.getCoursePrerequisites();
 
 			log.info("loop the requested list to collect the entitities to be saved/updated");
-			coursePreRequisiteDtos.stream().forEach(e -> {
-				CoursePrerequisite coursePrerequisite = new CoursePrerequisite();
-				if (!StringUtils.isEmpty(e.getId())) {
-					log.info(
-							"entityId is present so going to see if it is present in db if yes then we have to update it");
-
-					if (ObjectUtils.isEmpty(coursePrerequisite)) {
-						log.error("invalid course Prerequisite id : {}", e.getId());
-						throw new RuntimeNotFoundException("invalid course Prerequisite id : " + e.getId());
-					}
-				}
-
-				coursePrerequisite.setCourse(course);
-				coursePrerequisite.setDescription(e.getDescription());
-				coursePrerequisite.setAuditFields(userId);
-				if (StringUtils.isEmpty(e.getId())) {
-					coursePrerequisites.add(coursePrerequisite);
-				}
-			});
+			
+			coursePrerequisites.addAll(request.getCoursePreRequisiteDtos().stream().map(e->e.getDescription()).collect(Collectors.toList()));
+			course.setCoursePrerequisites(coursePrerequisites);
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			coursesToBeSavedOrUpdated = courseDao.saveAll(coursesToBeSavedOrUpdated);
@@ -109,24 +93,17 @@ public class CoursePrerequisiteProcessor {
 			List<String> linkedCourseIds) throws NotFoundException, ValidationException {
 		log.info("inside CoursePrerequisiteProcessor.deleteByPreRequisiteIds");
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
-		List<CoursePrerequisite> coursePrerequisite = course.getCoursePrerequisites();
-		if (coursePrerequisite.stream().map(CoursePrerequisite::getId).collect(Collectors.toSet())
-				.containsAll(deliveryModeIds)) {
-			if (coursePrerequisite.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
-				log.error("no access to delete one more course_delivery_modes");
-				throw new ForbiddenException("no access to delete one more course_delivery_modes");
-			}
-			coursePrerequisite.removeIf(e -> Utils.contains(deliveryModeIds, e.getId()));
+		List<String> coursePrerequisite = course.getCoursePrerequisites();
+		if(!CollectionUtils.isEmpty(coursePrerequisite)) {
+			course.setCoursePrerequisites(null);
+		}
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
 
 			log.info("Notify course information changed");
-		} else {
-			log.error("one or more invalid course_delivery_mode_ids");
-			throw new NotFoundException("one or more invalid course_delivery_mode_ids");
-		}
+		
 	}
 
 	public static boolean contains(List<CourseDeliveryModesDto> lst, CourseDeliveryModes target) {

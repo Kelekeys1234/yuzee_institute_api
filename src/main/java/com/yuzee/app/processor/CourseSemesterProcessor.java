@@ -53,61 +53,67 @@ public class CourseSemesterProcessor {
 	public void saveUpdateCourseSemesters(String userId, String courseId, CourseSemesterRequestWrapper request)
 			throws NotFoundException, ValidationException {
 		log.info("inside CourseSubjectProcessor.saveUpdateCourseSemesters");
-		List<CourseSemesterDto> courseSubjectDtos = request.getCourseSemesterDtos();
+ 		List<CourseSemesterDto> courseSemesterDtos = request.getCourseSemesterDtos();
+   
 		Course course = courseDao.get(courseId);
+		CourseSemester courseSemesters= new CourseSemester();
+		log.info("preparing map of exsiting course subjects");
+		Map<String, CourseSemester> existingCourseSubjectsMap = course.getCourseSemesters().stream()
+				.collect(Collectors.toMap(CourseSemester::getCourseSemesterId, e -> e));
+ 
 		if (!ObjectUtils.isEmpty(course)) {
-
-			log.info("preparing map of exsiting course subjects");
-			Map<String, CourseSemester> existingCourseSubjectsMap = course.getCourseSemesters().stream()
-					.collect(Collectors.toMap(CourseSemester::getId, e -> e));
-
-			List<CourseSemester> courseSubjects = course.getCourseSemesters();
-			log.info("loop the requested list to collect the entitities to be saved/updated");
-			courseSubjectDtos.stream().forEach(e -> {
-				CourseSemester courseSubject = new CourseSemester();
-				if (!StringUtils.isEmpty(e.getId())) {
-					log.info(
-							"entityId is present so going to see if it is present in db if yes then we have to update it");
-					courseSubject = existingCourseSubjectsMap.get(e.getId());
-					if (courseSubject == null) {
-						log.error("invalid course subject id : {}", e.getId());
-						throw new RuntimeNotFoundException("invalid course subject id : " + e.getId());
-					}
+          List<CourseSemester> courseSemester = course.getCourseSemesters();
+          List<SemesterSubject> semesterSubject= new ArrayList<>();
+      	
+		log.info("loop the requested list to collect the entitities to be saved/updated");
+		courseSemesterDtos.stream().forEach(e -> {
+			CourseSemester courseSubject = new CourseSemester();
+			if (!StringUtils.isEmpty(e.getCourseSemesterDtoId())) {
+				log.info(
+						"entityId is present so going to see if it is present in db if yes then we have to update it");
+				courseSubject = existingCourseSubjectsMap.get(e.getCourseSemesterDtoId());
+				courseSemester.removeIf(a->a.getCourseSemesterId().equals(e.getCourseSemesterDtoId()));
+				if (courseSubject == null) {
+					log.error("invalid course subject id : {}", e.getCourseSemesterDtoId());
+					throw new RuntimeNotFoundException("invalid course subject id : " + e.getCourseSemesterDtoId());
 				}
-				BeanUtils.copyProperties(e, courseSubject);
-				courseSubject.setCourse(course);
-				courseSubject.setAuditFields(userId);
-				if (StringUtils.isEmpty(e.getId())) {
-					courseSubjects.add(courseSubject);
-				}
-				saveUpdateSubjects(userId, courseSubject, e.getSubjects());
-			});
-			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
-			coursesToBeSavedOrUpdated.add(course);
-			courseDao.saveAll(coursesToBeSavedOrUpdated);
-			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
-		} else {
+				
+			
+		}
+			courseSemesters.setCourseSemesterId(e.getCourseSemesterDtoId());
+			courseSemesters.setDescription(e.getDescription());
+			courseSemesters.setName(e.getName());
+			courseSemesters.setType(e.getType());
+		   courseSemester.add(courseSemesters);
+		   course.setCourseSemesters(courseSemester);
+		saveUpdateSubjects(userId, courseSubject, e.getSubjects());
+		
+		});
+		
+		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+		coursesToBeSavedOrUpdated.add(course);
+		courseDao.saveAll(coursesToBeSavedOrUpdated);
+		}else {
 			log.error("invalid course id: {}", courseId);
 			throw new NotFoundException("invalid course id: " + courseId);
 		}
 	}
+	
 
 	@Transactional
 	public void deleteByCourseSemesterIds(String userId, String courseId, List<String> courseSubjectIds,
 			List<String> linkedCourseIds) throws NotFoundException, ValidationException {
 		log.info("inside CourseSubjectProcessor.deleteByCourseSubjectIds");
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
-		List<CourseSemester> courseSubjects = course.getCourseSemesters();
-		if (courseSubjects.stream().map(CourseSemester::getId).collect(Collectors.toSet())
-				.containsAll(courseSubjectIds)) {
-			if (courseSubjects.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
-				log.error("no access to delete one more subjects");
-				throw new ForbiddenException("no access to delete one more subjects");
-			}
-			courseSubjects.removeIf(e -> Utils.contains(courseSubjectIds, e.getId()));
-			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
-			coursesToBeSavedOrUpdated.add(course);
-			courseDao.saveAll(coursesToBeSavedOrUpdated);
+		List<CourseSemester> courseSemesterSubjects = course.getCourseSemesters();
+		if (!courseSemesterSubjects.isEmpty()) {
+			courseSubjectIds.stream().forEach(a->{
+				courseSemesterSubjects.removeIf(e->e.getCourseSemesterId().equals(a));
+				List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+				coursesToBeSavedOrUpdated.add(course);
+				courseDao.saveAll(coursesToBeSavedOrUpdated);
+			});		
+			
 			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("one or more invalid course_subject_ids");
@@ -119,30 +125,29 @@ public class CourseSemesterProcessor {
 		if (!CollectionUtils.isEmpty(subjectDtos)) {
 			List<SemesterSubject> subjects = courseSemester.getSubjects();
 
-			List<String> updateRequestIds = subjectDtos.stream().filter(e -> StringUtils.hasText(e.getId()))
-					.map(SemesterSubjectDto::getId).collect(Collectors.toList());
-			subjects.removeIf(e -> !Utils.contains(updateRequestIds, e.getId()));
+			List<String> updateRequestIds = subjectDtos.stream().filter(e -> StringUtils.hasText(e.getName()))
+					.map(SemesterSubjectDto::getName).collect(Collectors.toList());
+			subjects.removeIf(e -> !Utils.contains(updateRequestIds, e.getName()));
 
 			log.info("preparing map of exsiting course fees");
 			Map<String, SemesterSubject> existingSubjectMap = subjects.stream()
-					.filter(e -> StringUtils.hasText(e.getId()))
-					.collect(Collectors.toMap(SemesterSubject::getId, e -> e));
+					.filter(e -> StringUtils.hasText(e.getName()))
+					.collect(Collectors.toMap(SemesterSubject::getName, e -> e));
 			subjectDtos.stream().forEach(dto -> {
 				SemesterSubject model = new SemesterSubject();
-				if (StringUtils.hasText(dto.getId())) {
+				if (StringUtils.hasText(dto.getName())) {
 					log.info("id is present so going to see if it is present in db if yes then we have to update it");
-					model = existingSubjectMap.get(dto.getId());
+					model = existingSubjectMap.get(dto.getName());
 					if (ObjectUtils.isEmpty(model)) {
-						log.error("invalid course fees id : {}", dto.getId());
-						throw new RuntimeNotFoundException("invalid course fees id : " + dto.getId());
+						log.error("invalid course fees id : {}", dto.getName());
+						throw new RuntimeNotFoundException("invalid course fees id : " + dto.getName());
 					}
 				} else {
 					subjects.add(model);
 				}
 				model.setName(dto.getName());
 				model.setDescription(dto.getDescription());
-				model.setAuditFields(userId);
-				model.setCourseSemester(courseSemester);
+				
 			});
 
 		} else {

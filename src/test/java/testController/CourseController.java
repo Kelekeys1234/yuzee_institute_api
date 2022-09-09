@@ -93,7 +93,7 @@ public class CourseController {
 	@MockBean
 	UserHandler userHandler;
 
-	@DisplayName("save institutes")
+	@DisplayName("save course")
 	@Test
 	public void AddCourses() {
 
@@ -118,7 +118,7 @@ public class CourseController {
 
 		TimingRequestDto timing = new TimingRequestDto(entityId, timings, "LECTURES", "COURSE", instituteId);
 		courseTimings.add(timing);
-		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto(instituteId, "name", "description");
+		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto( "name", "description");
 
 		CourseSemesterDto courseSemesterDto = new CourseSemesterDto(entityId, "type", "name", "description",
 				semesterSubjectDtos);
@@ -127,9 +127,7 @@ public class CourseController {
 
 		UserInitialInfoDto userInitialInfoDto = new UserInitialInfoDto();
 
-		CourseContactPersonDto courseContactPersonDto = new CourseContactPersonDto(instituteId, entityId,
-				userInitialInfoDto);
-		courseContactPersons.add(courseContactPersonDto);
+		
 
 		LevelDto levelDto = new LevelDto(instituteId, "levelName", "levelCode", "levelCategories", "levelDescriptions",
 				12345);
@@ -150,7 +148,7 @@ public class CourseController {
 				"secondClass", "2.22");
 
 		CourseMinRequirementDto courseMinRequirement = new CourseMinRequirementDto();
-		courseMinRequirement.setId(UUID.randomUUID().toString());
+		courseMinRequirement.setCourseMinRequirementsId(UUID.randomUUID().toString());
 		courseMinRequirement.setCountryName("INDIA");
 		courseMinRequirement.setStateName("INDIA");
 		courseMinRequirement.setEducationSystemId(UUID.randomUUID().toString());
@@ -270,7 +268,7 @@ public class CourseController {
 
 		TimingRequestDto timing = new TimingRequestDto(entityId, timings, "LECTURES", "COURSE", instituteId);
 		courseTimings.add(timing);
-		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto(instituteId, "name", "description");
+		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto( "name", "description");
 
 		CourseSemesterDto courseSemesterDto = new CourseSemesterDto(entityId, "type", "name", "description",
 				semesterSubjectDtos);
@@ -278,10 +276,6 @@ public class CourseController {
 		CourseIntakeDto courseIntakeDto = new CourseIntakeDto(entityId, new Date());
 
 		UserInitialInfoDto userInitialInfoDto = new UserInitialInfoDto();
-
-		CourseContactPersonDto courseContactPersonDto = new CourseContactPersonDto(instituteId, entityId,
-				userInitialInfoDto);
-		courseContactPersons.add(courseContactPersonDto);
 
 		LevelDto levelDto = new LevelDto(instituteId, "levelName", "levelCode", "levelCategories", "levelDescriptions",
 				12345);
@@ -302,7 +296,7 @@ public class CourseController {
 				"secondClass", "2.22");
 
 		CourseMinRequirementDto courseMinRequirement = new CourseMinRequirementDto();
-		courseMinRequirement.setId(UUID.randomUUID().toString());
+		courseMinRequirement.setCourseMinRequirementsId(UUID.randomUUID().toString());
 		courseMinRequirement.setCountryName("INDIA");
 		courseMinRequirement.setStateName("INDIA");
 		courseMinRequirement.setEducationSystemId(UUID.randomUUID().toString());
@@ -446,7 +440,7 @@ public class CourseController {
 		headers.add("userId", userId);
 		HttpEntity<String> entityer = new HttpEntity<>(null, headers);
 		ResponseEntity<String> responseds = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
-				+ PATH_SEPARATOR + "75218134-062d-41bd-b84d-eeb203cddbae" + PATH_SEPARATOR + ss, HttpMethod.DELETE,
+				+ PATH_SEPARATOR + "07372dea-92b7-4179-9082-e6cbbe02649d" + PATH_SEPARATOR + ss, HttpMethod.DELETE,
 				entityer, String.class);
 		assertThat(responseds.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
@@ -1003,7 +997,7 @@ public class CourseController {
 
 		TimingRequestDto timing = new TimingRequestDto(entityId, timings, "LECTURES", "COURSE", instituteId);
 		courseTimings.add(timing);
-		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto(instituteId, "name", "description");
+		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto( "name", "description");
 
 		CourseSemesterDto courseSemesterDto = new CourseSemesterDto(entityId, "type", "name", "description",
 				semesterSubjectDtos);
@@ -1012,9 +1006,7 @@ public class CourseController {
 
 		UserInitialInfoDto userInitialInfoDto = new UserInitialInfoDto();
 
-		CourseContactPersonDto courseContactPersonDto = new CourseContactPersonDto(instituteId, entityId,
-				userInitialInfoDto);
-		courseContactPersons.add(courseContactPersonDto);
+
 
 		LevelDto levelDto = new LevelDto(instituteId, "levelName", "levelCode", "levelCategories", "levelDescriptions",
 				12345);
@@ -1035,7 +1027,7 @@ public class CourseController {
 				"secondClass", "2.22");
 
 		CourseMinRequirementDto courseMinRequirement = new CourseMinRequirementDto();
-		courseMinRequirement.setId(UUID.randomUUID().toString());
+		courseMinRequirement.setCourseMinRequirementsId(UUID.randomUUID().toString());
 		courseMinRequirement.setCountryName("INDIA");
 		courseMinRequirement.setStateName("INDIA");
 		courseMinRequirement.setEducationSystemId(UUID.randomUUID().toString());
@@ -1155,7 +1147,7 @@ public class CourseController {
 
 		TimingRequestDto timing = new TimingRequestDto(entityId, timings, "LECTURES", "COURSE", instituteId);
 		courseTimings.add(timing);
-		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto(instituteId, "name", "description");
+		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto( "name", "description");
 
 		CourseSemesterDto courseSemesterDto = new CourseSemesterDto(entityId, "type", "name", "description",
 				semesterSubjectDtos);
@@ -1164,9 +1156,6 @@ public class CourseController {
 
 		UserInitialInfoDto userInitialInfoDto = new UserInitialInfoDto();
 
-		CourseContactPersonDto courseContactPersonDto = new CourseContactPersonDto(instituteId, entityId,
-				userInitialInfoDto);
-		courseContactPersons.add(courseContactPersonDto);
 
 		LevelDto levelDto = new LevelDto(instituteId, "levelName", "levelCode", "levelCategories", "levelDescriptions",
 				12345);
@@ -1187,7 +1176,7 @@ public class CourseController {
 				"secondClass", "2.22");
 
 		CourseMinRequirementDto courseMinRequirement = new CourseMinRequirementDto();
-		courseMinRequirement.setId(UUID.randomUUID().toString());
+		courseMinRequirement.setCourseMinRequirementsId(UUID.randomUUID().toString());
 		courseMinRequirement.setCountryName("INDIA");
 		courseMinRequirement.setStateName("INDIA");
 		courseMinRequirement.setEducationSystemId(UUID.randomUUID().toString());

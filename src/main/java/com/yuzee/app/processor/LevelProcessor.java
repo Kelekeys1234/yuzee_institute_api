@@ -46,7 +46,7 @@ public class LevelProcessor {
 
 	@Transactional
 	public void addUpdateLevel(LevelDto levelDto) {
-		Level level = new Level(null, levelDto.getName(), levelDto.getCode(), null, levelDto.getSequenceNo(), true,
+		Level level = new Level(UUID.randomUUID().toString(), levelDto.getName(), levelDto.getCode(), null, levelDto.getSequenceNo(), true,
 				new Date(), null, null, "API", null, null);
 		levelDao.addUpdateLevel(level);
 	}

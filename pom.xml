@@ -158,7 +158,7 @@
 		<dependency>
 			<groupId>com.yuzee.common</groupId>
 			<artifactId>yuzee-backend-common-lib</artifactId>
-			<version>0.0.65-SNAPSHOT</version>
+				<version>0.0.65-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

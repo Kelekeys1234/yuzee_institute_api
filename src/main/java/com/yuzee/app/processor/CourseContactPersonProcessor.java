@@ -1,6 +1,7 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.yuzee.app.bean.Course;
-import com.yuzee.app.bean.CourseContactPerson;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dto.CourseContactPersonRequestWrapper;
 import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
@@ -54,19 +54,14 @@ public class CourseContactPersonProcessor {
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		log.info("going to see if user ids are valid");
 
-		commonProcessor.validateAndGetUsersByUserIds(userId,
-				courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
+	//	commonProcessor.validateAndGetUsersByUserIds(userId,
+		//		courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
 		log.debug("going to process the request");
-		List<CourseContactPerson> courseContactPersons = course.getCourseContactPersons();
-		courseContactPersonDtos.stream().forEach(e -> {
-			CourseContactPerson courseContactPerson = new CourseContactPerson();
-			courseContactPerson.setAuditFields(userId);
-			courseContactPerson.setCourse(course);
-			courseContactPerson.setUserId(e.getUserId());
-			courseContactPersons.add(courseContactPerson);
-		});
-		log.debug("going to save the list in db");
+		List<String> courseContactPersons = course.getCourseContactPersons();
 
+		log.debug("going to save the list in db");
+		 courseContactPersons.addAll(courseContactPersonDtos.stream().map(e->e.getUserId()).collect(Collectors.toList()));
+		 course.setCourseContactPersons(courseContactPersons);
 		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 		coursesToBeSavedOrUpdated.add(course);
 		if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
@@ -91,17 +86,16 @@ public class CourseContactPersonProcessor {
 		log.info("inside CourseContactPersonProcessor.deleteCourseContactPersonsByUserIds");
 
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
-		List<CourseContactPerson> courseContactPersons = course.getCourseContactPersons();
-		if (courseContactPersons.stream().map(CourseContactPerson::getUserId).collect(Collectors.toSet())
+		List<String> courseContactPersons = course.getCourseContactPersons();
+		if (courseContactPersons.stream().collect(Collectors.toSet())
 				.containsAll(userIds)) {
-			if (courseContactPersons.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
-				log.error(messageTranslator.toLocale("course_contact_person.delete.no.access", userId, Locale.US));
-				throw new ForbiddenException(
-						messageTranslator.toLocale("course_contact_person.delete.no.access", userId));
-			}
-			courseContactPersons.removeIf(e -> Utils.contains(userIds, e.getUserId()));
-			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
-			coursesToBeSavedOrUpdated.add(course);
+			userIds.stream().forEach(a->{
+				courseContactPersons.removeIf(e -> a.equals(e));
+				course.setCourseContactPersons(courseContactPersons);
+				List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+				coursesToBeSavedOrUpdated.add(course);
+			
+			
 			if (!CollectionUtils.isEmpty(linkedCourseIds)) {
 				List<CourseContactPersonDto> dtosToReplicate = courseContactPersons.stream()
 						.map(e -> modelMapper.map(e, CourseContactPersonDto.class)).collect(Collectors.toList());
@@ -109,12 +103,14 @@ public class CourseContactPersonProcessor {
 						.addAll(replicateCourseContactPersons(userId, linkedCourseIds, dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
-			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+		//	commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			});
 		} else {
 			log.error(messageTranslator.toLocale("course_contact_person.user.id.invalid", Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("course_contact_person.user.id.invalid"));
 		}
+		
 	}
 
 	private List<Course> replicateCourseContactPersons(String userId, List<String> courseIds,
@@ -125,30 +121,31 @@ public class CourseContactPersonProcessor {
 		if (!CollectionUtils.isEmpty(courseIds)) {
 			List<Course> courses = courseProcessor.validateAndGetCourseByIds(courseIds);
 			courses.stream().forEach(course -> {
-				List<CourseContactPerson> courseContactPersons = course.getCourseContactPersons();
+				List<String> courseContactPersons = course.getCourseContactPersons();
+			
+		
 				if (CollectionUtils.isEmpty(courseContactPersonDtos)) {
 					courseContactPersons.clear();
 				} else {
 					courseContactPersons.removeIf(e -> !Utils
-							.containsIgnoreCase(userIds.stream().collect(Collectors.toList()), e.getUserId()));
+							.containsIgnoreCase(userIds.stream().collect(Collectors.toList()), e));
 					courseContactPersonDtos.stream().forEach(dto -> {
-						Optional<CourseContactPerson> existingContactPersonOp = courseContactPersons.stream()
-								.filter(e -> e.getUserId().equals(dto.getUserId())).findAny();
-						CourseContactPerson courseContactPerson = null;
+						Optional<String> existingContactPersonOp = courseContactPersons.stream()
+								.filter(e -> e.equals(userIds)).findAny();
+						String courseContactPerson = null;
 						if (existingContactPersonOp.isPresent()) {
 							courseContactPerson = existingContactPersonOp.get();
-						} else {
-							courseContactPerson = new CourseContactPerson();
-							courseContactPerson.setCourse(course);
-							courseContactPersons.add(courseContactPerson);
 						}
-						courseContactPerson.setAuditFields(userId);
-						courseContactPerson.setUserId(dto.getUserId());
 					});
 				}
+		
 			});
+		
 			return courses;
+		
 		}
+		
 		return new ArrayList<>();
+
 	}
 }

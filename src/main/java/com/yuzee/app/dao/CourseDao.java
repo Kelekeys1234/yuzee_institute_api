@@ -1,6 +1,7 @@
 package com.yuzee.app.dao;
 
 import java.util.Date;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseIntake;
-import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.dto.AdvanceSearchDto;
@@ -102,10 +102,6 @@ public interface CourseDao {
 
 	public void deleteCourseDeliveryMethod(String courseId);
 
-	public void saveCourseLanguage(CourseLanguage courseLanguage);
-
-	public List<CourseLanguage> getCourseLanguageBasedOnCourseId(String courseId);
-
 	public List<String> getUserSearchCourseRecommendation(Integer startIndex, Integer pageSize, String searchKeyword);
 
 	public Integer getCoursesCountBylevelId(String levelId);
@@ -152,4 +148,5 @@ public interface CourseDao {
 	public boolean documentExistsById(String id);
 
 	Optional<Course> findAllById(String ids);
+	Page<Course> findById(String courseId,Pageable page);
 }

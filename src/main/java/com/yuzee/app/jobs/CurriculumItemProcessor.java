@@ -13,10 +13,7 @@ public class CurriculumItemProcessor implements ItemProcessor<CourseCurriculumDt
 		CourseCurriculum courseCurriculum = new CourseCurriculum();
 		courseCurriculum.setName(courseCurriculumDto.getName());
 		courseCurriculum.setIsActive(true);
-		courseCurriculum.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-		courseCurriculum.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-		courseCurriculum.setCreatedBy("AUTO");
-		courseCurriculum.setUpdatedBy("AUTO");
+		
 		return courseCurriculum;
 	}
 	

@@ -34,7 +34,8 @@ import lombok.ToString;
 public class CoursePayment implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	@EqualsAndHashCode.Include
+    private String CoursePaymentId;
 	@EqualsAndHashCode.Include
 	private String description;
 
@@ -53,9 +54,8 @@ public class CoursePayment implements Serializable {
 	public void setAuditFields(String userId) {
 		this.setUpdatedBy(userId);
 		this.setUpdatedOn(new Date());
-		if (StringUtils.isEmpty(id)) {
 			this.setCreatedBy(userId);
 			this.setCreatedOn(new Date());
-		}
+	
 	}
 }

@@ -83,7 +83,7 @@ public class CourseMinRequirementProcessor {
 		savedCourses = courseDao.saveAll(coursesToBeSavedOrUpdated);
 
 		log.info("Send notification for course content updates");
-		//commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
            
 		// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		return savedCourses.get(0).getCourseMinRequirements().stream().map(e -> modelToDto(e)).toList();
@@ -104,18 +104,17 @@ public class CourseMinRequirementProcessor {
 	        						.collect(Collectors.toSet());
 	        				courseMinRequirements.removeIf(e -> !updateRequestIds.contains(e.getCourseMinRequirementsId()));
 	        			}
-	        			courseMinRequirementDtos.stream().forEach(dtos -> {
+						
+						courseMinRequirementDtos.stream().forEach(dtos -> {
 	        				CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
 	        				if (StringUtils.hasText(dtos.getCourseMinRequirementsId())) {
 	        					log.info(
 	        							"entityId is present so going to see if it is present in db if yes then we have to update it");
 	        					courseMinRequirement = existingCourseMinRequirementMap.get(dtos.getCourseMinRequirementsId());
-	        					if (ObjectUtils.isEmpty(courseMinRequirement)) {
-	        						log.error("invalid course min requirement id : {}", dtos.getCourseMinRequirementsId());
-	        						throw new RuntimeNotFoundException("invalid course min requirement id : " + dtos.getCourseMinRequirementsId());
-	        					}
+	        					courseMinRequirements.removeIf(e->e.getCourseMinRequirementsId().equals(dtos.getCourseMinRequirementsId()));	        					
 	        				}   
 	        			});
+	        			
 	       	 courseMinRequirements.addAll(
 	       	 courseMinRequirementDtos.stream().map(e->new CourseMinRequirement(e.getCourseMinRequirementsId(),e.getCountryName(),e.getStateName(),e.getGradePoint(),e.getStudyLanguages())).collect(Collectors.toList()));
 	       	 log.info("inserting inside saveUpdateSubjects" );
@@ -130,6 +129,8 @@ public class CourseMinRequirementProcessor {
 		}
 	           }
 	}
+
+	    	
 
 
 	@Transactional
@@ -197,6 +198,7 @@ public class CourseMinRequirementProcessor {
 							courseMinRequirements.add(courseMinRequirement);
 						}
 						saveUpdateSubjects(userId, courseMinRequirement, dto.getMinRequirementSubjects());
+						
 						courseMinRequirement.setCountryName(dto.getCountryName());
 						courseMinRequirement.setStateName(dto.getStateName());
 						courseMinRequirement.setGradePoint(dto.getGradePoint());

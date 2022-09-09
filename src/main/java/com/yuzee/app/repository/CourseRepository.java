@@ -3,6 +3,7 @@ package com.yuzee.app.repository;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -35,4 +36,5 @@ public interface CourseRepository extends MongoRepository<Course, String> {
 	public List<Course> findByReadableIdIn(List<String> readableIds);
 
 	public Course findByReadableId(String readableId);
+	Page<Course>findById(String courseId,Pageable page);
 }

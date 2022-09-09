@@ -1,6 +1,7 @@
 package com.yuzee.app.dao.impl;
 
 import java.math.BigInteger;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +39,6 @@ import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseIntake;
-import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.dao.CourseDao;
@@ -1801,21 +1801,6 @@ public class CourseDaoImpl implements CourseDao {
 		q.executeUpdate();
 	}
 
-	@Override
-	public void saveCourseLanguage(final CourseLanguage courseLanguage) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(courseLanguage);
-
-	}
-
-	@Override
-	public List<CourseLanguage> getCourseLanguageBasedOnCourseId(final String courseId) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(CourseLanguage.class, "courseLanguage");
-		crit.createAlias("courseLanguage.course", "course");
-		crit.add(Restrictions.eq("course.id", courseId));
-		return crit.list();
-	}
 
 	@Override
 	public List<String> getUserSearchCourseRecommendation(final Integer startIndex, final Integer pageSize,
@@ -2199,5 +2184,11 @@ public class CourseDaoImpl implements CourseDao {
 		// TODO Auto-generated method stub
 		return courseRepository.findAllById(ids);
 	}
+
+	@Override
+	public Page<Course> findById(String courseId, Pageable page) {
+		// TODO Auto-generated method stub
+		return courseRepository.findById(courseId, page);
+		}
 
 }

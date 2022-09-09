@@ -1,6 +1,7 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -24,7 +25,6 @@ import com.yuzee.app.bean.CourseDeliveryModeFunding;
 import com.yuzee.app.bean.CourseDeliveryModes;
 import com.yuzee.app.bean.CourseFees;
 import com.yuzee.app.dao.CourseDao;
-import com.yuzee.app.dao.CourseDeliveryModesDao;
 import com.yuzee.app.dto.CourseDeliveryModeRequestWrapper;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.ValidList;
@@ -59,8 +59,7 @@ public class CourseDeliveryModesProcessor {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	@Autowired
-	private CourseDeliveryModesDao courseDeliveryModesDao;
+	
 
 	@Autowired
 	private CommonProcessor commonProcessor;
@@ -69,8 +68,7 @@ public class CourseDeliveryModesProcessor {
 		log.debug("Inside getCourseDeliveryModesByCourseId() method");
 		List<CourseDeliveryModesDto> courseDeliveryModesResponse = new ArrayList<>();
 		log.info("Fetching courseDeliveryModes from DB for courseId = " + courseId);
-		List<CourseDeliveryModes> courseDeliveryModesFromDB = courseDeliveryModesDao
-				.getCourseDeliveryModesByCourseId(courseId);
+		List<CourseDeliveryModes> courseDeliveryModesFromDB= null;
 		if (!CollectionUtils.isEmpty(courseDeliveryModesFromDB)) {
 			log.info("Additional Info is not null, then start iterating list");
 			courseDeliveryModesFromDB.stream().forEach(courseDeliveryMode -> {
@@ -100,8 +98,8 @@ public class CourseDeliveryModesProcessor {
 					}).collect(Collectors.toList());
 
 			log.info("preparing map of exsiting course delivery modes");
-			Map<String, CourseDeliveryModes> existingCourseDeliveryModesMap = course.getCourseDeliveryModes().stream()
-					.collect(Collectors.toMap(CourseDeliveryModes::getId, e -> e));
+//			Map<String, CourseDeliveryModes> existingCourseDeliveryModesMap = course.getCourseDeliveryModes().stream()
+//					.collect(Collectors.toMap(CourseDeliveryModes::getId, e -> e));
 			List<CourseDeliveryModes> courseDeliveryModes = course.getCourseDeliveryModes();
 
 			log.info("loop the requested list to collect the entitities to be saved/updated");
@@ -110,7 +108,7 @@ public class CourseDeliveryModesProcessor {
 				if (StringUtils.hasText(e.getId())) {
 					log.info(
 							"entityId is present so going to see if it is present in db if yes then we have to update it");
-					courseDeliveryMode = existingCourseDeliveryModesMap.get(e.getId());
+				//	courseDeliveryMode = existingCourseDeliveryModesMap.get(e.getId());
 					if (ObjectUtils.isEmpty(courseDeliveryMode)) {
 						log.error("invalid course delivery mode id : {}", e.getId());
 						throw new RuntimeNotFoundException("invalid course delivery mode id : " + e.getId());
@@ -118,7 +116,7 @@ public class CourseDeliveryModesProcessor {
 				} else {
 					courseDeliveryModes.add(courseDeliveryMode);
 				}
-				courseDeliveryMode.setCourse(course);
+			
 				log.info("Adding additional infos like deliveryType, studyMode etc");
 				courseDeliveryMode.setDeliveryType(e.getDeliveryType());
 				courseDeliveryMode.setStudyMode(e.getStudyMode());
@@ -126,8 +124,6 @@ public class CourseDeliveryModesProcessor {
 				courseDeliveryMode.setDurationTime(e.getDurationTime());
 				courseDeliveryMode.setAccessibility(e.getAccessibility());
 				courseDeliveryMode.setIsGovernmentEligible(e.getIsGovernmentEligible());
-				courseDeliveryMode.setCourse(course);
-				courseDeliveryMode.setAuditFields(userId);
 				saveUpdateCourseFees(userId, courseDeliveryMode, e.getFees());
 				saveUpdateCourseDeliveryModeFunding(userId, courseDeliveryMode, e.getFundings());
 
@@ -184,13 +180,13 @@ public class CourseDeliveryModesProcessor {
 		if (courseDao.existsById(courseId)) {
 			Course course = courseDao.get(courseId);
 			List<CourseDeliveryModes> courseDeliveryModes = course.getCourseDeliveryModes();
-			if (courseDeliveryModes.stream().map(CourseDeliveryModes::getId).collect(Collectors.toSet())
-					.containsAll(deliveryModeIds)) {
-				if (courseDeliveryModes.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
-					log.error("no access to delete one more course_delivery_modes");
-					throw new ForbiddenException("no access to delete one more course_delivery_modes");
-				}
-				courseDeliveryModes.removeIf(e -> Utils.contains(deliveryModeIds, e.getId()));
+//			if (courseDeliveryModes.stream().map(CourseDeliveryModes::getId).collect(Collectors.toSet())
+//					.containsAll(deliveryModeIds)) {
+//				if (courseDeliveryModes.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
+//					log.error("no access to delete one more course_delivery_modes");
+//					throw new ForbiddenException("no access to delete one more course_delivery_modes");
+//				}
+				//courseDeliveryModes.removeIf(e -> Utils.contains(deliveryModeIds, e.getId()));
 				List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 				coursesToBeSavedOrUpdated.add(course);
 				if (!CollectionUtils.isEmpty(linkedCourseIds)) {
@@ -210,17 +206,16 @@ public class CourseDeliveryModesProcessor {
 				log.error("one or more invalid course_delivery_mode_ids");
 				throw new NotFoundException("one or more invalid course_delivery_mode_ids");
 			}
-		} else if (courseDao.documentExistsById(courseId)) {
-			CourseRequest course = courseDao.findDocumentById(courseId).get();
-			if (!CollectionUtils.isEmpty(course.getCourseDeliveryModes())) {
-				course.getCourseDeliveryModes().removeIf(e -> Utils.contains(deliveryModeIds, e.getId()));
-				courseDao.saveDocument(course);
-			}
-		} else {
-			log.error(messageTranslator.toLocale("course.id.invalid", Locale.US));
-			throw new ValidationException(messageTranslator.toLocale("course.id.invalid"));
-		}
+//		 else if (courseDao.documentExistsById(courseId)) {
+//			CourseRequest course = courseDao.findDocumentById(courseId).get();
+//			if (!CollectionUtils.isEmpty(course.getCourseDeliveryModes())) {
+//				course.getCourseDeliveryModes().removeIf(e -> Utils.contains(deliveryModeIds, e.getId()));
+//				courseDao.saveDocument(course);
 	}
+//		 else {
+//			log.error(messageTranslator.toLocale("course.id.invalid", Locale.US));
+//			throw new ValidationException(messageTranslator.toLocale("course.id.invalid"));
+//		}
 
 	private List<Course> replicateCourseDeliveryModes(String userId, List<String> courseIds,
 			List<CourseDeliveryModesDto> courseDeliveryModeDtos) throws ValidationException, NotFoundException {
@@ -242,18 +237,18 @@ public class CourseDeliveryModesProcessor {
 						if (existingCourseDeliveryModeOp.isPresent()) {
 							courseDeliveryMode = existingCourseDeliveryModeOp.get();
 						}
-						courseDeliveryMode.setCourse(course);
+				
 						log.info("Adding additional infos like deliveryType, studyMode etc");
 
 						courseDeliveryMode.setDeliveryType(dto.getDeliveryType());
 						courseDeliveryMode.setStudyMode(dto.getStudyMode());
 						courseDeliveryMode.setDuration(dto.getDuration());
 						courseDeliveryMode.setDurationTime(dto.getDurationTime());
-						courseDeliveryMode.setCourse(course);
-						if (!StringUtils.hasText(courseDeliveryMode.getId())) {
-							courseDeliveryModes.add(courseDeliveryMode);
-						}
-						courseDeliveryMode.setAuditFields(userId);
+					
+//						if (!StringUtils.hasText(courseDeliveryMode.getId())) {
+//							courseDeliveryModes.add(courseDeliveryMode);
+//						}
+//						
 					});
 				}
 			});
@@ -278,16 +273,16 @@ public class CourseDeliveryModesProcessor {
 
 			List<String> updateRequestIds = feesDtos.stream().filter(e -> StringUtils.hasText(e.getId()))
 					.map(CourseFeesDto::getId).collect(Collectors.toList());
-			fees.removeIf(e -> !Utils.contains(updateRequestIds, e.getId()));
+		//	fees.removeIf(e -> !Utils.contains(updateRequestIds, e.getId()));
 
 			log.info("preparing map of exsiting course fees");
-			Map<String, CourseFees> existingFeesMap = fees.stream().filter(e -> StringUtils.hasText(e.getId()))
-					.collect(Collectors.toMap(CourseFees::getId, e -> e));
+//			Map<String, CourseFees> existingFeesMap = fees.stream().filter(e -> StringUtils.hasText(e.getId()))
+//					.collect(Collectors.toMap(CourseFees::getId, e -> e));
 			feesDtos.stream().forEach(dto -> {
 				CourseFees model = new CourseFees();
 				if (StringUtils.hasText(dto.getId())) {
 					log.info("id is present so going to see if it is present in db if yes then we have to update it");
-					model = existingFeesMap.get(dto.getId());
+				//	model = existingFeesMap.get(dto.getId());
 					if (ObjectUtils.isEmpty(model)) {
 						log.error("invalid course fees id : {}", dto.getId());
 						throw new RuntimeNotFoundException("invalid course fees id : " + dto.getId());
@@ -298,8 +293,7 @@ public class CourseDeliveryModesProcessor {
 				model.setName(dto.getName());
 				model.setCurrency(dto.getCurrency());
 				model.setAmount(dto.getAmount());
-				model.setCourseDeliveryMode(deliveryMode);
-				model.setAuditFields(userId);
+			
 			});
 
 		} else {
@@ -314,18 +308,15 @@ public class CourseDeliveryModesProcessor {
 
 			List<String> updateRequestIds = deliveryModeFundingDtos.stream().filter(e -> StringUtils.hasText(e.getId()))
 					.map(CourseDeliveryModeFundingDto::getId).collect(Collectors.toList());
-			fundings.removeIf(e -> !Utils.contains(updateRequestIds, e.getId()));
+		
 
 			log.info("preparing map of exsiting course fundings");
-			Map<String, CourseDeliveryModeFunding> existingFundingMap = fundings.stream()
-					.filter(e -> StringUtils.hasText(e.getId()))
-					.collect(Collectors.toMap(CourseDeliveryModeFunding::getId, e -> e));
-
+			
 			deliveryModeFundingDtos.stream().forEach(dto -> {
 				CourseDeliveryModeFunding model = new CourseDeliveryModeFunding();
 				if (StringUtils.hasText(dto.getId())) {
 					log.info("id is present so going to see if it is present in db if yes then we have to update it");
-					model = existingFundingMap.get(dto.getId());
+				//	model = existingFundingMap.get(dto.getId());
 					if (ObjectUtils.isEmpty(model)) {
 						log.error("invalid course funding id : {}", dto.getId());
 						throw new RuntimeNotFoundException("invalid course funding id : " + dto.getId());
@@ -337,8 +328,7 @@ public class CourseDeliveryModesProcessor {
 				model.setFundingNameId(dto.getFundingNameId());
 				model.setCurrency(dto.getCurrency());
 				model.setAmount(dto.getAmount());
-				model.setCourseDeliveryMode(deliveryMode);
-				model.setAuditFields(userId);
+				
 			});
 
 		} else {

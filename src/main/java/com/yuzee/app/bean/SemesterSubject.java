@@ -8,11 +8,13 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor
 /*
  * @Table(name = "semeter_subject", uniqueConstraints
  * = @UniqueConstraint(columnNames = { "name", "course_semester_id" }, name =
@@ -24,17 +26,18 @@ import lombok.ToString;
 public class SemesterSubject implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	@Id
-	private String id;
+	
 	@EqualsAndHashCode.Include
 	private String name;
 
 	@EqualsAndHashCode.Include
 	private String description;
 
-	private String auditFields;
-	@DBRef
-	private Course course;
-	@DBRef
-	private CourseSemester courseSemester;
+	public SemesterSubject(String name, String description) {
+		super();
+		this.name = name;
+		this.description = description;
+	}
+	
+
 }

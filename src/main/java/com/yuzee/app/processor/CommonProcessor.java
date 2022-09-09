@@ -80,8 +80,8 @@ public class CommonProcessor {
 	}
 
 	public boolean checkIfPriceChanged(List<CourseDeliveryModes> beforeUpdate, List<CourseDeliveryModes> afterUpdate) {
-		Map<String, CourseDeliveryModes> afterUpdateMap = afterUpdate.stream()
-				.collect(Collectors.toMap(CourseDeliveryModes::getId, e -> e));
+//		Map<String, CourseDeliveryModes> afterUpdateMap = afterUpdate.stream()
+//				.collect(Collectors.toMap(CourseDeliveryModes::getId, e -> e));
 //		return beforeUpdate.stream().anyMatch(e -> afterUpdateMap.containsKey(e.getId()) && 
 //				!(e.getDomesticFee().equals(afterUpdateMap.get(e.getId()).getDomesticFee()) 
 //						&& e.getInternationalFee().equals(afterUpdateMap.get(e.getId()).getInternationalFee())));

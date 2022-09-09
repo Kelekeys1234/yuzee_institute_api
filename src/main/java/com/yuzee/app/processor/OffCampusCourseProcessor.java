@@ -1,6 +1,7 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.yuzee.app.bean.Course;
-import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.OffCampusCourse;
 import com.yuzee.app.dao.OffCampusCourseDao;
 import com.yuzee.app.dto.CourseResponseDto;
@@ -99,17 +99,18 @@ public class OffCampusCourseProcessor {
 		courseResponse.setWebsite(course.getWebsite());
 		courseResponse.setEmail(course.getEmail());
 
-		List<CourseLanguage> courseLanguages = new ArrayList<>();
+		List<String>courseLanguages=course.getCourseLanguages();
 //		courseLanguages.add(course.getCourseLanguages());
 		if (!CollectionUtils.isEmpty(courseLanguages)) {
 			log.info("courseLanguage is fetched from DB, hence adding englishEligibilities in response");
 			courseResponse.setLanguage(
-					courseLanguages.stream().map(CourseLanguage::getLanguage).collect(Collectors.toList()));
-		}
+					course.getCourseLanguages());
+		
 
 		if (course.getOffCampusCourse() != null) {
 			courseResponse.setOffCampusCourse(modelMapper.map(course.getOffCampusCourse(), OffCampusCourseDto.class));
 		}
 		return courseResponse;
 	}
-}
+		return courseResponse;
+}}

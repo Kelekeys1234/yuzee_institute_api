@@ -23,12 +23,19 @@ import javax.persistence.UniqueConstraint;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
+import com.yuzee.common.lib.dto.ValidList;
+import com.yuzee.common.lib.dto.institute.SemesterSubjectDto;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 /*@Table(name = "course_semester", uniqueConstraints = @UniqueConstraint(columnNames = { "type", "name",
 		"course_id" }, name = "UK_SEMESTER_TYPE_NA_CI"), indexes = {
@@ -36,7 +43,8 @@ import lombok.ToString;
 public class CourseSemester implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	@EqualsAndHashCode.Include
+    private String courseSemesterId;
 	@EqualsAndHashCode.Include
 	private String type;
 

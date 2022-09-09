@@ -103,17 +103,17 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 		log.info("Adding englist eligibility into course");
 		if (courseDto.getIeltsOverall() != null) {
 			log.info("Associating IELTS score with course");
-			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility("IELTS",
+			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility(courseDto.getId(),"IELTS",
 					courseDto.getIeltsReading(), courseDto.getIeltsWriting(), courseDto.getIeltsSpeaking(),
-					courseDto.getIeltsListening(), courseDto.getIeltsOverall(), true, course, "APIS", "AUTO");
+					courseDto.getIeltsListening(), courseDto.getIeltsOverall(), true,course);
 			course.getCourseEnglishEligibilities().add(courseEnglishEligibility);
 		}
 
 		if (courseDto.getToflOverall() != null) {
 			log.info("Associating TOEFL score with course");
-			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility("TOEFL",
-					courseDto.getToflReading(), courseDto.getToflWriting(), courseDto.getToflSpeaking(),
-					courseDto.getToflListening(), courseDto.getToflOverall(), true, course, "APIS", "AUTO");
+			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility(courseDto.getId(),"IELTS",
+					courseDto.getIeltsReading(), courseDto.getIeltsWriting(), courseDto.getIeltsSpeaking(),
+					courseDto.getIeltsListening(), courseDto.getIeltsOverall(), true,course);
 			course.getCourseEnglishEligibilities().add(courseEnglishEligibility);
 		}
 
@@ -295,22 +295,7 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 		});
 	}
 
-	private void populateCoursePrerequisiteCertificate(CourseCsvDto courseDto, Course course) {
-		if (!ObjectUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate01())
-				&& !!ObjectUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate01())) {
-			course.getCoursePrerequisites().add(courseDto.getCoursePreRequisiteCertificate01());
-		}
-
-		if (!ObjectUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate02())
-				&& !!ObjectUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate02())) {
-			course.getCoursePrerequisites().add(courseDto.getCoursePreRequisiteCertificate02());
-		}
-
-		if (!ObjectUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate03())
-				&& !!ObjectUtils.isEmpty(courseDto.getCoursePreRequisiteCertificate03())) {
-			course.getCoursePrerequisites().add(courseDto.getCoursePreRequisiteCertificate03());
-		}
-	}
+	
 
 	private void populateUsdPrices(Course course, CourseCsvDto courseDto) {
 		log.info("fetching currency rate based on currencyCode {}", courseDto.getCurrency());

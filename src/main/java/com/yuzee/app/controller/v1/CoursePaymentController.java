@@ -30,11 +30,11 @@ public class CoursePaymentController implements CoursePaymentInterface {
 	@Autowired
 	private MessageTranslator messageTranslator;
 	@Override
-	public ResponseEntity<?> saveUpdateCoursePayment(String userId, String courseId,
+	public ResponseEntity<?> saveCoursePayment(String userId, String courseId,
 			@Valid CoursePaymentDto coursePaymentDto)
 			throws ValidationException, NotFoundException, ForbiddenException {
 		log.info("inside CoursePaymentController.saveUpdateCoursePayment method");
-		coursePaymentProcessor.saveUpdateCoursePayment(userId, courseId, coursePaymentDto);
+		coursePaymentProcessor.saveCoursePayment(userId, courseId, coursePaymentDto);
 		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course_payment.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
@@ -47,4 +47,6 @@ public class CoursePaymentController implements CoursePaymentInterface {
 		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course_payment.deleted"))
 				.setStatus(HttpStatus.OK).create();
 	}
+
+	
 }
