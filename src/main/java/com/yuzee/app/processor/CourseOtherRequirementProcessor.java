@@ -94,6 +94,7 @@ public class CourseOtherRequirementProcessor {
 						throw new ValidationException(messageTranslator.toLocale("vaccination.ids.invalid"));
 					}
 					vaccine.setVaccinationIds(vaccinationIds);
+					System.out.println("this is vaccinationID"+vaccinationIds);;
 				} else if (!CollectionUtils.isEmpty(vaccine.getVaccinationIds())) {
 					vaccine.getVaccinationIds().clear();
 				}
@@ -110,40 +111,57 @@ public class CourseOtherRequirementProcessor {
 			if (!ObjectUtils.isEmpty(courseOtherRequirementDto.getWorkExperience())) {
 				if (ObjectUtils.isEmpty(workExperience)) {
 					workExperience = new CourseWorkExperienceRequirement();
+					workExperience.setDescription(courseOtherRequirementDto.getWorkExperience().getDescription());
+					workExperience.setDuration(courseOtherRequirementDto.getWorkExperience().getDuration());
+					workExperience.setDurationType(courseOtherRequirementDto.getWorkExperience().getDurationType());
+					workExperience.setFields(courseOtherRequirementDto.getWorkExperience().getFields());
+					course.setCourseWorkExperienceRequirement(workExperience);
+				}else {
+					workExperience.setDescription(courseOtherRequirementDto.getWorkExperience().getDescription());
+					workExperience.setDuration(courseOtherRequirementDto.getWorkExperience().getDuration());
+					workExperience.setDurationType(courseOtherRequirementDto.getWorkExperience().getDurationType());
+					workExperience.setFields(courseOtherRequirementDto.getWorkExperience().getFields());
 				}
+					
+                      
+				
 //				workExperience.setAuditFields(userId);
 //				workExperience.setCourse(course);
-				workExperience.setDescription(courseOtherRequirementDto.getWorkExperience().getDescription());
-				workExperience.setDuration(courseOtherRequirementDto.getWorkExperience().getDuration());
-				workExperience.setDurationType(courseOtherRequirementDto.getWorkExperience().getDurationType());
-				workExperience.setFields(courseOtherRequirementDto.getWorkExperience().getFields());
-				course.setCourseWorkExperienceRequirement(workExperience);
 			} else {
-				if (!ObjectUtils.isEmpty(workExperience)) {
+				
 //					workExperienceDao.deleteById(workExperience.getId());
-					;
-				}
-				course.setCourseWorkExperienceRequirement(null);
+					course.setCourseWorkExperienceRequirement(null);
+
+				
 			}
 
 			CourseWorkPlacementRequirement workPlacement = course.getCourseWorkPlacementRequirement();
 			if (!ObjectUtils.isEmpty(courseOtherRequirementDto.getWorkPlacement())) {
 				if (ObjectUtils.isEmpty(workPlacement)) {
 					workPlacement = new CourseWorkPlacementRequirement();
+					workPlacement.setDescription(courseOtherRequirementDto.getWorkPlacement().getDescription());
+					workPlacement.setDuration(courseOtherRequirementDto.getWorkPlacement().getDuration());
+					workPlacement.setDurationType(courseOtherRequirementDto.getWorkPlacement().getDurationType());
+					workPlacement.setFields(courseOtherRequirementDto.getWorkPlacement().getFields());
+					course.setCourseWorkPlacementRequirement(workPlacement);
+
+				}else {
+					workPlacement.setDescription(courseOtherRequirementDto.getWorkPlacement().getDescription());
+					workPlacement.setDuration(courseOtherRequirementDto.getWorkPlacement().getDuration());
+					workPlacement.setDurationType(courseOtherRequirementDto.getWorkPlacement().getDurationType());
+					workPlacement.setFields(courseOtherRequirementDto.getWorkPlacement().getFields());
+
 				}
+			
+
 //				workPlacement.setAuditFields(userId);
 //				workPlacement.setCourse(course);
-				workPlacement.setDescription(courseOtherRequirementDto.getWorkPlacement().getDescription());
-				workPlacement.setDuration(courseOtherRequirementDto.getWorkPlacement().getDuration());
-				workPlacement.setDurationType(courseOtherRequirementDto.getWorkPlacement().getDurationType());
-				workPlacement.setFields(courseOtherRequirementDto.getWorkPlacement().getFields());
-				course.setCourseWorkPlacementRequirement(workPlacement);
 			} else {
-				if (!ObjectUtils.isEmpty(workPlacement)) {
+				
 //					workPlacementDao.deleteById(workPlacement.getId());
-					;
-				}
-				course.setCourseWorkPlacementRequirement(null);
+					course.setCourseWorkPlacementRequirement(null);
+
+				
 			}
 
 //			if (!ObjectUtils.isEmpty(courseOtherRequirementDto.getResearchProposal())) {
@@ -241,13 +259,13 @@ public class CourseOtherRequirementProcessor {
 				otherRequirementDto.setWorkPlacement(dto);
 			}
 
-			if (!ObjectUtils.isEmpty(course.getCourseResearchProposalRequirement())) {
+//			if (!ObjectUtils.isEmpty(course.getCourseResearchProposalRequirement())) {
 //				CourseResearchProposalRequirement model = course.getCourseResearchProposalRequirement();
-				CourseResearchProposalRequirementDto dto = new CourseResearchProposalRequirementDto();
+//				CourseResearchProposalRequirementDto dto = new CourseResearchProposalRequirementDto();
 //				dto.setId(model.getId());
 //				dto.setDescription(model.getDescription());
-				otherRequirementDto.setResearchProposal(dto);
-			}
+//				otherRequirementDto.setResearchProposal(dto);
+//			}
 		} else {
 			log.error("invalid course id: {}", courseId);
 			throw new NotFoundException("invalid course id: " + courseId);
