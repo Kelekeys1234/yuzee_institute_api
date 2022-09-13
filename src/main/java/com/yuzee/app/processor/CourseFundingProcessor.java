@@ -97,6 +97,7 @@ public class CourseFundingProcessor {
 			
 			courseFundingDto.stream().forEach(e->{
 				 fundingId.addAll(e.getFundingNameId().stream().collect(Collectors.toList()));
+
 			 });
 				List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 				coursesToBeSavedOrUpdated.add(course);

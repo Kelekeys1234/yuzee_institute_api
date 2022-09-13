@@ -32,16 +32,16 @@ public class CourseFundingController implements CourseFundingInterface {
 	private MessageTranslator messageTranslator;
 	@Override
 	public ResponseEntity<?> addFundingToAllInstituteCourses(String userId, String instituteId,
-			CourseFundingDto courseFundingDto) throws ValidationException, NotFoundException, InvokeException {
+			 List<String> fundingNameId) throws ValidationException, NotFoundException, InvokeException {
 		log.info("inside CourseFundingController.addFundingToAllInstituteCourses");
 		courseFundingProcessor.addFundingToAllInstituteCourses(userId, instituteId,
-				courseFundingDto.getFundingNameId());
+				fundingNameId);
 		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("course_funding.all.added"))
 				.setStatus(HttpStatus.OK).create();
 	}
 
 	@Override
-	public ResponseEntity<?> saveAll(String userId, String courseId, @Valid CourseFundingRequestWrapper request)
+	public ResponseEntity<?> saveAll(String userId, String courseId,  CourseFundingRequestWrapper request)
 			throws ValidationException, NotFoundException, InvokeException {
 		log.info("inside CourseFundingController.saveAll");
 		courseFundingProcessor.saveCourseFundings(userId, courseId, request);
