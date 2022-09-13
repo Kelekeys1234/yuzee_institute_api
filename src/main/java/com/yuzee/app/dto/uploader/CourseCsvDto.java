@@ -1,6 +1,7 @@
 package com.yuzee.app.dto.uploader;
 
 import java.io.Serializable;
+
 import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
@@ -8,7 +9,6 @@ import javax.validation.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.CoursePrerequisite;
 
 import lombok.Data;
@@ -44,7 +44,7 @@ public class CourseCsvDto implements Serializable {
 
 	@JsonProperty("language")
 	@DBRef
-	private CourseLanguage language;
+	private String language;
 
 	@JsonProperty("abbreviation")
 	private String abbreviation;

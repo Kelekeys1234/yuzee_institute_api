@@ -12,8 +12,6 @@ import lombok.Data;
 @Data
 public class CourseWorkPlacementRequirementDto {
 
-	@JsonProperty("id")
-	private String id;
 
 	@NotEmpty
 	@JsonProperty("description")

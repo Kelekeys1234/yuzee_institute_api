@@ -1,6 +1,7 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -37,6 +38,7 @@ import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.CommonHandler;
 import com.yuzee.local.config.MessageTranslator;
+
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -98,10 +100,7 @@ public class CourseOtherRequirementProcessor {
 				}
 				course.setCourseVaccineRequirement(vaccine);
 			} else {
-				if (!ObjectUtils.isEmpty(vaccine)) {
-					
-					;
-				}
+			
 				course.setCourseVaccineRequirement(null);
 			}
 
@@ -116,10 +115,7 @@ public class CourseOtherRequirementProcessor {
 				workExperience.setFields(courseOtherRequirementDto.getWorkExperience().getFields());
 				course.setCourseWorkExperienceRequirement(workExperience);
 			} else {
-				if (!ObjectUtils.isEmpty(workExperience)) {
-			//		workExperienceDao.deleteById(workExperience.getId());
-					;
-				}
+		
 				course.setCourseWorkExperienceRequirement(null);
 			}
 
@@ -135,10 +131,7 @@ public class CourseOtherRequirementProcessor {
 				workPlacement.setFields(courseOtherRequirementDto.getWorkPlacement().getFields());
 				course.setCourseWorkPlacementRequirement(workPlacement);
 			} else {
-				if (!ObjectUtils.isEmpty(workPlacement)) {
-					//workPlacementDao.deleteById(workPlacement.getId());
-					;
-				}
+				
 				course.setCourseWorkPlacementRequirement(null);
 			}
 

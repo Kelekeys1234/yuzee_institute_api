@@ -103,24 +103,24 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 		log.info("Adding englist eligibility into course");
 		if (courseDto.getIeltsOverall() != null) {
 			log.info("Associating IELTS score with course");
-			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility(courseDto.getId(),"IELTS",
+			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility("IELTS",
 					courseDto.getIeltsReading(), courseDto.getIeltsWriting(), courseDto.getIeltsSpeaking(),
-					courseDto.getIeltsListening(), courseDto.getIeltsOverall(), true,course);
+					courseDto.getIeltsListening(), courseDto.getIeltsOverall(), true);
 			course.getCourseEnglishEligibilities().add(courseEnglishEligibility);
 		}
 
 		if (courseDto.getToflOverall() != null) {
 			log.info("Associating TOEFL score with course");
-			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility(courseDto.getId(),"IELTS",
+			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility("IELTS",
 					courseDto.getIeltsReading(), courseDto.getIeltsWriting(), courseDto.getIeltsSpeaking(),
-					courseDto.getIeltsListening(), courseDto.getIeltsOverall(), true,course);
+					courseDto.getIeltsListening(), courseDto.getIeltsOverall(), true);
 			course.getCourseEnglishEligibilities().add(courseEnglishEligibility);
 		}
 
-//		if (!org.springframework.util.ObjectUtils.isEmpty(course.getInstitute())) {
-//			log.info("Institute not null saving world ranking");
-//			saveWorldRanking(course, courseDto.getWorldRanking());
-//		}
+		if (!org.springframework.util.ObjectUtils.isEmpty(course.getInstitute())) {
+			log.info("Institute not null saving world ranking");
+			saveWorldRanking(course, courseDto.getWorldRanking());
+		}
 
 		if (!ObjectUtils.isEmpty(courseDto.getLanguage())) {
 			log.info("Saving course language into DB");
@@ -146,10 +146,10 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 	}
 
 	private void saveWorldRanking(final Course course, final Integer worldRanking) {
-//		if (course.getInstitute().getWorldRanking() == null) {
-//			log.info("World Ranking {} for institute id {}: ", worldRanking, course.getInstitute().getId());
-//			course.getInstitute().setWorldRanking(worldRanking);
-//		}
+		if (course.getInstitute().getWorldRanking() == null) {
+			log.info("World Ranking {} for institute id {}: ", worldRanking, course.getInstitute().getId());
+			course.getInstitute().setWorldRanking(worldRanking);
+		}
 	}
 
 	private String getContent(final CourseCsvDto courseDto) {

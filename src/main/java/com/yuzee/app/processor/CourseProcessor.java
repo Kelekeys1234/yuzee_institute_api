@@ -562,13 +562,11 @@ public class CourseProcessor {
 					// existingId = courseEnglishEligibility.getId();
 				}
 				BeanUtils.copyProperties(e, courseEnglishEligibility);
-				courseEnglishEligibility.setId(existingId);
-				courseEnglishEligibility.setCourse(course);
-				if (StringUtils.isEmpty(courseEnglishEligibility.getId())) {
+				
 					dbEnglishEligibilities.add(courseEnglishEligibility);
 					course.setCourseEnglishEligibilities(dbEnglishEligibilities);
 //					courseDao.addUpdateCourse(course);
-				}
+			
 				
 			});
 

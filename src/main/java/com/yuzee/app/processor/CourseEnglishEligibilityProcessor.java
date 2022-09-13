@@ -22,7 +22,6 @@ import org.springframework.util.ObjectUtils;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.dao.CourseDao;
-import com.yuzee.app.dao.CourseEnglishEligibilityDao;
 import com.yuzee.app.dto.CourseEnglishEligibilityRequestWrapper;
 import com.yuzee.common.lib.dto.institute.CourseEnglishEligibilityDto;
 import com.yuzee.common.lib.exception.ForbiddenException;
@@ -41,8 +40,6 @@ public class CourseEnglishEligibilityProcessor {
 	@Autowired
 	CourseDao courseDao;
 
-	@Autowired
-	private CourseEnglishEligibilityDao courseEnglishEligibilityDAO;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -60,9 +57,9 @@ public class CourseEnglishEligibilityProcessor {
 	public List<CourseEnglishEligibilityDto> getAllEnglishEligibilityByCourse(String courseId) {
 		log.debug("Inside getAllEnglishEligibilityByCourse() method");
 		List<CourseEnglishEligibilityDto> courseEnglishEligibilityResponse = new ArrayList<>();
+		Course course = courseDao.get(courseId);
 		log.info("Fetching englishEligibilties from DB for courseId = " + courseId);
-		List<CourseEnglishEligibility> courseEnglishEligibilitiesFromDB = courseEnglishEligibilityDAO
-				.getAllEnglishEligibilityByCourse(courseId);
+		List<CourseEnglishEligibility> courseEnglishEligibilitiesFromDB = course.getCourseEnglishEligibilities();
 		if (!CollectionUtils.isEmpty(courseEnglishEligibilitiesFromDB)) {
 			log.info("English Eligibilities coming from DB, start iterating data");
 			courseEnglishEligibilitiesFromDB.stream().forEach(courseEnglishEligibility -> {
@@ -89,32 +86,22 @@ public class CourseEnglishEligibilityProcessor {
 					}).collect(Collectors.toList());
 
 			log.info("preparing map of exsiting course english eligibilities");
-			Map<String, CourseEnglishEligibility> existingCourseEnglishEligibilitysMap = course
-					.getCourseEnglishEligibilities().stream()
-					.collect(Collectors.toMap(CourseEnglishEligibility::getId, e -> e));
+//			Map<String, CourseEnglishEligibility> existingCourseEnglishEligibilitysMap = course
+//					.getCourseEnglishEligibilities().stream()
+//					.collect(Collectors.toMap(CourseEnglishEligibility::getId, e -> e));
 
 			List<CourseEnglishEligibility> courseEnglishEligibilities = course.getCourseEnglishEligibilities();
 
 			log.info("loop the requested list to collect the entitities to be saved/updated");
 			courseEnglishEligibilityDtos.stream().forEach(e -> {
 				CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
-				if (!StringUtils.isEmpty(e.getId())) {
-					log.info(
-							"entityId is present so going to see if it is present in db if yes then we have to update it");
-					courseEnglishEligibility = existingCourseEnglishEligibilitysMap.get(e.getId());
-					if (courseEnglishEligibility == null) {
-						log.error(messageTranslator.toLocale("english_eligibility.id.invalid", e.getId(), Locale.US));
-						throw new RuntimeNotFoundException(
-								messageTranslator.toLocale("english_eligibility.id.invalid", e.getId()));
-					}
-				}
+				
 				BeanUtils.copyProperties(e, courseEnglishEligibility);
-				courseEnglishEligibility.setCourse(course);
-				courseEnglishEligibility.setAuditFields(userId);
-				if (StringUtils.isEmpty(e.getId())) {
-					courseEnglishEligibilities.add(courseEnglishEligibility);
-				}
+				
+				courseEnglishEligibilities.add(courseEnglishEligibility);
+
 			});
+			courseEnglishEligibilities.removeIf(e -> !contains(courseEnglishEligibilityDtos, e));
 
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
@@ -140,27 +127,20 @@ public class CourseEnglishEligibilityProcessor {
 	@Transactional
 	public void deleteByCourseEnglishEligibilityIds(String userId, String courseId, List<String> englishEligibilityIds,
 			List<String> linkedCourseIds) throws NotFoundException, ValidationException {
-		log.info("inside CourseEnglishEligibilityDao.deleteByCourseEnglishEligibilityIds");
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
-		List<CourseEnglishEligibility> courseEnglishEligibilities = course.getCourseEnglishEligibilities();
-		if (courseEnglishEligibilities.stream().map(CourseEnglishEligibility::getId).collect(Collectors.toSet())
-				.containsAll(englishEligibilityIds)) {
-			if (courseEnglishEligibilities.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
-				log.error(messageTranslator.toLocale("english_eligibility.delete.no.access", Locale.US));
-				throw new ForbiddenException(messageTranslator.toLocale("english_eligibility.delete.no.access"));
-			}
-			courseEnglishEligibilities.removeIf(e -> Utils.contains(englishEligibilityIds, e.getId()));
-			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
-			coursesToBeSavedOrUpdated.add(course);
-			if (!CollectionUtils.isEmpty(linkedCourseIds)) {
-				List<CourseEnglishEligibilityDto> dtosToReplicate = courseEnglishEligibilities.stream()
-						.map(e -> modelMapper.map(e, CourseEnglishEligibilityDto.class)).collect(Collectors.toList());
-				coursesToBeSavedOrUpdated
-						.addAll(replicateCourseEnglishEligibilities(userId, linkedCourseIds, dtosToReplicate));
-			}
-			courseDao.saveAll(coursesToBeSavedOrUpdated);
+		if (!ObjectUtils.isEmpty(course)) {
 
-			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+		List<CourseEnglishEligibility> courseEnglishEligibilities = course.getCourseEnglishEligibilities();
+		
+		if(!courseEnglishEligibilities.isEmpty()) {
+			courseEnglishEligibilities.clear();
+		}
+		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+		coursesToBeSavedOrUpdated.add(course);
+		courseDao.saveAll(coursesToBeSavedOrUpdated);
+
+		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+		
 
 			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
@@ -189,15 +169,12 @@ public class CourseEnglishEligibilityProcessor {
 						String existingId = null;
 						if (existingCousrseEnglishEligibilityOp.isPresent()) {
 							courseEnglishEligibility = existingCousrseEnglishEligibilityOp.get();
-							existingId = courseEnglishEligibility.getId();
+							existingId = courseEnglishEligibility.getEnglishType();
 						}
 						BeanUtils.copyProperties(dto, courseEnglishEligibility);
-						courseEnglishEligibility.setId(existingId);
-						courseEnglishEligibility.setCourse(course);
-						if (StringUtils.isEmpty(courseEnglishEligibility.getId())) {
-							courseEnglishEligibilities.add(courseEnglishEligibility);
-						}
-						courseEnglishEligibility.setAuditFields(userId);
+//						if (StringUtils.isEmpty(courseEnglishEligibility.getId())) {
+//							courseEnglishEligibilities.add(courseEnglishEligibility);
+//						}
 					});
 				}
 			});

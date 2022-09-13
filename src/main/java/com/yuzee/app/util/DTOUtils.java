@@ -1,13 +1,13 @@
 package com.yuzee.app.util;
 
 import java.util.List;
+
 import java.util.stream.Collectors;
 
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 
 import com.yuzee.app.bean.Course;
-import com.yuzee.app.bean.CourseLanguage;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
@@ -31,12 +31,12 @@ public class DTOUtils {
 		log.info("inside DTOUtils.convertToCourseDTOElasticSearchEntity");
 		ModelMapper modelMapper = new ModelMapper();
 
-		Converter<List<CourseLanguage>, List<String>> courseLanguageConverter = ctx -> ctx.getSource() == null ? null
-				: ctx.getSource().stream().map(courseLanguage -> courseLanguage.getLanguage())
-						.collect(Collectors.toList());
+//		Converter<List<String>, List<String>> courseLanguageConverter = ctx -> ctx.getSource() == null ? null
+//			: ctx.getSource().stream().map(courseLanguage -> courseLanguage.getLanguage())
+//						.collect(Collectors.toList());
 
-		modelMapper.typeMap(Course.class, CourseSyncDTO.class).addMappings(mapper -> mapper
-				.using(courseLanguageConverter).map(Course::getCourseLanguages, CourseSyncDTO::setLanguages));
+//		modelMapper.typeMap(Course.class, CourseSyncDTO.class).addMappings(mapper -> mapper
+//				.using(courseLanguageConverter).map(Course::getCourseLanguages, CourseSyncDTO::setLanguages));
 
 		CourseSyncDTO courseElasticDto = modelMapper.map(course, CourseSyncDTO.class);
 

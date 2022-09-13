@@ -9,9 +9,7 @@ import lombok.Data;
 @Data
 public class CourseResearchProposalRequirementDto {
 
-	@JsonProperty("id")
-	private String id;
-
+	
 	@NotEmpty
 	@JsonProperty("description")
 	private String description;

@@ -13,8 +13,6 @@ import lombok.Data;
 @Data
 public class CourseVaccineRequirementDto {
 
-	@JsonProperty("id")
-	private String id;
 
 	@NotEmpty
 	@JsonProperty("description")
