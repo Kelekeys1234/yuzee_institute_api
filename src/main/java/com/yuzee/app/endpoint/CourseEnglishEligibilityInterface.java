@@ -29,9 +29,9 @@ public interface CourseEnglishEligibilityInterface {
 			throws ValidationException, NotFoundException;
 
 	@DeleteMapping
-	public ResponseEntity<?> deleteByCourseEnglishEligibilityIds(
+		    public ResponseEntity<?> deleteByCourseId(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@RequestParam(value = "course_english_eligibility_ids", required = true) @NotEmpty final List<String> courseEnglishEligibilityIds,
+			@RequestParam(value = "course_english_eligibility_ids", required = false) @NotEmpty final List<String> courseEnglishEligibilityIds,
 			@RequestParam(value = "linked_course_ids", required = false) final List<String> linkedCourseIds)
 			throws ValidationException, NotFoundException, ForbiddenException;
 }

@@ -96,23 +96,16 @@ public class CourseEnglishEligibilityProcessor {
 			log.info("loop the requested list to collect the entitities to be saved/updated");
 			courseEnglishEligibilityDtos.stream().forEach(e -> {
 				CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
-				if (!StringUtils.isEmpty(e.getId())) {
-					log.info(
-							"entityId is present so going to see if it is present in db if yes then we have to update it");
-//					courseEnglishEligibility = existingCourseEnglishEligibilitysMap.get(e.getId());
-					if (courseEnglishEligibility == null) {
-						log.error(messageTranslator.toLocale("english_eligibility.id.invalid", e.getId(), Locale.US));
-						throw new RuntimeNotFoundException(
-								messageTranslator.toLocale("english_eligibility.id.invalid", e.getId()));
-					}
-				}
+				
 				BeanUtils.copyProperties(e, courseEnglishEligibility);
 //				courseEnglishEligibility.setCourse(course);
 //				courseEnglishEligibility.setAuditFields(userId);
-				if (StringUtils.isEmpty(e.getId())) {
+				
 					courseEnglishEligibilities.add(courseEnglishEligibility);
-				}
+				
 			});
+			courseEnglishEligibilities.removeIf(e -> !contains(courseEnglishEligibilityDtos, e));
+
 
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
@@ -140,31 +133,28 @@ public class CourseEnglishEligibilityProcessor {
 			List<String> linkedCourseIds) throws NotFoundException, ValidationException {
 		log.info("inside CourseEnglishEligibilityDao.deleteByCourseEnglishEligibilityIds");
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
+		if (!ObjectUtils.isEmpty(course)) {
+
 		List<CourseEnglishEligibility> courseEnglishEligibilities = course.getCourseEnglishEligibilities();
-//		if (courseEnglishEligibilities.stream().map(CourseEnglishEligibility::getId).collect(Collectors.toSet())
-//				.containsAll(englishEligibilityIds)) {
-//			if (courseEnglishEligibilities.stream().anyMatch(e -> !e.getCreatedBy().equals(userId))) {
-//				log.error(messageTranslator.toLocale("english_eligibility.delete.no.access", Locale.US));
-//				throw new ForbiddenException(messageTranslator.toLocale("english_eligibility.delete.no.access"));
-//			}
-//			courseEnglishEligibilities.removeIf(e -> Utils.contains(englishEligibilityIds, e.getId()));
-//			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
-//			coursesToBeSavedOrUpdated.add(course);
-//			if (!CollectionUtils.isEmpty(linkedCourseIds)) {
-//				List<CourseEnglishEligibilityDto> dtosToReplicate = courseEnglishEligibilities.stream()
-//						.map(e -> modelMapper.map(e, CourseEnglishEligibilityDto.class)).collect(Collectors.toList());
-//				coursesToBeSavedOrUpdated
-//						.addAll(replicateCourseEnglishEligibilities(userId, linkedCourseIds, dtosToReplicate));
-//			}
-//			courseDao.saveAll(coursesToBeSavedOrUpdated);
-//
-//			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+
+		if(!courseEnglishEligibilities.isEmpty()) {
+			courseEnglishEligibilities.clear();
+		}
+
+		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+		coursesToBeSavedOrUpdated.add(course);
+		courseDao.saveAll(coursesToBeSavedOrUpdated);
+
+		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+
+		
+		
 //
 //			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
-//		} else {
-//			log.error(messageTranslator.toLocale("english_eligibility.ids.invalid", Locale.US));
-//			throw new NotFoundException(messageTranslator.toLocale("english_eligibility.ids.invalid"));
-//		}
+		} else {
+			log.error(messageTranslator.toLocale("english_eligibility.ids.invalid", Locale.US));
+			throw new NotFoundException(messageTranslator.toLocale("english_eligibility.ids.invalid"));
+		}
 	}
 
 	private List<Course> replicateCourseEnglishEligibilities(String userId, List<String> courseIds,
@@ -184,18 +174,15 @@ public class CourseEnglishEligibilityProcessor {
 								.stream().filter(t -> dto.getEnglishType().equalsIgnoreCase(t.getEnglishType()))
 								.findAny();
 						CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
-						String existingId = null;
-						if (existingCousrseEnglishEligibilityOp.isPresent()) {
+	                       boolean flage = false;
+	                       if (existingCousrseEnglishEligibilityOp.isPresent()) {
 							courseEnglishEligibility = existingCousrseEnglishEligibilityOp.get();
-//							existingId = courseEnglishEligibility.getId();
-						}
+                            flage=true;					
+                            }
 						BeanUtils.copyProperties(dto, courseEnglishEligibility);
-//						courseEnglishEligibility.setId(existingId);
-//						courseEnglishEligibility.setCourse(course);
-//						if (StringUtils.isEmpty(courseEnglishEligibility.getId())) {
-//							courseEnglishEligibilities.add(courseEnglishEligibility);
-//						}
-//						courseEnglishEligibility.setAuditFields(userId);
+                        if (flage == false) {
+						courseEnglishEligibilities.add(courseEnglishEligibility);
+                        }
 					});
 				}
 			});
