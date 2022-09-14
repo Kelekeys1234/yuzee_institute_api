@@ -35,8 +35,8 @@ public class FacultyDaoImpl implements FacultyDao {
 	}
 
 	@Override
-	public Map<UUID, String> getFacultyNameIdMap() {
-		Map<UUID, String> facultyListMap = new HashMap<>();
+	public Map<String, String> getFacultyNameIdMap() {
+		Map<String, String> facultyListMap = new HashMap<>();
 		List<Faculty> faculties = facultyRepository.findAll();
 		faculties.stream().forEach(faculty -> {
 			facultyListMap.put(faculty.getId(), faculty.getName());

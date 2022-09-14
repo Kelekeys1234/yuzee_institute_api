@@ -59,7 +59,7 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 		log.info("Fetching all institute from db");
 		Map<String, String> instituteMap = institueDao.getAllInstituteMap();
 		log.info("Fetching all faculty from db");
-		Map<UUID, String> facultyMap = facultyDao.getFacultyNameIdMap();
+		Map<String, String> facultyMap = facultyDao.getFacultyNameIdMap();
 
 		Course course = new Course();
 		course.setId(UUID.randomUUID().toString());

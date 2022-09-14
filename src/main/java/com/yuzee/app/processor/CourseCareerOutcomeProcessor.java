@@ -74,7 +74,7 @@ public class CourseCareerOutcomeProcessor {
 
 			Set<String> careerIds = courseCareerOutcomeDtos.stream().map(e->e.getCareer().getId())
 					.collect(Collectors.toSet());
-			List<Careers> careersMap = getCareerByIds(careerIds.stream().collect(Collectors.toList()));
+	    	List<Careers> careersMap = getCareerByIds(careerIds.stream().collect(Collectors.toList()));
 
 			List<Careers> courseCareerOutcomes = course.getCourseCareerOutcomes();
 

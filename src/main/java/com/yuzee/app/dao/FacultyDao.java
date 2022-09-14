@@ -20,7 +20,7 @@ public interface FacultyDao {
 	public Faculty getFacultyByFacultyName(String facultyName);
 
 	@Cacheable(value = "cacheFacultyMap", unless = "#result == null")
-	Map<UUID, String> getFacultyNameIdMap();
+	Map<String, String> getFacultyNameIdMap();
 
 	@Cacheable(value = "cacheFaculty", key = "#id", unless = "#result == null", condition = "#id!=null")
 	Faculty getFaculty(final String id);

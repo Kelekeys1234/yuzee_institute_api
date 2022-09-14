@@ -8,7 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FacultyCSVDto {
-
+    private String id;
+    
 	private String name;
 	
 	private String description;

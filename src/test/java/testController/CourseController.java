@@ -170,7 +170,7 @@ public class CourseController {
 		CourseRequest couseRequest = new CourseRequest();
 		couseRequest.setId(UUID.randomUUID());
 		couseRequest.setInstituteId("1e348e15-45b6-477f-a457-883738227e05");
-		couseRequest.setFacultyId(entityId);
+		couseRequest.setFacultyId("73babc67-04a1-4329-9733-d9175a544fc8");
 		couseRequest.setFaculty(facultyDto);
 		couseRequest.setCurriculumId(INSTITUTE_ID);
 		couseRequest.setName("courseName");
@@ -318,7 +318,7 @@ public class CourseController {
 		CourseRequest couseRequest = new CourseRequest();
 		couseRequest.setId(UUID.randomUUID());
 		couseRequest.setInstituteId("1e348e15-45b6-477f-a457-883738227e05");
-		couseRequest.setFacultyId(entityId);
+		couseRequest.setFacultyId("73babc67-04a1-4329-9733-d9175a544fc8");
 		couseRequest.setFaculty(facultyDto);
 		couseRequest.setCurriculumId(INSTITUTE_ID);
 		couseRequest.setName("UpdateName");
@@ -386,7 +386,7 @@ public class CourseController {
 		HttpEntity<CourseRequest> entity = new HttpEntity<>(couseRequest, headers);
 		ResponseEntity<CourseRequest> response = testRestTemplate.exchange(
 				COURSE_PATH + PATH_SEPARATOR + "1e348e15-45b6-477f-a457-883738227e05" + PATH_SEPARATOR + "course"
-						+ PATH_SEPARATOR + "75218134-062d-41bd-b84d-eeb203cddbae",
+						+ PATH_SEPARATOR + "502f2d4e-9bde-4e99-b443-d922ce540be9",
 				HttpMethod.PUT, entity, CourseRequest.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		// assertThat(response.getStatusCode()).isNotEqualTo(HttpStatus.OK);
