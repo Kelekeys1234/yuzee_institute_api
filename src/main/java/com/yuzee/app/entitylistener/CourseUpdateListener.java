@@ -49,7 +49,8 @@ public class CourseUpdateListener {
 					&& courseBeforeUpdate.getCourseLanguages().equals(course.getCourseLanguages())
 					&& courseBeforeUpdate.getCourseDeliveryModes().equals(course.getCourseDeliveryModes())
 					&& compareOffCampusCourse(courseBeforeUpdate.getOffCampusCourse(), course.getOffCampusCourse())
-					&& courseBeforeUpdate.getCourseFundings().equals(course.getCourseFundings()))) {
+					&& courseBeforeUpdate.getCourseFundings().equals(course.getCourseFundings())))
+			{
 				log.info("Course updated sending notifications to the users whose favorite course is {}",
 						course.getId());
 				String notificationType = "COURSE_CONTENT_UPDATED";

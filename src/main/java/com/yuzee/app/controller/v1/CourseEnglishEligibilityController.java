@@ -37,8 +37,8 @@ public class CourseEnglishEligibilityController implements CourseEnglishEligibil
 	}
 
 	@Override
-	public ResponseEntity<?> deleteByCourseEnglishEligibilityIds(String userId, String courseId,
-			List<String> courseEnglishEligibilityIds, List<String> linkedCourseIds)
+    public ResponseEntity<?> deleteByCourseId(String userId, String courseId,		
+    		List<String> courseEnglishEligibilityIds, List<String> linkedCourseIds)
 			throws ValidationException, NotFoundException {
 		log.info("inside CourseEnglishEligibilityController.deleteByCourseEnglishEligibilityIds");
 		courseEnglishEligibilityProcessor.deleteByCourseEnglishEligibilityIds(userId, courseId,

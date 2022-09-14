@@ -13,7 +13,7 @@ public class CurriculumItemProcessor implements ItemProcessor<CourseCurriculumDt
 		CourseCurriculum courseCurriculum = new CourseCurriculum();
 		courseCurriculum.setName(courseCurriculumDto.getName());
 		courseCurriculum.setIsActive(true);
-		
+
 		return courseCurriculum;
 	}
 	

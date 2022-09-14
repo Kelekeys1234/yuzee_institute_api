@@ -59,7 +59,11 @@ public class CourseEnglishEligibilityProcessor {
 		List<CourseEnglishEligibilityDto> courseEnglishEligibilityResponse = new ArrayList<>();
 		Course course = courseDao.get(courseId);
 		log.info("Fetching englishEligibilties from DB for courseId = " + courseId);
-		List<CourseEnglishEligibility> courseEnglishEligibilitiesFromDB = course.getCourseEnglishEligibilities();
+
+		List<CourseEnglishEligibility> courseEnglishEligibilitiesFromDB =null;
+//				courseEnglishEligibilityDAO
+//				.getAllEnglishEligibilityByCourse(courseId);
+
 		if (!CollectionUtils.isEmpty(courseEnglishEligibilitiesFromDB)) {
 			log.info("English Eligibilities coming from DB, start iterating data");
 			courseEnglishEligibilitiesFromDB.stream().forEach(courseEnglishEligibility -> {
@@ -97,11 +101,15 @@ public class CourseEnglishEligibilityProcessor {
 				CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
 				
 				BeanUtils.copyProperties(e, courseEnglishEligibility);
-				
-				courseEnglishEligibilities.add(courseEnglishEligibility);
 
+//				courseEnglishEligibility.setCourse(course);
+//				courseEnglishEligibility.setAuditFields(userId);
+				
+					courseEnglishEligibilities.add(courseEnglishEligibility);
+				
 			});
 			courseEnglishEligibilities.removeIf(e -> !contains(courseEnglishEligibilityDtos, e));
+
 
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
@@ -130,8 +138,9 @@ public class CourseEnglishEligibilityProcessor {
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
 
+
 		List<CourseEnglishEligibility> courseEnglishEligibilities = course.getCourseEnglishEligibilities();
-		
+
 		if(!courseEnglishEligibilities.isEmpty()) {
 			courseEnglishEligibilities.clear();
 		}
@@ -140,9 +149,7 @@ public class CourseEnglishEligibilityProcessor {
 		courseDao.saveAll(coursesToBeSavedOrUpdated);
 
 		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-		
-
-			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+//			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error(messageTranslator.toLocale("english_eligibility.ids.invalid", Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("english_eligibility.ids.invalid"));
@@ -166,15 +173,16 @@ public class CourseEnglishEligibilityProcessor {
 								.stream().filter(t -> dto.getEnglishType().equalsIgnoreCase(t.getEnglishType()))
 								.findAny();
 						CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
-						String existingId = null;
-						if (existingCousrseEnglishEligibilityOp.isPresent()) {
+	                       boolean flage = false;
+	                       if (existingCousrseEnglishEligibilityOp.isPresent()) {
 							courseEnglishEligibility = existingCousrseEnglishEligibilityOp.get();
-							existingId = courseEnglishEligibility.getEnglishType();
-						}
+
+                            flage=true;					
+                            }
 						BeanUtils.copyProperties(dto, courseEnglishEligibility);
-//						if (StringUtils.isEmpty(courseEnglishEligibility.getId())) {
-//							courseEnglishEligibilities.add(courseEnglishEligibility);
-//						}
+                        if (flage == false) {
+						courseEnglishEligibilities.add(courseEnglishEligibility);
+                        }
 					});
 				}
 			});

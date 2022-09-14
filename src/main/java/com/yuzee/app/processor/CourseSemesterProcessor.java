@@ -94,6 +94,7 @@ public class CourseSemesterProcessor {
 		coursesToBeSavedOrUpdated.add(course);
 		courseDao.saveAll(coursesToBeSavedOrUpdated);
 		}else {
+
 			log.error("invalid course id: {}", courseId);
 			throw new NotFoundException("invalid course id: " + courseId);
 		}
@@ -119,6 +120,7 @@ public class CourseSemesterProcessor {
 			log.error("one or more invalid course_subject_ids");
 			throw new NotFoundException("one or more invalid course_subject_ids");
 		}
+
 	}
 
 	public void saveUpdateSubjects(String userId, CourseSemester courseSemester, List<SemesterSubjectDto> subjectDtos) {

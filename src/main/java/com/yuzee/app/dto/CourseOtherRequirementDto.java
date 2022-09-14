@@ -19,7 +19,7 @@ public class CourseOtherRequirementDto {
 	@JsonProperty("work_placement")
 	private CourseWorkPlacementRequirementDto workPlacement;
 
-	@JsonProperty("research_proposal")
-	private CourseResearchProposalRequirementDto researchProposal;
+//	@JsonProperty("research_proposal")
+//	private CourseResearchProposalRequirementDto researchProposal;
 
 }

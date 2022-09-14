@@ -50,6 +50,7 @@ import com.yuzee.app.bean.AccrediatedDetail;
 import com.yuzee.app.bean.Careers;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseCurriculum;
+import com.yuzee.app.bean.CourseDeliveryModeFunding;
 import com.yuzee.app.bean.CourseDeliveryModes;
 import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.bean.CourseIntake;
@@ -496,30 +497,30 @@ public class CourseProcessor {
 			List<ProviderCodeDto> providesCodeDtos) throws ValidationException, NotFoundException, InvokeException {
 		List<CourseProviderCode> courseProviderCodes = course.getCourseProviderCodes();
 		if (!CollectionUtils.isEmpty(providesCodeDtos)) {
-
-			log.info("see if some names are not present then we have to delete them.");
-			Set<String> updateRequestNames = providesCodeDtos.stream()
-					.filter(e -> org.springframework.util.StringUtils.hasText(e.getName()))
-					.map(ProviderCodeDto::getName).collect(Collectors.toSet());
-			courseProviderCodes.removeIf(e -> !updateRequestNames.contains(e.getName()));
-
-			Map<String, CourseProviderCode> existingProviderCodes = courseProviderCodes.stream()
-					.collect(Collectors.toMap(CourseProviderCode::getName, e -> e));
-			providesCodeDtos.stream().forEach(e -> {
-				CourseProviderCode providerCode = existingProviderCodes.get(e.getName());
-				if (ObjectUtils.isEmpty(providerCode)) {
-					providerCode = new CourseProviderCode();
-					// providerCode.setCreatedBy(loggedInUserId);
-					// providerCode.setCreatedOn(new Date());
+            log.info("see if some names are not present then we have to delete them.");
+            Set<String> updateRequestNames = providesCodeDtos.stream()
+                    .filter(e -> org.springframework.util.StringUtils.hasText(e.getName()))
+                    .map(ProviderCodeDto::getName).collect(Collectors.toSet());
+            courseProviderCodes.removeIf(e -> !updateRequestNames.contains(e.getName()));
+			providesCodeDtos.stream().forEach(dto -> {
+				Optional<CourseProviderCode> existingProviderCodesOp = courseProviderCodes.stream()
+						.filter(e -> e.getName().equalsIgnoreCase(dto.getName()))
+						.findAny();
+				CourseProviderCode code = new CourseProviderCode();
+                boolean flage = false;
+				if (existingProviderCodesOp.isPresent()) {
+					code = existingProviderCodesOp.get();
+					flage=true;
 				}
-				// providerCode.setUpdatedBy(loggedInUserId);
-				// providerCode.setUpdatedOn(new Date());
-				providerCode.setName(e.getName());
-				providerCode.setValue(e.getValue());
-				// providerCode.setCourse(course);
-				if (!org.springframework.util.StringUtils.hasText(providerCode.getName())) {
-					courseProviderCodes.add(providerCode);
+
+				BeanUtils.copyProperties(dto,code );
+
+				if (flage == false) {
+					courseProviderCodes.add(code);
+
 				}
+
+
 			});
 
 		} else {
@@ -552,6 +553,7 @@ public class CourseProcessor {
 			dbEnglishEligibilities.removeIf(e -> courseEnglishEligibilityDtos.stream()
 					.noneMatch(t -> e.getEnglishType().equalsIgnoreCase(t.getEnglishType())));
 
+
 			courseEnglishEligibilityDtos.stream().forEach(e -> {
 				Optional<CourseEnglishEligibility> existingCousrseEnglishEligibilityOp = dbEnglishEligibilities.stream()
 						.filter(t -> e.getEnglishType().equalsIgnoreCase(t.getEnglishType())).findAny();
@@ -573,6 +575,8 @@ public class CourseProcessor {
 		} else {
 			dbEnglishEligibilities.clear();
 		}
+
+
 	}
 
 	private void saveUpdateCourseDeliveryModes(String loggedInUserId, Course course,
@@ -604,7 +608,9 @@ public class CourseProcessor {
 					courseDeliveryMode = existingCourseDeliveryModeOp.get();
 				}
 
-				
+
+//				courseDeliveryMode.setCourse(course);
+
 				log.info("Adding additional infos like deliveryType, studyMode etc");
 
 				courseDeliveryMode.setDeliveryType(e.getDeliveryType());
@@ -614,6 +620,9 @@ public class CourseProcessor {
 				courseDeliveryMode.setStudyMode(e.getStudyMode());
 				courseDeliveryMode.setDuration(e.getDuration());
 				courseDeliveryMode.setDurationTime(e.getDurationTime());
+
+//				courseDeliveryMode.setCourse(course);
+
 				courseDeliveryModesProcessor.saveUpdateCourseFees(loggedInUserId, courseDeliveryMode, e.getFees());
 				courseDeliveryModesProcessor.saveUpdateCourseDeliveryModeFunding(loggedInUserId, courseDeliveryMode,
 						e.getFundings());
@@ -2035,7 +2044,6 @@ public class CourseProcessor {
 		CourseIntake courseIntake = course.getCourseIntake();
 		if (ObjectUtils.isEmpty(intakeDto)) {
 			if (!ObjectUtils.isEmpty(courseIntake)) {
-				//courseIntakeDao.deleteById(course.getCourseIntake().getId());
 				courseIntake = null;
 			}
 		} else {

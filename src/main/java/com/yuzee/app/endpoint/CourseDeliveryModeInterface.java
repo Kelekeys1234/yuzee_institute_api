@@ -31,7 +31,7 @@ public interface CourseDeliveryModeInterface {
 	@DeleteMapping
 	public ResponseEntity<?> deleteByCourseDeliveryModeIds(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@RequestParam(value = "course_delivery_mode_ids", required = true) @NotEmpty final List<String> courseDeliveryModeIds,
+			@RequestParam(value = "course_delivery_mode_ids", required = false) @NotEmpty final List<String> courseDeliveryModeIds,
 			@RequestParam(value = "linked_course_ids", required = false) final List<String> linkedCourseIds)
 			throws ValidationException, NotFoundException;
 }

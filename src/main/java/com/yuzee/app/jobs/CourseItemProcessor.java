@@ -103,18 +103,22 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 		log.info("Adding englist eligibility into course");
 		if (courseDto.getIeltsOverall() != null) {
 			log.info("Associating IELTS score with course");
+
 			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility("IELTS",
 					courseDto.getIeltsReading(), courseDto.getIeltsWriting(), courseDto.getIeltsSpeaking(),
 					courseDto.getIeltsListening(), courseDto.getIeltsOverall(), true);
 			course.getCourseEnglishEligibilities().add(courseEnglishEligibility);
+
 		}
 
 		if (courseDto.getToflOverall() != null) {
 			log.info("Associating TOEFL score with course");
+
 			CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility("IELTS",
 					courseDto.getIeltsReading(), courseDto.getIeltsWriting(), courseDto.getIeltsSpeaking(),
 					courseDto.getIeltsListening(), courseDto.getIeltsOverall(), true);
 			course.getCourseEnglishEligibilities().add(courseEnglishEligibility);
+
 		}
 
 		if (!org.springframework.util.ObjectUtils.isEmpty(course.getInstitute())) {

@@ -56,6 +56,7 @@ public class CoursePayment implements Serializable {
 		this.setUpdatedOn(new Date());
 			this.setCreatedBy(userId);
 			this.setCreatedOn(new Date());
-	
+
+
 	}
 }
