@@ -77,8 +77,6 @@ public class CourseSemesterProcessor {
 					log.error("invalid course subject id : {}", e.getCourseSemesterDtoId());
 					throw new RuntimeNotFoundException("invalid course subject id : " + e.getCourseSemesterDtoId());
 				}
-				
-			
 		}
 			courseSemesters.setCourseSemesterId(e.getCourseSemesterDtoId());
 			courseSemesters.setDescription(e.getDescription());
