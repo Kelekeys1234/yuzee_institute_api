@@ -379,9 +379,7 @@ public class CourseProcessor {
 			course = new Course();
 			course.setName(courseDto.getName());
 			course.setId(courseId);
-
 			readableIdProcessor.setReadableIdForCourse(course);
-
 		} else {
 
 			course = courseDao.get(courseId);
@@ -407,28 +405,16 @@ public class CourseProcessor {
 		course.setName(courseDto.getName());
 		course.setIsActive(true);
 		log.info("Fetching faculty details from DB for facultyId = " + courseDto.getFacultyId());
-		/* UNCOMMENT IF FACULTY DB IS CREATED */
 	     course.setFaculty(getFaculty(courseDto.getFacultyId()));
 
 		if (!StringUtils.isEmpty(courseDto.getLevelIds())) {
 			log.info("Fetching level details from DB for levelId = " + courseDto.getLevelIds());
-			/* UNCOMMENT WHEN LEVEL IS CREATED IN DB */
 			course.setLevel(levelProcessor.getLevel(courseDto.getLevelIds()));
 		}
 
 		if (!StringUtils.isEmpty(courseDto.getWorldRanking())) {
 			log.info("World Ranking is present adding it in course bean class");
 			course.setWorldRanking(Integer.valueOf(courseDto.getWorldRanking()));
-		}
-		if (!StringUtils.isEmpty(courseDto.getCurriculumId())) {
-			log.info("curriculum is present adding it in course bean class");
-			Optional<CourseCurriculum> courseCurriculumOptional = courseCurriculumDao
-					.getById(courseDto.getCurriculumId());
-/// uncomment after courseCurruculum is created
-			 course.setCourseCurriculum(courseCurriculumOptional.get().toString());
-		} else {
-			log.error(messageTranslator.toLocale("courses.curriculum.id.invalid", Locale.US));
-			throw new Exception("courses.curriculum.id.invalid");
 		}
 
 		// Adding course details in bean class
@@ -460,7 +446,6 @@ public class CourseProcessor {
 		saveUpdateCourseLanguages(loggedInUserId, course, courseDto.getLanguage());
 
 		saveUpdateCourseEnglishEligibilities(loggedInUserId, course, courseDto.getEnglishEligibility());
-//uncoment after test case
 
 		saveUpdateCourseDeliveryModes(loggedInUserId, course, courseDto.getCourseDeliveryModes());
 
@@ -517,7 +502,8 @@ public class CourseProcessor {
 
 				if (flage == false) {
 					courseProviderCodes.add(code);
-
+					course.setCourseProviderCodes(courseProviderCodes);
+                   courseDao.addUpdateCourse(course);
 				}
 
 
@@ -651,46 +637,30 @@ public class CourseProcessor {
 					.collect(Collectors.toList());
 
 			List<Careers> careersMap = careerDao.findByIdIn(careerIds);
-			for (Careers j : careersMap) {
 				if (careersMap.size() != careerIds.size()) {
 					throw new ValidationException(messageTranslator.toLocale("courses.career.ids.invalid"));
 				}
-
 				Set<String> updateRequestIds = courseCareerOutcomeDtos.stream()
 						.filter(e -> !StringUtils.isEmpty(e.getCareer().getId())).map(e->e.getCareer().getId())
 						.collect(Collectors.toSet());
 				courseCareerOutcomes.removeIf(e -> !updateRequestIds.contains(e.getId()));
-
-				for (Careers e : courseCareerOutcomes) {
-					for (CourseCareerOutcomeDto s : courseCareerOutcomeDtos) {
 						Careers courseCareerOutcome = new Careers();
-					if (!StringUtils.isEmpty(e.getId())) {
-			//		courseCareerOutcome = e.getId();
-
+						courseCareerOutcomeDtos.stream().forEach(e->{
 						if (courseCareerOutcome == null) {
-							log.error(messageTranslator.toLocale("courses.outcome.id.invalid", e.getId(), Locale.US));
+							log.error(messageTranslator.toLocale("courses.outcome.id.invalid", e.getCareer().getId(), Locale.US));
 							throw new RuntimeNotFoundException(
-									messageTranslator.toLocale("courses.outcome.id.invalid", e.getId()));
+									messageTranslator.toLocale("courses.outcome.id.invalid", e.getCareer().getId()));
 						}
-					}
-					
 						course.setCourseCareerOutcomes(courseCareerOutcomes);
 						courseDao.addUpdateCourse(course);
 						if (StringUtils.isEmpty(courseCareerOutcome.getId())) {
 							courseCareerOutcomes.add(courseCareerOutcome);
+			
 						}
-
-					
-					}
-				}
-				;
-			}
-		}
-
-		else {
-			courseCareerOutcomes.clear();
-		}
-
+							
+						});	
+		
+	}
 	}
 
 
@@ -702,10 +672,9 @@ public class CourseProcessor {
 		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, instituteId, id, courseDto);
 
 		course = courseDao.addUpdateCourse(course);
-		/* UNCOMMENT AFTER TIMING DB IS CREATED */
-		// timingProcessor.saveUpdateDeleteTimings(loggedInUserId,
-		// EntityTypeEnum.COURSE, courseDto.getCourseTimings(),
-		// course.getId());
+		 timingProcessor.saveUpdateDeleteTimings(loggedInUserId,
+		 EntityTypeEnum.COURSE, courseDto.getCourseTimings(),
+		 course.getId());
 		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
 
 		return course.getId();

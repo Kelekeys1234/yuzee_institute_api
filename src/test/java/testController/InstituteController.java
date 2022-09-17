@@ -2,6 +2,7 @@ package testController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -541,7 +542,7 @@ public class InstituteController {
 			instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
 			instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
 			instituteRequestDto.setReadableId("DMS");
-			instituteRequestDto.setInstituteId(IDS.toString());
+			instituteRequestDto.setInstituteId(UUID.randomUUID().toString());
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			listOfInstituteRequestDto.add(instituteRequestDto);

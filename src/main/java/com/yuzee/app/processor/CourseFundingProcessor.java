@@ -129,8 +129,6 @@ public class CourseFundingProcessor {
 				log.info("removing fundingNameId");
                fundingId.removeIf(x->fundingNameIds.contains(x));
         	  course.setCourseFundings(fundingId);
-          
-            	
             	log.info("coursesToBeAdded");
                 List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
                  coursesToBeSavedOrUpdated.add(course);

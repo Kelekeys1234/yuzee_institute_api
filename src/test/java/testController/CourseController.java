@@ -2,6 +2,7 @@ package testController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -93,8 +94,8 @@ public class CourseController {
 	@MockBean
 	UserHandler userHandler;
 
-	@DisplayName("save course")
 	@Test
+	@DisplayName("save course")
 	public void AddCourses() {
 
 		ValidList<CourseMinRequirementDto> courseMinRequirementDtos = new ValidList<>();
@@ -172,7 +173,6 @@ public class CourseController {
 		couseRequest.setInstituteId("1e348e15-45b6-477f-a457-883738227e05");
 		couseRequest.setFacultyId("73babc67-04a1-4329-9733-d9175a544fc8");
 		couseRequest.setFaculty(facultyDto);
-		couseRequest.setCurriculumId(INSTITUTE_ID);
 		couseRequest.setName("courseName");
 		couseRequest.setDescription("course Description");
 		couseRequest.setLanguage(Arrays.asList("INDIA"));
@@ -188,7 +188,7 @@ public class CourseController {
 		couseRequest.setTotalCount("23456");
 		couseRequest.setCurrency("dollar");
 		couseRequest.setCurrencyTime("ISt");
-		couseRequest.setLevelIds(INSTITUTE_ID);
+		couseRequest.setLevelIds("7401b9e0-9541-4336-98bb-934d455afae6");
 		couseRequest.setLevel(levelDto);
 		couseRequest.setAvailability("always Available");
 		couseRequest.setRecognition("recognize");
@@ -232,15 +232,15 @@ public class CourseController {
 		couseRequest.setDomesticStudentProcedureId(INSTITUTE_ID);
 		couseRequest.setCourseMinRequirementDtos(courseMinRequirementDtos);
 
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("userId", userId);
 		HttpEntity<CourseRequest> entity = new HttpEntity<>(couseRequest, headers);
 		ResponseEntity<CourseRequest> response = testRestTemplate.exchange(
-				COURSE_PATH + PATH_SEPARATOR + "1e348e15-45b6-477f-a457-883738227e05" + PATH_SEPARATOR + "course",
+				COURSE_PATH + PATH_SEPARATOR + "ed767c27-0124-4c1f-968a-9b09244b5cb6" + PATH_SEPARATOR + "course",
 				HttpMethod.POST, entity, CourseRequest.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		// assertThat(response.getStatusCode()).isNotEqualTo(HttpStatus.OK);
 	}
 
 	@DisplayName("update institutes")
@@ -320,7 +320,6 @@ public class CourseController {
 		couseRequest.setInstituteId("1e348e15-45b6-477f-a457-883738227e05");
 		couseRequest.setFacultyId("73babc67-04a1-4329-9733-d9175a544fc8");
 		couseRequest.setFaculty(facultyDto);
-		couseRequest.setCurriculumId(INSTITUTE_ID);
 		couseRequest.setName("UpdateName");
 		couseRequest.setDescription("course Description");
 		couseRequest.setLanguage(Arrays.asList(entityId));
@@ -336,7 +335,7 @@ public class CourseController {
 		couseRequest.setTotalCount("23456");
 		couseRequest.setCurrency("dollar");
 		couseRequest.setCurrencyTime("ISt");
-		couseRequest.setLevelIds(INSTITUTE_ID);
+		couseRequest.setLevelIds("73babc67-04a1-4329-9733-d9175a544fc8");
 		couseRequest.setLevel(levelDto);
 		couseRequest.setAvailability("always Available");
 		couseRequest.setRecognition("recognize");
@@ -1051,7 +1050,6 @@ public class CourseController {
 		couseRequest.setInstituteId("1e348e15-45b6-477f-a457-883738227e05");
 		couseRequest.setFacultyId(entityId);
 		couseRequest.setFaculty(facultyDto);
-		couseRequest.setCurriculumId(INSTITUTE_ID);
 		couseRequest.setName("UpdateName");
 		couseRequest.setDescription("course Description");
 		couseRequest.setLanguage(Arrays.asList(entityId));
@@ -1200,7 +1198,6 @@ public class CourseController {
 		couseRequest.setInstituteId("1e348e15-45b6-477f-a457-883738227e05");
 		couseRequest.setFacultyId(entityId);
 		couseRequest.setFaculty(facultyDto);
-		couseRequest.setCurriculumId(INSTITUTE_ID);
 		couseRequest.setName("UpdateName");
 		couseRequest.setDescription("course Description");
 		couseRequest.setLanguage(Arrays.asList(entityId));
