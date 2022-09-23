@@ -500,12 +500,11 @@ public class CourseProcessor {
 
 				BeanUtils.copyProperties(dto,code );
 
-				if (flage == false) {
+				if (!flage) {
 					courseProviderCodes.add(code);
 					course.setCourseProviderCodes(courseProviderCodes);
-                   courseDao.addUpdateCourse(course);
+                    courseDao.addUpdateCourse(course);
 				}
-
 
 			});
 
@@ -539,7 +538,6 @@ public class CourseProcessor {
 			dbEnglishEligibilities.removeIf(e -> courseEnglishEligibilityDtos.stream()
 					.noneMatch(t -> e.getEnglishType().equalsIgnoreCase(t.getEnglishType())));
 
-
 			courseEnglishEligibilityDtos.stream().forEach(e -> {
 				Optional<CourseEnglishEligibility> existingCousrseEnglishEligibilityOp = dbEnglishEligibilities.stream()
 						.filter(t -> e.getEnglishType().equalsIgnoreCase(t.getEnglishType())).findAny();
@@ -547,21 +545,17 @@ public class CourseProcessor {
 				String existingId = null;
 				if (existingCousrseEnglishEligibilityOp.isPresent()) {
 					courseEnglishEligibility = existingCousrseEnglishEligibilityOp.get();
-					// existingId = courseEnglishEligibility.getId();
 				}
 				BeanUtils.copyProperties(e, courseEnglishEligibility);
-				
-					dbEnglishEligibilities.add(courseEnglishEligibility);
-					course.setCourseEnglishEligibilities(dbEnglishEligibilities);
-//					courseDao.addUpdateCourse(course);
-			
-				
+
+				dbEnglishEligibilities.add(courseEnglishEligibility);
+				course.setCourseEnglishEligibilities(dbEnglishEligibilities);
+
 			});
 
 		} else {
 			dbEnglishEligibilities.clear();
 		}
-
 
 	}
 

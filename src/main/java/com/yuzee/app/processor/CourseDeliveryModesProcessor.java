@@ -102,16 +102,12 @@ public class CourseDeliveryModesProcessor {
 			log.info("loop the requested list to collect the entitities to be saved/updated");
 			courseDeliveryModeDtos.stream().forEach(e -> {
 				CourseDeliveryModes courseDeliveryMode = new CourseDeliveryModes();
-			
+
 				BeanUtils.copyProperties(e, courseDeliveryMode);
 				saveUpdateCourseFees(userId, courseDeliveryMode, e.getFees());
 				saveUpdateCourseDeliveryModeFunding(userId, courseDeliveryMode, e.getFundings());
 
 				courseDeliveryModes.add(courseDeliveryMode);
-
-				
-
-
 
 			});
 			courseDeliveryModes.removeIf(e -> !contains(courseDeliveryModeDtos, e));
@@ -135,26 +131,6 @@ public class CourseDeliveryModesProcessor {
 			}
 
 			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
-//		} else if (courseDao.documentExistsById(courseId)) {
-//			CourseRequest course = courseDao.findDocumentById(courseId).get();
-//			courseDeliveryModeDtos.stream().forEach(dto -> {
-//				if (!StringUtils.hasText(dto.getId())) {
-//					dto.setId(Utils.generateUUID());
-//				}
-//				dto.getFundings().stream().forEach(e -> {
-//					if (!StringUtils.hasText(e.getId())) {
-//						e.setId(Utils.generateUUID());
-//					}
-//				});
-//
-//				dto.getFees().stream().forEach(e -> {
-//					if (!StringUtils.hasText(e.getId())) {
-//						e.setId(Utils.generateUUID());
-//					}
-//				});
-//			});
-//			course.setCourseDeliveryModes(new ValidList<>(courseDeliveryModeDtos));
-//			courseDao.saveDocument(course);
 		} else {
 			log.error(messageTranslator.toLocale("course.id.invalid", Locale.US));
 			throw new ValidationException(messageTranslator.toLocale("course.id.invalid"));
@@ -173,28 +149,22 @@ public class CourseDeliveryModesProcessor {
 				courseDeliveryModes.clear();
 			}
 
-				List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
-				coursesToBeSavedOrUpdated.add(course);
+			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+			coursesToBeSavedOrUpdated.add(course);
 
-				courseDao.saveAll(coursesToBeSavedOrUpdated);
+			courseDao.saveAll(coursesToBeSavedOrUpdated);
 
-				log.info("Notify course information changed");
-				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+			log.info("Notify course information changed");
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 
-				// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 
-			
-		 
 		} else {
 			log.error(messageTranslator.toLocale("course.id.invalid", Locale.US));
 			throw new ValidationException(messageTranslator.toLocale("course.id.invalid"));
 		}
 
 	}
-//		 else {
-//			log.error(messageTranslator.toLocale("course.id.invalid", Locale.US));
-//			throw new ValidationException(messageTranslator.toLocale("course.id.invalid"));
-//		}
 
 	private List<Course> replicateCourseDeliveryModes(String userId, List<String> courseIds,
 			List<CourseDeliveryModesDto> courseDeliveryModeDtos) throws ValidationException, NotFoundException {
@@ -209,24 +179,22 @@ public class CourseDeliveryModesProcessor {
 					courseDeliveryModes.removeIf(e -> !contains(courseDeliveryModeDtos, e));
 					courseDeliveryModeDtos.stream().forEach(dto -> {
 						Optional<CourseDeliveryModes> existingCourseDeliveryModeOp = courseDeliveryModes.stream()
-								.filter(e -> e.getDeliveryType().equalsIgnoreCase(dto.getDeliveryType()))
-								.findAny();
+								.filter(e -> e.getDeliveryType().equalsIgnoreCase(dto.getDeliveryType())).findAny();
 						CourseDeliveryModes courseDeliveryMode = new CourseDeliveryModes();
-                       boolean flage = false;
+						boolean flage = false;
 						if (existingCourseDeliveryModeOp.isPresent()) {
 							courseDeliveryMode = existingCourseDeliveryModeOp.get();
-							flage=true;
+							flage = true;
 						}
-		log.info("Adding additional infos like deliveryType, studyMode etc");
+						log.info("Adding additional infos like deliveryType, studyMode etc");
 
 						saveUpdateCourseFees(userId, courseDeliveryMode, dto.getFees());
 						saveUpdateCourseDeliveryModeFunding(userId, courseDeliveryMode, dto.getFundings());
 						BeanUtils.copyProperties(dto, courseDeliveryMode);
-						if (flage == false) {
+						if (!flage) {
 							courseDeliveryModes.add(courseDeliveryMode);
 
 						}
-						
 
 					});
 				}
@@ -247,7 +215,7 @@ public class CourseDeliveryModesProcessor {
 	}
 
 	public void saveUpdateCourseFees(String userId, CourseDeliveryModes deliveryMode, List<CourseFeesDto> feesDtos) {
-        if (!CollectionUtils.isEmpty(feesDtos)) {
+		if (!CollectionUtils.isEmpty(feesDtos)) {
 			List<CourseFees> fees = deliveryMode.getFees();
 			feesDtos.stream().forEach(dto -> {
 				CourseFees model = new CourseFees();
@@ -260,7 +228,7 @@ public class CourseDeliveryModesProcessor {
 				}
 
 				BeanUtils.copyProperties(dto, model);
-				if (flage == false) {
+				if (!flage) {
 					fees.add(model);
 
 				}
@@ -268,10 +236,9 @@ public class CourseDeliveryModesProcessor {
 			});
 			fees.removeIf(e -> !contains(feesDtos, e));
 
-
-        } else {
-            deliveryMode.getFees().clear();
-        }
+		} else {
+			deliveryMode.getFees().clear();
+		}
 	}
 
 	public static boolean contains(List<CourseFeesDto> feesDtos, CourseFees target) {
@@ -281,36 +248,32 @@ public class CourseDeliveryModesProcessor {
 
 	public void saveUpdateCourseDeliveryModeFunding(String userId, CourseDeliveryModes deliveryMode,
 			List<CourseDeliveryModeFundingDto> deliveryModeFundingDtos) {
-        if (!CollectionUtils.isEmpty(deliveryModeFundingDtos)) {
+		if (!CollectionUtils.isEmpty(deliveryModeFundingDtos)) {
 			List<CourseDeliveryModeFunding> fundings = deliveryMode.getFundings();
-
 
 			deliveryModeFundingDtos.stream().forEach(dto -> {
 
-
 				CourseDeliveryModeFunding model = new CourseDeliveryModeFunding();
 				Optional<CourseDeliveryModeFunding> existingCourseDeliveryModeFundingOp = fundings.stream()
-						.filter(e -> e.getName().equalsIgnoreCase(dto.getName()))
-						.findAny();
-                boolean flage = false;
-					if (existingCourseDeliveryModeFundingOp.isPresent()) {
-						model = existingCourseDeliveryModeFundingOp.get();
-						flage=true;
-					}
+						.filter(e -> e.getName().equalsIgnoreCase(dto.getName())).findAny();
+				boolean flage = false;
+				if (existingCourseDeliveryModeFundingOp.isPresent()) {
+					model = existingCourseDeliveryModeFundingOp.get();
+					flage = true;
+				}
 
-					BeanUtils.copyProperties(dto, model);
-					if (flage == false) {
-						fundings.add(model);
+				BeanUtils.copyProperties(dto, model);
+				if (!flage) {
+					fundings.add(model);
 
-					}
-
+				}
 
 			});
 			fundings.removeIf(e -> !contains(deliveryModeFundingDtos, e));
 
-        } else {
-            deliveryMode.getFundings().clear();
-        }
+		} else {
+			deliveryMode.getFundings().clear();
+		}
 		
 	}
 

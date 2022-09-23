@@ -60,9 +60,7 @@ public class CourseEnglishEligibilityProcessor {
 		Course course = courseDao.get(courseId);
 		log.info("Fetching englishEligibilties from DB for courseId = " + courseId);
 
-		List<CourseEnglishEligibility> courseEnglishEligibilitiesFromDB =null;
-//				courseEnglishEligibilityDAO
-//				.getAllEnglishEligibilityByCourse(courseId);
+		List<CourseEnglishEligibility> courseEnglishEligibilitiesFromDB = null;
 
 		if (!CollectionUtils.isEmpty(courseEnglishEligibilitiesFromDB)) {
 			log.info("English Eligibilities coming from DB, start iterating data");
@@ -89,27 +87,18 @@ public class CourseEnglishEligibilityProcessor {
 						return clone;
 					}).collect(Collectors.toList());
 
-			log.info("preparing map of exsiting course english eligibilities");
-//			Map<String, CourseEnglishEligibility> existingCourseEnglishEligibilitysMap = course
-//					.getCourseEnglishEligibilities().stream()
-//					.collect(Collectors.toMap(CourseEnglishEligibility::getId, e -> e));
-
 			List<CourseEnglishEligibility> courseEnglishEligibilities = course.getCourseEnglishEligibilities();
 
 			log.info("loop the requested list to collect the entitities to be saved/updated");
 			courseEnglishEligibilityDtos.stream().forEach(e -> {
 				CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
-				
+
 				BeanUtils.copyProperties(e, courseEnglishEligibility);
 
-//				courseEnglishEligibility.setCourse(course);
-//				courseEnglishEligibility.setAuditFields(userId);
-				
-					courseEnglishEligibilities.add(courseEnglishEligibility);
-				
+				courseEnglishEligibilities.add(courseEnglishEligibility);
+
 			});
 			courseEnglishEligibilities.removeIf(e -> !contains(courseEnglishEligibilityDtos, e));
-
 
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
@@ -138,17 +127,16 @@ public class CourseEnglishEligibilityProcessor {
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
 
+			List<CourseEnglishEligibility> courseEnglishEligibilities = course.getCourseEnglishEligibilities();
 
-		List<CourseEnglishEligibility> courseEnglishEligibilities = course.getCourseEnglishEligibilities();
+			if (!courseEnglishEligibilities.isEmpty()) {
+				courseEnglishEligibilities.clear();
+			}
+			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+			coursesToBeSavedOrUpdated.add(course);
+			courseDao.saveAll(coursesToBeSavedOrUpdated);
 
-		if(!courseEnglishEligibilities.isEmpty()) {
-			courseEnglishEligibilities.clear();
-		}
-		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
-		coursesToBeSavedOrUpdated.add(course);
-		courseDao.saveAll(coursesToBeSavedOrUpdated);
-
-		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 //			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error(messageTranslator.toLocale("english_eligibility.ids.invalid", Locale.US));
@@ -173,16 +161,16 @@ public class CourseEnglishEligibilityProcessor {
 								.stream().filter(t -> dto.getEnglishType().equalsIgnoreCase(t.getEnglishType()))
 								.findAny();
 						CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
-	                       boolean flage = false;
-	                       if (existingCousrseEnglishEligibilityOp.isPresent()) {
+						boolean flage = false;
+						if (existingCousrseEnglishEligibilityOp.isPresent()) {
 							courseEnglishEligibility = existingCousrseEnglishEligibilityOp.get();
 
-                            flage=true;					
-                            }
+							flage = true;
+						}
 						BeanUtils.copyProperties(dto, courseEnglishEligibility);
-                        if (flage == false) {
-						courseEnglishEligibilities.add(courseEnglishEligibility);
-                        }
+						if (!flage) {
+							courseEnglishEligibilities.add(courseEnglishEligibility);
+						}
 					});
 				}
 			});

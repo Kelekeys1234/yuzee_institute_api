@@ -95,7 +95,6 @@ public class CourseOtherRequirementProcessor {
 						throw new ValidationException(messageTranslator.toLocale("vaccination.ids.invalid"));
 					}
 					vaccine.setVaccinationIds(vaccinationIds);
-					System.out.println("this is vaccinationID"+vaccinationIds);;
 				} else if (!CollectionUtils.isEmpty(vaccine.getVaccinationIds())) {
 					vaccine.getVaccinationIds().clear();
 				}
@@ -113,16 +112,16 @@ public class CourseOtherRequirementProcessor {
 					workExperience.setDurationType(courseOtherRequirementDto.getWorkExperience().getDurationType());
 					workExperience.setFields(courseOtherRequirementDto.getWorkExperience().getFields());
 					course.setCourseWorkExperienceRequirement(workExperience);
-				}else {
+				} else {
 					workExperience.setDescription(courseOtherRequirementDto.getWorkExperience().getDescription());
 					workExperience.setDuration(courseOtherRequirementDto.getWorkExperience().getDuration());
 					workExperience.setDurationType(courseOtherRequirementDto.getWorkExperience().getDurationType());
 					workExperience.setFields(courseOtherRequirementDto.getWorkExperience().getFields());
 				}
-		
+
 			} else {
 
-					course.setCourseWorkExperienceRequirement(null);
+				course.setCourseWorkExperienceRequirement(null);
 			}
 
 			CourseWorkPlacementRequirement workPlacement = course.getCourseWorkPlacementRequirement();
@@ -135,7 +134,7 @@ public class CourseOtherRequirementProcessor {
 					workPlacement.setFields(courseOtherRequirementDto.getWorkPlacement().getFields());
 					course.setCourseWorkPlacementRequirement(workPlacement);
 
-				}else {
+				} else {
 					workPlacement.setDescription(courseOtherRequirementDto.getWorkPlacement().getDescription());
 					workPlacement.setDuration(courseOtherRequirementDto.getWorkPlacement().getDuration());
 					workPlacement.setDurationType(courseOtherRequirementDto.getWorkPlacement().getDurationType());
@@ -143,9 +142,9 @@ public class CourseOtherRequirementProcessor {
 
 				}
 			} else {
-					course.setCourseWorkPlacementRequirement(null);
+				course.setCourseWorkPlacementRequirement(null);
 			}
-	course.setCourseResearchProposalRequirement(null);
+			course.setCourseResearchProposalRequirement(null);
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
