@@ -65,9 +65,10 @@ public class CourseDeliveryModesProcessor {
 	public List<CourseDeliveryModesDto> getCourseDeliveryModesByCourseId(String courseId) {
 		log.debug("Inside getCourseDeliveryModesByCourseId() method");
 		List<CourseDeliveryModesDto> courseDeliveryModesResponse = new ArrayList<>();
+		Course course = courseDao.get(courseId);
 		log.info("Fetching courseDeliveryModes from DB for courseId = " + courseId);
 
-		List<CourseDeliveryModes> courseDeliveryModesFromDB= null;
+		List<CourseDeliveryModes> courseDeliveryModesFromDB = course.getCourseDeliveryModes();
 
 		if (!CollectionUtils.isEmpty(courseDeliveryModesFromDB)) {
 			log.info("Additional Info is not null, then start iterating list");
@@ -106,7 +107,6 @@ public class CourseDeliveryModesProcessor {
 				BeanUtils.copyProperties(e, courseDeliveryMode);
 				saveUpdateCourseFees(userId, courseDeliveryMode, e.getFees());
 				saveUpdateCourseDeliveryModeFunding(userId, courseDeliveryMode, e.getFundings());
-
 				courseDeliveryModes.add(courseDeliveryMode);
 
 			});
@@ -181,19 +181,15 @@ public class CourseDeliveryModesProcessor {
 						Optional<CourseDeliveryModes> existingCourseDeliveryModeOp = courseDeliveryModes.stream()
 								.filter(e -> e.getDeliveryType().equalsIgnoreCase(dto.getDeliveryType())).findAny();
 						CourseDeliveryModes courseDeliveryMode = new CourseDeliveryModes();
-						boolean flage = false;
 						if (existingCourseDeliveryModeOp.isPresent()) {
 							courseDeliveryMode = existingCourseDeliveryModeOp.get();
-							flage = true;
 						}
 						log.info("Adding additional infos like deliveryType, studyMode etc");
-
 						saveUpdateCourseFees(userId, courseDeliveryMode, dto.getFees());
 						saveUpdateCourseDeliveryModeFunding(userId, courseDeliveryMode, dto.getFundings());
 						BeanUtils.copyProperties(dto, courseDeliveryMode);
-						if (!flage) {
+						if (!existingCourseDeliveryModeOp.isPresent()) {
 							courseDeliveryModes.add(courseDeliveryMode);
-
 						}
 
 					});
@@ -221,19 +217,15 @@ public class CourseDeliveryModesProcessor {
 				CourseFees model = new CourseFees();
 				Optional<CourseFees> existingCourseFess = fees.stream()
 						.filter(e -> e.getName().equalsIgnoreCase(dto.getName())).findAny();
-				boolean flage = false;
 				if (existingCourseFess.isPresent()) {
 					model = existingCourseFess.get();
-					flage = true;
 				}
-
 				BeanUtils.copyProperties(dto, model);
-				if (!flage) {
+				if (!existingCourseFess.isPresent()) {
 					fees.add(model);
-
 				}
 
-			});
+		});
 			fees.removeIf(e -> !contains(feesDtos, e));
 
 		} else {
@@ -252,20 +244,15 @@ public class CourseDeliveryModesProcessor {
 			List<CourseDeliveryModeFunding> fundings = deliveryMode.getFundings();
 
 			deliveryModeFundingDtos.stream().forEach(dto -> {
-
 				CourseDeliveryModeFunding model = new CourseDeliveryModeFunding();
 				Optional<CourseDeliveryModeFunding> existingCourseDeliveryModeFundingOp = fundings.stream()
 						.filter(e -> e.getName().equalsIgnoreCase(dto.getName())).findAny();
-				boolean flage = false;
 				if (existingCourseDeliveryModeFundingOp.isPresent()) {
 					model = existingCourseDeliveryModeFundingOp.get();
-					flage = true;
 				}
-
 				BeanUtils.copyProperties(dto, model);
-				if (!flage) {
+				if (!existingCourseDeliveryModeFundingOp.isPresent()) {
 					fundings.add(model);
-
 				}
 
 			});

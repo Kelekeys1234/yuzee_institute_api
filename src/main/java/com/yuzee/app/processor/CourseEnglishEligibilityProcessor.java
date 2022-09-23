@@ -60,7 +60,7 @@ public class CourseEnglishEligibilityProcessor {
 		Course course = courseDao.get(courseId);
 		log.info("Fetching englishEligibilties from DB for courseId = " + courseId);
 
-		List<CourseEnglishEligibility> courseEnglishEligibilitiesFromDB = null;
+		List<CourseEnglishEligibility> courseEnglishEligibilitiesFromDB = course.getCourseEnglishEligibilities();
 
 		if (!CollectionUtils.isEmpty(courseEnglishEligibilitiesFromDB)) {
 			log.info("English Eligibilities coming from DB, start iterating data");
@@ -92,9 +92,7 @@ public class CourseEnglishEligibilityProcessor {
 			log.info("loop the requested list to collect the entitities to be saved/updated");
 			courseEnglishEligibilityDtos.stream().forEach(e -> {
 				CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
-
 				BeanUtils.copyProperties(e, courseEnglishEligibility);
-
 				courseEnglishEligibilities.add(courseEnglishEligibility);
 
 			});
@@ -161,14 +159,12 @@ public class CourseEnglishEligibilityProcessor {
 								.stream().filter(t -> dto.getEnglishType().equalsIgnoreCase(t.getEnglishType()))
 								.findAny();
 						CourseEnglishEligibility courseEnglishEligibility = new CourseEnglishEligibility();
-						boolean flage = false;
 						if (existingCousrseEnglishEligibilityOp.isPresent()) {
 							courseEnglishEligibility = existingCousrseEnglishEligibilityOp.get();
-
-							flage = true;
+							
 						}
 						BeanUtils.copyProperties(dto, courseEnglishEligibility);
-						if (!flage) {
+						if (!existingCousrseEnglishEligibilityOp.isPresent()) {
 							courseEnglishEligibilities.add(courseEnglishEligibility);
 						}
 					});
