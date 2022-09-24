@@ -71,11 +71,9 @@ public class CourseCareerOutcomeProcessor {
 						BeanUtils.copyProperties(outcome, clone);
 						return clone;
 					}).collect(Collectors.toList());
-
-			Set<String> careerIds = courseCareerOutcomeDtos.stream().map(e->e.getCareer().getId())
+			
+		    Set<String> careerIds = courseCareerOutcomeDtos.stream().map(e->e.getCareer().getId())
 					.collect(Collectors.toSet());
-	   // 	List<Careers> careersMap = getCareerByIds(careerIds.stream().collect(Collectors.toList()));
-
 			List<Careers> courseCareerOutcomes = course.getCourseCareerOutcomes();
 
 			log.info("preparing map of exsiting course career outcomes");
@@ -84,7 +82,7 @@ public class CourseCareerOutcomeProcessor {
 
 			log.info("loop the requested list to collect the entitities to be saved/updated");
 			courseCareerOutcomeDtos.stream().forEach(e -> {
-				Careers courseCareerOutcome = new Careers();
+			Careers courseCareerOutcome = new Careers();
 				if (!StringUtils.isEmpty(e.getCareer().getId())) {
 					log.info(
 							"entityId is present so going to see if it is present in db if yes then we have to update it");

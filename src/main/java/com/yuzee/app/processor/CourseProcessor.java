@@ -321,7 +321,7 @@ public class CourseProcessor {
 				if (!CollectionUtils.isEmpty(courseLanguages)) {
 					log.info("Filtering courseLanguages data based on courseId");
 					courseResponseDto.setLanguage(
-							courseLanguages.stream().collect(Collectors.toList()));
+					courseLanguages.stream().collect(Collectors.toList()));
 				} else {
 					courseResponseDto.setLanguage(new ArrayList<>());
 				}
@@ -405,7 +405,7 @@ public class CourseProcessor {
 		course.setName(courseDto.getName());
 		course.setIsActive(true);
 		log.info("Fetching faculty details from DB for facultyId = " + courseDto.getFacultyId());
-	     course.setFaculty(getFaculty(courseDto.getFacultyId()));
+	    course.setFaculty(getFaculty(courseDto.getFacultyId()));
 
 		if (!StringUtils.isEmpty(courseDto.getLevelIds())) {
 			log.info("Fetching level details from DB for levelId = " + courseDto.getLevelIds());

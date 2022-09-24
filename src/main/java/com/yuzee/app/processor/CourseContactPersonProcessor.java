@@ -60,8 +60,8 @@ public class CourseContactPersonProcessor {
 		List<String> courseContactPersons = course.getCourseContactPersons();
 
 		log.debug("going to save the list in db");
-		 courseContactPersons.addAll(courseContactPersonDtos.stream().map(e->e.getUserId()).collect(Collectors.toList()));
-		 course.setCourseContactPersons(courseContactPersons);
+		courseContactPersons.addAll(courseContactPersonDtos.stream().map(e->e.getUserId()).collect(Collectors.toList()));
+		course.setCourseContactPersons(courseContactPersons);
 		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 		coursesToBeSavedOrUpdated.add(course);
 		if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
@@ -130,7 +130,7 @@ public class CourseContactPersonProcessor {
 					courseContactPersons.removeIf(e -> !Utils
 							.containsIgnoreCase(userIds.stream().collect(Collectors.toList()), e));
 					courseContactPersonDtos.stream().forEach(dto -> {
-						Optional<String> existingContactPersonOp = courseContactPersons.stream()
+				    Optional<String> existingContactPersonOp = courseContactPersons.stream()
 								.filter(e -> e.equals(userIds)).findAny();
 						String courseContactPerson = null;
 						if (existingContactPersonOp.isPresent()) {

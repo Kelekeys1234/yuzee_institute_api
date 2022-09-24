@@ -66,8 +66,8 @@ public class CourseSemesterProcessor {
           List<SemesterSubject> semesterSubject= new ArrayList<>();
       	
 		log.info("loop the requested list to collect the entitities to be saved/updated");
-		courseSemesterDtos.stream().forEach(e -> {
-			CourseSemester courseSubject = new CourseSemester();
+	courseSemesterDtos.stream().forEach(e -> {
+		CourseSemester courseSubject = new CourseSemester();
 			if (!StringUtils.isEmpty(e.getCourseSemesterDtoId())) {
 				log.info(
 						"entityId is present so going to see if it is present in db if yes then we have to update it");
@@ -82,9 +82,9 @@ public class CourseSemesterProcessor {
 			courseSemesters.setDescription(e.getDescription());
 			courseSemesters.setName(e.getName());
 			courseSemesters.setType(e.getType());
-		   courseSemester.add(courseSemesters);
-		   course.setCourseSemesters(courseSemester);
-		saveUpdateSubjects(userId, courseSubject, e.getSubjects());
+		    courseSemester.add(courseSemesters);
+		    course.setCourseSemesters(courseSemester);
+		    saveUpdateSubjects(userId, courseSubject, e.getSubjects());
 		
 		});
 		

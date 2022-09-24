@@ -62,25 +62,21 @@ public class CourseFundingProcessor {
 		Institute institute = instituteDao.get(UUID.fromString(instituteId));
 		List<Course> courseToBeNotified = new ArrayList<>();
 		if (institute != null) {
-
-			commonProcessor.getFundingsByFundingNameIds(fundingNameId, true);
-
-			List<Course> instituteCourses = courseDao.findByInstituteId(instituteId);
-		
-			 if(ObjectUtils.isEmpty(institute)) {
-				 log.error(messageTranslator.toLocale("course_funding.institute.id.invalid", instituteId, Locale.US));
-					throw new NotFoundException(messageTranslator.toLocale("course_funding.institute.id.invalid", instituteId));
+	    commonProcessor.getFundingsByFundingNameIds(fundingNameId, true);
+	    List<Course> instituteCourses = courseDao.findByInstituteId(instituteId);
+	    if(ObjectUtils.isEmpty(institute)) {
+		   log.error(messageTranslator.toLocale("course_funding.institute.id.invalid", instituteId, Locale.US));
+		   throw new NotFoundException(messageTranslator.toLocale("course_funding.institute.id.invalid", instituteId));
 			 }
-			    
-			    	  for(Course instituteCourse:instituteCourses) {
-			    		  instituteCourse.setCourseFundings(fundingNameId);
-			    		  courseDao.addUpdateCourse(instituteCourse);
-			    		  courseToBeNotified.add(instituteCourse);
-			    	  }
-			    	 
-			    		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", courseToBeNotified);
+			  instituteCourses.stream().forEach(instituteCourse->{;
+			  instituteCourse.setCourseFundings(fundingNameId);
+			  courseDao.addUpdateCourse(instituteCourse);
+			  courseToBeNotified.add(instituteCourse);
+			    		  });
+			  
+			  commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", courseToBeNotified);
 		}
-		return fundingNameId;
+		      return fundingNameId;
 	}
 
 	@Transactional
@@ -89,22 +85,19 @@ public class CourseFundingProcessor {
 		log.info("inside CourseFundingProcessor.saveCourseFundings");
 		List<CourseFundingDto> courseFundingDto=request.getCourseFundingDtos();
 		Course course = courseDao.get(courseId);
-	   
 		log.info("checking course with id exist");
 		if (!ObjectUtils.isEmpty(course)) {
-		  log.info("inserting courseFunding inside fundingId");
+		    log.info("inserting courseFunding inside fundingId");
 			List<String>fundingId=course.getCourseFundings();
-			
 			courseFundingDto.stream().forEach(e->{
-				 fundingId.addAll(e.getFundingNameId().stream().collect(Collectors.toList()));
-
+		    fundingId.addAll(e.getFundingNameId().stream().collect(Collectors.toList()));
 			 });
-				List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
-				coursesToBeSavedOrUpdated.add(course);
-				if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
-					List<String> dtosToReplicate = fundingId.stream()
+			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+			coursesToBeSavedOrUpdated.add(course);
+			if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
+				List<String> dtosToReplicate = fundingId.stream()
 							.map(e -> modelMapper.map(e, String.class)).collect(Collectors.toList());
-					coursesToBeSavedOrUpdated
+				coursesToBeSavedOrUpdated
 							.addAll(replicateCourseFundings(userId, request.getLinkedCourseIds(), dtosToReplicate));
 				}
 				courseDao.saveAll(coursesToBeSavedOrUpdated);
@@ -121,24 +114,23 @@ public class CourseFundingProcessor {
 			List<String> linkedCourseIds) throws NotFoundException, ValidationException {
 		log.info("inside CourseFundingProcessor.deleteCourseFundingsByFundingNameIds");
 		Course course = courseDao.get(courseId);
-		  log.info("inserting courseFunding inside fundingId");
-		  List<String>fundingId=course.getCourseFundings();
-		  
-		  log.info("checking if course with Id exist");
-			if (!ObjectUtils.isEmpty(course)) { 
-				log.info("removing fundingNameId");
-               fundingId.removeIf(x->fundingNameIds.contains(x));
-        	  course.setCourseFundings(fundingId);
-            	log.info("coursesToBeAdded");
-                List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
-                 coursesToBeSavedOrUpdated.add(course);
-       			if (!CollectionUtils.isEmpty(linkedCourseIds)) {
-       				List<String> dtosToReplicate = fundingId.stream()
+	    log.info("inserting courseFunding inside fundingId");
+		List<String>fundingId=course.getCourseFundings();
+		log.info("checking if course with Id exist");
+	    if (!ObjectUtils.isEmpty(course)) { 
+		    log.info("removing fundingNameId");
+            fundingId.removeIf(x->fundingNameIds.contains(x));
+        	course.setCourseFundings(fundingId);
+            log.info("coursesToBeAdded");
+            List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
+            coursesToBeSavedOrUpdated.add(course);
+       	    if (!CollectionUtils.isEmpty(linkedCourseIds)) {
+       		List<String> dtosToReplicate = fundingId.stream()
        						.map(e -> modelMapper.map(e, String.class)).collect(Collectors.toList());
-       				coursesToBeSavedOrUpdated.addAll(replicateCourseFundings(userId, linkedCourseIds, dtosToReplicate));
+       		coursesToBeSavedOrUpdated.addAll(replicateCourseFundings(userId, linkedCourseIds, dtosToReplicate));
        				
        			}
-       			courseDao.saveAll(coursesToBeSavedOrUpdated);
+       		courseDao.saveAll(coursesToBeSavedOrUpdated);
             
             }else {
     			log.error(messageTranslator.toLocale("course_funding.course.id.invalid", courseId, Locale.US));
