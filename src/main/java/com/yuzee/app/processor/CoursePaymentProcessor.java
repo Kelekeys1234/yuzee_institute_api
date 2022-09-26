@@ -71,8 +71,8 @@ public class CoursePaymentProcessor {
 			coursePayment.setCreatedOn(new Date());
 	        course.setCoursePayment(coursePayment);
 	        courseDao.addUpdateCourse(course);
-		
-			// publishSystemEventHandler.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
+	        
+		publishSystemEventHandler.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
 		}
 	}
 	

@@ -84,8 +84,7 @@ public class CourseMinRequirementProcessor {
 
 		log.info("Send notification for course content updates");
 		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-           
-		// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+		commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		return savedCourses.get(0).getCourseMinRequirements().stream().map(e -> modelToDto(e)).toList();
 	}
 	
@@ -166,8 +165,7 @@ public class CourseMinRequirementProcessor {
 		}
 		courseDao.saveAll(coursesToBeSavedOrUpdated);
 		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-
-		// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+		commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);s
 	}
 
 	

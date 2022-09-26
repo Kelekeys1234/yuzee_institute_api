@@ -68,15 +68,16 @@ public class CourseFundingProcessor {
 		   log.error(messageTranslator.toLocale("course_funding.institute.id.invalid", instituteId, Locale.US));
 		   throw new NotFoundException(messageTranslator.toLocale("course_funding.institute.id.invalid", instituteId));
 			 }
-			  instituteCourses.stream().forEach(instituteCourse->{;
-			  instituteCourse.setCourseFundings(fundingNameId);
-			  courseDao.addUpdateCourse(instituteCourse);
-			  courseToBeNotified.add(instituteCourse);
+			instituteCourses.stream().forEach(instituteCourse->{;
+			instituteCourse.setCourseFundings(fundingNameId);
+			courseDao.addUpdateCourse(instituteCourse);
+			courseToBeNotified.add(instituteCourse);
 			    		  });
 			  
-			  commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", courseToBeNotified);
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", courseToBeNotified);
+	
 		}
-		      return fundingNameId;
+		    return fundingNameId;
 	}
 
 	@Transactional
@@ -101,7 +102,7 @@ public class CourseFundingProcessor {
 							.addAll(replicateCourseFundings(userId, request.getLinkedCourseIds(), dtosToReplicate));
 				}
 				courseDao.saveAll(coursesToBeSavedOrUpdated);
-
+				commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 	
 		} else {
 			log.error(messageTranslator.toLocale("course_funding.course.id.invalid", courseId, Locale.US));
@@ -131,6 +132,7 @@ public class CourseFundingProcessor {
        				
        			}
        		courseDao.saveAll(coursesToBeSavedOrUpdated);
+       	    commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
             
             }else {
     			log.error(messageTranslator.toLocale("course_funding.course.id.invalid", courseId, Locale.US));

@@ -124,7 +124,7 @@ public class CourseCareerOutcomeProcessor {
 				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 			}
 
-			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			    commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error(messageTranslator.toLocale("course_id.invalid", courseId, Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("course_id.invalid", courseId));
@@ -156,7 +156,7 @@ public class CourseCareerOutcomeProcessor {
 
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 
-			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+		    commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error(messageTranslator.toLocale("course_career.outcome.id.invalid", Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("course_career.outcome.id.invalid"));

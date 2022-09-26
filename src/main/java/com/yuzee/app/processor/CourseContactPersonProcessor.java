@@ -54,8 +54,8 @@ public class CourseContactPersonProcessor {
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		log.info("going to see if user ids are valid");
 
-	//	commonProcessor.validateAndGetUsersByUserIds(userId,
-		//		courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
+		commonProcessor.validateAndGetUsersByUserIds(userId,
+			courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
 		log.debug("going to process the request");
 		List<String> courseContactPersons = course.getCourseContactPersons();
 
@@ -77,7 +77,7 @@ public class CourseContactPersonProcessor {
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 		}
 
-		// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+		    commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 	}
 
 	@Transactional
@@ -103,8 +103,8 @@ public class CourseContactPersonProcessor {
 						.addAll(replicateCourseContactPersons(userId, linkedCourseIds, dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
-		//	commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 			});
 		} else {
 			log.error(messageTranslator.toLocale("course_contact_person.user.id.invalid", Locale.US));

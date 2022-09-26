@@ -149,7 +149,7 @@ public class CourseEnglishEligibilityProcessor {
 		courseDao.saveAll(coursesToBeSavedOrUpdated);
 
 		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-//			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+        commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error(messageTranslator.toLocale("english_eligibility.ids.invalid", Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("english_eligibility.ids.invalid"));

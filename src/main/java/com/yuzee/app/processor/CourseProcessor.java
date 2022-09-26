@@ -594,9 +594,6 @@ public class CourseProcessor {
 					courseDeliveryMode = existingCourseDeliveryModeOp.get();
 				}
 
-
-//				courseDeliveryMode.setCourse(course);
-
 				log.info("Adding additional infos like deliveryType, studyMode etc");
 
 				courseDeliveryMode.setDeliveryType(e.getDeliveryType());
@@ -607,15 +604,9 @@ public class CourseProcessor {
 				courseDeliveryMode.setDuration(e.getDuration());
 				courseDeliveryMode.setDurationTime(e.getDurationTime());
 
-//				courseDeliveryMode.setCourse(course);
-
 				courseDeliveryModesProcessor.saveUpdateCourseFees(loggedInUserId, courseDeliveryMode, e.getFees());
 				courseDeliveryModesProcessor.saveUpdateCourseDeliveryModeFunding(loggedInUserId, courseDeliveryMode,
 						e.getFundings());
-//				if (StringUtils.isEmpty(courseDeliveryMode.getId())) {
-//					dbCourseDeliveryModes.add(courseDeliveryMode);
-//				}
-//				courseDeliveryMode.setAuditFields(loggedInUserId);
 				course.setCourseDeliveryModes(dbCourseDeliveryModes);
 				courseDao.addUpdateCourse(course);
 
@@ -727,9 +718,9 @@ public class CourseProcessor {
 				courses.stream().forEach(course -> {
 					try {
 						log.info("Calling Storage service to fetch course images");
-//						List<StorageDto> storageDTOList = storageHandler.getStorages(course.getInstituteId(),
-//								EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES);
-//						course.setStorageList(storageDTOList);
+						List<StorageDto> storageDTOList = storageHandler.getStorages(course.getInstituteId(),
+								EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES);
+						course.setStorageList(storageDTOList);
 					} catch (NotFoundException | InvokeException e) {
 						log.error("Error invoking Storage service exception {}", e);
 					}
@@ -850,10 +841,6 @@ public class CourseProcessor {
 		log.info("Filtering distinct courses based on courseId and collect in list");
 		List<CourseResponseDto> courseResponseFinalResponse = courseResponseDtos.stream()
 				.filter(Utils.distinctByKey(CourseResponseDto::getId)).collect(Collectors.toList());
-
-		// log.info("Filtering distinct courseIds");
-		// List<String> courseIds =
-		// courseResponseDtos.stream().filter(CommonUtil.distinctByKey(CourseResponseDto::getId)).map(CourseResponseDto::getId).collect(Collectors.toList());
 
 		log.info("Calling Storage service to get images based on entityId");
 		List<StorageDto> storageDTOList = storageHandler.getStorages(
