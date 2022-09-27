@@ -165,7 +165,7 @@ public class CourseMinRequirementProcessor {
 		}
 		courseDao.saveAll(coursesToBeSavedOrUpdated);
 		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-		commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);s
+		commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 	}
 
 	
