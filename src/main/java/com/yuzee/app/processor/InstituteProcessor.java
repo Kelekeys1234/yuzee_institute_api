@@ -266,7 +266,7 @@ public class InstituteProcessor {
 						.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
 			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
-			// publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
+		 publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
 		} catch (Exception exception) {
 			log.error("Exception while saving institutes having exception ", exception.getMessage());
 			throw exception;
