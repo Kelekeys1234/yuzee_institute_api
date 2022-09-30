@@ -3,6 +3,7 @@ package com.yuzee.app.processor;
 import java.io.File;
 
 
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -379,8 +380,10 @@ public class CourseProcessor {
 			course = new Course();
 			course.setName(courseDto.getName());
 			course.setId(courseId);
+
 			readableIdProcessor.setReadableIdForCourse(course);
-		} else {
+
+		} else{
 
 			course = courseDao.get(courseId);
 			Course copyCourse = new Course();
@@ -665,7 +668,7 @@ public class CourseProcessor {
 		course = courseDao.addUpdateCourse(course);
 		 timingProcessor.saveUpdateDeleteTimings(loggedInUserId,
 		 EntityTypeEnum.COURSE, courseDto.getCourseTimings(),
-		 course.getId());
+     	 course.getId());
 		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
 
 		return course.getId();

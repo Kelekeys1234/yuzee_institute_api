@@ -63,11 +63,11 @@ public class CourseSemesterProcessor {
  
 		if (!ObjectUtils.isEmpty(course)) {
           List<CourseSemester> courseSemester = course.getCourseSemesters();
-          List<SemesterSubject> semesterSubject= new ArrayList<>();
+        List<SemesterSubject> semesterSubject= new ArrayList<>();
       	
 		log.info("loop the requested list to collect the entitities to be saved/updated");
-	courseSemesterDtos.stream().forEach(e -> {
-		CourseSemester courseSubject = new CourseSemester();
+	    courseSemesterDtos.stream().forEach(e -> {
+	   	CourseSemester courseSubject = new CourseSemester();
 			if (!StringUtils.isEmpty(e.getCourseSemesterDtoId())) {
 				log.info(
 						"entityId is present so going to see if it is present in db if yes then we have to update it");

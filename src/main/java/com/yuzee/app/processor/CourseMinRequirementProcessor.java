@@ -105,7 +105,7 @@ public class CourseMinRequirementProcessor {
 	        			}
 						
 						courseMinRequirementDtos.stream().forEach(dtos -> {
-	        				CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
+	        			CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
 	        				if (StringUtils.hasText(dtos.getCourseMinRequirementsId())) {
 	        					log.info(
 	        							"entityId is present so going to see if it is present in db if yes then we have to update it");
@@ -237,14 +237,14 @@ public class CourseMinRequirementProcessor {
 					.collect(Collectors.toMap(CourseMinRequirementSubject::getId, e -> e));
 
 			subjectDtos.stream().forEach(dto -> {
-				CourseMinRequirementSubject model = new CourseMinRequirementSubject();
-				if (StringUtils.hasText(dto.getId())) {
-					log.info("id is present so going to see if it is present in db if yes then we have to update it");
+			CourseMinRequirementSubject model = new CourseMinRequirementSubject();
+			if (StringUtils.hasText(dto.getId())) {
+				log.info("id is present so going to see if it is present in db if yes then we have to update it");
 					model = existingSubjectMap.get(dto.getId());
 					if (ObjectUtils.isEmpty(model)) {
 						log.error("invalid course min requirement subject id : {}", dto.getId());
-						throw new RuntimeNotFoundException(
-								"invalid course min requirement subject id : " + dto.getId());
+					throw new RuntimeNotFoundException(
+							"invalid course min requirement subject id : " + dto.getId());
 					}
 				} else {
 					subjects.add(model);

@@ -95,7 +95,7 @@ public class CoursePaymentProcessor {
 				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", Arrays.asList(course));
 
 				log.info("Calling elastic service to save/update course on elastic index having courseId: ", courseId);
-				// publishSystemEventHandler.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
+				 publishSystemEventHandler.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
 			} catch (ValidationException e) {
 				log.error(messageTranslator.toLocale("course_payment.delete.error", Locale.US));
 				throw new InternalServerException(messageTranslator.toLocale("course_payment.delete.error"));

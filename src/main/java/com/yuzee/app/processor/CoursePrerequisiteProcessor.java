@@ -50,7 +50,6 @@ public class CoursePrerequisiteProcessor {
 			@Valid CoursePreRequisiteRequestWrapper request)
 			throws NotFoundException, ValidationException, InternalServerException {
 		log.info("inside CoursePrerequisiteProcessor.saveUpdatePreRequisites");
-		List<CoursePreRequisiteDto> coursePreRequisiteDtos = request.getCoursePreRequisiteDtos();
 		Course course = courseDao.get(courseId);
 		if (!ObjectUtils.isEmpty(course)) {
 			List<CoursePrerequisite> coursePrerequisiteBeforeUpdate = course.getCoursePrerequisites().stream()

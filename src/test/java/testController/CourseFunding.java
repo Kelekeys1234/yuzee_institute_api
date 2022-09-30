@@ -94,11 +94,10 @@ public class CourseFunding {
 		headers.add("userId", userId);
 		HttpEntity<CourseFundingRequestWrapper> entity = new HttpEntity<>(request, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+"8772d763-4829-4000-a860-2c79a82905c7"
+				api +PATH_SEPARATOR+"96a2e11b-d64b-4964-9d28-2a4d7a41d944"
 				+PATH_SEPARATOR +"funding",
 				HttpMethod.POST, entity, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-  }
+    }
 	public void deleteFunding() {
 		Map<String,String> courseCareer= new HashMap<>();
 		courseCareer.put("course_career_outcome_ids", Id);
