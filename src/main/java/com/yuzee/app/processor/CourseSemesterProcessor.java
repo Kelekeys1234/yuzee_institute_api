@@ -110,10 +110,9 @@ public class CourseSemesterProcessor {
 				courseSemesterSubjects.removeIf(e->e.getCourseSemesterId().equals(a));
 				List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 				coursesToBeSavedOrUpdated.add(course);
-				courseDao.saveAll(coursesToBeSavedOrUpdated);
-			});		
-			
-			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+				courseDao.saveAll(coursesToBeSavedOrUpdated);	
+			 commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			});	
 		} else {
 			log.error("one or more invalid course_subject_ids");
 			throw new NotFoundException("one or more invalid course_subject_ids");
