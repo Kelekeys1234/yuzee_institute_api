@@ -1,6 +1,7 @@
 package com.yuzee.app.processor;
 
 import java.io.File;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.PaginationUtilDto;
 import com.yuzee.common.lib.dto.application.EnableApplicationDto;
 import com.yuzee.common.lib.dto.connection.FollowerCountDto;
+import com.yuzee.common.lib.dto.institute.InstituteFundingDto;
 import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
 import com.yuzee.common.lib.dto.institute.TimingDto;
@@ -149,8 +151,6 @@ public class InstituteProcessor {
 	@Autowired
 	private ReviewHandler reviewHandler;
 
-//	@Autowired
-//	private ScholarshipDao scholarshipDao;
 
 	@Autowired
 	CommonProcessor commonProcessor;
@@ -158,9 +158,6 @@ public class InstituteProcessor {
 	@Autowired
 	private ConversionProcessor conversionProcessor;
 
-//    @Autowired
-//    @Qualifier("importInstituteJob")
-//    private Job job;
 
 	@Autowired
 	private JobLauncher jobLauncher;
@@ -266,7 +263,7 @@ public class InstituteProcessor {
 						.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
 			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
-		 publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
+		    publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
 		} catch (Exception exception) {
 			log.error("Exception while saving institutes having exception ", exception.getMessage());
 			throw exception;
@@ -342,7 +339,7 @@ public class InstituteProcessor {
 			instituteElasticDtoList.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
 
 			log.info("Calling elastic service to save instiutes on index");
-//            publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
+            publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
 		} catch (Exception exception) {
 			log.error("Exception while updating institute having exception ={}", exception.getMessage());
 			throw exception;
@@ -416,18 +413,11 @@ public class InstituteProcessor {
 		institute.setInstituteDomesticRankingHistories(instituteRequest.getInstituteDomesticRankingHistories());
 		institute.setPostalCode(instituteRequest.getPostalCode());
 		institute.setWebsite(instituteRequest.getWebsite());
-//        if (!StringUtils.isEmpty(instituteRequest.getInstituteCategoryTypeId())) {
-//            institute.setInstituteCategoryType(getInstituteCategoryType(instituteRequest.getInstituteCategoryTypeId()));
-//        } else {
-//            log.error(messageTranslator.toLocale("institute-processor.required.category_type_id", Locale.US));
-//            throw new ValidationException(messageTranslator.toLocale("institute-processor.required.category_type_id"));
-//        }
+
 		institute.setState(instituteRequest.getStateName());
 		institute.setAddress(instituteRequest.getAddress());
 		institute.setEmail(instituteRequest.getEmail());
 		institute.setPhoneNumber(instituteRequest.getPhoneNumber());
-		// institute.setLatitude(instituteRequest.getLatitude());
-//		institute.setLongitude(instituteRequest.getLongitude());
 		Location location = new Location(UUID.randomUUID().toString(),
 				new GeoJsonPoint(instituteRequest.getLatitude(), instituteRequest.getLongitude()));
 		institute.setLocation(location);
@@ -444,10 +434,10 @@ public class InstituteProcessor {
 		institute.setDomesticBoardingFee(instituteRequest.getDomesticBoardingFee());
 		institute.setInternationalBoardingFee(instituteRequest.getInternationalBoardingFee());
 		institute.setTagLine(instituteRequest.getTagLine());
-//        saveUpdateInstituteFundings("API", institute,
-//                CollectionUtils.isEmpty(instituteRequest.getInstituteFundings()) ? null : instituteRequest.getInstituteFundings()
-//                        .stream().map(InstituteFundingDto::getFundingNameId).collect(Collectors.toList()));
-//        saveUpdateInstituteProviderCodes("API", institute, instituteRequest.getInstituteProviderCodes());
+        saveUpdateInstituteFundings("API", institute,
+                CollectionUtils.isEmpty(instituteRequest.getInstituteFundings()) ? null : instituteRequest.getInstituteFundings()
+                        .stream().map(e->e.getFundingNameId()).collect(Collectors.toList()));
+        saveUpdateInstituteProviderCodes("API", institute, instituteRequest.getInstituteProviderCodes());
 		try {
 			institute = instituteDao.addUpdateInstitute(institute);
 		} catch (DataIntegrityViolationException exception) {
@@ -639,10 +629,10 @@ public class InstituteProcessor {
 		dto.setName(institute.getName());
 		log.info("fetching institute videos from DB having countryName = " + institute.getCountryName()
 				+ " and instituteName = " + institute.getName());
-		// dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountryName(),
-		// institute.getName()));
+		 dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountryName(),
+		 institute.getName()));
 		log.info("Get total course count from DB for instituteId = " + institute.getId());
-		// dto.setCourseCount(courseDao.getTotalCourseCountForInstitute(institute.getId().toString()));
+	    dto.setCourseCount(courseDao.getTotalCourseCountForInstitute(institute.getId().toString()));
 		dto.setVerified(institute.isVerified());
 		return dto;
 	}
@@ -666,11 +656,10 @@ public class InstituteProcessor {
 		log.debug("Inside getById() method");
 		log.info("Fetching institute from DB for instituteId = {}", id);
 		Institute institute = new Institute();
-		// UUID sameUuid = UUID.fromString(id);
-//        if (isReadableId) {
-//            institute = instituteDao.findByReadableId(id);
-//        } else {
-//        }
+        if (isReadableId) {
+            institute = instituteDao.findByReadableId(id);
+        } else {
+        }
 		institute = instituteDao.get(UUID.fromString(id));
 		if (institute == null) {
 			log.error(messageTranslator.toLocale("institute-processor.not_found.id", id, Locale.US));
@@ -945,13 +934,10 @@ public class InstituteProcessor {
 	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
 	public List<InstituteDomesticRankingHistoryDto> getHistoryOfDomesticRanking(final String instituteId) {
 		log.debug("Inside getHistoryOfDomesticRanking() method");
-//        List<InstituteDomesticRankingHistoryDto> domesticRankingHistoryObj = null;
 		log.info("Calling DAO layer to fetch Domestic Ranking for instituteId = " + instituteId);
 		Optional<Institute> institute = instituteRepository.findById(instituteId);
 		;
 		List<InstituteDomesticRankingHistoryDto> domesticRankingHistoryDto = new ArrayList<>();
-		// List<InstituteDomesticRankingHistory> domesticRankingHistories =
-		// instituteRepository.getDomesticHistoryRankingByInstituteId(instituteId);
 		if (institute.isPresent()) {
 			List<InstituteDomesticRankingHistory> domesticRankingHistoryFromDB = institute.get()
 					.getInstituteDomesticRankingHistories();
@@ -1221,7 +1207,6 @@ public class InstituteProcessor {
 		CourseScholarshipAndFacultyCountDto dto = new CourseScholarshipAndFacultyCountDto();
 		dto.setCourseCount(courseDao.getTotalCourseCountForInstitute(instituteId));
 		dto.setFacultyCount(instituteDao.getInstituteFaculties(instituteId).size());
-		// dto.setScholarshipCount(scholarshipDao.getCountByInstituteId(instituteId));
 		return dto;
 	}
 
@@ -1238,14 +1223,11 @@ public class InstituteProcessor {
 		List<Institute> institutes = instituteDao.findByIds(uuidIds);
 		if (!CollectionUtils.isEmpty(institutes)) {
 			for (Institute e : institutes) {
-				// for (Location r : e.getLocation()) {
-
 				instituteResponseDtos.add(new InstituteResponseDto(e.getName(), e.getWorldRanking(), e.getCityName(),
 						e.getCountryName(), e.getWebsite(), e.getAboutInfo(), e.getLocation().getLocation().getY(),
 						e.getLocation().getLocation().getX(), e.getPhoneNumber(), e.getEmail(), e.getDomesticRanking(),
 						e.getCreatedOn()));
 
-				// }
 			}
 		}
 		List<StorageDto> instituteLogos = storageHandler.getStorages(instituteIds, EntityTypeEnum.INSTITUTE,
@@ -1333,7 +1315,7 @@ public class InstituteProcessor {
 		InstituteSyncDTO instituteElasticSearchDto = populateElasticDto(existingInstitute);
 
 		log.info("Calling elastic service to save instiutes on index");
-		// publishSystemEventHandler.syncInstitutes(Arrays.asList(instituteElasticSearchDto));
+		publishSystemEventHandler.syncInstitutes(Arrays.asList(instituteElasticSearchDto));
 	}
 
 	@Async
@@ -1348,7 +1330,6 @@ public class InstituteProcessor {
 		JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
 		jobParametersBuilder.addString("csv-file", f.getAbsolutePath());
 		jobParametersBuilder.addString("execution-id", "InstituteUploader-" + UUID.randomUUID().toString());
-		// jobLauncher.run(job, jobParametersBuilder.toJobParameters());
 	}
 
 	@Async

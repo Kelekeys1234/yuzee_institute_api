@@ -123,7 +123,7 @@ public interface CourseDao {
 
 	public void deleteCourse(String id);
 
-	public List<Course> findByInstituteId(String instituteId);
+	public  List<Course> findByInstituteId(String instituteId);
 
 	public List<Course> findAllById(List<String> ids);
 

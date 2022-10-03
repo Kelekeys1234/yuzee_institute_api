@@ -19,8 +19,8 @@ public interface CourseRepository extends MongoRepository<Course, String> {
 
 	public List<Course> findByInstituteIdAndFacultyId(String instituteId, String facultyId);
 
-	// public List<Course> findByInstituteIds(Pageable pageable, String
-	// instituteId);
+	 public List<Course> findByInstituteIds(Pageable pageable, String
+	 instituteId);
 
 	public List<Course> findByInstituteId(String instituteId);
 
