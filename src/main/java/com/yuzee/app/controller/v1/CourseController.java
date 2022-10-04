@@ -91,7 +91,7 @@ public class CourseController implements CourseInterface {
 	public ResponseEntity<?> saveBasicCourse(final String userId, String instituteId, final CourseRequest course)
 			throws ValidationException, NotFoundException, ForbiddenException, InvokeException {
 		log.info("Start process to save new course basic details in DB");
-		String courseId = courseProcessor.saveOrUpdateBasicCourse(userId, instituteId, course, null);
+		String courseId = courseProcessor.saveOrUpdateBasicCourse(userId, instituteId, course, UUID.randomUUID().toString());
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage(messageTranslator.toLocale("course.added")).create();
 	}

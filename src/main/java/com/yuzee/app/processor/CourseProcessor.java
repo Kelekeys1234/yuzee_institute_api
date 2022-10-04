@@ -1910,11 +1910,13 @@ public class CourseProcessor {
 	public String saveOrUpdateBasicCourse(String loggedInUserId, String instituteId, CourseRequest courseDto,
 			String courseId) throws ForbiddenException, NotFoundException, ValidationException, InvokeException {
 		log.info("inside CourseProcessor.prepareCourseModelFromCourseRequest");
-		Course course = null;
-		if (StringUtils.isEmpty(courseId)) {
+		Course course = new Course();
+		course = courseDao.get(courseId);
+		if (StringUtils.isEmpty(course)) {
 			course = new Course();
 			course.setIsActive(true);
 			course.setName(courseDto.getName());
+			course.setId(courseId);
 			readableIdProcessor.setReadableIdForCourse(course);
 		} else {
 			course = courseDao.get(courseId);
@@ -1937,6 +1939,7 @@ public class CourseProcessor {
 			}
 
 			BeanUtils.copyProperties(course, copyCourse);
+			course.setCreatedBy(loggedInUserId);
 			copyCourse.setCourseLanguages(courseLanguages);
 			copyCourse.setCourseDeliveryModes(courseDeliveryModes);
 			copyCourse.setOffCampusCourse(copyOffCampusCourse);
@@ -1955,6 +1958,8 @@ public class CourseProcessor {
 		}
 		log.info("Fetching institute details from DB for instituteId = ", courseDto.getInstituteId());
 		// course.setInstitute(getInstititute(instituteId));
+		course.setCreatedBy(loggedInUserId);
+		course.setInstitute(getInstititute(instituteId));
 		course.setDescription(courseDto.getDescription());
 		course.setName(courseDto.getName());
 		course.setDomesticStudentProcedureId(courseDto.getDomesticStudentProcedureId());
@@ -2037,8 +2042,7 @@ public class CourseProcessor {
 	@Transactional
 	public List<Course> validateAndGetCourseByIds(List<String> courseIds) throws NotFoundException {
 		log.info("inside validateAndGetInstituteByIds");
-
-		List<Course> courses = courseDao.findAllById(courseIds);
+        List<Course> courses = courseDao.findAllById(courseIds);
 		if (courses.size() != courseIds.size()) {
 			log.error(messageTranslator.toLocale("courses.ids.notfound", Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("courses.ids.notfound"));

@@ -61,15 +61,12 @@ public class EnglishEligibilityController {
 
 	@DisplayName("Add EnglishEligibility")
 	@Test
-	public void AddEnglishEligibility() {
+	public void addEnglishEligibility() {
 
 		CourseEnglishEligibilityDto courseEnglishEligibilityDto = new CourseEnglishEligibilityDto();
 		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
-
 		CourseEnglishEligibilityRequestWrapper requestWrapper = new CourseEnglishEligibilityRequestWrapper();
-
 		ValidList<CourseEnglishEligibilityDto> courseEnglishEligibilityDtoList = new ValidList<>();
-
 		courseEnglishEligibilityDtoo.setEnglishType("demo");
 		courseEnglishEligibilityDtoo.setReading(7.5);
 		courseEnglishEligibilityDtoo.setWriting(8.5);
@@ -88,10 +85,8 @@ public class EnglishEligibilityController {
 		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDtoo);
 
 		List<String> linked_course_ids = new ArrayList<>();
-		linked_course_ids.add("6319e88bf1a3d52e7cd86bdb");
-
+		linked_course_ids.add("527cf280-9206-461e-ad2a-49b00d9d5be2");
 		requestWrapper.setCourseEnglishEligibilityDtos(courseEnglishEligibilityDtoList);
-
 		requestWrapper.setLinkedCourseIds(linked_course_ids);
 
 		HttpHeaders headers = new HttpHeaders();
@@ -101,7 +96,7 @@ public class EnglishEligibilityController {
 		HttpEntity<CourseEnglishEligibilityRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 		ResponseEntity<CourseEnglishEligibilityRequestWrapper> response = testRestTemplate
 				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "6319e88bf1a3d52e7cd86bdb"
+						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "527cf280-9206-461e-ad2a-49b00d9d5be2"
 								+ PATH_SEPARATOR + "english-eligibility",
 						HttpMethod.POST, entity, CourseEnglishEligibilityRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -110,15 +105,12 @@ public class EnglishEligibilityController {
 
 	@DisplayName("Update EnglishEligibility")
 	@Test
-	public void UpdateEnglishEligibility() {
+	public void updateEnglishEligibility() {
 
 		CourseEnglishEligibilityDto courseEnglishEligibilityDto = new CourseEnglishEligibilityDto();
 		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
-
 		CourseEnglishEligibilityRequestWrapper requestWrapper = new CourseEnglishEligibilityRequestWrapper();
-
 		ValidList<CourseEnglishEligibilityDto> courseEnglishEligibilityDtoList = new ValidList<>();
-
 		courseEnglishEligibilityDtoo.setEnglishType("demo");
 		courseEnglishEligibilityDtoo.setReading(8.5);
 		courseEnglishEligibilityDtoo.setWriting(9.5);
@@ -137,10 +129,8 @@ public class EnglishEligibilityController {
 		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDtoo);
 
 		List<String> linked_course_ids = new ArrayList<>();
-		linked_course_ids.add("631f106b3930153392f1d07e");
-
+		linked_course_ids.add("fda8c495-f2df-4f0e-a154-169f982eb292");
 		requestWrapper.setCourseEnglishEligibilityDtos(courseEnglishEligibilityDtoList);
-
 		requestWrapper.setLinkedCourseIds(linked_course_ids);
 
 		HttpHeaders headers = new HttpHeaders();
@@ -150,7 +140,7 @@ public class EnglishEligibilityController {
 		HttpEntity<CourseEnglishEligibilityRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 		ResponseEntity<CourseEnglishEligibilityRequestWrapper> response = testRestTemplate
 				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "631f106b3930153392f1d07e"
+						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "fda8c495-f2df-4f0e-a154-169f982eb292"
 								+ PATH_SEPARATOR + "english-eligibility",
 						HttpMethod.POST, entity, CourseEnglishEligibilityRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -159,28 +149,22 @@ public class EnglishEligibilityController {
 
 	@DisplayName("Remove EnglishEligibility")
 	@Test
-	public void RemoveEnglishEligibility() {
+	public void removeEnglishEligibility() {
 
 		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
-
 		CourseEnglishEligibilityRequestWrapper requestWrapper = new CourseEnglishEligibilityRequestWrapper();
-
 		ValidList<CourseEnglishEligibilityDto> courseEnglishEligibilityDtoList = new ValidList<>();
-
 		courseEnglishEligibilityDtoo.setEnglishType("demo");
 		courseEnglishEligibilityDtoo.setReading(8.5);
 		courseEnglishEligibilityDtoo.setWriting(9.5);
 		courseEnglishEligibilityDtoo.setSpeaking(7.5);
 		courseEnglishEligibilityDtoo.setListening(4.5);
 		courseEnglishEligibilityDtoo.setOverall(8.5);
-
 		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDtoo);
 
 		List<String> linked_course_ids = new ArrayList<>();
-		linked_course_ids.add("631f32473930153392f1d081");
-
+		linked_course_ids.add("75a34cb9-1034-404c-9d7c-db704cf5b659");
 		requestWrapper.setCourseEnglishEligibilityDtos(courseEnglishEligibilityDtoList);
-
 		requestWrapper.setLinkedCourseIds(linked_course_ids);
 
 		HttpHeaders headers = new HttpHeaders();
@@ -190,7 +174,7 @@ public class EnglishEligibilityController {
 		HttpEntity<CourseEnglishEligibilityRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 		ResponseEntity<CourseEnglishEligibilityRequestWrapper> response = testRestTemplate
 				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "631f32473930153392f1d081"
+						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "75a34cb9-1034-404c-9d7c-db704cf5b659"
 								+ PATH_SEPARATOR + "english-eligibility",
 						HttpMethod.POST, entity, CourseEnglishEligibilityRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -199,18 +183,88 @@ public class EnglishEligibilityController {
 
 	@DisplayName("DELETE All EnglishEligibility")
 	@Test
-	public void DeleteAllEnglishEligibility() {
+	public void deleteAllEnglishEligibility() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("userId", userId);
 
-		String url = "/api/v1/course/632079c67cc122a6af06e439/english-eligibility?linked_course_ids=632079c67cc122a6af06e439";
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		ResponseEntity<String> response = testRestTemplate
+				.exchange(
+						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+								+ "96a2e11b-d64b-4964-9d28-2a4d7a41d944" + PATH_SEPARATOR + "english-eligibility",
+						HttpMethod.DELETE, entity, String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
+	
+	
+	@DisplayName("Send empty_englishType")
+	@Test
+	public void sendEmptyEnglishEligibility() {
 
-		HttpEntity<String> entityer = new HttpEntity<>(null, headers);
-		ResponseEntity<String> responseds = testRestTemplate.exchange(url, HttpMethod.DELETE, entityer, String.class);
-		assertThat(responseds.getStatusCode()).isEqualTo(HttpStatus.OK);
+		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
+		CourseEnglishEligibilityRequestWrapper requestWrapper = new CourseEnglishEligibilityRequestWrapper();
+		ValidList<CourseEnglishEligibilityDto> courseEnglishEligibilityDtoList = new ValidList<>();
+		courseEnglishEligibilityDtoo.setEnglishType("");
+		courseEnglishEligibilityDtoo.setReading(8.5);
+		courseEnglishEligibilityDtoo.setWriting(9.5);
+		courseEnglishEligibilityDtoo.setSpeaking(7.5);
+		courseEnglishEligibilityDtoo.setListening(4.5);
+		courseEnglishEligibilityDtoo.setOverall(8.5);
+		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDtoo);
+
+		List<String> linked_course_ids = new ArrayList<>();
+		linked_course_ids.add("ef5f52ab-d303-477f-9db4-e0633fba23bc");
+		requestWrapper.setCourseEnglishEligibilityDtos(courseEnglishEligibilityDtoList);
+		requestWrapper.setLinkedCourseIds(linked_course_ids);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("userId", userId);
+
+		HttpEntity<CourseEnglishEligibilityRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
+		ResponseEntity<CourseEnglishEligibilityRequestWrapper> response = testRestTemplate
+				.exchange(
+						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "ef5f52ab-d303-477f-9db4-e0633fba23bc"
+								+ PATH_SEPARATOR + "english-eligibility",
+						HttpMethod.POST, entity, CourseEnglishEligibilityRequestWrapper.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
 	}
 
 
+	@DisplayName("Send wrong_CourseID")
+	@Test
+	public void sendWrongCourseId() {
+
+		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
+		CourseEnglishEligibilityRequestWrapper requestWrapper = new CourseEnglishEligibilityRequestWrapper();
+		ValidList<CourseEnglishEligibilityDto> courseEnglishEligibilityDtoList = new ValidList<>();
+		courseEnglishEligibilityDtoo.setEnglishType("demo");
+		courseEnglishEligibilityDtoo.setReading(8.5);
+		courseEnglishEligibilityDtoo.setWriting(9.5);
+		courseEnglishEligibilityDtoo.setSpeaking(7.5);
+		courseEnglishEligibilityDtoo.setListening(4.5);
+		courseEnglishEligibilityDtoo.setOverall(8.5);
+		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDtoo);
+
+		List<String> linked_course_ids = new ArrayList<>();
+		linked_course_ids.add("ef5f52ab-d303-477f-9db4-e0633fba23bc");
+		requestWrapper.setCourseEnglishEligibilityDtos(courseEnglishEligibilityDtoList);
+		requestWrapper.setLinkedCourseIds(linked_course_ids);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("userId", userId);
+
+		HttpEntity<CourseEnglishEligibilityRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
+		ResponseEntity<CourseEnglishEligibilityRequestWrapper> response = testRestTemplate
+				.exchange(
+						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "63330d3859be418deeb59ll"
+								+ PATH_SEPARATOR + "english-eligibility",
+						HttpMethod.POST, entity, CourseEnglishEligibilityRequestWrapper.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+	}
 }

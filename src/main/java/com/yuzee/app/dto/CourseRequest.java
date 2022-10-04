@@ -47,7 +47,7 @@ public class CourseRequest {
 	@JsonProperty("instituteId")
 	private String instituteId;
 
-	@JsonProperty("facultyId")
+	@JsonProperty("faculty_id")
 	@NotBlank(message = "{faculty_id.is_required}")
 	private String facultyId;
 

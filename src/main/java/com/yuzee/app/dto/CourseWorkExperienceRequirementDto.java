@@ -21,7 +21,7 @@ public class CourseWorkExperienceRequirementDto {
 	@JsonProperty("duration_type")
 	private String durationType;
 
-	@NotEmpty
+	@NotNull
 	@JsonProperty("duration")
 	private Double duration;
 

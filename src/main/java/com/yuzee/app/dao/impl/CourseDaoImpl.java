@@ -2182,7 +2182,11 @@ public class CourseDaoImpl implements CourseDao {
 	@Override
 	public List<Course> findAllById(List<String> ids) {
 		// TODO Auto-generated method stub
-		return courseRepository.findAllById(ids);
+		org.springframework.data.mongodb.core.query.Query mongoQuery = new org.springframework.data.mongodb.core.query.Query(); 
+		mongoQuery.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("id").in(ids));
+		return mongoTemplate.find(mongoQuery, Course.class, "course");
+
+
 	}
 
 	@Override
