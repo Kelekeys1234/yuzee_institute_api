@@ -62,7 +62,7 @@ public class CourseContactPerson {
 		List<String> linkedCourseId = Arrays.asList("96a2e11b-d64b-4964-9d28-2a4d7a41d944");
 		CourseContactPersonRequestWrapper courseContactPersonRequestWrapper= new CourseContactPersonRequestWrapper();
 		courseContactPersonRequestWrapper.setCourseContactPersonDtos(courseContactPersonDtos);
-	//	courseContactPersonRequestWrapper.setLinkedCourseIds(linkedCourseId);
+	    courseContactPersonRequestWrapper.setLinkedCourseIds(linkedCourseId);
 		Mockito.when(commonProcessor.validateAndGetUsersByUserIds(userId,
 				courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()))).thenReturn(new HashMap<>());
 		HttpHeaders headers = new HttpHeaders();

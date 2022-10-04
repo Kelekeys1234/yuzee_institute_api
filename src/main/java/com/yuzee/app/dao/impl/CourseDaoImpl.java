@@ -2105,7 +2105,7 @@ public class CourseDaoImpl implements CourseDao {
 			for (String keyword : searchKeyword) {
 				count++;
 				mongoQuery.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("name").in(keyword));
-				tcount = (int) mongoOperations.count(mongoQuery, Course.class);
+				tcount = (int) mongoOperations.count(mongoQuery, Course.class,"course");
 
 			}
 			// System.out.println(sqlQuery.toString());
@@ -2123,12 +2123,6 @@ public class CourseDaoImpl implements CourseDao {
 	public List<Course> findByInstituteId(String instituteId) {
 		return courseRepository.findByInstituteId(instituteId);
 	}
-
-	@Override
-	public Optional<Course> findAllById(String ids) {
-		return courseRepository.findById(ids);
-	}
-
 	@Override
 	public void deleteAll(List<Course> courses) {
 		courseRepository.deleteAll(courses);
@@ -2181,14 +2175,23 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public List<Course> findAllById(List<String> ids) {
-		// TODO Auto-generated method stub
-		return courseRepository.findAllById(ids);
+		org.springframework.data.mongodb.core.query.Query mongoQuery = new org.springframework.data.mongodb.core.query.Query(); 
+		mongoQuery.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("id").in(ids)); 
+		return mongoTemplate.find(mongoQuery, Course.class, "course");
 	}
-
 	@Override
 	public Page<Course> findById(String courseId, Pageable page) {
 		// TODO Auto-generated method stub
 		return courseRepository.findById(courseId, page);
 		}
+
+	@Override
+	public long getTotalCountOfCourseByInstituteId(String instituteId) {
+		int tcount = 0;
+		org.springframework.data.mongodb.core.query.Query mongoQuery = new org.springframework.data.mongodb.core.query.Query(); 
+		mongoQuery.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("instituteId").in(instituteId)); 
+		tcount = (int) mongoOperations.count(mongoQuery, Course.class,"course");
+		return tcount;
+	}
 
 }

@@ -173,7 +173,7 @@ public class CourseController {
 		couseRequest.setInstituteId("1e348e15-45b6-477f-a457-883738227e05");
 		couseRequest.setFacultyId("73babc67-04a1-4329-9733-d9175a544fc8");
 		couseRequest.setFaculty(facultyDto);
-		couseRequest.setName("courseName");
+		couseRequest.setName("courseName Test");
 		couseRequest.setDescription("course Description");
 		couseRequest.setLanguage(Arrays.asList("INDIA"));
 		couseRequest.setGrades("first Class");

@@ -45,6 +45,8 @@ public class Course implements Serializable {
 
 	@DBRef
 	private Institute institute;
+	
+	private String instituteId;
 
 	@DBRef(lazy = true)
 	private Level level;

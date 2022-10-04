@@ -35,7 +35,7 @@ public class CourseDto {
 
 	@JsonProperty("level_name")
 	private String levelName;
-//	
+	
 	@JsonProperty("cost_of_living")
 	private String costOfLiving;
 
