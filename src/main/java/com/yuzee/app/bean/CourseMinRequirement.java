@@ -62,6 +62,19 @@ public class CourseMinRequirement implements Serializable {
 		this.gradePoint = gradePoint;
 		this.studyLanguages = studyLanguages;
 	}
+
+	public CourseMinRequirement(String courseMinRequirementsId, String countryName, String stateName, Double gradePoint,
+			 List<CourseMinRequirementSubject> courseMinRequirementSubjects,
+			Set<String> studyLanguages) {
+		super();
+		this.courseMinRequirementsId = courseMinRequirementsId;
+		this.countryName = countryName;
+		this.stateName = stateName;
+		this.gradePoint = gradePoint;
+		this.courseMinRequirementSubjects = courseMinRequirementSubjects;
+		this.studyLanguages = studyLanguages;
+	}
+	
 	
 	
 }

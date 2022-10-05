@@ -130,7 +130,7 @@ public class CourseDeliveryModesProcessor {
 				commonProcessor.notifyCourseUpdates(notificationType, coursesToBeSavedOrUpdated);
 			}
 
-			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			   commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error(messageTranslator.toLocale("course.id.invalid", Locale.US));
 			throw new ValidationException(messageTranslator.toLocale("course.id.invalid"));
@@ -157,7 +157,7 @@ public class CourseDeliveryModesProcessor {
 			log.info("Notify course information changed");
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 
-			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+		    commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 
 		} else {
 			log.error(messageTranslator.toLocale("course.id.invalid", Locale.US));

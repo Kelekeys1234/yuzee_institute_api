@@ -26,8 +26,6 @@ import lombok.ToString;
 public class CourseMinRequirementSubject implements Serializable {
 
 	private static final long serialVersionUID = 8492390790670110780L;
-	@Id
-	private String id;
 	@EqualsAndHashCode.Include
 	private String name;
 
@@ -36,4 +34,11 @@ public class CourseMinRequirementSubject implements Serializable {
 	private String auditFields;
 	@DBRef
 	private CourseMinRequirement courseMinRequirement;
+	public CourseMinRequirementSubject(String name, String grade) {
+		super();
+		this.name = name;
+		this.grade = grade;
+	}
+	
+	
 }

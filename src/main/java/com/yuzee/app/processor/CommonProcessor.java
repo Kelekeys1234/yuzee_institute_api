@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import org.springframework.util.ObjectUtils;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseDeliveryModes;
 import com.yuzee.common.lib.dto.eligibility.FundingResponseDto;
+import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.dto.storage.StorageDto;
 import com.yuzee.common.lib.dto.transaction.ViewTransactionDto;
 import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
@@ -132,13 +135,13 @@ public class CommonProcessor {
 		return map;
 	}
 
-//	@Transactional
-//	public void saveElasticCourses(List<Course> courses) {
-//		log.info("Calling elastic service to save/update courses on elastic index ");
-//		if (!CollectionUtils.isEmpty(courses)) {
-//			List<CourseSyncDTO> courseElasticDtos = courses.stream()
-//					.map(e -> conversionProcessor.convertToCourseSyncDTOSyncDataEntity(e)).collect(Collectors.toList());
-//			publishSystemEventHandler.syncCourses(courseElasticDtos);
-//		}
-//	}
+	@Transactional
+	public void saveElasticCourses(List<Course> courses) {
+		log.info("Calling elastic service to save/update courses on elastic index ");
+		if (!CollectionUtils.isEmpty(courses)) {
+			List<CourseSyncDTO> courseElasticDtos = courses.stream()
+					.map(e -> conversionProcessor.convertToCourseSyncDTOSyncDataEntity(e)).collect(Collectors.toList());
+			publishSystemEventHandler.syncCourses(courseElasticDtos);
+		}
+	}
 }

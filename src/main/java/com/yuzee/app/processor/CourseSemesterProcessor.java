@@ -63,11 +63,11 @@ public class CourseSemesterProcessor {
  
 		if (!ObjectUtils.isEmpty(course)) {
           List<CourseSemester> courseSemester = course.getCourseSemesters();
-          List<SemesterSubject> semesterSubject= new ArrayList<>();
+        List<SemesterSubject> semesterSubject= new ArrayList<>();
       	
 		log.info("loop the requested list to collect the entitities to be saved/updated");
-		courseSemesterDtos.stream().forEach(e -> {
-			CourseSemester courseSubject = new CourseSemester();
+	    courseSemesterDtos.stream().forEach(e -> {
+	   	CourseSemester courseSubject = new CourseSemester();
 			if (!StringUtils.isEmpty(e.getCourseSemesterDtoId())) {
 				log.info(
 						"entityId is present so going to see if it is present in db if yes then we have to update it");
@@ -78,14 +78,18 @@ public class CourseSemesterProcessor {
 					throw new RuntimeNotFoundException("invalid course subject id : " + e.getCourseSemesterDtoId());
 				}
 		}
+			e.getSubjects().stream().forEach(a->{
+				SemesterSubject subject = new SemesterSubject(a.getName(),a.getDescription());
+				semesterSubject.add(subject);
+			});
 			courseSemesters.setCourseSemesterId(e.getCourseSemesterDtoId());
 			courseSemesters.setDescription(e.getDescription());
 			courseSemesters.setName(e.getName());
 			courseSemesters.setType(e.getType());
-		   courseSemester.add(courseSemesters);
-		   course.setCourseSemesters(courseSemester);
-		saveUpdateSubjects(userId, courseSubject, e.getSubjects());
-		
+		    saveUpdateSubjects(userId, courseSubject, e.getSubjects());
+			courseSemesters.setSubjects(semesterSubject);
+		    courseSemester.add(courseSemesters);
+		    course.setCourseSemesters(courseSemester);
 		});
 		
 		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
@@ -110,10 +114,9 @@ public class CourseSemesterProcessor {
 				courseSemesterSubjects.removeIf(e->e.getCourseSemesterId().equals(a));
 				List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 				coursesToBeSavedOrUpdated.add(course);
-				courseDao.saveAll(coursesToBeSavedOrUpdated);
-			});		
-			
-			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+				courseDao.saveAll(coursesToBeSavedOrUpdated);	
+			 commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			});	
 		} else {
 			log.error("one or more invalid course_subject_ids");
 			throw new NotFoundException("one or more invalid course_subject_ids");
@@ -143,10 +146,11 @@ public class CourseSemesterProcessor {
 						throw new RuntimeNotFoundException("invalid course fees id : " + dto.getName());
 					}
 				} else {
-					subjects.add(model);
-				}
 				model.setName(dto.getName());
 				model.setDescription(dto.getDescription());
+				courseSemester.setSubjects(subjects);
+				}
+				
 				
 			});
 

@@ -118,12 +118,13 @@ public interface CourseDao {
 
 	public List<CourseResponseDto> getRelatedCourseBasedOnCareerTest(List<String> searchKeyword, Integer startIndex,
 			Integer pageSize);
-
+    public long getTotalCountOfCourseByInstituteId(String instituteId);
+    
 	public Integer getRelatedCourseBasedOnCareerTestCount(List<String> searchKeyword);
 
 	public void deleteCourse(String id);
 
-	public List<Course> findByInstituteId(String instituteId);
+	public  List<Course> findByInstituteId(String instituteId);
 
 	public List<Course> findAllById(List<String> ids);
 
@@ -147,6 +148,5 @@ public interface CourseDao {
 
 	public boolean documentExistsById(String id);
 
-	Optional<Course> findAllById(String ids);
 	Page<Course> findById(String courseId,Pageable page);
 }

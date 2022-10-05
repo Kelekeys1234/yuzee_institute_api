@@ -54,19 +54,18 @@ public class CourseContactPersonProcessor {
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		log.info("going to see if user ids are valid");
 
-	//	commonProcessor.validateAndGetUsersByUserIds(userId,
-		//		courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
+		commonProcessor.validateAndGetUsersByUserIds(userId,
+			courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
 		log.debug("going to process the request");
 		List<String> courseContactPersons = course.getCourseContactPersons();
 
 		log.debug("going to save the list in db");
-		 courseContactPersons.addAll(courseContactPersonDtos.stream().map(e->e.getUserId()).collect(Collectors.toList()));
-		 course.setCourseContactPersons(courseContactPersons);
+		courseContactPersons.addAll(courseContactPersonDtos.stream().map(e->e.getUserId()).collect(Collectors.toList()));
+		course.setCourseContactPersons(courseContactPersons);
 		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 		coursesToBeSavedOrUpdated.add(course);
 		if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
-			List<CourseContactPersonDto> dtosToReplicate = courseContactPersons.stream()
-					.map(e -> modelMapper.map(e, CourseContactPersonDto.class)).collect(Collectors.toList());
+			List<CourseContactPersonDto> dtosToReplicate = courseContactPersons.stream().map(e-> new CourseContactPersonDto(e)).collect(Collectors.toList());
 			coursesToBeSavedOrUpdated
 					.addAll(replicateCourseContactPersons(userId, request.getLinkedCourseIds(), dtosToReplicate));
 		}
@@ -77,7 +76,7 @@ public class CourseContactPersonProcessor {
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 		}
 
-		// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+		  commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 	}
 
 	@Transactional
@@ -103,8 +102,8 @@ public class CourseContactPersonProcessor {
 						.addAll(replicateCourseContactPersons(userId, linkedCourseIds, dtosToReplicate));
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
-		//	commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 			});
 		} else {
 			log.error(messageTranslator.toLocale("course_contact_person.user.id.invalid", Locale.US));
@@ -122,15 +121,13 @@ public class CourseContactPersonProcessor {
 			List<Course> courses = courseProcessor.validateAndGetCourseByIds(courseIds);
 			courses.stream().forEach(course -> {
 				List<String> courseContactPersons = course.getCourseContactPersons();
-			
-		
 				if (CollectionUtils.isEmpty(courseContactPersonDtos)) {
 					courseContactPersons.clear();
 				} else {
 					courseContactPersons.removeIf(e -> !Utils
 							.containsIgnoreCase(userIds.stream().collect(Collectors.toList()), e));
 					courseContactPersonDtos.stream().forEach(dto -> {
-						Optional<String> existingContactPersonOp = courseContactPersons.stream()
+				    Optional<String> existingContactPersonOp = courseContactPersons.stream()
 								.filter(e -> e.equals(userIds)).findAny();
 						String courseContactPerson = null;
 						if (existingContactPersonOp.isPresent()) {

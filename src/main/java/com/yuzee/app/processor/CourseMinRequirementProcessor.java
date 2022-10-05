@@ -84,8 +84,7 @@ public class CourseMinRequirementProcessor {
 
 		log.info("Send notification for course content updates");
 		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-           
-		// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+		commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		return savedCourses.get(0).getCourseMinRequirements().stream().map(e -> modelToDto(e)).toList();
 	}
 	
@@ -93,6 +92,7 @@ public class CourseMinRequirementProcessor {
 			@Valid List<CourseMinRequirementDto> courseMinRequirementDtos, boolean deleteMissing)
 			throws ForbiddenException, NotFoundException, ValidationException {
 		List<CourseMinRequirement> courseMinRequirements = course.getCourseMinRequirements();
+		List<CourseMinRequirementSubject> minRequirementSubjects = new ArrayList<>();
 		Map<String, CourseMinRequirement> existingCourseMinRequirementMap = courseMinRequirements.stream()
 				.collect(Collectors.toMap(CourseMinRequirement::getCourseMinRequirementsId, e -> e));
 	           for(CourseMinRequirementDto dto :courseMinRequirementDtos) {
@@ -106,7 +106,7 @@ public class CourseMinRequirementProcessor {
 	        			}
 						
 						courseMinRequirementDtos.stream().forEach(dtos -> {
-	        				CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
+	        			CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
 	        				if (StringUtils.hasText(dtos.getCourseMinRequirementsId())) {
 	        					log.info(
 	        							"entityId is present so going to see if it is present in db if yes then we have to update it");
@@ -114,9 +114,14 @@ public class CourseMinRequirementProcessor {
 	        					courseMinRequirements.removeIf(e->e.getCourseMinRequirementsId().equals(dtos.getCourseMinRequirementsId()));	        					
 	        				}   
 	        			});
-	        			
+						courseMinRequirementDtos.stream().forEach(a->{
+							a.getMinRequirementSubjects().stream().forEach(z->{
+								CourseMinRequirementSubject subjectDto = new CourseMinRequirementSubject(z.getName(),z.getGrade());
+								minRequirementSubjects.add(subjectDto);
+							});
+						});
 	       	 courseMinRequirements.addAll(
-	       	 courseMinRequirementDtos.stream().map(e->new CourseMinRequirement(e.getCourseMinRequirementsId(),e.getCountryName(),e.getStateName(),e.getGradePoint(),e.getStudyLanguages())).collect(Collectors.toList()));
+	       	 courseMinRequirementDtos.stream().map(e->new CourseMinRequirement(e.getCourseMinRequirementsId(),e.getCountryName(),e.getStateName(),e.getGradePoint(),minRequirementSubjects,e.getStudyLanguages())).collect(Collectors.toList()));
 	       	 log.info("inserting inside saveUpdateSubjects" );
 	         saveUpdateSubjects(userId,new CourseMinRequirement(dto.getCourseMinRequirementsId(),dto.getCountryName(),dto.getStateName(),dto.getGradePoint(),dto.getStudyLanguages())
 	 						,dto.getMinRequirementSubjects());
@@ -166,8 +171,7 @@ public class CourseMinRequirementProcessor {
 		}
 		courseDao.saveAll(coursesToBeSavedOrUpdated);
 		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-
-		// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+		commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 	}
 
 	
@@ -229,24 +233,24 @@ public class CourseMinRequirementProcessor {
 			List<CourseMinRequirementSubjectDto> subjectDtos) {
 		List<CourseMinRequirementSubject> subjects = minRequirement.getCourseMinRequirementSubjects();
 		if (!CollectionUtils.isEmpty(subjectDtos)) {
-			List<String> updateRequestIds = subjectDtos.stream().filter(e -> StringUtils.hasText(e.getId()))
-					.map(CourseMinRequirementSubjectDto::getId).collect(Collectors.toList());
-			subjects.removeIf(e -> !Utils.contains(updateRequestIds, e.getId()));
+			List<String> updateRequestIds = subjectDtos.stream().filter(e -> StringUtils.hasText(e.getName()))
+					.map(e->e.getName()).collect(Collectors.toList());
+			subjects.removeIf(e -> !Utils.contains(updateRequestIds, e.getName()));
 
 			log.info("preparing map of exsiting course min requirement subject");
 			Map<String, CourseMinRequirementSubject> existingSubjectMap = subjects.stream()
-					.filter(e -> StringUtils.hasText(e.getId()))
-					.collect(Collectors.toMap(CourseMinRequirementSubject::getId, e -> e));
+					.filter(e -> StringUtils.hasText(e.getName()))
+					.collect(Collectors.toMap(CourseMinRequirementSubject::getName, e -> e));
 
 			subjectDtos.stream().forEach(dto -> {
-				CourseMinRequirementSubject model = new CourseMinRequirementSubject();
-				if (StringUtils.hasText(dto.getId())) {
-					log.info("id is present so going to see if it is present in db if yes then we have to update it");
-					model = existingSubjectMap.get(dto.getId());
+			CourseMinRequirementSubject model = new CourseMinRequirementSubject();
+			if (StringUtils.hasText(dto.getName())) {
+				log.info("id is present so going to see if it is present in db if yes then we have to update it");
+					model = existingSubjectMap.get(dto.getName());
 					if (ObjectUtils.isEmpty(model)) {
-						log.error("invalid course min requirement subject id : {}", dto.getId());
-						throw new RuntimeNotFoundException(
-								"invalid course min requirement subject id : " + dto.getId());
+						log.error("invalid course min requirement subject id : {}", dto.getName());
+					throw new RuntimeNotFoundException(
+							"invalid course min requirement subject id : " + dto.getName());
 					}
 				} else {
 					subjects.add(model);

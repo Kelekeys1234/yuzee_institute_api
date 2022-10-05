@@ -112,7 +112,7 @@ public class CourseEnglishEligibilityProcessor {
 				commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 			}
 
-			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+		        commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error(messageTranslator.toLocale("english_eligibility.course.id.invalid", courseId, Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("english_eligibility.course.id.invalid", courseId));
@@ -133,9 +133,8 @@ public class CourseEnglishEligibilityProcessor {
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
-
-			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-//			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
+        commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error(messageTranslator.toLocale("english_eligibility.ids.invalid", Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("english_eligibility.ids.invalid"));

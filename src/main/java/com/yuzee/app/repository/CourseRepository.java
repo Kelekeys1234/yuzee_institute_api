@@ -12,15 +12,14 @@ import com.yuzee.app.bean.Course;
 
 @Repository
 public interface CourseRepository extends MongoRepository<Course, String> {
-	public List<Course> findAllById(List<String> ids);
 
 	public List<Course> findByInstituteIdAndFacultyIdAndIsActive(String instituteId, String facultyId,
 			boolean isActive);
 
 	public List<Course> findByInstituteIdAndFacultyId(String instituteId, String facultyId);
 
-	// public List<Course> findByInstituteIds(Pageable pageable, String
-	// instituteId);
+	 public List<Course> findByInstituteId(Pageable pageable, String
+	 instituteId);
 
 	public List<Course> findByInstituteId(String instituteId);
 

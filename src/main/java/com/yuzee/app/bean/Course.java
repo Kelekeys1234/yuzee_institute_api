@@ -24,7 +24,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @EntityListeners(CourseUpdateListener.class)
-@Document("course")
+@Document(collection="course")
 public class Course implements Serializable {
 //	, @UniqueConstraint(name = "UK_COURSE_F_L_I_N_C", columnNames = {})	, columnNames = { "faculty_id",
 //		"level_id", "institute_id", "name", "code" }), indexes = {
@@ -45,6 +45,8 @@ public class Course implements Serializable {
 
 	@DBRef
 	private Institute institute;
+	
+	private String instituteId;
 
 	@DBRef(lazy = true)
 	private Level level;

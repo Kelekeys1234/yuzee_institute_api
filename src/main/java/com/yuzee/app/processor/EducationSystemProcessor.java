@@ -105,30 +105,30 @@ public class EducationSystemProcessor {
 			throw new NotFoundException(
 					messageTranslator.toLocale("system.level.id.notfound", educationSystem.getLevelId()));
 		}
-//		if (!ObjectUtils.isEmpty(educationSystem) && !StringUtils.isEmpty(educationSystem.getId())) {
-//			log.info("Education system Id found in request, hence Fetching education system from"
-//					+ "	DB based on educationSystemId = " + educationSystem.getId());
-//			Optional<EducationSystem> educationSystemFromDB = educationSystemDAO.get(educationSystem.getId());
-//			if (educationSystemFromDB.isPresent()) {
-//				log.info("Education system fetched from DB, going to update existing educationSystem");
-//				if (!StringUtils.isEmpty(educationSystem.getCountryName())) {
-//					educationSystemFromDB.get().setUpdatedBy("API");
-//					educationSystemFromDB.get().setUpdatedOn(new Date());
-//					educationSystemFromDB.get().setName(educationSystem.getName());
-//					educationSystemFromDB.get().setDescription(educationSystem.getDescription());
-//					educationSystemFromDB.get().setCode(educationSystem.getCode());
-//					educationSystemFromDB.get().setLevel(level);
-//					educationSystemFromDB.get().setCountryName(educationSystem.getCountryName());
-//					educationSystemDAO.save(educationSystemFromDB.get());
-//				} else {
-//					log.error(messageTranslator.toLocale("system.country.name.required", Locale.US));
-//					throw new ValidationException(messageTranslator.toLocale("system.country.name.required"));
-//				}
-//			} else {
-//				log.error(messageTranslator.toLocale("system.id.notfound", educationSystem.getId(), Locale.US));
-//				throw new NotFoundException(messageTranslator.toLocale("system.id.notfound", educationSystem.getId()));
-//			}
-//	}
+		if (!ObjectUtils.isEmpty(educationSystem) && !StringUtils.isEmpty(educationSystem.getId())) {
+			log.info("Education system Id found in request, hence Fetching education system from"
+					+ "	DB based on educationSystemId = " + educationSystem.getId());
+			Optional<EducationSystem> educationSystemFromDB = educationSystemDAO.get(educationSystem.getId());
+			if (educationSystemFromDB.isPresent()) {
+				log.info("Education system fetched from DB, going to update existing educationSystem");
+				if (!StringUtils.isEmpty(educationSystem.getCountryName())) {
+					educationSystemFromDB.get().setUpdatedBy("API");
+					educationSystemFromDB.get().setUpdatedOn(new Date());
+					educationSystemFromDB.get().setName(educationSystem.getName());
+					educationSystemFromDB.get().setDescription(educationSystem.getDescription());
+					educationSystemFromDB.get().setCode(educationSystem.getCode());
+					educationSystemFromDB.get().setLevel(level);
+					educationSystemFromDB.get().setCountryName(educationSystem.getCountryName());
+					educationSystemDAO.save(educationSystemFromDB.get());
+				} else {
+					log.error(messageTranslator.toLocale("system.country.name.required", Locale.US));
+					throw new ValidationException(messageTranslator.toLocale("system.country.name.required"));
+				}
+			} else {
+				log.error(messageTranslator.toLocale("system.id.notfound", educationSystem.getId(), Locale.US));
+				throw new NotFoundException(messageTranslator.toLocale("system.id.notfound", educationSystem.getId()));
+			}
+	}
 	 else {
 			log.info("Education system Id not found in request, hencce going to save new education system in DB");
 			if (!StringUtils.isEmpty(educationSystem.getCountryName())) {
@@ -150,7 +150,7 @@ public class EducationSystemProcessor {
 			}
 			}
 		}
-//	}
+
 
 	public Double calculateGrade(final GradeDto gradeDto) {
 		log.debug("Inside calculateGrade() method");

@@ -152,7 +152,7 @@ public class CourseOtherRequirementProcessor {
 			log.info("Send notification for course content updates");
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 
-			// commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 		} else {
 			log.error("invalid course id: {}", courseId);
 			throw new NotFoundException("invalid course id: " + courseId);
@@ -221,13 +221,6 @@ public class CourseOtherRequirementProcessor {
 				otherRequirementDto.setWorkPlacement(dto);
 			}
 
-//			if (!ObjectUtils.isEmpty(course.getCourseResearchProposalRequirement())) {
-//				CourseResearchProposalRequirement model = course.getCourseResearchProposalRequirement();
-//				CourseResearchProposalRequirementDto dto = new CourseResearchProposalRequirementDto();
-//				dto.setId(model.getId());
-//				dto.setDescription(model.getDescription());
-//				otherRequirementDto.setResearchProposal(dto);
-//			}
 
 		} else {
 			log.error("invalid course id: {}", courseId);

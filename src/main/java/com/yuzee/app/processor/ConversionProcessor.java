@@ -106,6 +106,41 @@ public class ConversionProcessor {
 						InstituteSyncDTO::setInstituteIntakes));
 	};
 
+	public CourseSyncDTO convertToCourseSyncDTOSyncDataEntity(Course course) {
+		log.info("inside DTOUtils.convertToCourseSyncDTOSyncDataEntity ");
+		CourseSyncDTO syncCourse = modelMapper.map(course, CourseSyncDTO.class);
+		String sameUuid = course.getId();
+		syncCourse.setLanguages(
+				course.getCourseLanguages().stream().map(e->e).collect(Collectors.toList()));
+		syncCourse.setCourseType(course.getCourseType().name());
+		
+		if(ObjectUtils.isEmpty(course.getCoursePayment())) {
+			syncCourse.setCoursePayment(new CoursePaymentDto());
+		}
+		if(ObjectUtils.isEmpty(course.getCourseIntake())) {
+			syncCourse.setCourseIntake(new CourseIntakeDto());
+		}else {
+			syncCourse.setCourseIntake(new CourseIntakeDto(course.getCourseIntake().getType().name(),course.getCourseIntake().getDates()));
+		}
+		
+		syncCourse.setCourseDeliveryModes(course.getCourseDeliveryModes().stream()
+				.map(delMode -> new CourseDeliveryModesDto( delMode.getDeliveryType(),
+						delMode.getDuration(), delMode.getDurationTime(), delMode.getStudyMode(),
+						course.getId().toString(), delMode.getAccessibility(), delMode.getIsGovernmentEligible(),
+						new ValidList<>(delMode.getFundings().stream()
+								.map(funding -> new CourseDeliveryModeFundingDto(
+										funding.getFundingNameId(), funding.getName(), funding.getCurrency(),
+										funding.getAmount()))
+								.collect(Collectors.toList())),
+						new ValidList<>(delMode.getFees().stream().map(fees -> new CourseFeesDto(
+								fees.getName(), fees.getCurrency(), fees.getAmount())).collect(Collectors.toList()))))
+				.toList());
+		syncCourse.setProviderCodes(course.getCourseProviderCodes().stream().map(e->new ProviderCode(e.getName(), e.getValue())).toList());
+		syncCourse.setCourseMinRequirements(course.getCourseMinRequirements().stream().map(e->minRequirementProcessor.modelToDto(e)).toList());
+		syncCourse.setCourseTimings(timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.COURSE, Arrays.asList(sameUuid)).stream()
+				.map(e -> modelMapper.map(e, TimingDto.class)).collect(Collectors.toList()));
+		return syncCourse;
+	}
 
 	public InstituteSyncDTO convertToInstituteInstituteSyncDTOSynDataEntity(Institute institute) {
 		log.info("inside DTOUtils.convertToInstituteInstituteSyncDTOSynDataEntity");
