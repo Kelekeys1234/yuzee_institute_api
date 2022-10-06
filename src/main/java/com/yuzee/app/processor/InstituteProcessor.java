@@ -364,7 +364,7 @@ public class InstituteProcessor {
 		institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 		institute.setCreatedBy("API");
 		institute.setIsActive(true);
-		institute.setId(instituteRequest.getInstituteId());
+		institute.setId((UUID.randomUUID().toString()));
 	        } 
 		institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		institute.setUpdatedBy("API");
@@ -422,6 +422,8 @@ public class InstituteProcessor {
 //            log.error(messageTranslator.toLocale("institute-processor.required.category_type_id", Locale.US));
 //            throw new ValidationException(messageTranslator.toLocale("institute-processor.required.category_type_id"));
 //        }
+		institute.setBusinessAccountType(instituteRequest.getBusinessAccountType());
+		institute.setInstituteAffiliactionType(instituteRequest.getInstituteAffiliactionType());
 		institute.setState(instituteRequest.getStateName());
 		institute.setAddress(instituteRequest.getAddress());
 		institute.setEmail(instituteRequest.getEmail());

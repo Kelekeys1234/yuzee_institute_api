@@ -66,7 +66,7 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 			if (!StringUtils.isEmpty(instituteDto.getInstituteType())
 					&& !ObjectUtils.isEmpty(instituteDao.getInstituteTypeByNameAndCountry(
 							instituteDto.getInstituteType(), instituteDto.getCountryName()))) {
-				institute.setInstituteType(instituteDto.getInstituteType());
+				institute.setInstituteType(Arrays.asList(instituteDto.getInstituteType()));
 			} else {
 				log.error("Institute type {} not found for institute {}", instituteDto.getInstituteType(),
 						instituteDto.getName());

@@ -146,7 +146,7 @@ public class InstituteController {
 		instituteRequestDto.setLongitude(location.getLocation().getX());
 		instituteRequestDto.setEmail("info@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId("DMS");
 		instituteRequestDto.setInstituteId(IDS.toString());
 		HttpHeaders headers = new HttpHeaders();
@@ -218,7 +218,7 @@ public class InstituteController {
 		instituteRequestDto.setLongitude(location.getLocation().getX());
 		instituteRequestDto.setEmail("info@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId("DMS");
 		instituteRequestDto.setInstituteId(IDS.toString());
 		HttpHeaders headers = new HttpHeaders();
@@ -295,7 +295,7 @@ public class InstituteController {
 		instituteRequestDto.setLongitude(location.getLocation().getX());
 		instituteRequestDto.setEmail("info@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId("DMS");
 		instituteRequestDto.setInstituteId(IDS.toString());
 		HttpHeaders headers = new HttpHeaders();
@@ -467,7 +467,7 @@ public class InstituteController {
 		instituteRequestDto.setLongitude(location.getLocation().getX());
 		instituteRequestDto.setEmail("info@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId("DMS");
 		instituteRequestDto.setInstituteId(IDS.toString());
 		HttpHeaders headers = new HttpHeaders();
@@ -540,7 +540,7 @@ public class InstituteController {
 			instituteRequestDto.setLongitude(location.getLocation().getX());
 			instituteRequestDto.setEmail("info@testEmail.com");
 			instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-			instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+			instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 			instituteRequestDto.setReadableId("DMS");
 			instituteRequestDto.setInstituteId(UUID.randomUUID().toString());
 			HttpHeaders headers = new HttpHeaders();
@@ -603,7 +603,7 @@ public class InstituteController {
 		instituteRequestDto.setLongitude(location.getLocation().getX());
 		instituteRequestDto.setEmail("info@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId("DMS");
 		instituteRequestDto.setInstituteId(IDS.toString());
 		HttpHeaders headers = new HttpHeaders();
@@ -679,7 +679,7 @@ public class InstituteController {
 			instituteRequestDto.setLongitude(location.getLocation().getX());
 			instituteRequestDto.setEmail("JNU@testEmail.com");
 			instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-			instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+			instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 			instituteRequestDto.setReadableId("KGF");
 			instituteRequestDto.setInstituteId(IDS.toString());
 			HttpHeaders createHeaders = new HttpHeaders();
@@ -746,7 +746,7 @@ public class InstituteController {
 			instituteRequestDto.setLongitude(location.getLocation().getX());
 			instituteRequestDto.setEmail("PDU@testEmail.com");
 			instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-			instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+			instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 			instituteRequestDto.setReadableId("MMA");
 			instituteRequestDto.setInstituteId(IDS.toString());
 			HttpHeaders createHeaders = new HttpHeaders();
@@ -828,7 +828,7 @@ public class InstituteController {
 		instituteRequestDto.setLongitude(location.getLocation().getX());
 		instituteRequestDto.setEmail("PDU@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId("MMA");
 		instituteRequestDto.setInstituteId(IDS.toString());
 		HttpHeaders createHeaders = new HttpHeaders();
@@ -895,7 +895,7 @@ public class InstituteController {
 		instituteRequestDto.setLongitude(location.getLocation().getX());
 		instituteRequestDto.setEmail("info@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId("DMS");
 		instituteRequestDto.setInstituteId(IDS.toString());
 		HttpHeaders headers = new HttpHeaders();
@@ -994,7 +994,7 @@ public class InstituteController {
 		instituteRequestDto.setLongitude(location.getLocation().getX());
 		instituteRequestDto.setEmail("PDU@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId("MMA");
 		instituteRequestDto.setInstituteId(IDS.toString());
 		HttpHeaders createHeaders = new HttpHeaders();
@@ -1044,7 +1044,7 @@ public class InstituteController {
 		instituteRequestDto.setLongitude(location.getLocation().getX());
 		instituteRequestDto.setEmail("info@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId("DMS");
 		instituteRequestDto.setInstituteId(IDS.toString());
 		HttpHeaders headers = new HttpHeaders();
@@ -1119,7 +1119,7 @@ public class InstituteController {
 		instituteRequestDto.setLongitude(location.getLocation().getX());
 		instituteRequestDto.setEmail("info@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId("DMS");
 		instituteRequestDto.setInstituteId(IDS.toString());
 		HttpHeaders headers = new HttpHeaders();
@@ -1197,7 +1197,7 @@ public class InstituteController {
 		instituteRequestDto.setLongitude(location.getLocation().getX());
 		instituteRequestDto.setEmail("info@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId("DMS");
 		instituteRequestDto.setInstituteId(IDS.toString());
 		HttpHeaders headers = new HttpHeaders();

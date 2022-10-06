@@ -103,10 +103,12 @@ public class CommonUtil {
 		instituteRequestDto.setTagLine(institute.getTagLine());
 		instituteRequestDto.setPostalCode(institute.getPostalCode());
 		instituteRequestDto.setReadableId(institute.getReadableId());
-		if (StringUtils.hasText(institute.getInstituteType())
-				&& EnumUtils.isValidEnum(InstituteType.class, institute.getInstituteType())) {
-			instituteRequestDto.setInstituteTypeObj(InstituteType.valueOf(institute.getInstituteType()));
+		institute.getInstituteType().stream().forEach(type ->{
+			if(EnumUtils.isValidEnum(InstituteType.class, type)) {
+			instituteRequestDto.getInstituteType().add(type);
 		}
+		});
+
 		return instituteRequestDto;
 	}
 

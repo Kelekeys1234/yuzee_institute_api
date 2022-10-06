@@ -26,6 +26,12 @@ public class InstituteRequestDto extends InstituteDto {
 	@JsonProperty("institute_id")
 	private String instituteId;
 
+	@JsonProperty("business_account_type")
+	private String businessAccountType;
+	
+	@JsonProperty("institute_affiliaction_type")
+	private String instituteAffiliactionType;
+
 	@JsonProperty("description")
 	private String description;
 

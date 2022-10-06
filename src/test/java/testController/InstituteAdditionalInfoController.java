@@ -117,7 +117,7 @@ public class InstituteAdditionalInfoController {
 		instituteRequestDto.setLongitude(location.getLocation().getX());
 		instituteRequestDto.setEmail("info@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId("DMS");
 		instituteRequestDto.setInstituteId(IDS.toString());
 		HttpHeaders headers = new HttpHeaders();
@@ -203,7 +203,7 @@ public class InstituteAdditionalInfoController {
 		instituteRequestDto.setLongitude(location.getLocation().getX());
 		instituteRequestDto.setEmail("SMK@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId("SMK");
 		instituteRequestDto.setInstituteId(IDS.toString());
 		HttpHeaders createHeaders = new HttpHeaders();
