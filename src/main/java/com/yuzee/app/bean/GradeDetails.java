@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +19,7 @@ import lombok.ToString;
 //@Table(name = "grade_details", indexes = {
 //		@Index(name = "IDX_COUNTRY_NAME", columnList = "country_name", unique = false),
 //		@Index(name = "IDX_EDUCATION_SYSTEM_ID", columnList = "education_system_id", unique = false) })
+@Document(collection="grade")
 public class GradeDetails implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
