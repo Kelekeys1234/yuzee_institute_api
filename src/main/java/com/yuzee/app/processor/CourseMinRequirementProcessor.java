@@ -1,7 +1,6 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -100,18 +99,18 @@ public class CourseMinRequirementProcessor {
 	        		if (!CollectionUtils.isEmpty(courseMinRequirementDtos)) {
 	        			if (deleteMissing) {
 	        				Set<String> updateRequestIds = courseMinRequirementDtos.stream()
-	        						.filter(e -> StringUtils.hasText(e.getCourseMinRequirementsId())).map(e->e.getCourseMinRequirementsId())
+	        						.filter(e -> StringUtils.hasText(e.getId())).map(CourseMinRequirementDto::getId)
 	        						.collect(Collectors.toSet());
 	        				courseMinRequirements.removeIf(e -> !updateRequestIds.contains(e.getCourseMinRequirementsId()));
 	        			}
 						
 						courseMinRequirementDtos.stream().forEach(dtos -> {
 	        			CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
-	        				if (StringUtils.hasText(dtos.getCourseMinRequirementsId())) {
+	        				if (StringUtils.hasText(dtos.getId())) {
 	        					log.info(
 	        							"entityId is present so going to see if it is present in db if yes then we have to update it");
-	        					courseMinRequirement = existingCourseMinRequirementMap.get(dtos.getCourseMinRequirementsId());
-	        					courseMinRequirements.removeIf(e->e.getCourseMinRequirementsId().equals(dtos.getCourseMinRequirementsId()));	        					
+	        					courseMinRequirement = existingCourseMinRequirementMap.get(dtos.getId());
+	        					courseMinRequirements.removeIf(e->e.getCourseMinRequirementsId().equals(dtos.getId()));	        					
 	        				}   
 	        			});
 						courseMinRequirementDtos.stream().forEach(a->{
@@ -121,9 +120,9 @@ public class CourseMinRequirementProcessor {
 							});
 						});
 	       	 courseMinRequirements.addAll(
-	       	 courseMinRequirementDtos.stream().map(e->new CourseMinRequirement(e.getCourseMinRequirementsId(),e.getCountryName(),e.getStateName(),e.getGradePoint(),minRequirementSubjects,e.getStudyLanguages())).collect(Collectors.toList()));
+	       	 courseMinRequirementDtos.stream().map(e->new CourseMinRequirement(e.getId(),e.getCountryName(),e.getStateName(),e.getGradePoint(),minRequirementSubjects,e.getStudyLanguages())).collect(Collectors.toList()));
 	       	 log.info("inserting inside saveUpdateSubjects" );
-	         saveUpdateSubjects(userId,new CourseMinRequirement(dto.getCourseMinRequirementsId(),dto.getCountryName(),dto.getStateName(),dto.getGradePoint(),dto.getStudyLanguages())
+	         saveUpdateSubjects(userId,new CourseMinRequirement(dto.getId(),dto.getCountryName(),dto.getStateName(),dto.getGradePoint(),dto.getStudyLanguages())
 	 						,dto.getMinRequirementSubjects());
 	       		 course.setCourseMinRequirements(courseMinRequirements);
 	        		

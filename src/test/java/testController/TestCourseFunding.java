@@ -3,6 +3,8 @@ package testController;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
+
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.stream.Collectors;
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
@@ -39,16 +44,14 @@ import com.yuzee.common.lib.dto.institute.CareerDto;
 import com.yuzee.common.lib.dto.institute.CourseCareerOutcomeDto;
 import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
 import com.yuzee.common.lib.dto.institute.CourseFundingDto;
-
 import lombok.extern.slf4j.Slf4j;
 
-
+@RunWith(JUnitPlatform.class)
 @Slf4j
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
-public class CourseFunding {
+ class TestCourseFunding {
 	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 	private static final String Id = "1e348e15-45b6-477f-a457-883738227e05";
 	private static final String jobsId= "7132d88e-cf2c-4f48-ac6e-82214208f677";
@@ -60,7 +63,7 @@ public class CourseFunding {
 	CommonProcessor commonProcessor;
 	@DisplayName("savecourseFunding")
 	@Test
-  public void saveCourseFunding() {
+	 void saveCourseFunding() {
 		List<String> fundingId= new ArrayList<>();
 		fundingId.add(Id);
 		Map<String,String> courseCareer= new HashMap<>();
@@ -78,13 +81,14 @@ public class CourseFunding {
   }
 	@DisplayName("saveAllcourseFunding")
 	@Test
-	public void saveAllFunding() {
+	 void saveAllFunding() {
 		ValidList<CourseFundingDto> courseFundingDtos = new ValidList<>();
 		CourseFundingRequestWrapper request = new CourseFundingRequestWrapper();
 		List<String> fundingId= new ArrayList<>();
 		fundingId.add(Id);
 		
-		CourseFundingDto courseFundingDto= new CourseFundingDto(fundingId);
+		CourseFundingDto courseFundingDto= new CourseFundingDto();
+	//	courseFundingDto.setFundingNameId(fundingId);
 		courseFundingDtos.add(courseFundingDto);
 		Mockito.when( commonProcessor.getFundingsByFundingNameIds(fundingId, true)).thenReturn(new HashMap<>());
 		Map<String,String> courseCareer= new HashMap<>();
@@ -97,6 +101,7 @@ public class CourseFunding {
 				api +PATH_SEPARATOR+"96a2e11b-d64b-4964-9d28-2a4d7a41d944"
 				+PATH_SEPARATOR +"funding",
 				HttpMethod.POST, entity, String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 	public void deleteFunding() {
 		Map<String,String> courseCareer= new HashMap<>();

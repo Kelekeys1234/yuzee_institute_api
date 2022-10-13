@@ -2,6 +2,8 @@ package testController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +15,8 @@ import java.util.UUID;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -28,11 +32,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yuzee.app.YuzeeApplication;
 import com.yuzee.app.bean.Location;
+import com.yuzee.app.controller.v1.InstituteBasicInfoController;
 import com.yuzee.app.dto.FacilityDto;
 import com.yuzee.app.dto.InstituteFacilityDto;
 import com.yuzee.app.dto.InstituteFundingDto;
@@ -48,11 +54,11 @@ import com.yuzee.common.lib.util.ObjectMapperHelper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RunWith(SpringRunner.class)
+@RunWith(JUnitPlatform.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
-public class InstituteFacilitiesController {
+public class TestInstituteFacilitiesController {
 
 	private static final String entityId = UUID.randomUUID().toString();
 	private static final String instituteId = "714964e7-ce52-4c07-ac0b-2e8dc6d7d444";
@@ -84,7 +90,7 @@ public class InstituteFacilitiesController {
 	// institute/facilities/{instituteId}
 	@DisplayName("addInstituteFacilities test success")
 	@Test
-	public void addInstituteFacilities() throws IOException {
+	 void addInstituteFacilities() throws IOException {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
@@ -163,7 +169,7 @@ public class InstituteFacilitiesController {
 
 	@DisplayName("getInstituteFacilities test success")
 	@Test
-	public void getInstituteFacilities() throws IOException {
+	  void getInstituteFacilities() throws IOException {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
@@ -248,7 +254,7 @@ public class InstituteFacilitiesController {
 
 	@DisplayName("deleteInstituteFacilitiesById test success")
 	@Test
-	public void deleteInstituteFacilitiesById() throws IOException {
+	  void deleteInstituteFacilitiesById() throws IOException {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
@@ -336,7 +342,7 @@ public class InstituteFacilitiesController {
 
 	@DisplayName("getInstitutePublicFacilities test success")
 	@Test
-	public void getInstitutePublicFacilities() throws IOException {
+	  void getInstitutePublicFacilities() throws IOException {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));

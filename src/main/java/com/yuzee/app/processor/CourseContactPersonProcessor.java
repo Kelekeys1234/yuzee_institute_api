@@ -54,18 +54,23 @@ public class CourseContactPersonProcessor {
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		log.info("going to see if user ids are valid");
 
-		commonProcessor.validateAndGetUsersByUserIds(userId,
-			courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
+//		commonProcessor.validateAndGetUsersByUserIds(userId,
+//			courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
 		log.debug("going to process the request");
 		List<String> courseContactPersons = course.getCourseContactPersons();
 
 		log.debug("going to save the list in db");
+		CourseContactPersonDto dto= new CourseContactPersonDto();
 		courseContactPersons.addAll(courseContactPersonDtos.stream().map(e->e.getUserId()).collect(Collectors.toList()));
 		course.setCourseContactPersons(courseContactPersons);
 		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 		coursesToBeSavedOrUpdated.add(course);
 		if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
-			List<CourseContactPersonDto> dtosToReplicate = courseContactPersons.stream().map(e-> new CourseContactPersonDto(e)).collect(Collectors.toList());
+			List<CourseContactPersonDto> dtosToReplicate=new ArrayList<>();
+			courseContactPersons.stream().forEach(e->{
+				dto.setUserId(e);
+			});
+			dtosToReplicate.add(dto);
 			coursesToBeSavedOrUpdated
 					.addAll(replicateCourseContactPersons(userId, request.getLinkedCourseIds(), dtosToReplicate));
 		}
@@ -76,7 +81,7 @@ public class CourseContactPersonProcessor {
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 		}
 
-		  commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+		//  commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 	}
 
 	@Transactional
@@ -103,7 +108,7 @@ public class CourseContactPersonProcessor {
 			}
 			courseDao.saveAll(coursesToBeSavedOrUpdated);
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
-			commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+			//commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 			});
 		} else {
 			log.error(messageTranslator.toLocale("course_contact_person.user.id.invalid", Locale.US));

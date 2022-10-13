@@ -135,7 +135,7 @@ public class InstituteUploadBatchConfig {
 						instituteElasticSearchDto.setInstituteIntakes(instituteObj.getInstituteIntakes());
 					}
 					if(!StringUtils.isEmpty(instituteObj.getInstituteType())) {
-						instituteElasticSearchDto.setInstituteType(instituteObj.getInstituteType());
+					//	instituteElasticSearchDto.setInstituteType(instituteObj.getInstituteType());
 					}
 					instituteElasticSearchDTOList.add(instituteElasticSearchDto);
 				}

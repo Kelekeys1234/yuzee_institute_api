@@ -1,6 +1,7 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -62,7 +63,7 @@ public class CourseFundingProcessor {
 		Institute institute = instituteDao.get(UUID.fromString(instituteId));
 		List<Course> courseToBeNotified = new ArrayList<>();
 		if (institute != null) {
-	    commonProcessor.getFundingsByFundingNameIds(fundingNameId, true);
+	 //   commonProcessor.getFundingsByFundingNameIds(fundingNameId, true);
 	    List<Course> instituteCourses = courseDao.findByInstituteId(instituteId);
 	    if(ObjectUtils.isEmpty(institute)) {
 		   log.error(messageTranslator.toLocale("course_funding.institute.id.invalid", instituteId, Locale.US));
@@ -74,7 +75,7 @@ public class CourseFundingProcessor {
 			courseToBeNotified.add(instituteCourse);
 			    		  });
 			  
-			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", courseToBeNotified);
+			//commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", courseToBeNotified);
 	
 		}
 		    return fundingNameId;
@@ -90,9 +91,8 @@ public class CourseFundingProcessor {
 		if (!ObjectUtils.isEmpty(course)) {
 		    log.info("inserting courseFunding inside fundingId");
 			List<String>fundingId=course.getCourseFundings();
-			courseFundingDto.stream().forEach(e->{
-		    fundingId.addAll(e.getFundingNameId().stream().collect(Collectors.toList()));
-			 });
+		    fundingId.addAll(courseFundingDto.stream().map(e->e.getFundingNameId().toString()).toList());
+		
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
 			if (!CollectionUtils.isEmpty(request.getLinkedCourseIds())) {
@@ -102,7 +102,7 @@ public class CourseFundingProcessor {
 							.addAll(replicateCourseFundings(userId, request.getLinkedCourseIds(), dtosToReplicate));
 				}
 				courseDao.saveAll(coursesToBeSavedOrUpdated);
-				commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+				//commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 	
 		} else {
 			log.error(messageTranslator.toLocale("course_funding.course.id.invalid", courseId, Locale.US));

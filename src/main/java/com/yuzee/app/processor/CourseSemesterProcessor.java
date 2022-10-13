@@ -68,21 +68,21 @@ public class CourseSemesterProcessor {
 		log.info("loop the requested list to collect the entitities to be saved/updated");
 	    courseSemesterDtos.stream().forEach(e -> {
 	   	CourseSemester courseSubject = new CourseSemester();
-			if (!StringUtils.isEmpty(e.getCourseSemesterDtoId())) {
+			if (!StringUtils.isEmpty(e.getId())) {
 				log.info(
 						"entityId is present so going to see if it is present in db if yes then we have to update it");
-				courseSubject = existingCourseSubjectsMap.get(e.getCourseSemesterDtoId());
-				courseSemester.removeIf(a->a.getCourseSemesterId().equals(e.getCourseSemesterDtoId()));
+				courseSubject = existingCourseSubjectsMap.get(e.getId());
+				courseSemester.removeIf(a->a.getCourseSemesterId().equals(e.getId()));
 				if (courseSubject == null) {
-					log.error("invalid course subject id : {}", e.getCourseSemesterDtoId());
-					throw new RuntimeNotFoundException("invalid course subject id : " + e.getCourseSemesterDtoId());
+					log.error("invalid course subject id : {}", e.getId());
+					throw new RuntimeNotFoundException("invalid course subject id : " + e.getId());
 				}
 		}
 			e.getSubjects().stream().forEach(a->{
 				SemesterSubject subject = new SemesterSubject(a.getName(),a.getDescription());
 				semesterSubject.add(subject);
 			});
-			courseSemesters.setCourseSemesterId(e.getCourseSemesterDtoId());
+			courseSemesters.setCourseSemesterId(e.getId());
 			courseSemesters.setDescription(e.getDescription());
 			courseSemesters.setName(e.getName());
 			courseSemesters.setType(e.getType());

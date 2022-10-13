@@ -3,6 +3,8 @@ package testController;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
+
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,6 +16,8 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +34,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yuzee.app.YuzeeApplication;
 import com.yuzee.app.bean.Location;
+import com.yuzee.app.controller.v1.InstituteController;
 import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.InstituteDomesticRankingHistoryDto;
 import com.yuzee.app.dto.InstituteFilterDto;
@@ -64,11 +70,11 @@ import com.yuzee.common.lib.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RunWith(SpringRunner.class)
+@RunWith(JUnitPlatform.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
-public class InstituteController {
+ class TestInstituteController {
 
 	private static final String entityId = UUID.randomUUID().toString();
 	private static final String instituteId = "795592f1-3665-4649-89b0-39cb844e78d0";
@@ -102,17 +108,10 @@ public class InstituteController {
 		SpringApplication.run(InstituteController.class);
 	}
 
-	// institute/api/v1/institute/status/{instituteId}
-	@DisplayName(" test success")
-	@Test
-	public void servivesTests() {
-
-	}
-
 	@DisplayName("change Institute status test success")
 	@Test
-	public void changeInstituteStatus() throws IOException {
-		// TODO create institute first, get instituteId then change status
+	  void changeInstituteStatus() throws IOException {
+		
 
 		boolean status = true;
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
@@ -188,7 +187,7 @@ public class InstituteController {
 
 	@DisplayName("save instituteType")
 	@Test
-	public void saveInstituteType() throws IOException {
+	  void saveInstituteType() throws IOException {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
@@ -265,7 +264,7 @@ public class InstituteController {
 
 	@DisplayName("get InstituteType by CountryName")
 	@Test
-	public void testGetInstituteTypeByCountryName() throws IOException {
+	  void testGetInstituteTypeByCountryName() throws IOException {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
@@ -352,7 +351,7 @@ public class InstituteController {
 
 	@DisplayName("get Institute Types")
 	@Test
-	public void getInstituteType() {
+	  void getInstituteType() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<InstituteTypeDto> entity = new HttpEntity<>(null, headers);
@@ -364,7 +363,7 @@ public class InstituteController {
 
 	@DisplayName("InstituteSearch")
 	@Test
-	public void instituteSearch() {
+	  void instituteSearch() {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCityNames(Arrays.asList("MUMBAI", "DELHI", "TORONTO", "NEW YORK", "HONGKONG", "PERIS"));
 		courseSearchDto.setCountryNames(Arrays.asList("INDIA", "USA", "UK", "GERMANY", "SPAIN", "ITALY", "JAPAN"));
@@ -383,7 +382,7 @@ public class InstituteController {
 	/// search/pageNumber/{pageNumber}/pageSize/{pageSize}
 	@DisplayName("Dynamic InstituteSearch")
 	@Test
-	public void testDynamicInstituteSearch() throws IOException {
+	  void testDynamicInstituteSearch() throws IOException {
 		List<String> countryName = Arrays.asList("USA", "ITALY", "ICELAND", "GERMANY", "BRAZIL");
 		List<String> facultyIds = Arrays.asList("5b05d529-ec0a-11ea-a757-02f6d1a05b4e",
 				"5b8fac9f-d00f-3309-bd3a-f13616229bae", "7d25b4c8-0935-11eb-a757-02f6d1a05b4e",
@@ -400,8 +399,7 @@ public class InstituteController {
 		Integer toWorldRanking = 5643;
 		int pageNumber = 1;
 		int pageSize = 2;
-		// TODO add more fields
-		// TODO add more fields
+		
 		StringBuilder path = new StringBuilder();
 		path.append(INSTITUTE_PRE_PATH).append(PATH_SEPARATOR).append("search").append(PATH_SEPARATOR)
 				.append("pageNumber").append(PATH_SEPARATOR).append(pageNumber).append(PATH_SEPARATOR)
@@ -421,7 +419,7 @@ public class InstituteController {
 
 	@DisplayName("getAllRecommendedInstitutes")
 	@Test
-	public void testGetAllRecommendedInstitutes() {
+	  void testGetAllRecommendedInstitutes() {
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
 		courseSearchDto.setCityNames(Arrays.asList("MUMBAI", "DELHI", "TORONTO", "NEW YORK", "HONGKONG", "PERIS"));
 		courseSearchDto.setCountryNames(Arrays.asList("INDIA", "USA", "UK", "GERMANY", "SPAIN", "ITALY", "JAPAN"));
@@ -437,7 +435,7 @@ public class InstituteController {
 
 	@DisplayName("getInstituteByCityName")
 	@Test
-	public void testGetInstituteByCityName() throws IOException {
+	  void testGetInstituteByCityName() throws IOException {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
@@ -508,7 +506,7 @@ public class InstituteController {
 
 	@DisplayName("save institutes")
 	@Test
-	public void testCreateInstitute() throws IOException {
+	  void testCreateInstitute() throws IOException {
 		try {
 
 			ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
@@ -573,7 +571,7 @@ public class InstituteController {
 
 	@DisplayName("update")
 	@Test
-	public void testUpdate() throws IOException {
+	  void testUpdate() throws IOException {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
@@ -648,7 +646,7 @@ public class InstituteController {
 
 	@DisplayName("testGetAllInstitute")
 	@Test
-	public void testGetAllInstitute() {
+	  void testGetAllInstitute() {
 		try {
 			ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 			ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
@@ -715,7 +713,7 @@ public class InstituteController {
 
 	@DisplayName("testGetAllInstituteAutoSearch")
 	@Test
-	public void testGetAllInstituteAutoSearch() {
+	  void testGetAllInstituteAutoSearch() {
 		try {
 			ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 			ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
@@ -783,7 +781,7 @@ public class InstituteController {
 
 	@DisplayName("get by id")
 	@Test
-	public void testGetById() {
+	  void testGetById() {
 
 		Boolean is_readable_id = true;
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
@@ -865,7 +863,7 @@ public class InstituteController {
 
 	@DisplayName("instituteFilter")
 	@Test
-	public void testInstituteFilter() throws IOException {
+	  void testInstituteFilter() throws IOException {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
@@ -942,7 +940,7 @@ public class InstituteController {
 
 	@DisplayName("testGetAllCategoryType")
 	@Test
-	public void testGetAllCategoryType() {
+  void testGetAllCategoryType() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
@@ -953,7 +951,7 @@ public class InstituteController {
 
 	@DisplayName("testGetAllInstituteType")
 	@Test
-	public void testGetAllInstituteType() {
+	  void testGetAllInstituteType() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
@@ -964,7 +962,7 @@ public class InstituteController {
 
 	@DisplayName("testDeleteInstitute")
 	@Test
-	public void testDeleteInstitute() {
+	  void testDeleteInstitute() {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
@@ -1014,7 +1012,7 @@ public class InstituteController {
 
 	@DisplayName("testGetHistoryOfDomesticRanking")
 	@Test
-	public void testGetHistoryOfDomesticRanking() throws IOException {
+	  void testGetHistoryOfDomesticRanking() throws IOException {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
@@ -1089,7 +1087,7 @@ public class InstituteController {
 
 	@DisplayName("testGetHistoryOfWorldRanking")
 	@Test
-	public void testGetHistoryOfWorldRanking() throws IOException {
+	  void testGetHistoryOfWorldRanking() throws IOException {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
@@ -1164,10 +1162,10 @@ public class InstituteController {
 		}
 	}
 
-	// TODO can not implement below method. Faculty has no mapping Institute Entity.
+	
 	@DisplayName("testGetInstituteFaculties")
 	@Test
-	public void testGetInstituteFaculties() throws IOException {
+	  void testGetInstituteFaculties() throws IOException {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));

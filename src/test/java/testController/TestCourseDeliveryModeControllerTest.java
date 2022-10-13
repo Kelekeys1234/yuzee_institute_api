@@ -2,11 +2,15 @@ package testController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import com.yuzee.app.YuzeeApplication;
 import com.yuzee.app.dto.CourseDeliveryModeRequestWrapper;
@@ -27,12 +32,14 @@ import com.yuzee.common.lib.dto.institute.CourseDeliveryModeFundingDto;
 import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
 import com.yuzee.common.lib.dto.institute.CourseFeesDto;
 
-@RunWith(SpringRunner.class)
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
+@RunWith(JUnitPlatform.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
 
-public class CourseDeliveryModeController {
+ class TestCourseDeliveryModeControllerTest {
 	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 	private static final String PATH_SEPARATOR = "/";
 	private static final String COURSE_PATH = "/api/v1";
@@ -42,7 +49,7 @@ public class CourseDeliveryModeController {
 
 	@DisplayName("Add CourseDeliveryMode")
 	@Test
-	public void addCourseDeliveryMode() {
+	 void addCourseDeliveryMode() {
 		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 		CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 		courseDeliveryModesDto.setDeliveryType("demo");
@@ -93,7 +100,7 @@ public class CourseDeliveryModeController {
 
 	@DisplayName("Update CourseDeliveryMode")
 	@Test
-	public void updateCourseDeliveryMode() {
+	  void updateCourseDeliveryMode() {
 		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 		CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 		courseDeliveryModesDto.setDeliveryType("demo");
@@ -144,7 +151,7 @@ public class CourseDeliveryModeController {
 
 	@DisplayName("send  multipleCourseDeliveryMode")
 	@Test
-	public void sendMultipleCourseDeliveryMode() {
+	 void sendMultipleCourseDeliveryMode() {
 		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 		CourseDeliveryModesDto courseDeliveryModesFirstList = new CourseDeliveryModesDto();
 		courseDeliveryModesFirstList.setDeliveryType("demo");
@@ -221,7 +228,7 @@ public class CourseDeliveryModeController {
 
 	@DisplayName("Remove  SingalCourseDeliveryMode")
 	@Test
-	public void removeSingalCourseDeliveryMode() {
+	 void removeSingalCourseDeliveryMode() {
 		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 		CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 
@@ -273,7 +280,7 @@ public class CourseDeliveryModeController {
 
 	@DisplayName("DELETE All CourseDeliveryMode")
 	@Test
-	public void deleteAllCourseDeliveryMode() {
+	 void deleteAllCourseDeliveryMode() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -291,7 +298,7 @@ public class CourseDeliveryModeController {
 
 	@DisplayName("Send Wrong_Id")
 	@Test
-	public void wrongIdCourseDeliveryMode() {
+	  void wrongIdCourseDeliveryMode() {
 		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 		CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 		courseDeliveryModesDto.setDeliveryType("demo");
@@ -343,7 +350,7 @@ public class CourseDeliveryModeController {
 
 	@DisplayName("Send EmptyCourseDelivery")
 	@Test
-	public void sendEmptyCourseDeliveryMode() {
+	 void sendEmptyCourseDeliveryMode() {
 		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 		CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 		courseDeliveryModesDto.setDeliveryType("");
@@ -395,7 +402,7 @@ public class CourseDeliveryModeController {
 
 	@DisplayName("Send Wrong CourseID")
 	@Test
-	public void sendWrongCourseIDForDeleteALL() {
+	 void sendWrongCourseIDForDeleteALL() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);

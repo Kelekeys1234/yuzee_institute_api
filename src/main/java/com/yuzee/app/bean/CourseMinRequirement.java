@@ -35,7 +35,7 @@ import lombok.ToString;
 public class CourseMinRequirement implements Serializable {
 
 	private static final long serialVersionUID = 6903674843134844883L;
-	
+	@EqualsAndHashCode.Include
 	private String courseMinRequirementsId;
 	@EqualsAndHashCode.Include
 	private String countryName;

@@ -137,11 +137,11 @@ public class CommonProcessor {
 
 	@Transactional
 	public void saveElasticCourses(List<Course> courses) {
-		log.info("Calling elastic service to save/update courses on elastic index ");
-		if (!CollectionUtils.isEmpty(courses)) {
-			List<CourseSyncDTO> courseElasticDtos = courses.stream()
-					.map(e -> conversionProcessor.convertToCourseSyncDTOSyncDataEntity(e)).collect(Collectors.toList());
-			publishSystemEventHandler.syncCourses(courseElasticDtos);
-		}
+//		log.info("Calling elastic service to save/update courses on elastic index ");
+//		if (!CollectionUtils.isEmpty(courses)) {
+//			List<CourseSyncDTO> courseElasticDtos = courses.stream()
+//					.map(e -> conversionProcessor.convertToCourseSyncDTOSyncDataEntity(e)).collect(Collectors.toList());
+//			publishSystemEventHandler.syncCourses(courseElasticDtos);
+//		}
 	}
 }

@@ -2,6 +2,8 @@ package testController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.UUID;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -25,10 +29,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.yuzee.app.YuzeeApplication;
 import com.yuzee.app.bean.Location;
+import com.yuzee.app.controller.v1.InstituteBasicInfoController;
 import com.yuzee.app.dto.InstituteEnglishRequirementsDto;
 import com.yuzee.app.dto.InstituteFundingDto;
 import com.yuzee.app.dto.InstituteRequestDto;
@@ -41,11 +47,11 @@ import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RunWith(SpringRunner.class)
+@RunWith(JUnitPlatform.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
-public class InstituteEnglishRequirementController {
+public class TestInstituteEnglishRequirementController {
 
 	private static final String entityId = UUID.randomUUID().toString();
 	private static final String instituteId = "714964e7-ce52-4c07-ac0b-2e8dc6d7d444";
@@ -76,7 +82,7 @@ public class InstituteEnglishRequirementController {
 	/// englishRequirements/{instituteId}
 	@DisplayName("addInstituteEnglishRequirements test success")
 	@Test
-	public void addInstituteEnglishRequirements() {
+	  void addInstituteEnglishRequirements() {
 
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
@@ -151,7 +157,7 @@ public class InstituteEnglishRequirementController {
 
 	@DisplayName("updateInstituteEnglishRequirements test success")
 	@Test
-	public void updateInstituteEnglishRequirements() {
+	  void updateInstituteEnglishRequirements() {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
@@ -242,7 +248,7 @@ public class InstituteEnglishRequirementController {
 
 	@DisplayName("getInstitutePublicEnglishRequirementsByInstituteId test success")
 	@Test
-	public void getInstitutePublicEnglishRequirementsByInstituteId() {
+	  void getInstitutePublicEnglishRequirementsByInstituteId() {
 		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
 		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
 		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
@@ -327,7 +333,7 @@ public class InstituteEnglishRequirementController {
 
 	@DisplayName("deleteInstituteEnglishRequirementsByRequirementsId test success")
 	@Test
-	public void deleteInstituteEnglishRequirementsByRequirementsId() {
+	  void deleteInstituteEnglishRequirementsByRequirementsId() {
 		String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirements" + PATH_SEPARATOR
 				+ "5296d989-45eb-4971-825e-67ed9248a717";
 		HttpHeaders headers = new HttpHeaders();

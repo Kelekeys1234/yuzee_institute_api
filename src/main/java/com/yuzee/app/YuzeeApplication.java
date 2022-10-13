@@ -1,6 +1,7 @@
 package com.yuzee.app;
 
 import java.util.concurrent.ExecutorService;
+
 import java.util.concurrent.Executors;
 
 import org.modelmapper.ModelMapper;
@@ -20,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.client.RestTemplate;
+
 
 import com.yuzee.app.processor.MasterDataImportProcessor;
 import com.yuzee.app.util.FileStorageProperties;

@@ -2,12 +2,16 @@ package testController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.yuzee.app.YuzeeApplication;
@@ -31,12 +36,12 @@ import com.yuzee.app.dto.CourseWorkPlacementRequirementDto;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RunWith(SpringRunner.class)
+@RunWith(JUnitPlatform.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
 
-public class CourseOtherRequirementController {
+ class TestCourseOtherRequirementController {
 	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 	private static final String COURSE_PATH = "/api/v1";
 	private static final String PATH_SEPARATOR = "/";
@@ -46,7 +51,7 @@ public class CourseOtherRequirementController {
 
 	@DisplayName("Add work_experience_work_placement")
 	@Test
-	public void addWorkExperienceWorkPlacement() {
+	 void addWorkExperienceWorkPlacement() {
 		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
 		CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
 		workExperience.setDescription("Hello this is my am work_experience ");
@@ -81,7 +86,7 @@ public class CourseOtherRequirementController {
 
 	@DisplayName("Update work_experience_work_placement")
 	@Test
-	public void updateWorkExperienceWorkPlacement() {
+     void updateWorkExperienceWorkPlacement() {
 		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
 		CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
 		workExperience.setDescription("Hello this is my  workExperience ");
@@ -116,7 +121,7 @@ public class CourseOtherRequirementController {
 
 	@DisplayName("Add multiple_fields_work_experience_work_placement")
 	@Test
-	public void addMultipleFieldsWorkExperienceWorkPlacement() {
+	  void addMultipleFieldsWorkExperienceWorkPlacement() {
 		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
 		CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
 		workExperience.setDescription("Hello this is my  work_experience ");
@@ -153,7 +158,7 @@ public class CourseOtherRequirementController {
 
 	@DisplayName("Remove singal_fields_work_experience_work_placement")
 	@Test
-	public void removeSingalFieldsWorkExperienceWorkPlacement() {
+     void removeSingalFieldsWorkExperienceWorkPlacement() {
 		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
 		CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
 		workExperience.setDescription("Hello this is my  workExperience ");
@@ -188,7 +193,7 @@ public class CourseOtherRequirementController {
 
 	@DisplayName("Get all_work_experience_work_placement")
 	@Test
-	public void getAllWorkExperienceWorkPlacement() {
+     void getAllWorkExperienceWorkPlacement() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -205,7 +210,7 @@ public class CourseOtherRequirementController {
 
 	@DisplayName("Send wrong_courseId")
 	@Test
-	public void sendWrongCourseId() {
+	  void sendWrongCourseId() {
 		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
 		CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
 		workExperience.setDescription("Hello this is my  workExperience ");

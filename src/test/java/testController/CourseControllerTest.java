@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.yuzee.app.YuzeeApplication;
 import com.yuzee.app.dto.AdvanceSearchDto;
@@ -62,15 +62,15 @@ import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.handler.StorageHandler;
 import com.yuzee.common.lib.handler.UserHandler;
 import com.yuzee.common.lib.handler.ViewTransactionHandler;
-
+import org.junit.platform.runner.JUnitPlatform;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RunWith(SpringRunner.class)
+@RunWith(JUnitPlatform.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
-public class CourseController {
+ class CourseControllerTest {
 	private static final String entityId = UUID.randomUUID().toString();
 	private static final String instituteId = "1e348e15-45b6-477f-a457-883738227e05";
 	private static final String INSTITUTE_ID = "instituteId";
@@ -96,7 +96,7 @@ public class CourseController {
 
 	@Test
 	@DisplayName("save course")
-	public void AddCourses() {
+	 void AddCourses() {
 
 		ValidList<CourseMinRequirementDto> courseMinRequirementDtos = new ValidList<>();
 		ValidList<CourseContactPersonDto> courseContactPersons = new ValidList<>();
@@ -119,7 +119,9 @@ public class CourseController {
 
 		TimingRequestDto timing = new TimingRequestDto(entityId, timings, "LECTURES", "COURSE", instituteId);
 		courseTimings.add(timing);
-		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto( "name", "description");
+		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto();
+		semesterSubjectDto.setName("name");
+		semesterSubjectDto.setDescription("description");
 
 		CourseSemesterDto courseSemesterDto = new CourseSemesterDto(entityId, "type", "name", "description",
 				semesterSubjectDtos);
@@ -133,8 +135,9 @@ public class CourseController {
 		LevelDto levelDto = new LevelDto(instituteId, "levelName", "levelCode", "levelCategories", "levelDescriptions",
 				12345);
 
-		CourseMinRequirementSubjectDto courseMinRequirementSubjectDto = new CourseMinRequirementSubjectDto(
-				"name", "Grade");
+		CourseMinRequirementSubjectDto courseMinRequirementSubjectDto = new CourseMinRequirementSubjectDto();
+		courseMinRequirementSubjectDto .setName("name");
+		courseMinRequirementSubjectDto .setGrade("Grade");
 		minRequirementSubjects.add(courseMinRequirementSubjectDto);
 
 		EducationSystemDto educationSystem = new EducationSystemDto().builder().id(INSTITUTE_ID).countryName("INDIA")
@@ -149,7 +152,7 @@ public class CourseController {
 				"secondClass", "2.22");
 
 		CourseMinRequirementDto courseMinRequirement = new CourseMinRequirementDto();
-		courseMinRequirement.setCourseMinRequirementsId(UUID.randomUUID().toString());
+		courseMinRequirement.setId(UUID.randomUUID().toString());
 		courseMinRequirement.setCountryName("INDIA");
 		courseMinRequirement.setStateName("INDIA");
 		courseMinRequirement.setEducationSystemId(UUID.randomUUID().toString());
@@ -245,8 +248,7 @@ public class CourseController {
 
 	@DisplayName("update institutes")
 	@Test
-	public void UpdateCourses() {
-
+	 void UpdateCourses() {
 		ValidList<CourseMinRequirementDto> courseMinRequirementDtos = new ValidList<>();
 		ValidList<CourseContactPersonDto> courseContactPersons = new ValidList<>();
 		ValidList<CourseMinRequirementSubjectDto> minRequirementSubjects = new ValidList<>();
@@ -268,7 +270,9 @@ public class CourseController {
 
 		TimingRequestDto timing = new TimingRequestDto(entityId, timings, "LECTURES", "COURSE", instituteId);
 		courseTimings.add(timing);
-		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto( "name", "description");
+		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto();
+		semesterSubjectDto.setName("name");
+		semesterSubjectDto.setDescription("description");
 
 		CourseSemesterDto courseSemesterDto = new CourseSemesterDto(entityId, "type", "name", "description",
 				semesterSubjectDtos);
@@ -277,11 +281,14 @@ public class CourseController {
 
 		UserInitialInfoDto userInitialInfoDto = new UserInitialInfoDto();
 
+		
+
 		LevelDto levelDto = new LevelDto(instituteId, "levelName", "levelCode", "levelCategories", "levelDescriptions",
 				12345);
 
-		CourseMinRequirementSubjectDto courseMinRequirementSubjectDto = new CourseMinRequirementSubjectDto(
-				"name", "Grade");
+		CourseMinRequirementSubjectDto courseMinRequirementSubjectDto = new CourseMinRequirementSubjectDto();
+		courseMinRequirementSubjectDto .setName("name");
+		courseMinRequirementSubjectDto .setGrade("Grade");
 		minRequirementSubjects.add(courseMinRequirementSubjectDto);
 
 		EducationSystemDto educationSystem = new EducationSystemDto().builder().id(INSTITUTE_ID).countryName("INDIA")
@@ -296,7 +303,7 @@ public class CourseController {
 				"secondClass", "2.22");
 
 		CourseMinRequirementDto courseMinRequirement = new CourseMinRequirementDto();
-		courseMinRequirement.setCourseMinRequirementsId(UUID.randomUUID().toString());
+		courseMinRequirement.setId(UUID.randomUUID().toString());
 		courseMinRequirement.setCountryName("INDIA");
 		courseMinRequirement.setStateName("INDIA");
 		courseMinRequirement.setEducationSystemId(UUID.randomUUID().toString());
@@ -320,9 +327,9 @@ public class CourseController {
 		couseRequest.setInstituteId("1e348e15-45b6-477f-a457-883738227e05");
 		couseRequest.setFacultyId("73babc67-04a1-4329-9733-d9175a544fc8");
 		couseRequest.setFaculty(facultyDto);
-		couseRequest.setName("UpdateName");
+		couseRequest.setName("courseName Test");
 		couseRequest.setDescription("course Description");
-		couseRequest.setLanguage(Arrays.asList(entityId));
+		couseRequest.setLanguage(Arrays.asList("INDIA"));
 		couseRequest.setGrades("first Class");
 		couseRequest.setDocumentUrl("document Url");
 		couseRequest.setWebsite("website Url");
@@ -335,7 +342,7 @@ public class CourseController {
 		couseRequest.setTotalCount("23456");
 		couseRequest.setCurrency("dollar");
 		couseRequest.setCurrencyTime("ISt");
-		couseRequest.setLevelIds("73babc67-04a1-4329-9733-d9175a544fc8");
+		couseRequest.setLevelIds("7401b9e0-9541-4336-98bb-934d455afae6");
 		couseRequest.setLevel(levelDto);
 		couseRequest.setAvailability("always Available");
 		couseRequest.setRecognition("recognize");
@@ -393,7 +400,7 @@ public class CourseController {
 
 	@DisplayName("getAllCourses")
 	@Test
-	public void getAllCourses() {
+	 void getAllCourses() {
 		Integer pageNumber = 1;
 		Integer pageSize = 1;
 		HttpHeaders headers = new HttpHeaders();
@@ -409,7 +416,7 @@ public class CourseController {
 
 	@DisplayName("getAllCourses")
 	@Test
-	public void getAutoSearchCourses() {
+	 void getAutoSearchCourses() {
 		Integer pageNumber = 1;
 		Integer pageSize = 1;
 		HttpHeaders headers = new HttpHeaders();
@@ -427,7 +434,7 @@ public class CourseController {
 
 	@DisplayName("DELETE Courses")
 	@Test
-	public void DeleteCourse() {
+	 void DeleteCourse() {
 
 		Map<String, List<String>> param = new HashMap<>();
 		List<String> ss = new ArrayList<>();
@@ -446,7 +453,7 @@ public class CourseController {
 
 	@DisplayName("course search")
 	@Test
-	public void courseSearch() {
+	 void courseSearch() {
 		CourseSearchFilterDto courseSearchFilterDto = new CourseSearchFilterDto("200", "10mins", "India", "recognition",
 				"latesrCourse", "yuzee", "computer science ", "ranking");
 		CourseSearchDto courseSearchDto = new CourseSearchDto();
@@ -492,7 +499,7 @@ public class CourseController {
 
 	@DisplayName(value = "advanceSearch")
 	@Test
-	public void advanceSearch() {
+	 void advanceSearch() {
 		AdvanceSearchDto advanceSearch = new AdvanceSearchDto();
 		advanceSearch.setFaculties(Arrays.asList(instituteId));
 
@@ -535,7 +542,7 @@ public class CourseController {
 
 	@DisplayName(value = "get")
 	@Test
-	public void get() {
+	 void get() {
 		Map<String, String> param = new HashMap<>();
 		param.put("is_readable_id", "coursename-Ow9NR9y");
 		HttpHeaders headers = new HttpHeaders();
@@ -550,8 +557,8 @@ public class CourseController {
 	}
 
 	@DisplayName("getAllInstituteById")
-	@Test
-	public void getAllCourseByInstituteID() {
+	@Test   
+	void getAllCourseByInstituteID() {
 		Mockito.when(storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES))
 				.thenReturn(new ArrayList());
 		CourseSearchFilterDto courseSearchFilterDto = new CourseSearchFilterDto("200", "10mins", "India", "recognition",
@@ -601,7 +608,7 @@ public class CourseController {
 
 	@DisplayName(value = "searchKeyword")
 	@Test
-	public void searchCourseKeyword() {
+	 void searchCourseKeyword() {
 		Map<String, String> params = new HashMap<>();
 		params.put("keyword", "coursename");
 		HttpHeaders headers = new HttpHeaders();
@@ -615,7 +622,7 @@ public class CourseController {
 	}
 
 	//// faculty is yet to be created
-	public void getCourseByFacultyId() {
+	public  void getCourseByFacultyId() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
@@ -628,7 +635,7 @@ public class CourseController {
 
 	@DisplayName(value = "getUserCourse")
 	@Test
-	public void getUserCourse() {
+	 void getUserCourse() {
 		List<String> courseIds = new ArrayList<>();
 		courseIds.add("7132d88e-cf2c-4f48-ac6e-82214208f677");
 		HttpHeaders headers = new HttpHeaders();
@@ -643,7 +650,7 @@ public class CourseController {
 
 	@DisplayName(value = "courseFilter")
 	@Test
-	public void courseFilter() {
+	 void courseFilter() {
 		CourseSearchFilterDto courseSearchFilterDto = new CourseSearchFilterDto("200", "10mins", "India", "recognition",
 				"latesrCourse", "yuzee", "computer science ", "ranking");
 		Mockito.when(userHandler.getUserById(userId)).thenReturn(new UserInitialInfoDto());
@@ -657,10 +664,10 @@ public class CourseController {
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 	}
-
+   
 	@DisplayName(value = "searchByCharacter")
 	@Test
-	public void autoSearchByCharacter() {
+	 void testAutoSearchByCharacter() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
@@ -673,7 +680,7 @@ public class CourseController {
 
 	@DisplayName(value = "getCourseNoResultRecommendation")
 	@Test
-	public void getCourseNoResultRecommendation() {
+	 void getCourseNoResultRecommendation() {
 		Integer pageNumber = 1;
 		Integer pageSize = 1;
 
@@ -695,7 +702,7 @@ public class CourseController {
 
 	@DisplayName(value = "getCourseNoResultRecommendation")
 	@Test
-	public void getCourseKeywordRecommendation() {
+	 void getCourseKeywordRecommendation() {
 		Integer pageNumber = 1;
 		Integer pageSize = 1;
 
@@ -719,7 +726,7 @@ public class CourseController {
 
 	@DisplayName(value = "getCheapestCourse")
 	@Test
-	public void getCheapestCourse() {
+	 void getCheapestCourse() {
 		Integer pageNumber = 1;
 		Integer pageSize = 1;
 
@@ -741,7 +748,7 @@ public class CourseController {
 
 	@DisplayName(value = "getCourseCountByLevel")
 	@Test
-	public void getCourseCountByLevel() {
+	 void getCourseCountByLevel() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
@@ -753,7 +760,7 @@ public class CourseController {
 
 	@DisplayName(value = "getCourseCountByLevel")
 	@Test
-	public void SearchCourses() {
+  void SearchCourses() {
 		Map<String, String> params = new HashMap<>();
 		params.put("countryIds", COURSE_IDS);
 
@@ -761,7 +768,7 @@ public class CourseController {
 
 	@DisplayName(value = "getCourseCountByLevel")
 	@Test
-	public void getDistinctCourses() {
+	 void getDistinctCourses() {
 		Integer pageNumber = 1;
 		Integer pageSize = 1;
 
@@ -780,7 +787,7 @@ public class CourseController {
 /////RUN AFTER FACULTY DB IS CREATED
 	@DisplayName(value = "addCourseViaMobile")
 	@Test
-	public void addCourseViaMobile() {
+	 void addCourseViaMobile() {
 		CourseMobileDto courseMobileDto = new CourseMobileDto("7132d88e-cf2c-4f48-ac6e-82214208f677", "coursename",
 				"course Description", entityId, "facultyName", 3.0, 33.00, 1.22, 22.5, "durationUnit");
 		HttpHeaders headers = new HttpHeaders();
@@ -798,7 +805,7 @@ public class CourseController {
 /////RUN AFTER FACULTY DB IS CREATED
 	@DisplayName(value = "addCourseViaMobile")
 	@Test
-	public void udateCourseViaMobile() {
+	 void udateCourseViaMobile() {
 		CourseMobileDto courseMobileDto = new CourseMobileDto("7132d88e-cf2c-4f48-ac6e-82214208f677", "coursename",
 				"course Description", entityId, "facultyName", 3.0, 33.00, 1.22, 22.5, "durationUnit");
 		HttpHeaders headers = new HttpHeaders();
@@ -814,7 +821,7 @@ public class CourseController {
 
 	@DisplayName(value = "addCourseViaMobile")
 	@Test
-	public void getCourseViaMobile() {
+	 void getCourseViaMobile() {
 		CourseMobileDto courseMobileDto = new CourseMobileDto("7132d88e-cf2c-4f48-ac6e-82214208f677", "coursename",
 				"course Description", entityId, "facultyName", 3.0, 33.00, 1.22, 22.5, "durationUnit");
 		HttpHeaders headers = new HttpHeaders();
@@ -831,7 +838,7 @@ public class CourseController {
 
 	@DisplayName(value = "changeStatus")
 	@Test
-	public void changeStatus() {
+	 void changeStatus() {
 		Boolean status = true;
 		Map<String, Boolean> params = new HashMap<>();
 		params.put("Status", status);
@@ -848,7 +855,7 @@ public class CourseController {
 
 	@DisplayName(value = "getCourseByInstituteId")
 	@Test
-	public void getCourseByInstituteId() {
+	 void getCourseByInstituteId() {
 		Integer pageNumber = 1;
 		Integer pageSize = 1;
 
@@ -866,7 +873,7 @@ public class CourseController {
 
 	@DisplayName(value = "getNearestCourseList")
 	@Test
-	public void getNearestCourseList() {
+	 void getNearestCourseList() {
 		AdvanceSearchDto advanceSearch = new AdvanceSearchDto();
 		advanceSearch.setFaculties(Arrays.asList(instituteId));
 
@@ -905,7 +912,7 @@ public class CourseController {
 
 	@DisplayName(value = "getNearestCourseList")
 	@Test
-	public void getCourseByCountryName() {
+     void getCourseByCountryName() {
 		Integer pageNumber = 1;
 		Integer pageSize = 1;
 
@@ -921,7 +928,7 @@ public class CourseController {
 
 	@DisplayName(value = "getCourseByIds")
 	@Test
-	public void getCourseByIds() {
+	  void getCourseByIds() {
 		List<String> course = new ArrayList<>();
 		course.add("7132d88e-cf2c-4f48-ac6e-82214208f677");
 		HttpHeaders headers = new HttpHeaders();
@@ -935,7 +942,7 @@ public class CourseController {
 
 	@DisplayName(value = "getRecommendateCourses")
 	@Test
-	public void getRecommendateCourses() {
+	 void getRecommendateCourses() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -948,7 +955,7 @@ public class CourseController {
 
 	@DisplayName(value = "getRecommendateCourses")
 	@Test
-	public void getRelatedCourses() {
+     void getRelatedCourses() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -961,7 +968,7 @@ public class CourseController {
 
 	@DisplayName(value = "getRecommendateCourses")
 	@Test
-	public void getCourseCountByInstituteId() {
+	 void getCourseCountByInstituteId() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -974,7 +981,7 @@ public class CourseController {
 
 	@DisplayName(value = "updateBasiCourse")
 	@Test
-	public void updateBasiCourse() {
+	 void updateBasiCourse() {
 		ValidList<CourseMinRequirementDto> courseMinRequirementDtos = new ValidList<>();
 		ValidList<CourseContactPersonDto> courseContactPersons = new ValidList<>();
 		ValidList<CourseMinRequirementSubjectDto> minRequirementSubjects = new ValidList<>();
@@ -996,7 +1003,9 @@ public class CourseController {
 
 		TimingRequestDto timing = new TimingRequestDto(entityId, timings, "LECTURES", "COURSE", instituteId);
 		courseTimings.add(timing);
-		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto( "name", "description");
+		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto();
+		semesterSubjectDto.setName("name");
+		semesterSubjectDto.setDescription("description");
 
 		CourseSemesterDto courseSemesterDto = new CourseSemesterDto(entityId, "type", "name", "description",
 				semesterSubjectDtos);
@@ -1005,13 +1014,14 @@ public class CourseController {
 
 		UserInitialInfoDto userInitialInfoDto = new UserInitialInfoDto();
 
-
+		
 
 		LevelDto levelDto = new LevelDto(instituteId, "levelName", "levelCode", "levelCategories", "levelDescriptions",
 				12345);
 
-		CourseMinRequirementSubjectDto courseMinRequirementSubjectDto = new CourseMinRequirementSubjectDto(
-				"name", "Grade");
+		CourseMinRequirementSubjectDto courseMinRequirementSubjectDto = new CourseMinRequirementSubjectDto();
+		courseMinRequirementSubjectDto .setName("name");
+		courseMinRequirementSubjectDto .setGrade("Grade");
 		minRequirementSubjects.add(courseMinRequirementSubjectDto);
 
 		EducationSystemDto educationSystem = new EducationSystemDto().builder().id(INSTITUTE_ID).countryName("INDIA")
@@ -1026,7 +1036,7 @@ public class CourseController {
 				"secondClass", "2.22");
 
 		CourseMinRequirementDto courseMinRequirement = new CourseMinRequirementDto();
-		courseMinRequirement.setCourseMinRequirementsId(UUID.randomUUID().toString());
+		courseMinRequirement.setId(UUID.randomUUID().toString());
 		courseMinRequirement.setCountryName("INDIA");
 		courseMinRequirement.setStateName("INDIA");
 		courseMinRequirement.setEducationSystemId(UUID.randomUUID().toString());
@@ -1048,11 +1058,11 @@ public class CourseController {
 		CourseRequest couseRequest = new CourseRequest();
 		couseRequest.setId(UUID.randomUUID());
 		couseRequest.setInstituteId("1e348e15-45b6-477f-a457-883738227e05");
-		couseRequest.setFacultyId(entityId);
+		couseRequest.setFacultyId("73babc67-04a1-4329-9733-d9175a544fc8");
 		couseRequest.setFaculty(facultyDto);
-		couseRequest.setName("UpdateName");
+		couseRequest.setName("courseName Test");
 		couseRequest.setDescription("course Description");
-		couseRequest.setLanguage(Arrays.asList(entityId));
+		couseRequest.setLanguage(Arrays.asList("INDIA"));
 		couseRequest.setGrades("first Class");
 		couseRequest.setDocumentUrl("document Url");
 		couseRequest.setWebsite("website Url");
@@ -1065,7 +1075,7 @@ public class CourseController {
 		couseRequest.setTotalCount("23456");
 		couseRequest.setCurrency("dollar");
 		couseRequest.setCurrencyTime("ISt");
-		couseRequest.setLevelIds(INSTITUTE_ID);
+		couseRequest.setLevelIds("7401b9e0-9541-4336-98bb-934d455afae6");
 		couseRequest.setLevel(levelDto);
 		couseRequest.setAvailability("always Available");
 		couseRequest.setRecognition("recognize");
@@ -1123,7 +1133,7 @@ public class CourseController {
 
 	@DisplayName(value = "saveBasiCourse")
 	@Test
-	public void saveBasiCourse() {
+	 void saveBasiCourse() {
 		ValidList<CourseMinRequirementDto> courseMinRequirementDtos = new ValidList<>();
 		ValidList<CourseContactPersonDto> courseContactPersons = new ValidList<>();
 		ValidList<CourseMinRequirementSubjectDto> minRequirementSubjects = new ValidList<>();
@@ -1145,7 +1155,9 @@ public class CourseController {
 
 		TimingRequestDto timing = new TimingRequestDto(entityId, timings, "LECTURES", "COURSE", instituteId);
 		courseTimings.add(timing);
-		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto( "name", "description");
+		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto();
+		semesterSubjectDto.setName("name");
+		semesterSubjectDto.setDescription("description");
 
 		CourseSemesterDto courseSemesterDto = new CourseSemesterDto(entityId, "type", "name", "description",
 				semesterSubjectDtos);
@@ -1154,12 +1166,14 @@ public class CourseController {
 
 		UserInitialInfoDto userInitialInfoDto = new UserInitialInfoDto();
 
+		
 
 		LevelDto levelDto = new LevelDto(instituteId, "levelName", "levelCode", "levelCategories", "levelDescriptions",
 				12345);
 
-		CourseMinRequirementSubjectDto courseMinRequirementSubjectDto = new CourseMinRequirementSubjectDto(
-				"name", "Grade");
+		CourseMinRequirementSubjectDto courseMinRequirementSubjectDto = new CourseMinRequirementSubjectDto();
+		courseMinRequirementSubjectDto .setName("name");
+		courseMinRequirementSubjectDto .setGrade("Grade");
 		minRequirementSubjects.add(courseMinRequirementSubjectDto);
 
 		EducationSystemDto educationSystem = new EducationSystemDto().builder().id(INSTITUTE_ID).countryName("INDIA")
@@ -1174,7 +1188,7 @@ public class CourseController {
 				"secondClass", "2.22");
 
 		CourseMinRequirementDto courseMinRequirement = new CourseMinRequirementDto();
-		courseMinRequirement.setCourseMinRequirementsId(UUID.randomUUID().toString());
+		courseMinRequirement.setId(UUID.randomUUID().toString());
 		courseMinRequirement.setCountryName("INDIA");
 		courseMinRequirement.setStateName("INDIA");
 		courseMinRequirement.setEducationSystemId(UUID.randomUUID().toString());
@@ -1196,11 +1210,11 @@ public class CourseController {
 		CourseRequest couseRequest = new CourseRequest();
 		couseRequest.setId(UUID.randomUUID());
 		couseRequest.setInstituteId("1e348e15-45b6-477f-a457-883738227e05");
-		couseRequest.setFacultyId(entityId);
+		couseRequest.setFacultyId("73babc67-04a1-4329-9733-d9175a544fc8");
 		couseRequest.setFaculty(facultyDto);
-		couseRequest.setName("UpdateName");
+		couseRequest.setName("courseName Test");
 		couseRequest.setDescription("course Description");
-		couseRequest.setLanguage(Arrays.asList(entityId));
+		couseRequest.setLanguage(Arrays.asList("INDIA"));
 		couseRequest.setGrades("first Class");
 		couseRequest.setDocumentUrl("document Url");
 		couseRequest.setWebsite("website Url");
@@ -1213,7 +1227,7 @@ public class CourseController {
 		couseRequest.setTotalCount("23456");
 		couseRequest.setCurrency("dollar");
 		couseRequest.setCurrencyTime("ISt");
-		couseRequest.setLevelIds(INSTITUTE_ID);
+		couseRequest.setLevelIds("7401b9e0-9541-4336-98bb-934d455afae6");
 		couseRequest.setLevel(levelDto);
 		couseRequest.setAvailability("always Available");
 		couseRequest.setRecognition("recognize");
@@ -1271,7 +1285,7 @@ public class CourseController {
 
 	@DisplayName(value = "updateProcedureIdInCourse")
 	@Test
-	public void updateProcedureIdInCourse() {
+	 void updateProcedureIdInCourse() {
 		Map<String, String> params = new HashMap<>();
 		params.put("courseIds", COURSE_IDS);
 		params.put("studentType", StudentTypeEnum.INTERNATIONAL.toString());
@@ -1288,7 +1302,7 @@ public class CourseController {
 
 	@DisplayName(value = "updateProcedureIdInInstituteId")
 	@Test
-	public void updateProcedureIdInIstituteId() {
+	 void updateProcedureIdInIstituteId() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -1304,7 +1318,7 @@ public class CourseController {
 
 	@DisplayName(value = "publishDraftCourse")
 	@Test
-	public void publishDraftCourse() {
+ void publishDraftCourse() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -1318,7 +1332,7 @@ public class CourseController {
 
 	@DisplayName(value = "getDreaftcourse")
 	@Test
-	public void getDreaftcourse() {
+	 void getDreaftcourse() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -1333,7 +1347,7 @@ public class CourseController {
 
 	@DisplayName(value = "disCardDreaftcourse")
 	@Test
-	public void disCardDreaftcourse() {
+	 void disCardDreaftcourse() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);

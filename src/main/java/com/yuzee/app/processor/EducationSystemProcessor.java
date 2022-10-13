@@ -119,6 +119,7 @@ public class EducationSystemProcessor {
 					educationSystemFromDB.get().setCode(educationSystem.getCode());
 					educationSystemFromDB.get().setLevel(level);
 					educationSystemFromDB.get().setCountryName(educationSystem.getCountryName());
+					educationSystemFromDB.get().setStateName(educationSystem.getStateName());
 					educationSystemDAO.save(educationSystemFromDB.get());
 				} else {
 					log.error(messageTranslator.toLocale("system.country.name.required", Locale.US));
@@ -136,6 +137,7 @@ public class EducationSystemProcessor {
 				EducationSystem system = new EducationSystem();
 				system.setId(educationSystem.getId());
 				system.setCode(educationSystem.getCode());
+				system.setStateName(educationSystem.getStateName());
 				system.setCountryName(educationSystem.getCountryName());
 				system.setCreatedBy("API");
 				system.setCreatedOn(new Date());

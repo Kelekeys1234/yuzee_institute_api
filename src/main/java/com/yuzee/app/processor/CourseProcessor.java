@@ -1956,8 +1956,8 @@ public class CourseProcessor {
 
 		course = courseDao.addUpdateCourse(course);
 		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
-		publishSystemEventHandler
-				.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
+//		publishSystemEventHandler
+//				.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
 		try {
 			courseDao.saveDocument(getCourseById(loggedInUserId, course.getId(), false));
 		} catch (Exception e) {

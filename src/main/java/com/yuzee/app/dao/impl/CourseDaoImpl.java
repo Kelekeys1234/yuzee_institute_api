@@ -849,20 +849,18 @@ public class CourseDaoImpl implements CourseDao {
 		if (!StringUtils.isEmpty(sortBy) && "institute_name".contentEquals(sortBy)) {
 			// sqlQuery = sqlQuery + " ORDER BY i.name " + (sortType ? "ASC" : "DESC");
 			query.with(Sort.by(Sort.Direction.ASC, "sortBy"));
-			List<Institute> users = mongoTemplate.find(query, Institute.class);
 		} else if (!StringUtils.isEmpty(sortBy)
 				&& ("domestic_fee".contentEquals(sortBy) || "duration".contentEquals(sortBy))) {
 			query.with(Sort.by(Sort.Direction.ASC, "sortBy"));
-			List<Course> users = mongoTemplate.find(query, Course.class);
+	
 		} else if (!StringUtils.isEmpty(sortBy)) {
 			query.with(Sort.by(Sort.Direction.ASC, "sortBy"));
-			List<Course> users = mongoTemplate.find(query, Course.class);
+			
 		} else {
 			query.with(Sort.by(Sort.Direction.ASC, "sortBy"));
 			query.with(Sort.by(Sort.Direction.ASC, "sortBy"));
-			List<Course> users = mongoTemplate.find(query, Course.class);
 		}
-		List<CourseDto> users = mongoTemplate.find(query, CourseDto.class);
+		List<CourseDto> users = mongoTemplate.find(query, CourseDto.class,"course");
 		// List<CourseDeliveryModesDto> user = mongoTemplate.find(query,
 		// CourseDto.class);
 		// List<Map<String, Object>> aliasToValueMapList = query.;
@@ -871,10 +869,11 @@ public class CourseDaoImpl implements CourseDao {
 		if (!CollectionUtils.isEmpty(users)) {
 //			aliasToValueMapList.stream().forEach(e -> {
 //				Map<String, Object> row = e;
+			CourseDto courseDto = new CourseDto();
 			for (CourseDto row : users) {
 
 				CourseDeliveryModesDto additionalInfoDto = new CourseDeliveryModesDto();
-				CourseDto courseDto = new CourseDto();
+				
 				courseDto.setId(String.valueOf(row.getId()));
 				courseDto.setName(String.valueOf(row.getName()));
 				courseDto.setWorldRanking(String.valueOf(row.getWorldRanking()));
@@ -894,7 +893,7 @@ public class CourseDaoImpl implements CourseDao {
 				additionalInfoDtos.add(additionalInfoDto);
 				courseDto.setCourseDeliveryModes(additionalInfoDtos);
 			}
-			// courses.add(courseDto);
+			   courses.add(courseDto);
 
 		}
 		;

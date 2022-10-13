@@ -3,6 +3,8 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
 
+
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,9 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +30,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.yuzee.app.YuzeeApplication;
 import com.yuzee.app.dto.CourseContactPersonRequestWrapper;
@@ -39,11 +42,11 @@ import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RunWith(SpringRunner.class)
+@RunWith(JUnitPlatform.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
-public class CourseContactPerson {
+class CourseContactPersonTest {
 	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 	private static final String api= "/api/v1/course";
 	private static final String PATH_SEPARATOR = "/";
@@ -54,10 +57,11 @@ public class CourseContactPerson {
 	CommonProcessor commonProcessor;
 	@DisplayName("saveCourseContactPerson")
 	@Test
-	public void saveCourseContactPerson() {
+	 void saveCourseContactPerson() {
 		ValidList<CourseContactPersonDto> courseContactPersonDtos = new ValidList<CourseContactPersonDto>();
 		UserInitialInfoDto user= new UserInitialInfoDto();
-		CourseContactPersonDto courseContactPersonDto = new CourseContactPersonDto(userId);
+		CourseContactPersonDto courseContactPersonDto = new CourseContactPersonDto();
+		courseContactPersonDto.setUserId(userId);
 		courseContactPersonDtos.add(courseContactPersonDto);
 		List<String> linkedCourseId = Arrays.asList("96a2e11b-d64b-4964-9d28-2a4d7a41d944");
 		CourseContactPersonRequestWrapper courseContactPersonRequestWrapper= new CourseContactPersonRequestWrapper();
@@ -77,7 +81,7 @@ public class CourseContactPerson {
 	}
 	@DisplayName("deleteContactPerson")
 	@Test
-	public void deleteSaveContactPerson() {
+	 void deleteSaveContactPerson() {
 		Map<String,List<String>> params= new HashMap<>();
 		params.put("userIds",Arrays.asList(userId));
 		

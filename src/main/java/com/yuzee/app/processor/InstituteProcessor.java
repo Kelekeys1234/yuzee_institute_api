@@ -228,8 +228,8 @@ public class InstituteProcessor {
 		instituteElasticSearchDto
 				.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
 		instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
-		instituteElasticSearchDto
-				.setInstituteType(institute.getInstituteType() != null ? institute.getInstituteType() : null);
+//		instituteElasticSearchDto
+//				.setInstituteType(institute.getInstituteType() != null ? institute.getInstituteType() : null);
 		List<String> intakes = institute.getInstituteIntakes();
 		if (!CollectionUtils.isEmpty(intakes)) {
 			instituteElasticSearchDto.setIntakes(institute.getInstituteIntakes());

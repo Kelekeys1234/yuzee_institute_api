@@ -1,6 +1,8 @@
 package testController;
 import static org.assertj.core.api.Assertions.assertThat;
 
+
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +15,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.yuzee.app.YuzeeApplication;
@@ -42,13 +47,13 @@ import com.yuzee.common.lib.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RunWith(SpringRunner.class)
+@RunWith(JUnitPlatform.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
 
 
-public class EnglishEligibilityController {
+ class TestEnglishEligibilityController {
 	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 	private static final String PATH_SEPARATOR = "/";
 	private static final String COURSE_PATH = "/api/v1";
@@ -61,7 +66,7 @@ public class EnglishEligibilityController {
 
 	@DisplayName("Add EnglishEligibility")
 	@Test
-	public void addEnglishEligibility() {
+	  void addEnglishEligibility() {
 
 		CourseEnglishEligibilityDto courseEnglishEligibilityDto = new CourseEnglishEligibilityDto();
 		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
@@ -105,7 +110,7 @@ public class EnglishEligibilityController {
 
 	@DisplayName("Update EnglishEligibility")
 	@Test
-	public void updateEnglishEligibility() {
+	 void updateEnglishEligibility() {
 
 		CourseEnglishEligibilityDto courseEnglishEligibilityDto = new CourseEnglishEligibilityDto();
 		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
@@ -149,7 +154,7 @@ public class EnglishEligibilityController {
 
 	@DisplayName("Remove EnglishEligibility")
 	@Test
-	public void removeEnglishEligibility() {
+	  void removeEnglishEligibility() {
 
 		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
 		CourseEnglishEligibilityRequestWrapper requestWrapper = new CourseEnglishEligibilityRequestWrapper();
@@ -183,7 +188,7 @@ public class EnglishEligibilityController {
 
 	@DisplayName("DELETE All EnglishEligibility")
 	@Test
-	public void deleteAllEnglishEligibility() {
+	  void deleteAllEnglishEligibility() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -201,7 +206,7 @@ public class EnglishEligibilityController {
 	
 	@DisplayName("Send empty_englishType")
 	@Test
-	public void sendEmptyEnglishEligibility() {
+	  void sendEmptyEnglishEligibility() {
 
 		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
 		CourseEnglishEligibilityRequestWrapper requestWrapper = new CourseEnglishEligibilityRequestWrapper();
@@ -236,7 +241,7 @@ public class EnglishEligibilityController {
 
 	@DisplayName("Send wrong_CourseID")
 	@Test
-	public void sendWrongCourseId() {
+	 void sendWrongCourseId() {
 
 		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
 		CourseEnglishEligibilityRequestWrapper requestWrapper = new CourseEnglishEligibilityRequestWrapper();
