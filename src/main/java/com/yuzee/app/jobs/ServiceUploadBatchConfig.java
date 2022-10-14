@@ -20,12 +20,15 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.data.MongoItemWriter;
+import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 
 import com.yuzee.app.bean.Service;
@@ -65,11 +68,10 @@ public class ServiceUploadBatchConfig {
     }
 
 
-    @Bean
-    public JpaItemWriter<Service> serviceWriter(@Autowired EntityManagerFactory emf) {
-        JpaItemWriter<Service> writer = new JpaItemWriter<>();
-        writer.setEntityManagerFactory(emf);
-        return writer;
+    @Bean("ServiceItemWriter")
+    public MongoItemWriter<Service> serviceWriter(MongoTemplate mongoTemplate) {
+		 return new MongoItemWriterBuilder<Service>().template(mongoTemplate).collection("service")
+	                .build();      
     }
  
     @Bean("importServiceJob")
@@ -84,8 +86,7 @@ public class ServiceUploadBatchConfig {
 
     @Bean("serviceStep1")
     public Step step1Service(StepBuilderFactory stepBuilderFactory, ServiceItemReader serviceItemReader,
-            ItemWriter<Service> serviceWriter, ServiceItemProcessor serviceItemProcessor,
-            HibernateTransactionManager hibernateTransactionManager,
+    		@Qualifier("ServiceItemWriter") ItemWriter<Service> serviceWriter, ServiceItemProcessor serviceItemProcessor,
             SkipAnyFailureSkipPolicy skipPolicy,
             ItemWriteListener<Service> serviceItemWriteListener) {
         return stepBuilderFactory.get("step1")
@@ -95,7 +96,6 @@ public class ServiceUploadBatchConfig {
                 .processor(serviceItemProcessor)
                 .writer(serviceWriter)
                 .listener(serviceItemWriteListener)
-                .transactionManager(hibernateTransactionManager)
                 .build();
     }
     

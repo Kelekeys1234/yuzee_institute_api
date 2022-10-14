@@ -17,16 +17,20 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.data.MongoItemWriter;
+import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseCurriculum;
+import com.yuzee.app.bean.Institute;
 import com.yuzee.app.dto.uploader.CourseCsvDto;
 import com.yuzee.common.lib.dto.institute.CourseCurriculumDto;
 import com.yuzee.common.lib.exception.UploaderException;
@@ -65,18 +69,16 @@ public class CourseUploadBatchConfig {
 
     @Bean("courseItemWriter")
     @StepScope
-    public JpaItemWriter<Course> writer(@Autowired EntityManagerFactory emf) {
-        JpaItemWriter<Course> writer = new JpaItemWriter<>();
-        writer.setEntityManagerFactory(emf);
-        return writer;
+    public MongoItemWriter<Course> writer(MongoTemplate mongoTemplate) {
+		 return new MongoItemWriterBuilder<Course>().template(mongoTemplate).collection("course")
+	                .build();
     }
     
     @Bean("curriculumItemWriter")
     @StepScope
-    public JpaItemWriter<CourseCurriculum> curriculumItemWriter(@Autowired EntityManagerFactory emf) {
-        JpaItemWriter<CourseCurriculum> writer = new JpaItemWriter<>();
-        writer.setEntityManagerFactory(emf);
-        return writer;
+    public MongoItemWriter<CourseCurriculum> curriculumItemWriter(MongoTemplate mongoTemplate) {
+		 return new MongoItemWriterBuilder<CourseCurriculum>().template(mongoTemplate).collection("CourseCurriculum")
+	                .build();
     }
 	
     @Bean("importCourseJob")

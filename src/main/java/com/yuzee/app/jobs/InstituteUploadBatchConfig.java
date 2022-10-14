@@ -22,6 +22,8 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.data.MongoItemWriter;
+import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +31,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.util.StringUtils;
 
 import com.yuzee.app.bean.Institute;
+import com.yuzee.app.bean.Level;
 import com.yuzee.app.dto.uploader.InstituteCsvDto;
 import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
@@ -72,11 +76,10 @@ public class InstituteUploadBatchConfig {
     }
 
 
-    @Bean
-    public JpaItemWriter<Institute> instituteWriter(@Autowired EntityManagerFactory emf) {
-        JpaItemWriter<Institute> writer = new JpaItemWriter<>();
-        writer.setEntityManagerFactory(emf);
-        return writer;
+    @Bean("InstituteItemWriter")
+    public MongoItemWriter<Institute> instituteWriter(MongoTemplate mongoTemplate) {
+		 return new MongoItemWriterBuilder<Institute>().template(mongoTemplate).collection("institute")
+	                .build();
     }
  
     @Bean("importInstituteJob")
@@ -94,8 +97,7 @@ public class InstituteUploadBatchConfig {
 
     @Bean("instituteStep")
     public Step instituteStep(StepBuilderFactory stepBuilderFactory, InstituteItemReader instituteItemReader,
-            ItemWriter<Institute> instituteWriter, InstituteItemProcessor instituteItemProcessor,
-            HibernateTransactionManager hibernateTransactionManager,
+    		@Qualifier("InstituteItemWriter") ItemWriter<Institute> instituteWriter, InstituteItemProcessor instituteItemProcessor,
             SkipAnyFailureSkipPolicy skipPolicy,
             ItemWriteListener<Institute> instituteItemWriteListener) {
         return stepBuilderFactory.get("step1")
@@ -105,7 +107,6 @@ public class InstituteUploadBatchConfig {
                 .processor(instituteItemProcessor)
                 .writer(instituteWriter)
                 .listener(instituteItemWriteListener)
-                .transactionManager(hibernateTransactionManager)
                 .build();
     }
     
