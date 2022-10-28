@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -125,6 +126,7 @@ public class GradeDetailProcessor {
 			inputStream.close();
 		} catch (Exception exception) {
 			log.error("Exception in Uploading Grade exception {} ", exception);
+			
 		}
 	}
 
@@ -178,6 +180,7 @@ public class GradeDetailProcessor {
 			gradeDetail.setCreatedBy("AUTO");
 			gradeDetail.setCreatedOn(new Date());
 		}
+		gradeDetail.setId(UUID.randomUUID().toString());
 		gradeDetail.setCountryName(country);
 		gradeDetail.setEducationSystem(educationSystem);
 		gradeDetail.setStateName(stateName);

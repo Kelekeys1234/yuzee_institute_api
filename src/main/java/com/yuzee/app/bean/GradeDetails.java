@@ -2,6 +2,8 @@ package com.yuzee.app.bean;
 
 import java.util.Date;
 
+
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 

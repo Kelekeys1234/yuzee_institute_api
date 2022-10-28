@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.util.ArrayList;
 
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -18,7 +19,6 @@ import com.yuzee.app.bean.Course;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dto.CourseContactPersonRequestWrapper;
 import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
-import com.yuzee.common.lib.exception.ForbiddenException;
 import com.yuzee.common.lib.exception.InvokeException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
@@ -54,8 +54,8 @@ public class CourseContactPersonProcessor {
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		log.info("going to see if user ids are valid");
 
-//		commonProcessor.validateAndGetUsersByUserIds(userId,
-//			courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
+		commonProcessor.validateAndGetUsersByUserIds(userId,
+			courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()));
 		log.debug("going to process the request");
 		List<String> courseContactPersons = course.getCourseContactPersons();
 
@@ -81,7 +81,7 @@ public class CourseContactPersonProcessor {
 			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 		}
 
-		//  commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+		   commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 	}
 
 	@Transactional

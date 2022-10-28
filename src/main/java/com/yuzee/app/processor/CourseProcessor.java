@@ -252,7 +252,7 @@ public class CourseProcessor {
 	private Job exportCourseToElastic;
 
 	@Autowired
-	private ReadableIdProcessor readableIdProcessor;
+	private ReadableIdProcessor readableIdProcessor; 
 
 	@Autowired
 	private MessageTranslator messageTranslator;

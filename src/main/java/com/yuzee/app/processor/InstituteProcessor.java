@@ -158,7 +158,11 @@ public class InstituteProcessor {
 	@Autowired
 	private ConversionProcessor conversionProcessor;
 
-
+	
+	@Autowired
+	@Qualifier("importInstituteJob")
+    private Job job;
+	
 	@Autowired
 	private JobLauncher jobLauncher;
 
@@ -461,7 +465,7 @@ public class InstituteProcessor {
 			log.info("instituteTimings is not null hence going to save institute timings in DB");
 			TimingDto timingResponseDto = instituteTimingProcessor.getTimingResponseDtoByInstituteId(institute.getId());
 			TimingRequestDto timingRequestDto = new TimingRequestDto();
-			timingRequestDto.setId(timingResponseDto != null ? timingResponseDto.getId().toString() : null);
+		//	timingRequestDto.setId(timingResponseDto != null ? timingResponseDto.getId().toString() : null);
 			timingRequestDto.setEntityType(EntityTypeEnum.INSTITUTE.name());
 			timingRequestDto.setTimingType(TimingType.OPEN_HOURS.name());
 			timingRequestDto.setTimings(instituteRequest.getInstituteTimings());
@@ -494,7 +498,7 @@ public class InstituteProcessor {
 	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
 	private void saveUpdateInstituteFundings(String loggedInUserId, Institute institute,
 			List<String> instituteFundingDtos) throws ValidationException, NotFoundException, InvokeException {
-		List<String> fundingsToBeAdded;
+		List<String> fundingsToBeAdded = new ArrayList<>();
 		List<String> instituteFundings = institute.getInstituteFundings();
 		if (!CollectionUtils.isEmpty(instituteFundingDtos)) {
 			log.info("Creating the list to save/update institute fundings in DB");
@@ -502,8 +506,8 @@ public class InstituteProcessor {
 					.filter(dto -> instituteFundings.stream().noneMatch(fromDb -> Objects.equals(fromDb, dto)))
 					.collect(Collectors.toList());
 			log.info("going to check if funding name ids are valid");
-			commonProcessor.getFundingsByFundingNameIds(
-					instituteFundingDtos.isEmpty() ? null : new ArrayList<>(instituteFundingDtos), true);
+//			commonProcessor.getFundingsByFundingNameIds(
+//					instituteFundingDtos.isEmpty() ? null : new ArrayList<>(instituteFundingDtos), true);
 			instituteFundings
 					.removeIf(fromDb -> instituteFundingDtos.stream().noneMatch(dto -> Objects.equals(fromDb, dto)));
 			log.info("see if some entitity ids are not present then we have to delete them.");
@@ -1330,6 +1334,7 @@ public class InstituteProcessor {
 		JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
 		jobParametersBuilder.addString("csv-file", f.getAbsolutePath());
 		jobParametersBuilder.addString("execution-id", "InstituteUploader-" + UUID.randomUUID().toString());
+		jobLauncher.run(job, jobParametersBuilder.toJobParameters());
 	}
 
 	@Async

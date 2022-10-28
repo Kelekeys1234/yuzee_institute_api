@@ -520,6 +520,7 @@ import lombok.extern.slf4j.Slf4j;
 			listOfInstituteProviderCode.add(instituteProviderCode);
 
 			InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+			instituteRequestDto.setInstituteId(instituteId);
 			instituteRequestDto.setName("IIM");
 			instituteRequestDto.setCityName("AHMEDABAD");
 			instituteRequestDto.setCountryName("INDIA");

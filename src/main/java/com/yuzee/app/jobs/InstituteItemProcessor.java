@@ -210,7 +210,7 @@ public class InstituteItemProcessor implements ItemProcessor<InstituteCsvDto, In
 				facilityList.forEach(facility -> {
 					if (!StringUtils.isEmpty(facility) && !facility.equals("0")) {
 						Service service = services.get(StringUtils.trim(facility).toLowerCase());
-						if (!ObjectUtils.isEmpty(service)) {
+						if (!ObjectUtils.isEmpty(service)) { 
 							instituteFacilityList.add(new InstituteFacility(institute.getId(), service));
 						}
 					}

@@ -18,6 +18,7 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -53,8 +54,8 @@ public class LevelUploadBatchConfig {
 
 	@Bean("levelItemWriter")
 	@StepScope
-	public MongoItemWriter<Level> writer(MongoTemplate mongoTemplate) {
-		 return new MongoItemWriterBuilder<Level>().template(mongoTemplate).collection("level")
+	public MongoItemWriter<Level> writer(@Autowired MongoTemplate mongoTemplate) {
+		   return new MongoItemWriterBuilder<Level>().template(mongoTemplate).collection("level")
 	                .build();
 	}
 
@@ -65,13 +66,11 @@ public class LevelUploadBatchConfig {
 	}
 
 	@Bean("levelStep")
-	public Step levelStep(StepBuilderFactory stepBuilderFactory,
-			@Qualifier("levelItemReader") ItemReader<LevelDto> reader,
-			@Qualifier("levelItemWriter") ItemWriter<Level> writer,
-			@Qualifier("levelItemProcessor") ItemProcessor<LevelDto, Level> processor,@Qualifier("levelItemWriterListner") ItemWriteListener<Level> levelItemWriteListner,
-			 SkipAnyFailureSkipPolicy skipPolicy) {
+	public Step levelStep(StepBuilderFactory stepBuilderFactory,@Qualifier("levelItemReader") ItemReader<LevelDto> reader,
+			 SkipAnyFailureSkipPolicy skipPolicy,MongoItemWriter<Level> writer)
+			 {
 		return stepBuilderFactory.get("levelStep").<LevelDto, Level>chunk(batchSize).reader(reader).faultTolerant()
-				.skipPolicy(skipPolicy).noRollback(ConstraintViolationException.class).processor(processor).writer(writer).listener(levelItemWriteListner)
+				.skipPolicy(skipPolicy).noRollback(ConstraintViolationException.class).processor(processor()).writer(writer).listener(levelItemWriteListner())
 				.build();
 	}
 	

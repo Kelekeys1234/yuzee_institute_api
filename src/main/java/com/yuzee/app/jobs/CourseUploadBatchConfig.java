@@ -17,16 +17,20 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.data.MongoItemWriter;
+import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseCurriculum;
+import com.yuzee.app.bean.Level;
 import com.yuzee.app.dto.uploader.CourseCsvDto;
 import com.yuzee.common.lib.dto.institute.CourseCurriculumDto;
 import com.yuzee.common.lib.exception.UploaderException;
@@ -51,57 +55,27 @@ public class CourseUploadBatchConfig {
     public ItemProcessor<CourseCsvDto, Course> processor() {
         return new CourseItemProcessor();
     }
-    
-    @Bean("curriculumItemReader")
-    @StepScope
-    public ItemReader<CourseCurriculumDto> curriculumReader(@Value("#{jobParameters['csv-file']}") String fileName) throws UploaderException, IOException, com.yuzee.common.lib.exception.IOException {
-    	return new CurriculumItemReader(fileName);
-    }
-    
-    @Bean("curriculumItemProcessor")
-    public ItemProcessor<CourseCurriculumDto, CourseCurriculum> curriculumProcessor() {
-        return new CurriculumItemProcessor();
-    }
-
+ 
+  
     @Bean("courseItemWriter")
     @StepScope
-    public JpaItemWriter<Course> writer(@Autowired EntityManagerFactory emf) {
-        JpaItemWriter<Course> writer = new JpaItemWriter<>();
-        writer.setEntityManagerFactory(emf);
-        return writer;
+    public MongoItemWriter<Course> writer(@Autowired MongoTemplate mongoTemplate) {
+		   return new MongoItemWriterBuilder<Course>().template(mongoTemplate).collection("courseCsv")
+	                .build();
     }
     
-    @Bean("curriculumItemWriter")
-    @StepScope
-    public JpaItemWriter<CourseCurriculum> curriculumItemWriter(@Autowired EntityManagerFactory emf) {
-        JpaItemWriter<CourseCurriculum> writer = new JpaItemWriter<>();
-        writer.setEntityManagerFactory(emf);
-        return writer;
-    }
+ 
 	
     @Bean("importCourseJob")
     public Job importCourseJob(JobBuilderFactory jobs,@Qualifier("facultyStep") Step facultyStep, @Qualifier ("courseStep") Step courseStep,
-    		@Qualifier("curriculumStep") Step curriculumStep,
     		@Qualifier("courseJobExecutionListner") JobExecutionListener courseJobExecutionListner) {
         return jobs.get("importCourseJob")
                 .incrementer(new RunIdIncrementer()).listener(courseJobExecutionListner)
-                .start(facultyStep).next(curriculumStep).next(courseStep)
+                .start(facultyStep).next(courseStep)
                 .build();
     }
     
-    @Bean("curriculumStep")
-    public Step curriculumStep(StepBuilderFactory stepBuilderFactory, @Qualifier ("curriculumItemReader") ItemReader<CourseCurriculumDto> reader,
-    		@Qualifier ("curriculumItemWriter") ItemWriter<CourseCurriculum> writer,@Qualifier ("curriculumItemProcessor") ItemProcessor<CourseCurriculumDto, CourseCurriculum> processor,
-            CourseImportSkipPolicy skipPolicy,@Qualifier("curriculumItemWriterListner") ItemWriteListener<CourseCurriculum> courseItemWriterListner) {
-    	return stepBuilderFactory.get("courseStep")
-                .<CourseCurriculumDto, CourseCurriculum> chunk(batchSize)
-                .reader(reader)
-                .faultTolerant().skipPolicy(skipPolicy).noRollback(ConstraintViolationException.class)
-                .processor(processor)
-                .writer(writer).listener(courseItemWriterListner)
-                .build();
-    }
-    
+  
     @Bean("courseStep")
     public Step courseStep(StepBuilderFactory stepBuilderFactory, @Qualifier ("courseItemReader") ItemReader<CourseCsvDto> reader,
     		@Qualifier ("courseItemWriter") ItemWriter<Course> writer,@Qualifier ("courseItemProcessor") ItemProcessor<CourseCsvDto, Course> processor,
@@ -121,12 +95,7 @@ public class CourseUploadBatchConfig {
     	return new CourseItemWriteListener();
     }
 
-    
-    @Bean("curriculumItemWriterListner")
-    @StepScope
-    public ItemWriteListener<CourseCurriculum> curriculumItemListner() {
-    	return new CurriculumItemWriteListner();
-    }
+
 
     @Bean("courseJobExecutionListner")
     public JobExecutionListener courseJobExecutionListner () {

@@ -63,7 +63,7 @@ public class CourseFundingProcessor {
 		Institute institute = instituteDao.get(UUID.fromString(instituteId));
 		List<Course> courseToBeNotified = new ArrayList<>();
 		if (institute != null) {
-	 //   commonProcessor.getFundingsByFundingNameIds(fundingNameId, true);
+	    commonProcessor.getFundingsByFundingNameIds(fundingNameId, true);
 	    List<Course> instituteCourses = courseDao.findByInstituteId(instituteId);
 	    if(ObjectUtils.isEmpty(institute)) {
 		   log.error(messageTranslator.toLocale("course_funding.institute.id.invalid", instituteId, Locale.US));
@@ -75,7 +75,7 @@ public class CourseFundingProcessor {
 			courseToBeNotified.add(instituteCourse);
 			    		  });
 			  
-			//commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", courseToBeNotified);
+			commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", courseToBeNotified);
 	
 		}
 		    return fundingNameId;
@@ -102,7 +102,7 @@ public class CourseFundingProcessor {
 							.addAll(replicateCourseFundings(userId, request.getLinkedCourseIds(), dtosToReplicate));
 				}
 				courseDao.saveAll(coursesToBeSavedOrUpdated);
-				//commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
+				commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
 	
 		} else {
 			log.error(messageTranslator.toLocale("course_funding.course.id.invalid", courseId, Locale.US));

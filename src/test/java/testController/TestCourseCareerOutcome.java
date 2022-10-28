@@ -48,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
  class TestCourseCareerOutcome {
 	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 	private static final String Id = "1e348e15-45b6-477f-a457-883738227e05";
-	private static final String jobsId= "7132d88e-cf2c-4f48-ac6e-82214208f677";
+	private static final String jobsId= "96a2e11b-d64b-4964-9d28-2a4d7a41d944";
 	private static final String api= "/api/v1/course";
 	private static final String PATH_SEPARATOR = "/";
 	@Autowired
@@ -79,7 +79,7 @@ import lombok.extern.slf4j.Slf4j;
 		headers.add("userId", userId);
 		HttpEntity<CourseCareerOutcomeRequestWrapper> entity = new HttpEntity<>(request, headers);
 		ResponseEntity<CourseRequest> response = testRestTemplate.exchange(
-				api + PATH_SEPARATOR +"8772d763-4829-4000-a860-2c79a82905c7" + PATH_SEPARATOR + "career-outcome",
+				api + PATH_SEPARATOR +"96a2e11b-d64b-4964-9d28-2a4d7a41d944" + PATH_SEPARATOR + "career-outcome",
 				HttpMethod.POST, entity, CourseRequest.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}

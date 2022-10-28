@@ -62,7 +62,7 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
-public class TestInstituteBasicInfoController {
+ class TestInstituteBasicInfoController {
 
 	private static final String entityId = UUID.randomUUID().toString();
 	private static final String instituteId = "a2a00b2a-6b2d-41f1-8501-8ba882ee2b2a";

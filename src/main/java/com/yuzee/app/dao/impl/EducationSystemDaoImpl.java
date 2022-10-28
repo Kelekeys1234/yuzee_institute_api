@@ -186,7 +186,16 @@ public class EducationSystemDaoImpl implements EducationSystemDao {
 
 	@Override
 	public EducationSystem findByNameAndCountryNameAndStateName(String name, String countryName, String stateName) {
-		return educationSystemRepository.findByNameAndCountryNameAndStateName(name, countryName, stateName);
+		 EducationSystem  system = new  EducationSystem ();
+		Query query = new Query();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("name").is(name));
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("countryName").is(countryName));
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("stateName").is(stateName));
+	    List<EducationSystem> systems = mongoTemplate.find(query,EducationSystem.class,"education_system");
+		for( EducationSystem  e :systems) {
+			system=e;
+		}
+		return system;
 	}
 
 }

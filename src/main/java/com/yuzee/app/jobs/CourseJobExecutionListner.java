@@ -33,6 +33,7 @@ public class CourseJobExecutionListner implements JobExecutionListener {
 			logFileProcessor.appendToLogFile(executionId, Arrays.asList(header));
 		} catch (IOException e) {
 			log.error("Exception occured {}",e);
+			System.out.println(e);
 		}
 	}
 }

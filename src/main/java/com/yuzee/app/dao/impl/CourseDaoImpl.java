@@ -837,7 +837,7 @@ public class CourseDaoImpl implements CourseDao {
 	@Override
 	public List<CourseDto> getUserCourse(final List<String> courseIds, final String sortBy, final boolean sortType)
 			throws ValidationException {
-		Session session = sessionFactory.getCurrentSession();
+		//Session session = sessionFactory.getCurrentSession();
 		org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
 //		String sqlQuery = "select c.id ,c.name, c.world_ranking, c.stars, c.description, "
 //				+ " c.remarks, i.name as instituteName, cai.domestic_fee, cai.international_fee, cai.usd_domestic_fee, cai.usd_international_fee,"
@@ -845,7 +845,12 @@ public class CourseDaoImpl implements CourseDao {
 //				+ " left join course_delivery_modes cai on cai.course_id = c.id"
 //				+ " where c.is_active = 1 and c.id in ("
 //				+ courseIds.stream().map(String::valueOf).collect(Collectors.joining("','", "'", "'")) + ")";
-
+		for(String id:courseIds) {
+		if (!StringUtils.isEmpty(id)) {
+			// sqlQuery = sqlQuery + " ORDER BY i.name " + (sortType ? "ASC" : "DESC");
+			query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("id").is(id));
+		}
+		}
 		if (!StringUtils.isEmpty(sortBy) && "institute_name".contentEquals(sortBy)) {
 			// sqlQuery = sqlQuery + " ORDER BY i.name " + (sortType ? "ASC" : "DESC");
 			query.with(Sort.by(Sort.Direction.ASC, "sortBy"));

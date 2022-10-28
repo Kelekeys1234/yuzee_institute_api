@@ -82,6 +82,8 @@ import lombok.extern.slf4j.Slf4j;
 	private static final String PAGE_NUMBER_PATH = "/pageNumber";
 	private static final String PAGE_SIZE_PATH = "/pageSize";
 	private static final String COURSE_IDS = "7132d88e-cf2c-4f48-ac6e-82214208f677";
+	private static final String AUTO_SERARCH = "autoSearch";
+	private static final String COURSE_NAME = "coursename";
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
@@ -672,7 +674,7 @@ import lombok.extern.slf4j.Slf4j;
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "autoSearch" + PATH_SEPARATOR + "coursename",
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + AUTO_SERARCH + PATH_SEPARATOR + COURSE_NAME,
 				HttpMethod.GET, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 

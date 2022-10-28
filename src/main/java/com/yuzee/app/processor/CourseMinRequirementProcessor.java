@@ -13,9 +13,6 @@ import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -25,17 +22,14 @@ import org.springframework.util.StringUtils;
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseMinRequirement;
 import com.yuzee.app.bean.CourseMinRequirementSubject;
-import com.yuzee.app.bean.EducationSystem;
 import com.yuzee.app.dao.CourseDao;
 import com.yuzee.app.dao.EducationSystemDao;
-import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.institute.CourseMinRequirementDto;
 import com.yuzee.common.lib.dto.institute.CourseMinRequirementSubjectDto;
 import com.yuzee.common.lib.exception.ForbiddenException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.RuntimeNotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;
-import com.yuzee.common.lib.util.PaginationUtil;
 import com.yuzee.common.lib.util.Utils;
 import com.yuzee.local.config.MessageTranslator;
 
@@ -52,9 +46,6 @@ public class CourseMinRequirementProcessor {
 	@Autowired
 	@Lazy
 	private CourseProcessor courseProcessor;
-
-	@Autowired
-	private EducationSystemDao eudcationSystemDao;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -105,10 +96,11 @@ public class CourseMinRequirementProcessor {
 	        			}
 						
 						courseMinRequirementDtos.stream().forEach(dtos -> {
-	        			CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
+							CourseMinRequirement courseMinRequirement = new CourseMinRequirement();
 	        				if (StringUtils.hasText(dtos.getId())) {
 	        					log.info(
 	        							"entityId is present so going to see if it is present in db if yes then we have to update it");
+	        					
 	        					courseMinRequirement = existingCourseMinRequirementMap.get(dtos.getId());
 	        					courseMinRequirements.removeIf(e->e.getCourseMinRequirementsId().equals(dtos.getId()));	        					
 	        				}   

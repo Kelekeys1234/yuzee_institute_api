@@ -22,6 +22,8 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.data.MongoItemWriter;
+import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +31,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.util.StringUtils;
 
+import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.Institute;
+import com.yuzee.app.bean.Level;
 import com.yuzee.app.dto.uploader.InstituteCsvDto;
 import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
@@ -73,10 +78,9 @@ public class InstituteUploadBatchConfig {
 
 
     @Bean
-    public JpaItemWriter<Institute> instituteWriter(@Autowired EntityManagerFactory emf) {
-        JpaItemWriter<Institute> writer = new JpaItemWriter<>();
-        writer.setEntityManagerFactory(emf);
-        return writer;
+    public MongoItemWriter<Institute> writer(@Autowired MongoTemplate mongoTemplate) {
+		   return new MongoItemWriterBuilder<Institute>().template(mongoTemplate).collection("institute")
+	                .build();
     }
  
     @Bean("importInstituteJob")
@@ -135,12 +139,12 @@ public class InstituteUploadBatchConfig {
 						instituteElasticSearchDto.setInstituteIntakes(instituteObj.getInstituteIntakes());
 					}
 					if(!StringUtils.isEmpty(instituteObj.getInstituteType())) {
-					//	instituteElasticSearchDto.setInstituteType(instituteObj.getInstituteType());
+						instituteElasticSearchDto.setInstituteType(instituteObj.getInstituteType());
 					}
 					instituteElasticSearchDTOList.add(instituteElasticSearchDto);
 				}
 				log.info("Calling elastic search service having entityType  :{}",EntityTypeEnum.INSTITUTE);
-				publishSystemEventHandler.syncInstitutes(instituteElasticSearchDTOList);
+				//publishSystemEventHandler.syncInstitutes(instituteElasticSearchDTOList);
 			}
 
 			@Override
@@ -165,12 +169,14 @@ public class InstituteUploadBatchConfig {
 			@Override
 			public void beforeJob(JobExecution jobExecution) {
 				log.info("Job started to import Institutes");
+				System.out.println(jobExecution);
 			}
 			
 			@Override
 			public void afterJob(JobExecution jobExecution) {
 				log.info("Institute import done.");
 				logFileProcessor.sendFailureEmail(executionId, "UPLOADER: Institute batch upload Failures");
+				System.out.println(jobExecution);
 			}
 		};
     }

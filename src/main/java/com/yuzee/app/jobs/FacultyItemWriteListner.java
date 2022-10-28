@@ -36,8 +36,8 @@ public class FacultyItemWriteListner implements ItemWriteListener<Faculty> {
 	@Override
 	public void afterWrite(List<? extends Faculty> items) {
 		log.debug("After writing faculty item to db {} ", items.size());
-		publishSystemEventHandler.syncFaculties(
-				items.stream().map(e -> modelMapper.map(e, FacultyDto.class)).collect(Collectors.toList()));
+//		publishSystemEventHandler.syncFaculties(
+//				items.stream().map(e -> modelMapper.map(e, FacultyDto.class)).collect(Collectors.toList()));
 	}
 
 	@Override

@@ -1,12 +1,13 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,6 @@ import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dto.CourseSemesterRequestWrapper;
 import com.yuzee.common.lib.dto.institute.CourseSemesterDto;
 import com.yuzee.common.lib.dto.institute.SemesterSubjectDto;
-import com.yuzee.common.lib.exception.ForbiddenException;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.exception.RuntimeNotFoundException;
 import com.yuzee.common.lib.exception.ValidationException;

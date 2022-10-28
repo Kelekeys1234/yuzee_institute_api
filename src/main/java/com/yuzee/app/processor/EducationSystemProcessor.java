@@ -211,6 +211,7 @@ public class EducationSystemProcessor {
 			columnMapping.put("education_system", "name");
 			columnMapping.put("state", "stateName");
 			columnMapping.put("Grades_Display", "gradeTypeCode");
+			columnMapping.put("Sample_Description", "description");
 			columnMapping.put("Student_TYPE", "levelCode");
 
 			HeaderColumnNameTranslateMappingStrategy<EducationSystemDto> beanStrategy = new HeaderColumnNameTranslateMappingStrategy<>();
@@ -242,6 +243,7 @@ public class EducationSystemProcessor {
 				system.setCreatedBy("API");
 				system.setCreatedOn(new Date());
 			}
+			
 			system.setCode(dto.getName()); // its intentional to store code and description similiar to name
 			system.setGradeType(GradeType.valueOf(dto.getGradeTypeCode()));
 			system.setStateName(dto.getStateName());

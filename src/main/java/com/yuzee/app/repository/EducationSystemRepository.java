@@ -7,6 +7,4 @@ import com.yuzee.app.bean.EducationSystem;
 
 @Repository
 public interface EducationSystemRepository extends MongoRepository<EducationSystem, String> {
-
-	EducationSystem findByNameAndCountryNameAndStateName(String name, String countryName, String stateName);
 }

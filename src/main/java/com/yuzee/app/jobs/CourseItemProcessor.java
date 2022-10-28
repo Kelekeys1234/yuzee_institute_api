@@ -11,6 +11,8 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.ObjectUtils;
 
 import com.yuzee.app.bean.Course;
@@ -54,7 +56,7 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 
 	@Override
 	public Course process(CourseCsvDto courseDto) throws Exception {
-		log.info("Fetching all level from db");
+		 new Query();log.info("Fetching all level from db");
 		Map<String, UUID> levelMap = levelDao.getAllLevelMap();
 		log.info("Fetching all institute from db");
 		Map<String, String> instituteMap = institueDao.getAllInstituteMap();
@@ -265,7 +267,7 @@ public class CourseItemProcessor implements ItemProcessor<CourseCsvDto, Course> 
 	private void populateCourseUsdFee(List<CourseDeliveryModes> listOfCourseDeliveryModes, String currencyCode) {
 		listOfCourseDeliveryModes.stream().forEach(courseDeliveryMode -> {
 			log.info("fetching currency rate based on currencyCode {}", currencyCode);
-			CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(currencyCode);
+	//		CurrencyRateDto currencyRate = commonHandler.getCurrencyRateByCurrencyCode(currencyCode);
 //			if (ObjectUtils.isEmpty(currencyRate)) {
 //				try {
 //					log.info("currency rate is not null going to saving currency rate in DB");
