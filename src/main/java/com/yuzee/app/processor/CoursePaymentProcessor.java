@@ -58,8 +58,8 @@ public class CoursePaymentProcessor {
 		log.info("inside CoursePaymentProcessor.saveUpdateCoursePayment");
 		Course course = getCourseById(courseId);
 		if (ObjectUtils.isEmpty(course)) {
-			log.error(messageTranslator.toLocale("courses.notfound", Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("courses.notfound"));
+//			log.error(messageTranslator.toLocale("courses.notfound", Locale.US));
+//			throw new NotFoundException(messageTranslator.toLocale("courses.notfound"));
 		} else {
 			log.info("saving coursePaymentItems");
 			List<CoursePaymentItem> paymentItems = coursePaymentDto.getPaymentItems().stream().map(e->new CoursePaymentItem(e.getName(),e.getAmount(),new Date(),new Date(),userId,userId)).collect(Collectors.toList());
@@ -82,8 +82,8 @@ public class CoursePaymentProcessor {
 			throws ForbiddenException, NotFoundException, InternalServerException {
 		Course course = getCourseById(courseId);
 		if (ObjectUtils.isEmpty(course)) {
-			log.error(messageTranslator.toLocale("courses.notfound", Locale.US));
-			throw new NotFoundException(messageTranslator.toLocale("courses.notfound"));
+//			log.error(messageTranslator.toLocale("courses.notfound", Locale.US));
+//			throw new NotFoundException(messageTranslator.toLocale("courses.notfound"));
 		}
 		CoursePayment coursePayment = course.getCoursePayment();
 		if (!ObjectUtils.isEmpty(coursePayment)) {

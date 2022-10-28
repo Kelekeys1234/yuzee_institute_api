@@ -63,7 +63,7 @@ class CourseContactPersonTest {
 		CourseContactPersonDto courseContactPersonDto = new CourseContactPersonDto();
 		courseContactPersonDto.setUserId(userId);
 		courseContactPersonDtos.add(courseContactPersonDto);
-		List<String> linkedCourseId = Arrays.asList("96a2e11b-d64b-4964-9d28-2a4d7a41d944");
+		List<String> linkedCourseId = Arrays.asList("c4c5d73b-3eaf-4528-a3bb-2e09a70007f0");
 		CourseContactPersonRequestWrapper courseContactPersonRequestWrapper= new CourseContactPersonRequestWrapper();
 		courseContactPersonRequestWrapper.setCourseContactPersonDtos(courseContactPersonDtos);
 	    courseContactPersonRequestWrapper.setLinkedCourseIds(linkedCourseId);
@@ -74,11 +74,12 @@ class CourseContactPersonTest {
 		headers.add("userId", userId);
 		HttpEntity<CourseContactPersonRequestWrapper> entity = new HttpEntity<>(courseContactPersonRequestWrapper, headers);
 		ResponseEntity<CourseContactPersonRequestWrapper> response = testRestTemplate.exchange(
-				api + PATH_SEPARATOR +"96a2e11b-d64b-4964-9d28-2a4d7a41d944" + PATH_SEPARATOR + "contact-person",
+				api + PATH_SEPARATOR +"c4c5d73b-3eaf-4528-a3bb-2e09a70007f0" + PATH_SEPARATOR + "contact-person",
 				HttpMethod.POST, entity, CourseContactPersonRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		
 	}
+	
 	@DisplayName("deleteContactPerson")
 	@Test
 	 void deleteSaveContactPerson() {
@@ -88,9 +89,9 @@ class CourseContactPersonTest {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("userId", userId);
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<CourseContactPersonRequestWrapper> response = testRestTemplate.exchange(
-				api + PATH_SEPARATOR +"8772d763-4829-4000-a860-2c79a82905c7" + PATH_SEPARATOR + "contact-person",
+				api + PATH_SEPARATOR +"c4c5d73b-3eaf-4528-a3bb-2e09a70007f0" + PATH_SEPARATOR + "contact-person?user_ids=",
 				HttpMethod.DELETE, entity, CourseContactPersonRequestWrapper.class,params);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}

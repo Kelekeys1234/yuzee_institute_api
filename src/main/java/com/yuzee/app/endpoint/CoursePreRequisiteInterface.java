@@ -31,7 +31,7 @@ public interface CoursePreRequisiteInterface {
 	@DeleteMapping
 	public ResponseEntity<?> deleteByPreRequisiteIds(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@RequestParam(value = "course_pre_requisite_ids", required = true) @NotEmpty final List<String> coursePreRequisiteIds,
+			@RequestParam(value = "course_pre_requisite_ids", required = false) @NotEmpty final List<String> coursePreRequisiteIds,
 			@RequestParam(value = "linked_course_ids", required = false) final List<String> linkedCourseIds)
 			throws ValidationException, NotFoundException;
 }
