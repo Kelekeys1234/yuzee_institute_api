@@ -1,10 +1,12 @@
 package com.yuzee.app.processor;
 
 import java.io.IOException;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,11 +69,12 @@ public class CareerUploadProcessor {
 		String career = "";
 		String jobName = "";
 		Integer courseLevel = 0;
-		Careers careersToSave = null;
-		CareerJob careerJobs = null;
+		CareerJob careerJobs = new CareerJob();
+		Careers careerSave = new Careers();
 		log.info("Start iterating career jobs data to make data massaging");
 		int i = 1;
 		for (CareerCSVDto careerJobsDto : careerJobsDtos) {
+	
 			log.info("uploaded ======== {}/{}", ++i, careerJobsDtos.size());
 			if (!ObjectUtils.isEmpty(careerJobsDto.getCourseLevel())) {
 				log.info("assigning value to courseLevel");
@@ -82,28 +85,29 @@ public class CareerUploadProcessor {
 				log.info("Career name is different, adding new career data in DB");
 				career = careerJobsDto.getCareerList();
 				log.info("Extracting Career from DB for careerName {}", career);
-				careersToSave = careerJobDao.getCareer(career);
-				if (ObjectUtils.isEmpty(careersToSave)) {
-					log.info("Career is not present in DB, adding new Career in DB");
-					careersToSave = new Careers();
-					careersToSave.setCareer(career);
-					careersToSave.setCreatedBy("API");
-					careersToSave.setCreatedOn(new Date());
+				careerSave = careerJobDao.getCareer(career);
+
+				if (ObjectUtils.isEmpty(careerSave)) {
+					careerSave.setId(UUID.randomUUID().toString());
+					careerSave.setCareer(career);
+					careerSave.setCreatedOn(new Date());
+					careerSave.setCreatedBy("API");
 					log.info("Calling DAO layer to add career in DB");
-					careerJobDao.saveCareerList(careersToSave);
+					careerJobDao.saveCareerList(careerSave);
+
 				}
-			}
-			if (!ObjectUtils.isEmpty(careersToSave) && !StringUtils.isEmpty(careerJobsDto.getRelatedCareers())
+							}
+			if (!ObjectUtils.isEmpty(careerSave) && !StringUtils.isEmpty(careerJobsDto.getRelatedCareers())
 					&& !careerJobsDto.getRelatedCareers().equalsIgnoreCase("-")) {
-				log.info("Extracting related careers from DB for careerId {} and relatedCareer {}",
-						careersToSave.getId(), careerJobsDto.getRelatedCareers());
-				if (ObjectUtils.isEmpty(careerJobDao.getRelatedCareer(careersToSave.getId().toString(),
-						careerJobsDto.getRelatedCareers()))) {
-					log.info("Related Career is not present in DB, adding new Related Career in DB");
-					RelatedCareer relatedCareer = new RelatedCareer(careerJobsDto.getRelatedCareers(), careersToSave,
-							"API", new Date());
-					log.info("Calling DAO layer to add related careers in DB");
-					careerJobDao.saveRelatedCareers(relatedCareer);
+				log.info("Extracting related careers from DB for careerId {} and relatedCareer {}", careerSave.getId(),
+						careerJobsDto.getRelatedCareers());
+				 if
+				 (ObjectUtils.isEmpty(careerJobDao.getRelatedCareer(careerSave.getId().toString(),
+				 careerJobsDto.getRelatedCareers()))) {
+				log.info("Related Career is not present in DB, adding new Related Career in DB");
+				RelatedCareer relatedCareer = new RelatedCareer(UUID.randomUUID().toString(),careerJobsDto.getRelatedCareers(), careerSave, new Date(),"API");
+				log.info("Calling DAO layer to add related careers in DB");
+				careerJobDao.saveRelatedCareers(relatedCareer);
 				}
 			}
 			if (!jobName.equalsIgnoreCase(careerJobsDto.getJobs()) && !careerJobsDto.getJobs().equalsIgnoreCase("-")) {

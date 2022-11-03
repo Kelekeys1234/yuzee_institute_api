@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,6 +17,7 @@ import lombok.ToString;
 @Entity
 @ToString(exclude = "careerJobs")
 @EqualsAndHashCode
+@Document(collection="CareerJobSubject")
 //@Table(name = "job_subject", uniqueConstraints = @UniqueConstraint(columnNames = { "job_id", "subject" }, 
 //name = "UK_JOB_SUBJECT_JOB_ID"), indexes = {@Index(name = "IDX_JOB_ID", columnList = "job_id", unique = false)})
 public class CareerJobSubject implements Serializable {

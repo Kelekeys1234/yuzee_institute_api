@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.persistence.Id;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,6 +17,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode
+@Document(collection="careerJobSkill")
 /*
  * @Table(name = "job_skill", uniqueConstraints = @UniqueConstraint(columnNames
  * = { "job_id", "skill" }, name = "UK_JOB_SKILL_JOB_ID"), indexes =

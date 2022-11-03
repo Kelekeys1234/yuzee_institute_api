@@ -2,11 +2,9 @@ package com.yuzee.app.dao.impl;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -21,96 +19,113 @@ import com.yuzee.app.bean.CareerJobWorkingStyle;
 import com.yuzee.app.bean.Careers;
 import com.yuzee.app.bean.RelatedCareer;
 import com.yuzee.app.dao.CareerUploadDao;
+import com.yuzee.app.repository.CareerJobCourseSearchKeywordRepository;
+import com.yuzee.app.repository.CareerJobLevelRepository;
+import com.yuzee.app.repository.CareerJobRepository;
+import com.yuzee.app.repository.CareerJobSkillRepository;
+import com.yuzee.app.repository.CareerJobSubjectRepository;
+import com.yuzee.app.repository.CareerJobTypeRepository;
+import com.yuzee.app.repository.CareerJobWorkingActivityRepository;
+import com.yuzee.app.repository.CareerJobWorkingStyleRepository;
+import com.yuzee.app.repository.CareerRepository;
+import com.yuzee.app.repository.RelatedCareerRepository;
 
 @Component
-@SuppressWarnings({"deprecation", "unchecked"})
+@SuppressWarnings({ "deprecation", "unchecked" })
 public class CareerUploadDaoImpl implements CareerUploadDao {
+    @Autowired
+	private MongoTemplate mongoTemplate;
 
 	@Autowired
-	private SessionFactory sessionFactory;
+	private CareerRepository careerRepository;
+	@Autowired
+	private RelatedCareerRepository relatedCareerRepository;
+	@Autowired
+	private CareerJobRepository careerJobRepository;
+	@Autowired
+	private CareerJobCourseSearchKeywordRepository careerJobCourseSearchKeywordRepository;
+	@Autowired
+	private CareerJobLevelRepository careerJobLevelRepository;
+	@Autowired
+	private CareerJobSkillRepository careerJobSkillRepository;
+	@Autowired
+	private CareerJobSubjectRepository careerJobSubjectRepository;
+	@Autowired
+	private CareerJobTypeRepository careerobTypeRepository;
+	@Autowired
+	private CareerJobWorkingActivityRepository careerJobWorkingActivities;
+	@Autowired
+	private CareerJobWorkingStyleRepository careerJobWorkingStyleRepository;
 
 	@Override
 	public void saveCareerList(Careers careerList) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(careerList);
+		careerRepository.save(careerList);
 	}
 
 	@Override
 	public void saveRelatedCareers(RelatedCareer relatedCareer) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(relatedCareer);
+		relatedCareerRepository.save(relatedCareer);
 	}
 
 	@Override
 	public void saveJobsData(CareerJob careerJobs) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(careerJobs);
+		careerJobRepository.save(careerJobs);
 	}
 
 	@Override
 	public void saveJobsCourseSearchKeyword(CareerJobCourseSearchKeyword careerJobCourseSearchKeyword) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(careerJobCourseSearchKeyword);
+		careerJobCourseSearchKeywordRepository.save(careerJobCourseSearchKeyword);
 	}
 
 	@Override
 	public void saveJobsLevel(CareerJobLevel careerJobLevel) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(careerJobLevel);
+		careerJobLevelRepository.save(careerJobLevel);
 	}
 
 	@Override
 	public void saveJobsSkill(CareerJobSkill careerJobSkill) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(careerJobSkill);
+		careerJobSkillRepository.save(careerJobSkill);
 	}
 
 	@Override
 	public void saveJobSubject(CareerJobSubject careerJobSubject) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(careerJobSubject);
+		careerJobSubjectRepository.save(careerJobSubject);
 	}
 
 	@Override
 	public void saveJobType(CareerJobType careerJobType) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(careerJobType);
+		careerobTypeRepository.save(careerJobType);
 	}
 
 	@Override
 	public void saveJobWorkingActivity(CareerJobWorkingActivity careerJobWorkingActivity) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(careerJobWorkingActivity);
+		careerJobWorkingActivities.save(careerJobWorkingActivity);
 	}
 
 	@Override
 	public void saveJobWorkingStyle(CareerJobWorkingStyle careerJobWorkingStyle) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(careerJobWorkingStyle);		
+		careerJobWorkingStyleRepository.save(careerJobWorkingStyle);
 	}
 
 	@Override
 	public Careers getCareer(String careerName) {
-		Session session = sessionFactory.getCurrentSession();
-		Careers career = null;
-		Criteria criteria = session.createCriteria(Careers.class);
-		criteria.add(Restrictions.eq("career", careerName));
-		List<Careers> careersFromDB = criteria.list();
-		if (!CollectionUtils.isEmpty(careersFromDB)) {
-			career = careersFromDB.get(0);
-		}
-		return career;
+		Careers careerr = new Careers();
+		Query query = new Query();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("career").is(careerName));
+		List<Careers>career= mongoTemplate.find(query, Careers.class, "career_list");
+		 for(Careers careers:career) {
+			 careerr= careers;
+		 }
+		return careerr;
+         
 	}
 
 	@Override
 	public RelatedCareer getRelatedCareer(String careerId, String relatedCareerName) {
-		Session session = sessionFactory.getCurrentSession();
 		RelatedCareer relatedCareer = null;
-		Criteria criteria = session.createCriteria(RelatedCareer.class, "relatedCareer");
-		criteria.add(Restrictions.eq("relatedCareer.relatedCareer", relatedCareerName));
-		criteria.createAlias("relatedCareer.careers", "careerList");
-		criteria.add(Restrictions.eq("careerList.id", careerId));
-		List<RelatedCareer> relatedCareerFromDB = criteria.list();
+		Query query = new Query();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("careers.id").is(careerId));
+		List<RelatedCareer> relatedCareerFromDB = mongoTemplate.find(query, RelatedCareer.class, "relatedCareer");
 		if (!CollectionUtils.isEmpty(relatedCareerFromDB)) {
 			relatedCareer = relatedCareerFromDB.get(0);
 		}
@@ -119,11 +134,10 @@ public class CareerUploadDaoImpl implements CareerUploadDao {
 
 	@Override
 	public CareerJob getJob(String job) {
-		Session session = sessionFactory.getCurrentSession();
 		CareerJob careerJob = null;
-		Criteria criteria = session.createCriteria(CareerJob.class);
-		criteria.add(Restrictions.eq("job", job));
-		List<CareerJob> careerJobsFromDB = criteria.list();
+		Query query = new Query();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("job").is(job));
+		List<CareerJob> careerJobsFromDB = mongoTemplate.find(query, CareerJob.class, "jobs");
 		if (!CollectionUtils.isEmpty(careerJobsFromDB)) {
 			careerJob = careerJobsFromDB.get(0);
 		}
@@ -132,13 +146,13 @@ public class CareerUploadDaoImpl implements CareerUploadDao {
 
 	@Override
 	public CareerJobCourseSearchKeyword getJobCourseSearchKeyword(String jobId, String courseSearchKeyword) {
-		Session session = sessionFactory.getCurrentSession();
 		CareerJobCourseSearchKeyword careerJobCourseSearchKeyword = null;
-		Criteria criteria = session.createCriteria(CareerJobCourseSearchKeyword.class, "careerJobCourseSearchKeyword");
-		criteria.add(Restrictions.eq("careerJobCourseSearchKeyword.courseSearchKeyword", courseSearchKeyword));
-		criteria.createAlias("careerJobCourseSearchKeyword.careerJobs", "careerJobs");
-		criteria.add(Restrictions.eq("careerJobs.id", jobId));
-		List<CareerJobCourseSearchKeyword> careerJobCourseSearchKeywordFromDB = criteria.list();
+		Query query = new Query();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria
+				.where("careerJobCourseSearchKeyword.courseSearchKeyword").is(courseSearchKeyword));
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("careerJobs.id").is(jobId));
+		List<CareerJobCourseSearchKeyword> careerJobCourseSearchKeywordFromDB = mongoTemplate.find(query,
+				CareerJobCourseSearchKeyword.class, "job_course_search_keyword");
 		if (!CollectionUtils.isEmpty(careerJobCourseSearchKeywordFromDB)) {
 			careerJobCourseSearchKeyword = careerJobCourseSearchKeywordFromDB.get(0);
 		}
@@ -147,14 +161,11 @@ public class CareerUploadDaoImpl implements CareerUploadDao {
 
 	@Override
 	public CareerJobLevel getJobLevel(String jobId, String levelId) {
-		Session session = sessionFactory.getCurrentSession();
-		CareerJobLevel careerJobLevel = null;
-		Criteria criteria = session.createCriteria(CareerJobLevel.class, "careerJobLevel");
-		criteria.createAlias("careerJobLevel.careerJobs", "careerJobs");
-		criteria.createAlias("careerJobLevel.level", "level");
-		criteria.add(Restrictions.eq("careerJobs.id", jobId));
-		criteria.add(Restrictions.eq("level.id", levelId));
-		List<CareerJobLevel> careerJobLevelFromDB = criteria.list();
+		Query query = new Query();
+		CareerJobLevel careerJobLevel = new CareerJobLevel();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("level.id").is(levelId));
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("careerJobs.id").is(jobId));
+		List<CareerJobLevel> careerJobLevelFromDB = mongoTemplate.find(query, CareerJobLevel.class, "careerJobs");
 		if (!CollectionUtils.isEmpty(careerJobLevelFromDB)) {
 			careerJobLevel = careerJobLevelFromDB.get(0);
 		}
@@ -163,13 +174,12 @@ public class CareerUploadDaoImpl implements CareerUploadDao {
 
 	@Override
 	public CareerJobSkill getJobSkill(String jobId, String skillName) {
-		Session session = sessionFactory.getCurrentSession();
+		Query query = new Query();
 		CareerJobSkill careerJobSkill = null;
-		Criteria criteria = session.createCriteria(CareerJobSkill.class, "careerJobSkill");
-		criteria.add(Restrictions.eq("careerJobSkill.skill", skillName));
-		criteria.createAlias("careerJobSkill.careerJobs", "careerJobs");
-		criteria.add(Restrictions.eq("careerJobs.id", jobId));
-		List<CareerJobSkill> careerJobSkillFromDB = criteria.list();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("careerJobs.id").is(jobId));
+		query.addCriteria(
+				org.springframework.data.mongodb.core.query.Criteria.where("careerJobSkill.careerJobs").is(skillName));
+		List<CareerJobSkill> careerJobSkillFromDB = mongoTemplate.find(query, CareerJobSkill.class, "careerJobSkill");
 		if (!CollectionUtils.isEmpty(careerJobSkillFromDB)) {
 			careerJobSkill = careerJobSkillFromDB.get(0);
 		}
@@ -178,13 +188,12 @@ public class CareerUploadDaoImpl implements CareerUploadDao {
 
 	@Override
 	public CareerJobSubject getJobSubject(String jobId, String subjectName) {
-		Session session = sessionFactory.getCurrentSession();
+		Query query = new Query();
 		CareerJobSubject careerJobSubject = null;
-		Criteria criteria = session.createCriteria(CareerJobSubject.class, "careerJobSubject");
-		criteria.add(Restrictions.eq("careerJobSubject.subject", subjectName));
-		criteria.createAlias("careerJobSubject.careerJobs", "careerJobs");
-		criteria.add(Restrictions.eq("careerJobs.id", jobId));
-		List<CareerJobSubject> careerJobSubjectFromDB = criteria.list();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("careerJobs.id").is(jobId));
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("subject").is(subjectName));
+		List<CareerJobSubject> careerJobSubjectFromDB = mongoTemplate.find(query, CareerJobSubject.class,
+				"CareerJobSubject");
 		if (!CollectionUtils.isEmpty(careerJobSubjectFromDB)) {
 			careerJobSubject = careerJobSubjectFromDB.get(0);
 		}
@@ -193,13 +202,12 @@ public class CareerUploadDaoImpl implements CareerUploadDao {
 
 	@Override
 	public CareerJobType getJobType(String jobId, String jobType) {
-		Session session = sessionFactory.getCurrentSession();
+		Query query = new Query();
 		CareerJobType careerJobType = null;
-		Criteria criteria = session.createCriteria(CareerJobType.class, "careerJobType");
-		criteria.add(Restrictions.eq("careerJobType.jobType", jobType));
-		criteria.createAlias("careerJobType.careerJobs", "careerJobs");
-		criteria.add(Restrictions.eq("careerJobs.id", jobId));
-		List<CareerJobType> careerJobTypeFromDB = criteria.list();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("careerJobs.id").is(jobId));
+		query.addCriteria(
+				org.springframework.data.mongodb.core.query.Criteria.where("careerJobType.jobType").is(jobType));
+		List<CareerJobType> careerJobTypeFromDB = mongoTemplate.find(query, CareerJobType.class, "job_type");
 		if (!CollectionUtils.isEmpty(careerJobTypeFromDB)) {
 			careerJobType = careerJobTypeFromDB.get(0);
 		}
@@ -208,13 +216,14 @@ public class CareerUploadDaoImpl implements CareerUploadDao {
 
 	@Override
 	public CareerJobWorkingActivity getJobWorkingActivity(String jobId, String workingActivity) {
-		Session session = sessionFactory.getCurrentSession();
+		Query query = new Query();
 		CareerJobWorkingActivity careerJobWorkingActivity = null;
-		Criteria criteria = session.createCriteria(CareerJobWorkingActivity.class, "careerJobWorkingActivity");
-		criteria.add(Restrictions.eq("careerJobWorkingActivity.workActivities", workingActivity));
-		criteria.createAlias("careerJobWorkingActivity.careerJobs", "careerJobs");
-		criteria.add(Restrictions.eq("careerJobs.id", jobId));
-		List<CareerJobWorkingActivity> careerJobWorkingActivityFromDB = criteria.list();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("careerJobs.id").is(jobId));
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria
+				.where("careerJobWorkingActivity.workActivities").is(workingActivity));
+		List<CareerJobWorkingActivity> careerJobWorkingActivityFromDB = mongoTemplate.find(query,
+				CareerJobWorkingActivity.class, "careerJobWorkingActivity");
+
 		if (!CollectionUtils.isEmpty(careerJobWorkingActivityFromDB)) {
 			careerJobWorkingActivity = careerJobWorkingActivityFromDB.get(0);
 		}
@@ -223,13 +232,13 @@ public class CareerUploadDaoImpl implements CareerUploadDao {
 
 	@Override
 	public CareerJobWorkingStyle getJobWorkingStyle(String jobId, String workingStyle) {
-		Session session = sessionFactory.getCurrentSession();
+		Query query = new Query();
 		CareerJobWorkingStyle careerJobWorkingStyle = null;
-		Criteria criteria = session.createCriteria(CareerJobWorkingStyle.class, "careerJobWorkingStyle");
-		criteria.add(Restrictions.eq("careerJobWorkingStyle.workStyle", workingStyle));
-		criteria.createAlias("careerJobWorkingStyle.careerJobs", "careerJobs");
-		criteria.add(Restrictions.eq("careerJobs.id", jobId));
-		List<CareerJobWorkingStyle> careerJobWorkingStyleFromDB = criteria.list();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("careerJobs.id").is(jobId));
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("careerJobWorkingStyle.workStyle")
+				.is(workingStyle));
+		List<CareerJobWorkingStyle> careerJobWorkingStyleFromDB = mongoTemplate.find(query, CareerJobWorkingStyle.class,
+				"careerJobWorkingStyle");
 		if (!CollectionUtils.isEmpty(careerJobWorkingStyleFromDB)) {
 			careerJobWorkingStyle = careerJobWorkingStyleFromDB.get(0);
 		}

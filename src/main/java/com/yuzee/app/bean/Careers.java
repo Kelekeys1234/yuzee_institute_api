@@ -10,13 +10,16 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Data
-@Document("career_list")
+
+@Document(collection="career_list")
 @ToString
+
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 /*
  * @Table(name = "career_list", uniqueConstraints
@@ -31,13 +34,13 @@ public class Careers implements Serializable {
 
 	@EqualsAndHashCode.Include
 	private String career;
-
+	@EqualsAndHashCode.Include
 	private Date createdOn;
-
+	@EqualsAndHashCode.Include
 	private Date updatedOn;
-
+	@EqualsAndHashCode.Include
 	private String createdBy;
-
+	@EqualsAndHashCode.Include
 	private String updatedBy;
 
 	// Delete RelatedCareer model
@@ -45,4 +48,78 @@ public class Careers implements Serializable {
 
 	@DBRef
 	private List<CareerJob> careerJobs = new ArrayList<>();
+
+	
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getCareer() {
+		return career;
+	}
+
+	public void setCareer(String career) {
+		this.career = career;
+	}
+
+	public Date getCreatedOn() {
+		return createdOn;
+	}
+
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
+
+	public Date getUpdatedOn() {
+		return updatedOn;
+	}
+
+	public void setUpdatedOn(Date updatedOn) {
+		this.updatedOn = updatedOn;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public List<String> getRelatedCareers() {
+		return relatedCareers;
+	}
+
+	public void setRelatedCareers(List<String> relatedCareers) {
+		this.relatedCareers = relatedCareers;
+	}
+
+	public List<CareerJob> getCareerJobs() {
+		return careerJobs;
+	}
+
+	public void setCareerJobs(List<CareerJob> careerJobs) {
+		this.careerJobs = careerJobs;
+	}
+
+
+	public Careers() {
+		super();
+	}
+    
+	
+
 }

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +19,7 @@ import lombok.ToString;
 @ToString(exclude = "careers")
 @EqualsAndHashCode
 @NoArgsConstructor
+@Document(collection="relatedCareer")
 //@Table(name = "related_career", uniqueConstraints = @UniqueConstraint(columnNames = { "related_career", "career_id" }, 
 //	 name = "UK_RC_CAREER_ID"), indexes = {@Index(name = "IDX_CAREER_ID", columnList = "career_id", unique = false) })
 public class RelatedCareer implements Serializable {
@@ -50,11 +52,15 @@ public class RelatedCareer implements Serializable {
 //	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 
-	public RelatedCareer(String relatedCareer, Careers careers, String createdBy, Date createdOn) {
-		this.relatedCareer = relatedCareer;
-		this.careers = careers;
-		this.createdBy = createdBy;
-		this.createdOn = createdOn;
-	}
+public RelatedCareer(String id, String relatedCareer, Careers careers, Date createdOn, String createdBy) {
+	super();
+	this.id = id;
+	this.relatedCareer = relatedCareer;
+	this.careers = careers;
+	this.createdOn = createdOn;
+	this.createdBy = createdBy;
+}
+
+
 
 }

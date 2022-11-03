@@ -837,7 +837,7 @@ public class CourseDaoImpl implements CourseDao {
 	@Override
 	public List<CourseDto> getUserCourse(final List<String> courseIds, final String sortBy, final boolean sortType)
 			throws ValidationException {
-		//Session session = sessionFactory.getCurrentSession();
+		// Session session = sessionFactory.getCurrentSession();
 		org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
 //		String sqlQuery = "select c.id ,c.name, c.world_ranking, c.stars, c.description, "
 //				+ " c.remarks, i.name as instituteName, cai.domestic_fee, cai.international_fee, cai.usd_domestic_fee, cai.usd_international_fee,"
@@ -845,11 +845,11 @@ public class CourseDaoImpl implements CourseDao {
 //				+ " left join course_delivery_modes cai on cai.course_id = c.id"
 //				+ " where c.is_active = 1 and c.id in ("
 //				+ courseIds.stream().map(String::valueOf).collect(Collectors.joining("','", "'", "'")) + ")";
-		for(String id:courseIds) {
-		if (!StringUtils.isEmpty(id)) {
-			// sqlQuery = sqlQuery + " ORDER BY i.name " + (sortType ? "ASC" : "DESC");
-			query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("id").is(id));
-		}
+		for (String id : courseIds) {
+			if (!StringUtils.isEmpty(id)) {
+				// sqlQuery = sqlQuery + " ORDER BY i.name " + (sortType ? "ASC" : "DESC");
+				query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("id").is(id));
+			}
 		}
 		if (!StringUtils.isEmpty(sortBy) && "institute_name".contentEquals(sortBy)) {
 			// sqlQuery = sqlQuery + " ORDER BY i.name " + (sortType ? "ASC" : "DESC");
@@ -857,15 +857,15 @@ public class CourseDaoImpl implements CourseDao {
 		} else if (!StringUtils.isEmpty(sortBy)
 				&& ("domestic_fee".contentEquals(sortBy) || "duration".contentEquals(sortBy))) {
 			query.with(Sort.by(Sort.Direction.ASC, "sortBy"));
-	
+
 		} else if (!StringUtils.isEmpty(sortBy)) {
 			query.with(Sort.by(Sort.Direction.ASC, "sortBy"));
-			
+
 		} else {
 			query.with(Sort.by(Sort.Direction.ASC, "sortBy"));
 			query.with(Sort.by(Sort.Direction.ASC, "sortBy"));
 		}
-		List<CourseDto> users = mongoTemplate.find(query, CourseDto.class,"course");
+		List<CourseDto> users = mongoTemplate.find(query, CourseDto.class, "course");
 		// List<CourseDeliveryModesDto> user = mongoTemplate.find(query,
 		// CourseDto.class);
 		// List<Map<String, Object>> aliasToValueMapList = query.;
@@ -878,7 +878,7 @@ public class CourseDaoImpl implements CourseDao {
 			for (CourseDto row : users) {
 
 				CourseDeliveryModesDto additionalInfoDto = new CourseDeliveryModesDto();
-				
+
 				courseDto.setId(String.valueOf(row.getId()));
 				courseDto.setName(String.valueOf(row.getName()));
 				courseDto.setWorldRanking(String.valueOf(row.getWorldRanking()));
@@ -898,7 +898,7 @@ public class CourseDaoImpl implements CourseDao {
 				additionalInfoDtos.add(additionalInfoDto);
 				courseDto.setCourseDeliveryModes(additionalInfoDtos);
 			}
-			   courses.add(courseDto);
+			courses.add(courseDto);
 
 		}
 		;
@@ -1805,7 +1805,6 @@ public class CourseDaoImpl implements CourseDao {
 		q.executeUpdate();
 	}
 
-
 	@Override
 	public List<String> getUserSearchCourseRecommendation(final Integer startIndex, final Integer pageSize,
 			final String searchKeyword) {
@@ -2109,7 +2108,7 @@ public class CourseDaoImpl implements CourseDao {
 			for (String keyword : searchKeyword) {
 				count++;
 				mongoQuery.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("name").in(keyword));
-				tcount = (int) mongoOperations.count(mongoQuery, Course.class,"course");
+				tcount = (int) mongoOperations.count(mongoQuery, Course.class, "course");
 
 			}
 			// System.out.println(sqlQuery.toString());
@@ -2127,6 +2126,7 @@ public class CourseDaoImpl implements CourseDao {
 	public List<Course> findByInstituteId(String instituteId) {
 		return courseRepository.findByInstituteId(instituteId);
 	}
+
 	@Override
 	public void deleteAll(List<Course> courses) {
 		courseRepository.deleteAll(courses);
@@ -2180,22 +2180,24 @@ public class CourseDaoImpl implements CourseDao {
 	@Override
 	public List<Course> findAllById(List<String> ids) {
 		// TODO Auto-generated method stub
-		org.springframework.data.mongodb.core.query.Query mongoQuery = new org.springframework.data.mongodb.core.query.Query(); 
+		org.springframework.data.mongodb.core.query.Query mongoQuery = new org.springframework.data.mongodb.core.query.Query();
 		mongoQuery.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("id").in(ids));
 		return mongoTemplate.find(mongoQuery, Course.class, "course");
 	}
+
 	@Override
 	public Page<Course> findById(String courseId, Pageable page) {
 		// TODO Auto-generated method stub
 		return courseRepository.findById(courseId, page);
-		}
+	}
 
 	@Override
 	public long getTotalCountOfCourseByInstituteId(String instituteId) {
 		int tcount = 0;
-		org.springframework.data.mongodb.core.query.Query mongoQuery = new org.springframework.data.mongodb.core.query.Query(); 
-		mongoQuery.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("instituteId").in(instituteId)); 
-		tcount = (int) mongoOperations.count(mongoQuery, Course.class,"course");
+		org.springframework.data.mongodb.core.query.Query mongoQuery = new org.springframework.data.mongodb.core.query.Query();
+		mongoQuery
+				.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("instituteId").in(instituteId));
+		tcount = (int) mongoOperations.count(mongoQuery, Course.class, "course");
 		return tcount;
 	}
 
