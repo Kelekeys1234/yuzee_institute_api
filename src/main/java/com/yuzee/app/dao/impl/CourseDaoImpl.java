@@ -689,27 +689,20 @@ public class CourseDaoImpl implements CourseDao {
 	// This is not recommended
 	@Override
 	public List<CourseResponseDto> getCouresesByFacultyId(final String facultyId) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Course.class, "course");
-		crit.createAlias("faculty", "faculty");
-		crit.add(Restrictions.eq("faculty.id", facultyId));
-		crit.addOrder(Order.asc("course.name"));
-		List<Course> courses = crit.list();
-		List<CourseResponseDto> dtos = new ArrayList<>();
-		for (Course course : courses) {
-			CourseResponseDto courseObj = new CourseResponseDto();
-			courseObj.setId(course.getId());
-			courseObj.setStars(Double.valueOf(course.getStars()));
-			courseObj.setName(course.getName());
-			courseObj.setCurrencyCode(course.getCurrency());
-			if (!ObjectUtils.isEmpty(course.getFaculty())) {
-				courseObj.setFacultyName(course.getFaculty().getName());
-				// courseObj.setFacultyId(course.getFaculty().getId());
-			}
-			courseObj.setCourseRanking(course.getWorldRanking());
-			dtos.add(courseObj);
+		org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("facultyId").is(facultyId));
+		List<CourseResponseDto> rows = mongoTemplate.find(query, CourseResponseDto.class, "course");
+		for(CourseResponseDto row :rows) {
+		CourseResponseDto courseResponseDto = new CourseResponseDto();
+		courseResponseDto.setId(row.getId());
+		courseResponseDto.setName(row.getName());
+		courseResponseDto.setInstituteId(row.getInstituteId());
+		courseResponseDto.setInstituteName(row.getInstituteName());
+		courseResponseDto.setCityName(row.getCityName());
+		courseResponseDto.setCountryName(row.getCountryName());
+		courseResponseDto.setLocation(row.getLocation());
 		}
-		return dtos;
+		return rows;
 	}
 
 	@Override
