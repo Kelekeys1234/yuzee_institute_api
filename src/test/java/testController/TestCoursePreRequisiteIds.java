@@ -48,14 +48,16 @@
 //	private static final String jobsId= "7132d88e-cf2c-4f48-ac6e-82214208f677";
 //	private static final String api= "/api/v1/course";
 //	private static final String PATH_SEPARATOR = "/";
+//	private static final String courseId="9230cdd1-7d12-41c6-bbd0-38e52b3595a4";
 //	@Autowired
 //	private TestRestTemplate testRestTemplate;
 //	
 //	@DisplayName("saveCoursePreRequisiteDtos")
 //	@Test
 //     void savePreRequisiteIds() {
+//		try {
 //		ValidList<CoursePreRequisiteDto> coursePreRequisiteDtos = new 	ValidList<CoursePreRequisiteDto>();
-//		List<String> linkedCourseId = Arrays.asList("fda8c495-f2df-4f0e-a154-169f982eb292");
+//		List<String> linkedCourseId = Arrays.asList(courseId);
 //		CoursePreRequisiteDto coursePreRequisiteDto = new CoursePreRequisiteDto();
 //		coursePreRequisiteDto.setDescription("Description");
 //		coursePreRequisiteDtos.add(coursePreRequisiteDto);
@@ -67,10 +69,23 @@
 //		headers.add("userId", userId);
 //		HttpEntity<CoursePreRequisiteRequestWrapper> entity = new HttpEntity<>(request, headers);
 //		ResponseEntity<String> response = testRestTemplate.exchange(
-//				api +PATH_SEPARATOR+"fda8c495-f2df-4f0e-a154-169f982eb292"
+//				api +PATH_SEPARATOR+courseId
 //				+PATH_SEPARATOR +"pre-requisite",
 //				HttpMethod.POST, entity, String.class);
 //		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//	}finally {
+//		Map<String,String> param= new HashMap<>();
+//		param.put("course_pre_requisite_ids", courseId);
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.setContentType(MediaType.APPLICATION_JSON);
+//		headers.add("userId", userId);
+//		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+//		ResponseEntity<String> response = testRestTemplate.exchange(
+//				api +PATH_SEPARATOR+courseId
+//				+PATH_SEPARATOR +"pre-requisite",
+//				HttpMethod.DELETE, entity,String.class,param);
+//		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//	}
 //	}
 //	
 //	@DisplayName("WrongIdCoursePreRequisiteDtos")
@@ -98,16 +113,38 @@
 //	@DisplayName("deleteCoursePreRequisiteDtos")
 //	@Test
 //	  void deletePreRequisiteIds() {
-//		Map<String,String> param= new HashMap<>();
-//		param.put("course_pre_requisite_ids", Id);
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-//		headers.add("userId", userId);
-//		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-//		ResponseEntity<String> response = testRestTemplate.exchange(
-//				api +PATH_SEPARATOR+"96a2e11b-d64b-4964-9d28-2a4d7a41d944"
-//				+PATH_SEPARATOR +"pre-requisite",
-//				HttpMethod.DELETE, entity,String.class,param);
-//		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//		try {
+//			ValidList<CoursePreRequisiteDto> coursePreRequisiteDtos = new 	ValidList<CoursePreRequisiteDto>();
+//			List<String> linkedCourseId = Arrays.asList(courseId);
+//			CoursePreRequisiteDto coursePreRequisiteDto = new CoursePreRequisiteDto();
+//			coursePreRequisiteDto.setDescription("Description");
+//			coursePreRequisiteDtos.add(coursePreRequisiteDto);
+//			CoursePreRequisiteRequestWrapper request=new CoursePreRequisiteRequestWrapper();
+//			request.setCoursePreRequisiteDtos(coursePreRequisiteDtos);
+//			request.setLinkedCourseIds(linkedCourseId);
+//			HttpHeaders headers = new HttpHeaders();
+//			headers.setContentType(MediaType.APPLICATION_JSON);
+//			headers.add("userId", userId);
+//			HttpEntity<CoursePreRequisiteRequestWrapper> entity = new HttpEntity<>(request, headers);
+//			ResponseEntity<String> response = testRestTemplate.exchange(
+//					api +PATH_SEPARATOR+courseId
+//					+PATH_SEPARATOR +"pre-requisite",
+//					HttpMethod.POST, entity, String.class);
+//			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//		}finally {
+//			Map<String,String> param= new HashMap<>();
+//			param.put("course_pre_requisite_ids", courseId);
+//			HttpHeaders headers = new HttpHeaders();
+//			headers.setContentType(MediaType.APPLICATION_JSON);
+//			headers.add("userId", userId);
+//			HttpEntity<String> entity = new HttpEntity<>(null, headers);
+//			ResponseEntity<String> response = testRestTemplate.exchange(
+//					api +PATH_SEPARATOR+courseId
+//					+PATH_SEPARATOR +"pre-requisite",
+//					HttpMethod.DELETE, entity,String.class,param);
+//			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//		}
+//		
+//		
 //	}
 //}

@@ -49,22 +49,24 @@
 //	private static final String jobsId= "7132d88e-cf2c-4f48-ac6e-82214208f677";
 //	private static final String api= "/api/v1/course";
 //	private static final String PATH_SEPARATOR = "/";
+//	private static final String courseId="9230cdd1-7d12-41c6-bbd0-38e52b3595a4";
 //	@Autowired
 //	private TestRestTemplate testRestTemplate;
 //	
 //	@DisplayName("saveCoursePayment")
 //	@Test
 //     void saveCoursePayment() {
+//		try {
 //	 ValidList<CoursePaymentItemDto> paymentItems = new ValidList<>();
 //	 CoursePaymentItemDto coursePaymentItemDto= new CoursePaymentItemDto();
-//	 List<String>linkedCourseId = Arrays.asList(Id);
-//	    coursePaymentItemDto.setId(Id);
+//	 List<String>linkedCourseId = Arrays.asList(courseId);
+//	    coursePaymentItemDto.setId(courseId);
 //	    coursePaymentItemDto.setAmount(123.00);
 //	    paymentItems.add(coursePaymentItemDto);
 //	    coursePaymentItemDto.setName("name");
 //	    
 //		CoursePaymentDto coursePaymentDto= new CoursePaymentDto();
-//		coursePaymentDto.setId(Id);
+//		coursePaymentDto.setId(courseId);
 //		coursePaymentDto.setDescription("Description");
 //		coursePaymentDto.setPaymentItems(paymentItems);
 //		coursePaymentDto.setLinkedCourseIds(linkedCourseId);
@@ -74,10 +76,21 @@
 //		headers.add("userId", userId);
 //		HttpEntity<CoursePaymentDto> entity = new HttpEntity<>(coursePaymentDto, headers);
 //		ResponseEntity<String> response = testRestTemplate.exchange(
-//				api +PATH_SEPARATOR+"96a2e11b-d64b-4964-9d28-2a4d7a41d944"
+//				api +PATH_SEPARATOR+courseId
 //				+PATH_SEPARATOR +"payment",
 //				HttpMethod.POST, entity, String.class);
 //		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//	}finally {
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.setContentType(MediaType.APPLICATION_JSON);
+//		headers.add("userId", userId);
+//		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+//		ResponseEntity<String> response = testRestTemplate.exchange(
+//				api +PATH_SEPARATOR+courseId
+//				+PATH_SEPARATOR +"payment",
+//				HttpMethod.DELETE, entity, String.class);
+//		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//	}
 //	}
 //	@DisplayName("saveCoursePaymentWrongId")
 //	@Test
@@ -110,17 +123,43 @@
 //	@DisplayName("deleteCoursePayment")
 //	@Test
 //	  void delete() {
+//		try {
+//			 ValidList<CoursePaymentItemDto> paymentItems = new ValidList<>();
+//			 CoursePaymentItemDto coursePaymentItemDto= new CoursePaymentItemDto();
+//			 List<String>linkedCourseId = Arrays.asList(courseId);
+//			    coursePaymentItemDto.setId(courseId);
+//			    coursePaymentItemDto.setAmount(123.00);
+//			    paymentItems.add(coursePaymentItemDto);
+//			    coursePaymentItemDto.setName("name");
+//			    
+//				CoursePaymentDto coursePaymentDto= new CoursePaymentDto();
+//				coursePaymentDto.setId(courseId);
+//				coursePaymentDto.setDescription("Description");
+//				coursePaymentDto.setPaymentItems(paymentItems);
+//				coursePaymentDto.setLinkedCourseIds(linkedCourseId);
+//				
+//				HttpHeaders headers = new HttpHeaders();
+//				headers.setContentType(MediaType.APPLICATION_JSON);
+//				headers.add("userId", userId);
+//				HttpEntity<CoursePaymentDto> entity = new HttpEntity<>(coursePaymentDto, headers);
+//				ResponseEntity<String> response = testRestTemplate.exchange(
+//						api +PATH_SEPARATOR+courseId
+//						+PATH_SEPARATOR +"payment",
+//						HttpMethod.POST, entity, String.class);
+//				assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//		}
+//		finally {
 //		HttpHeaders headers = new HttpHeaders();
 //		headers.setContentType(MediaType.APPLICATION_JSON);
 //		headers.add("userId", userId);
 //		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 //		ResponseEntity<String> response = testRestTemplate.exchange(
-//				api +PATH_SEPARATOR+"8a01d870-679a-4f73-b2a2-73fb4148b895"
+//				api +PATH_SEPARATOR+courseId
 //				+PATH_SEPARATOR +"payment",
 //				HttpMethod.DELETE, entity, String.class);
 //		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 //	}
-//	
+//	}
 //	@DisplayName("deleteCoursePaymentWrongId")
 //	@Test
 //	  void deleteWithWrongId() {

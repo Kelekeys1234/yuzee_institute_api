@@ -135,29 +135,129 @@
 //		listOfInstituteRequestDto.add(instituteRequestDto);
 //		listOfInstituteProviderCode.add(instituteProviderCode);
 //		instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
-//		HttpEntity<ValidList<InstituteRequestDto>> entity = new HttpEntity<>(listOfInstituteRequestDto, headers);
-//		ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, entity,
-//				String.class);
-//		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//		GenericWrapperDto<ValidList<InstituteRequestDto>> genericResponse = ObjectMapperHelper.readValueFromJSON(
-//				response.getBody(), new TypeReference<GenericWrapperDto<ValidList<InstituteRequestDto>>>() {
-//				});
-//		ValidList<InstituteRequestDto> r = genericResponse.getData();
-//		for (InstituteRequestDto data : r) {
+////		HttpEntity<ValidList<InstituteRequestDto>> entity = new HttpEntity<>(listOfInstituteRequestDto, headers);
+////		ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, entity,
+////				String.class);
+////		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+////		GenericWrapperDto<ValidList<InstituteRequestDto>> genericResponse = ObjectMapperHelper.readValueFromJSON(
+////				response.getBody(), new TypeReference<GenericWrapperDto<ValidList<InstituteRequestDto>>>() {
+////				});
+////		ValidList<InstituteRequestDto> r = genericResponse.getData();
+////		for (InstituteRequestDto data : r) {
 //
 ////			try {
-////				InstituteBasicInfoDto instituteBasicInfoDto = new InstituteBasicInfoDto("logo path","OXFORD","NAME OF CATEGORIES",INSTITUTE_ID,"This is Decription"
+//				InstituteBasicInfoDto instituteBasicInfoDto = new InstituteBasicInfoDto();
+////						("logo path","OXFORD","NAME OF CATEGORIES",INSTITUTE_ID,"This is Decription"
 ////					,"INDIA","Amedded","newYork","12 okdoew","by AZGuards",3,2,40,30.0,12345L,true);
-////			
-////				HttpHeaders header = new HttpHeaders();
-////				header.setContentType(MediaType.APPLICATION_JSON);
-////				header.set("userId", userId);
-////				HttpEntity<InstituteBasicInfoDto> entitys = new HttpEntity<>(instituteBasicInfoDto, header);
-////				String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "basic" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
-////						+ data.getInstituteId();
-////				ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.POST, entitys,
+//				instituteBasicInfoDto.setInstituteLogoPath("logopath");
+//				instituteBasicInfoDto.setNameOfUniversity("rgpvv");
+//				instituteBasicInfoDto.setInstituteCategoryTypeId("gdfhdjhhdfsddvsd4");
+//				instituteBasicInfoDto.setInstituteCategoryTypeName("dfuhsdugdf");
+//				instituteBasicInfoDto.setDescription("mudescrption");
+//				instituteBasicInfoDto.setCountryName("india");
+//				instituteBasicInfoDto.setStateName("mp");
+//				instituteBasicInfoDto.setCityName("indore");
+//				instituteBasicInfoDto.setAddress("myaddress");
+//				
+//				
+//				
+//				HttpHeaders header = new HttpHeaders();
+//				header.setContentType(MediaType.APPLICATION_JSON);
+//				header.set("userId", userId);
+//				HttpEntity<InstituteBasicInfoDto> entitys = new HttpEntity<>(instituteBasicInfoDto, header);
+//				String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "basic" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
+//						+ "561ba731-1f44-4cdd-8776-4addcc562fbc"+"?userId=8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
+//				ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.POST, entitys,
+//						String.class);
+//				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+////			} finally {
+////				// clean up code
+////				ResponseEntity<String> responses = testRestTemplate.exchange(
+////						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 ////						String.class);
+////				instituteProcessor.deleteInstitute(data.getInstituteId());
 ////				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+////			}
+////		}
+//				
+//				
+//	}
+//
+//	@DisplayName("WrongidaddUpdateInstituteBasicInfo")
+//	@Test
+//	 void wrongIdaddUpdateInstituteBasicInfo() throws IOException {
+//		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
+//		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
+//		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
+//
+//		List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
+//		ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
+//		instituteProviderCode.setName("TestProviderName");
+//		instituteProviderCode.setValue(("TestProviderValue"));
+//		listOfInstituteProviderCode.add(instituteProviderCode);
+//
+//		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+//		instituteRequestDto.setName("IIM");
+//		instituteRequestDto.setCityName("AHMEDABAD");
+//		instituteRequestDto.setCountryName("INDIA");
+//		instituteRequestDto.setEditAccess(true);
+//		instituteRequestDto.setAboutInfo(
+//				"Domestic Language School, Cambridge, is accredited by the French Council and is a small, friendly, city-centre English language school.Our aim is to give you a warm welcome and an excellent opportunity to learn English in a caring, friendly atmosphere. Our courses, from Beginner to Advanced level, run throughout the year. We also offer exam preparation. We only teach adults (from a minimum age of 18).The School is just 3 minutes' walk from the central bus station and near many restaurants, shops and the colleges of the University of Cambridge. Students from more than 90 different countries have studied with us and there is usually a good mix of nationalities in the school.The School was founded in 1996 by a group of Christians in Cambridge. ");
+//		instituteRequestDto.setDescription("Test update method Description");
+//		instituteRequestDto.setInstituteFundings(instituteFundingDto);
+//		instituteRequestDto.setEnrolmentLink("https://www.centrallanguageschool.com/enrol");
+//		instituteRequestDto.setWhatsNo("https://api.whatsapp.com/send?phone=60173010314");
+//		instituteRequestDto.setCourseStart("March, April, May");
+//		instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
+//		instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
+//		Location location = new Location(UUID.randomUUID().toString(), new GeoJsonPoint(25.32, 12.56));
+//		instituteRequestDto.setLatitude(location.getLocation().getY());
+//		instituteRequestDto.setLongitude(location.getLocation().getX());
+//		instituteRequestDto.setEmail("info@testEmail.com");
+//		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
+//		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+//		instituteRequestDto.setReadableId("DMS");
+//		instituteRequestDto.setInstituteId(IDS.toString());
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.setContentType(MediaType.APPLICATION_JSON);
+//		listOfInstituteRequestDto.add(instituteRequestDto);
+//		listOfInstituteProviderCode.add(instituteProviderCode);
+//		instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
+////		HttpEntity<ValidList<InstituteRequestDto>> entity = new HttpEntity<>(listOfInstituteRequestDto, headers);
+////		ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, entity,
+////				String.class);
+////		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+////		GenericWrapperDto<ValidList<InstituteRequestDto>> genericResponse = ObjectMapperHelper.readValueFromJSON(
+////				response.getBody(), new TypeReference<GenericWrapperDto<ValidList<InstituteRequestDto>>>() {
+////				});
+////		ValidList<InstituteRequestDto> r = genericResponse.getData();
+////		for (InstituteRequestDto data : r) {
+//
+////			try {
+//				InstituteBasicInfoDto instituteBasicInfoDto = new InstituteBasicInfoDto();
+////						("logo path","OXFORD","NAME OF CATEGORIES",INSTITUTE_ID,"This is Decription"
+////					,"INDIA","Amedded","newYork","12 okdoew","by AZGuards",3,2,40,30.0,12345L,true);
+//				instituteBasicInfoDto.setInstituteLogoPath("logopath");
+//				instituteBasicInfoDto.setNameOfUniversity("rgpvv");
+//				instituteBasicInfoDto.setInstituteCategoryTypeId("gdfhdjhhdfsddvsd4");
+//				instituteBasicInfoDto.setInstituteCategoryTypeName("dfuhsdugdf");
+//				instituteBasicInfoDto.setDescription("mudescrption");
+//				instituteBasicInfoDto.setCountryName("india");
+//				instituteBasicInfoDto.setStateName("mp");
+//				instituteBasicInfoDto.setCityName("indore");
+//				instituteBasicInfoDto.setAddress("myaddress");
+//				
+//				
+//				
+//				HttpHeaders header = new HttpHeaders();
+//				header.setContentType(MediaType.APPLICATION_JSON);
+//				header.set("userId", userId);
+//				HttpEntity<InstituteBasicInfoDto> entitys = new HttpEntity<>(instituteBasicInfoDto, header);
+//				String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "basic" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
+//						+ "561ba731-1f44-4cdd-8776-4addcc"+"?userId=8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
+//				ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.POST, entitys,
+//						String.class);
+//				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 ////			} finally {
 ////				// clean up code
 ////				ResponseEntity<String> responses = testRestTemplate.exchange(
@@ -167,8 +267,9 @@
 ////				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 ////			}
 //		}
-//	}
-//
+//	
+//	
+//	
 //	@DisplayName("getInstituteBasicInfo test success")
 //	@Test
 //     void getInstituteBasicInfo() throws IOException {
@@ -214,30 +315,100 @@
 //		listOfInstituteRequestDto.add(instituteRequestDto);
 //		listOfInstituteProviderCode.add(instituteProviderCode);
 ////6f91fa9b-6911-4fd3-beec-894d83545f35
-//		instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
-//		HttpEntity<ValidList<InstituteRequestDto>> createEntity = new HttpEntity<>(listOfInstituteRequestDto,
-//				createHeaders);
-//		ResponseEntity<String> responseInstitute = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST,
-//				createEntity, String.class);
-//		assertThat(responseInstitute.getStatusCode()).isEqualTo(HttpStatus.OK);
-//		try {
+////		instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
+////		HttpEntity<ValidList<InstituteRequestDto>> createEntity = new HttpEntity<>(listOfInstituteRequestDto,
+////				createHeaders);
+////		ResponseEntity<String> responseInstitute = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST,
+////				createEntity, String.class);
+////		assertThat(responseInstitute.getStatusCode()).isEqualTo(HttpStatus.OK);
+////		try {
 //			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "basic" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
-//					+ instituteRequestDto.getInstituteId();
+//					+ "f5663321-354d-44f3-8d31-b7aea650586c";
 //			HttpHeaders headers = new HttpHeaders();
 //			createHeaders.setContentType(MediaType.APPLICATION_JSON);
 //			headers.set("userId", userId);
-//			HttpEntity<String> entity = new HttpEntity<>(null, headers);
+//			HttpEntity<String> entity = new HttpEntity<>(headers);
 //			ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.GET, entity, String.class);
 //			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//		} finally {
-//			// clean up code
-//			ResponseEntity<String> responses = testRestTemplate.exchange(
-//					INSTITUTE_PRE_PATH + PATH_SEPARATOR + IDS.toString(), HttpMethod.DELETE, null, String.class);
-//			instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
-//			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-//		}
+////		} finally {
+////			// clean up code
+////			ResponseEntity<String> responses = testRestTemplate.exchange(
+////					INSTITUTE_PRE_PATH + PATH_SEPARATOR + IDS.toString(), HttpMethod.DELETE, null, String.class);
+////			instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
+////			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+////		}
 //	}
 //
+//	@DisplayName("WrongIdgetInstituteBasicInfo")
+//	@Test
+//     void wrongIdgetInstituteBasicInfo() throws IOException {
+//		boolean status = true;
+//		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
+//		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
+//		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
+//
+//		List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
+//		ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
+//		instituteProviderCode.setName("TestName");
+//		instituteProviderCode.setValue(("TestValue"));
+//		listOfInstituteProviderCode.add(instituteProviderCode);
+//		Mockito.when(reviewHandler.getAverageReview(EntityTypeEnum.INSTITUTE.name(),
+//				List.of("795592f1-3665-4649-89b0-39cb844e78d0"))).thenReturn(new HashMap());
+//		Mockito.when(storageHandler.getStorages("795592f1-3665-4649-89b0-39cb844e78d0", EntityTypeEnum.INSTITUTE,
+//				EntitySubTypeEnum.LOGO)).thenReturn(new ArrayList());
+//
+//		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+//		instituteRequestDto.setName("OCB");
+//		instituteRequestDto.setCityName("JAMNAGAR");
+//		instituteRequestDto.setCountryName("INDIA");
+//		instituteRequestDto.setEditAccess(true);
+//		instituteRequestDto.setAboutInfo(
+//				"INTERNATIONAL Language School, Cambridge, is accredited by the French Council and is a small, friendly, city-centre English language school.Our aim is to give you a warm welcome and an excellent opportunity to learn English in a caring, friendly atmosphere. Our courses, from Beginner to Advanced level, run throughout the year. We also offer exam preparation. We only teach adults (from a minimum age of 18).The School is just 3 minutes' walk from the central bus station and near many restaurants, shops and the colleges of the University of Cambridge. Students from more than 90 different countries have studied with us and there is usually a good mix of nationalities in the school.The School was founded in 1996 by a group of Christians in Cambridge. ");
+//		instituteRequestDto.setDescription("Test update method Description");
+//		instituteRequestDto.setInstituteFundings(instituteFundingDto);
+//		instituteRequestDto.setEnrolmentLink("https://www.centrallanguageschool.com/enrol");
+//		instituteRequestDto.setWhatsNo("https://api.whatsapp.com/send?phone=60173010314");
+//		instituteRequestDto.setCourseStart("March, April, May");
+//		instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
+//		instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
+//		Location location = new Location(UUID.randomUUID().toString(), new GeoJsonPoint(25.32, 12.56));
+//		instituteRequestDto.setLatitude(location.getLocation().getY());
+//		instituteRequestDto.setLongitude(location.getLocation().getX());
+//		instituteRequestDto.setEmail("OCB@testEmail.com");
+//		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
+//		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+//		instituteRequestDto.setReadableId("OCB");
+//		instituteRequestDto.setInstituteId(IDS.toString());
+//		HttpHeaders createHeaders = new HttpHeaders();
+//		createHeaders.setContentType(MediaType.APPLICATION_JSON);
+//		listOfInstituteRequestDto.add(instituteRequestDto);
+//		listOfInstituteProviderCode.add(instituteProviderCode);
+////6f91fa9b-6911-4fd3-beec-894d83545f35
+////		instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
+////		HttpEntity<ValidList<InstituteRequestDto>> createEntity = new HttpEntity<>(listOfInstituteRequestDto,
+////				createHeaders);
+////		ResponseEntity<String> responseInstitute = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST,
+////				createEntity, String.class);
+////		assertThat(responseInstitute.getStatusCode()).isEqualTo(HttpStatus.OK);
+////		try {
+//			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "basic" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
+//					+ "f5663321-354d-44f3-8d31-b7aea650";
+//			HttpHeaders headers = new HttpHeaders();
+//			createHeaders.setContentType(MediaType.APPLICATION_JSON);
+//			headers.set("userId", userId);
+//			HttpEntity<String> entity = new HttpEntity<>(headers);
+//			ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.GET, entity, String.class);
+//			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+////		} finally {
+////			// clean up code
+////			ResponseEntity<String> responses = testRestTemplate.exchange(
+////					INSTITUTE_PRE_PATH + PATH_SEPARATOR + IDS.toString(), HttpMethod.DELETE, null, String.class);
+////			instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
+////			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+////		}
+//	}
+//	
+//	
 //	@DisplayName("getInstitutePublicBasicInfo test success")
 //	@Test
 //	 void getInstitutePublicBasicInfo() throws IOException {
@@ -284,31 +455,31 @@
 //		listOfInstituteRequestDto.add(instituteRequestDto);
 //		listOfInstituteProviderCode.add(instituteProviderCode);
 //		instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
-//		HttpEntity<ValidList<InstituteRequestDto>> createEntity = new HttpEntity<>(listOfInstituteRequestDto,
-//				createHeaders);
-//		ResponseEntity<String> responseInstitute = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST,
-//				createEntity, String.class);
-//		assertThat(responseInstitute.getStatusCode()).isEqualTo(HttpStatus.OK);
-//		try {
+////		HttpEntity<ValidList<InstituteRequestDto>> createEntity = new HttpEntity<>(listOfInstituteRequestDto,
+////				createHeaders);
+////		ResponseEntity<String> responseInstitute = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST,
+////				createEntity, String.class);
+////		assertThat(responseInstitute.getStatusCode()).isEqualTo(HttpStatus.OK);
+////		try {
 //			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "basic" + PATH_SEPARATOR
-//					+ "info" + PATH_SEPARATOR + instituteRequestDto.getInstituteId();
+//					+ "info" + PATH_SEPARATOR + "f5663321-354d-44f3-8d31-b7aea650586c"+"?userId=8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 //			HttpHeaders headers = new HttpHeaders();
 //			headers.setContentType(MediaType.APPLICATION_JSON);
 //			headers.set("userId", userId);
 //			Map<String, Boolean> params = new HashMap();
 //			params.put("includeInstituteLogo", false);
 //			params.put("includeDetail", false);
-//			HttpEntity<String> entity = new HttpEntity<>(null, headers);
+//			HttpEntity<String> entity = new HttpEntity<>(headers);
 //			ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.GET, entity, String.class,
 //					params);
 //			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//		} finally {
-//			// clean up code
-//			ResponseEntity<String> response = testRestTemplate.exchange(
-//					INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteRequestDto.getInstituteId(), HttpMethod.DELETE, null,
-//					String.class);
-//			instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
-//			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//		}
+////		} finally {
+////			// clean up code
+////			ResponseEntity<String> response = testRestTemplate.exchange(
+////					INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteRequestDto.getInstituteId(), HttpMethod.DELETE, null,
+////					String.class);
+////			instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
+////			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+////		}
 //	}
 //}

@@ -43,6 +43,7 @@
 //	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 //	private static final String PATH_SEPARATOR = "/";
 //	private static final String COURSE_PATH = "/api/v1";
+//	private static final String courseId="9230cdd1-7d12-41c6-bbd0-38e52b3595a4";
 //
 //	@Autowired
 //	private TestRestTemplate testRestTemplate;
@@ -50,6 +51,7 @@
 //	@DisplayName("Add CourseDeliveryMode")
 //	@Test
 //	 void addCourseDeliveryMode() {
+//		try {
 //		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 //		CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 //		courseDeliveryModesDto.setDeliveryType("demo");
@@ -80,7 +82,7 @@
 //		courseDeliveryModesDtoList.add(courseDeliveryModesDto);
 //
 //		List<String> linked_course_ids = new ArrayList<>();
-//		linked_course_ids.add("527cf280-9206-461e-ad2a-49b00d9d5be2");
+//		linked_course_ids.add(courseId);
 //		requestWrapper.setLinkedCourseIds(linked_course_ids);
 //		requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
 //
@@ -91,11 +93,24 @@
 //		HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 //		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate
 //				.exchange(
-//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "527cf280-9206-461e-ad2a-49b00d9d5be2"
+//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
 //								+ PATH_SEPARATOR + "delivery-mode",
 //						HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 //		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//		
+//		}finally {
+//			HttpHeaders headers = new HttpHeaders();
+//			headers.setContentType(MediaType.APPLICATION_JSON);
+//			headers.add("userId", userId);
 //
+//			HttpEntity<String> entity = new HttpEntity<>(headers);
+//			ResponseEntity<String> response = testRestTemplate
+//					.exchange(
+//							COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+//									+ courseId + PATH_SEPARATOR + "delivery-mode",
+//							HttpMethod.DELETE, entity, String.class);
+//			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//		}
 //	}
 //
 //	@DisplayName("Update CourseDeliveryMode")
@@ -132,7 +147,7 @@
 //		requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
 //
 //		List<String> linked_course_ids = new ArrayList<>();
-//		linked_course_ids.add("fda8c495-f2df-4f0e-a154-169f982eb292");
+//		linked_course_ids.add(courseId);
 //		requestWrapper.setLinkedCourseIds(linked_course_ids);
 //
 //		HttpHeaders headers = new HttpHeaders();
@@ -142,12 +157,51 @@
 //		HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 //		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate
 //				.exchange(
-//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "fda8c495-f2df-4f0e-a154-169f982eb292"
+//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
 //								+ PATH_SEPARATOR + "delivery-mode",
 //						HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 //		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//    try {
+//	courseDeliveryModesDto.setDeliveryType("demo");
+//	courseDeliveryModesDto.setStudyMode("online");
+//	courseDeliveryModesDto.setDuration(9.5);
+//	courseDeliveryModesDto.setDurationTime("hour");
+//	courseDeliveryModesDto.setAccessibility("yes");
+//	courseDeliveryModesDto.setIsGovernmentEligible(true);
+//	dto.setName("root");
+//	dto.setAmount(5.00);
+//	dto.setCurrency("PNR");
+//	fees.add(dto);
+//	courseDeliveryModesDto.setFees(fees);
+//	
+//	courseDeliveryModeFundingDto.setName("root");
+//	courseDeliveryModeFundingDto.setFundingNameId("rootId");
+//	courseDeliveryModeFundingDto.setAmount(5.00);
+//	courseDeliveryModeFundingDto.setCurrency("PNR");
+//	fundings.add(courseDeliveryModeFundingDto);
+//	courseDeliveryModesDto.setFundings(fundings);
+//	requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
+//	requestWrapper.setLinkedCourseIds(linked_course_ids);
 //
+//
+//	HttpEntity<CourseDeliveryModeRequestWrapper> entityy = new HttpEntity<>(requestWrapper, headers);
+//	ResponseEntity<CourseDeliveryModeRequestWrapper> responses = testRestTemplate
+//			.exchange(
+//					COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
+//							+ PATH_SEPARATOR + "delivery-mode",
+//					HttpMethod.POST, entityy, CourseDeliveryModeRequestWrapper.class);
+//	assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+//  }finally {
+//	  HttpEntity<String> entitys = new HttpEntity<>(null, headers);
+//		ResponseEntity<String> responsed = testRestTemplate
+//				.exchange(
+//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+//								+ courseId + PATH_SEPARATOR + "delivery-mode",
+//						HttpMethod.DELETE, entitys, String.class);
+//		assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
 //	}
+//  }
+//	
 //
 //	@DisplayName("send  multipleCourseDeliveryMode")
 //	@Test
@@ -209,7 +263,7 @@
 //		requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
 //
 //		List<String> linked_course_ids = new ArrayList<>();
-//		linked_course_ids.add("75a34cb9-1034-404c-9d7c-db704cf5b659");
+//		linked_course_ids.add(courseId);
 //		requestWrapper.setLinkedCourseIds(linked_course_ids);
 //
 //		HttpHeaders headers = new HttpHeaders();
@@ -219,16 +273,61 @@
 //		HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 //		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate
 //				.exchange(
-//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "75a34cb9-1034-404c-9d7c-db704cf5b659"
+//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
 //								+ PATH_SEPARATOR + "delivery-mode",
 //						HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 //		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//
+//      try {
+//    	  courseDeliveryModesFirstList.setDeliveryType("demo");
+//  		  courseDeliveryModesFirstList.setStudyMode("offline");
+//  		  courseDeliveryModesFirstList.setDuration(8.5);
+//  		  courseDeliveryModesFirstList.setDurationTime("hour");
+//  		  courseDeliveryModesFirstList.setAccessibility("yes");
+//  		  courseDeliveryModesFirstList.setIsGovernmentEligible(true);
+//  		dto.setName("root");
+//		dto.setAmount(5.00);
+//		dto.setCurrency("INR");
+//		firstFeeesList.add(dto);
+//		courseDeliveryModesFirstList.setFees(firstFeeesList);
+//		secondcourseDeliveryModeFunding.setName("root");
+//		secondcourseDeliveryModeFunding.setFundingNameId("rootId");
+//		secondcourseDeliveryModeFunding.setAmount(4.00);
+//		secondcourseDeliveryModeFunding.setCurrency("INR");
+//		secondfundings.add(secondcourseDeliveryModeFunding);
+//		courseDeliveryModesSecondList.setFundings(secondfundings);
+//		
+//		courseDeliveryModesSecondList.setDeliveryType("easy");
+//		courseDeliveryModesSecondList.setStudyMode("online");
+//		courseDeliveryModesSecondList.setDuration(7.5);
+//		courseDeliveryModesSecondList.setDurationTime("hour");
+//		courseDeliveryModesSecondList.setAccessibility("yes");
+//		courseDeliveryModesSecondList.setIsGovernmentEligible(true);
+//		dtoo.setName("root");
+//		dtoo.setAmount(4.00);
+//		dtoo.setCurrency("INR");
+//		secondFeesList.add(dtoo);
+//		courseDeliveryModesSecondList.setFees(secondFeesList);
+//		secondcourseDeliveryModeFunding.setName("root");
+//		secondcourseDeliveryModeFunding.setFundingNameId("rootId");
+//		secondcourseDeliveryModeFunding.setAmount(4.00);
+//		secondcourseDeliveryModeFunding.setCurrency("INR");
+//		secondfundings.add(secondcourseDeliveryModeFunding);
+//		courseDeliveryModesSecondList.setFundings(secondfundings);
+//      }finally{
+//    	  HttpEntity<String> entitys = new HttpEntity<>(headers);
+//  		 ResponseEntity<String> responsed = testRestTemplate
+//  				.exchange(
+//  						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+//  								+ courseId + PATH_SEPARATOR + "delivery-mode",
+//  						HttpMethod.DELETE, entitys, String.class);
+//  		assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
+//      }
 //	}
 //
 //	@DisplayName("Remove  SingalCourseDeliveryMode")
 //	@Test
 //	 void removeSingalCourseDeliveryMode() {
+//		try {
 //		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 //		CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 //
@@ -261,7 +360,7 @@
 //		requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
 //
 //		List<String> linked_course_ids = new ArrayList<>();
-//		linked_course_ids.add("ef5f52ab-d303-477f-9db4-e0633fba23bc");
+//		linked_course_ids.add(courseId);
 //		requestWrapper.setLinkedCourseIds(linked_course_ids);
 //
 //		HttpHeaders headers = new HttpHeaders();
@@ -271,29 +370,89 @@
 //		HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 //		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate
 //				.exchange(
-//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "ef5f52ab-d303-477f-9db4-e0633fba23bc"
+//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR +courseId
 //								+ PATH_SEPARATOR + "delivery-mode",
 //						HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 //		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//
+//		}finally {
+//			HttpHeaders headers = new HttpHeaders();
+//			headers.setContentType(MediaType.APPLICATION_JSON);
+//			headers.set("userId", userId);
+//			HttpEntity<String> entitys = new HttpEntity<>(headers);
+//	  		 ResponseEntity<String> responsed = testRestTemplate
+//	  				.exchange(
+//	  						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+//	  								+ courseId + PATH_SEPARATOR + "delivery-mode",
+//	  						HttpMethod.DELETE, entitys, String.class);
+//	  		assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
+//		}
 //	}
 //
 //	@DisplayName("DELETE All CourseDeliveryMode")
 //	@Test
 //	 void deleteAllCourseDeliveryMode() {
+//        
+//		try {
+//			CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
+//			CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 //
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-//		headers.add("userId", userId);
+//			courseDeliveryModesDto.setDeliveryType("demo");
+//			courseDeliveryModesDto.setStudyMode("offline");
+//			courseDeliveryModesDto.setDuration(8.5);
+//			courseDeliveryModesDto.setDurationTime("hour");
+//			courseDeliveryModesDto.setAccessibility("yes");
+//			courseDeliveryModesDto.setIsGovernmentEligible(true);
 //
-//		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-//		ResponseEntity<String> response = testRestTemplate
-//				.exchange(
-//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-//								+ "96a2e11b-d64b-4964-9d28-2a4d7a41d944" + PATH_SEPARATOR + "delivery-mode",
-//						HttpMethod.DELETE, entity, String.class);
-//		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//			ValidList<CourseFeesDto> fess = new ValidList<>();
+//			CourseFeesDto dto = new CourseFeesDto();
+//			dto.setName("root");
+//			dto.setAmount(5.00);
+//			dto.setCurrency("INR");
+//			fess.add(dto);
+//			courseDeliveryModesDto.setFees(fess);
 //
+//			CourseDeliveryModeFundingDto courseDeliveryModeFundingDto = new CourseDeliveryModeFundingDto();
+//			ValidList<CourseDeliveryModeFundingDto> fundings = new ValidList<>();
+//			courseDeliveryModeFundingDto.setName("root");
+//			courseDeliveryModeFundingDto.setFundingNameId("rootId");
+//			courseDeliveryModeFundingDto.setAmount(5.00);
+//			courseDeliveryModeFundingDto.setCurrency("INR");
+//			fundings.add(courseDeliveryModeFundingDto);
+//			courseDeliveryModesDto.setFundings(fundings);
+//
+//			ValidList<CourseDeliveryModesDto> courseDeliveryModesDtoList = new ValidList<>();
+//			courseDeliveryModesDtoList.add(courseDeliveryModesDto);
+//			requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
+//
+//			List<String> linked_course_ids = new ArrayList<>();
+//			linked_course_ids.add(courseId);
+//			requestWrapper.setLinkedCourseIds(linked_course_ids);
+//
+//			HttpHeaders headers = new HttpHeaders();
+//			headers.setContentType(MediaType.APPLICATION_JSON);
+//			headers.set("userId", userId);
+//
+//			HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
+//			ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate
+//					.exchange(
+//							COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
+//									+ PATH_SEPARATOR + "delivery-mode",
+//							HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
+//			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//		}finally {
+//			HttpHeaders headers = new HttpHeaders();
+//			headers.setContentType(MediaType.APPLICATION_JSON);
+//			headers.add("userId", userId);
+//
+//			HttpEntity<String> entity = new HttpEntity<>(headers);
+//			ResponseEntity<String> response = testRestTemplate
+//					.exchange(
+//							COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+//									+ courseId + PATH_SEPARATOR + "delivery-mode",
+//							HttpMethod.DELETE, entity, String.class);
+//			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//		}
+//		
 //	}
 //
 //	@DisplayName("Send Wrong_Id")

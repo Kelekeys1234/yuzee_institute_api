@@ -57,7 +57,7 @@
 //	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 //	private static final String PATH_SEPARATOR = "/";
 //	private static final String COURSE_PATH = "/api/v1";
-//
+//    private static final String courseId="9230cdd1-7d12-41c6-bbd0-38e52b3595a4";
 //	@Autowired
 //	private TestRestTemplate testRestTemplate;
 //
@@ -67,7 +67,7 @@
 //	@DisplayName("Add EnglishEligibility")
 //	@Test
 //	  void addEnglishEligibility() {
-//
+//        try {
 //		CourseEnglishEligibilityDto courseEnglishEligibilityDto = new CourseEnglishEligibilityDto();
 //		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
 //		CourseEnglishEligibilityRequestWrapper requestWrapper = new CourseEnglishEligibilityRequestWrapper();
@@ -90,7 +90,7 @@
 //		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDtoo);
 //
 //		List<String> linked_course_ids = new ArrayList<>();
-//		linked_course_ids.add("527cf280-9206-461e-ad2a-49b00d9d5be2");
+//		linked_course_ids.add(courseId);
 //		requestWrapper.setCourseEnglishEligibilityDtos(courseEnglishEligibilityDtoList);
 //		requestWrapper.setLinkedCourseIds(linked_course_ids);
 //
@@ -101,11 +101,23 @@
 //		HttpEntity<CourseEnglishEligibilityRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 //		ResponseEntity<CourseEnglishEligibilityRequestWrapper> response = testRestTemplate
 //				.exchange(
-//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "527cf280-9206-461e-ad2a-49b00d9d5be2"
+//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
 //								+ PATH_SEPARATOR + "english-eligibility",
 //						HttpMethod.POST, entity, CourseEnglishEligibilityRequestWrapper.class);
 //		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//
+//      }finally {
+//    	  
+//    	   HttpHeaders headers = new HttpHeaders();
+//  		   headers.setContentType(MediaType.APPLICATION_JSON);
+//  		   headers.set("userId", userId);
+//    		HttpEntity<String> entity = new HttpEntity<>(headers);
+//    		ResponseEntity<String> response = testRestTemplate
+//    				.exchange(
+//    						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+//    								+ courseId + PATH_SEPARATOR + "english-eligibility",
+//    						HttpMethod.DELETE, entity, String.class);
+//    		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//      }
 //	}
 //
 //	@DisplayName("Update EnglishEligibility")
@@ -132,9 +144,9 @@
 //
 //		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDto);
 //		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDtoo);
-//
+// 
 //		List<String> linked_course_ids = new ArrayList<>();
-//		linked_course_ids.add("fda8c495-f2df-4f0e-a154-169f982eb292");
+//		linked_course_ids.add(courseId);
 //		requestWrapper.setCourseEnglishEligibilityDtos(courseEnglishEligibilityDtoList);
 //		requestWrapper.setLinkedCourseIds(linked_course_ids);
 //
@@ -145,17 +157,55 @@
 //		HttpEntity<CourseEnglishEligibilityRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 //		ResponseEntity<CourseEnglishEligibilityRequestWrapper> response = testRestTemplate
 //				.exchange(
-//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "fda8c495-f2df-4f0e-a154-169f982eb292"
+//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
 //								+ PATH_SEPARATOR + "english-eligibility",
 //						HttpMethod.POST, entity, CourseEnglishEligibilityRequestWrapper.class);
 //		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//		
+//       try {
+//    	   courseEnglishEligibilityDtoo.setEnglishType("demo");
+//   		   courseEnglishEligibilityDtoo.setReading(9.5);
+//   		   courseEnglishEligibilityDtoo.setWriting(9.5);
+//   		   courseEnglishEligibilityDtoo.setSpeaking(8.5);
+//   	       courseEnglishEligibilityDtoo.setListening(4.5);
+//   		   courseEnglishEligibilityDtoo.setOverall(7.5);
 //
+//   		  courseEnglishEligibilityDto.setEnglishType("easy");
+//   		  courseEnglishEligibilityDto.setReading(9.5);
+//   		  courseEnglishEligibilityDto.setWriting(8.5);
+//   		  courseEnglishEligibilityDto.setSpeaking(7.5);
+//   		  courseEnglishEligibilityDto.setListening(6.5);
+//   		  courseEnglishEligibilityDto.setOverall(8.5);
+//   		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDto);
+//		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDtoo);
+//		requestWrapper.setCourseEnglishEligibilityDtos(courseEnglishEligibilityDtoList);
+//		requestWrapper.setLinkedCourseIds(linked_course_ids);
+//
+//		HttpEntity<CourseEnglishEligibilityRequestWrapper> entityy = new HttpEntity<>(requestWrapper, headers);
+//		ResponseEntity<CourseEnglishEligibilityRequestWrapper> responses = testRestTemplate
+//				.exchange(
+//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
+//								+ PATH_SEPARATOR + "english-eligibility",
+//						HttpMethod.POST, entityy, CourseEnglishEligibilityRequestWrapper.class);
+//		assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+//       }finally {
+//    	 
+//
+//    		HttpEntity<String> entitys = new HttpEntity<>(headers);
+//    		ResponseEntity<String> responseed = testRestTemplate
+//    				.exchange(
+//    						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+//    								+ courseId + PATH_SEPARATOR + "english-eligibility",
+//    						HttpMethod.DELETE, entitys, String.class);
+//    		assertThat(responseed.getStatusCode()).isEqualTo(HttpStatus.OK);
+//    	   
+//       }
 //	}
 //
 //	@DisplayName("Remove EnglishEligibility")
 //	@Test
 //	  void removeEnglishEligibility() {
-//
+//      try {
 //		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
 //		CourseEnglishEligibilityRequestWrapper requestWrapper = new CourseEnglishEligibilityRequestWrapper();
 //		ValidList<CourseEnglishEligibilityDto> courseEnglishEligibilityDtoList = new ValidList<>();
@@ -168,7 +218,7 @@
 //		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDtoo);
 //
 //		List<String> linked_course_ids = new ArrayList<>();
-//		linked_course_ids.add("75a34cb9-1034-404c-9d7c-db704cf5b659");
+//		linked_course_ids.add(courseId);
 //		requestWrapper.setCourseEnglishEligibilityDtos(courseEnglishEligibilityDtoList);
 //		requestWrapper.setLinkedCourseIds(linked_course_ids);
 //
@@ -179,18 +229,61 @@
 //		HttpEntity<CourseEnglishEligibilityRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 //		ResponseEntity<CourseEnglishEligibilityRequestWrapper> response = testRestTemplate
 //				.exchange(
-//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "75a34cb9-1034-404c-9d7c-db704cf5b659"
+//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
 //								+ PATH_SEPARATOR + "english-eligibility",
 //						HttpMethod.POST, entity, CourseEnglishEligibilityRequestWrapper.class);
 //		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//     }
+//       finally {
+//	HttpHeaders headers = new HttpHeaders();
+//	headers.setContentType(MediaType.APPLICATION_JSON);
+//	headers.add("userId", userId);
 //
+//	HttpEntity<String> entity = new HttpEntity<>(headers);
+//	ResponseEntity<String> response = testRestTemplate
+//			.exchange(
+//					COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+//							+ courseId + PATH_SEPARATOR + "english-eligibility",
+//					HttpMethod.DELETE, entity, String.class);
+//	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//}
 //	}
 //
 //	@DisplayName("DELETE All EnglishEligibility")
 //	@Test
 //	  void deleteAllEnglishEligibility() {
+//       try {
+//    	   CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
+//   		CourseEnglishEligibilityRequestWrapper requestWrapper = new CourseEnglishEligibilityRequestWrapper();
+//   		ValidList<CourseEnglishEligibilityDto> courseEnglishEligibilityDtoList = new ValidList<>();
+//   		courseEnglishEligibilityDtoo.setEnglishType("demo");
+//   		courseEnglishEligibilityDtoo.setReading(8.5);
+//   		courseEnglishEligibilityDtoo.setWriting(9.5);
+//   		courseEnglishEligibilityDtoo.setSpeaking(7.5);
+//   		courseEnglishEligibilityDtoo.setListening(4.5);
+//   		courseEnglishEligibilityDtoo.setOverall(8.5);
+//   		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDtoo);
 //
-//		HttpHeaders headers = new HttpHeaders();
+//   		List<String> linked_course_ids = new ArrayList<>();
+//   		linked_course_ids.add(courseId);
+//   		requestWrapper.setCourseEnglishEligibilityDtos(courseEnglishEligibilityDtoList);
+//   		requestWrapper.setLinkedCourseIds(linked_course_ids);
+//
+//   		HttpHeaders headers = new HttpHeaders();
+//   		headers.setContentType(MediaType.APPLICATION_JSON);
+//   		headers.set("userId", userId);
+//
+//   		HttpEntity<CourseEnglishEligibilityRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
+//   		ResponseEntity<CourseEnglishEligibilityRequestWrapper> response = testRestTemplate
+//   				.exchange(
+//   						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
+//   								+ PATH_SEPARATOR + "english-eligibility",
+//   						HttpMethod.POST, entity, CourseEnglishEligibilityRequestWrapper.class);
+//   		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//       
+//       }finally{
+//    	   
+//       HttpHeaders headers = new HttpHeaders();
 //		headers.setContentType(MediaType.APPLICATION_JSON);
 //		headers.add("userId", userId);
 //
@@ -198,9 +291,11 @@
 //		ResponseEntity<String> response = testRestTemplate
 //				.exchange(
 //						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-//								+ "96a2e11b-d64b-4964-9d28-2a4d7a41d944" + PATH_SEPARATOR + "english-eligibility",
+//								+ courseId + PATH_SEPARATOR + "english-eligibility",
 //						HttpMethod.DELETE, entity, String.class);
+//      
 //		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//       }
 //	}
 //	
 //	
