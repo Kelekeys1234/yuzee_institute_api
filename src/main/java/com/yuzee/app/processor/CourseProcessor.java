@@ -701,7 +701,7 @@ public class CourseProcessor {
 	private Institute getInstititute(final String instituteId) throws NotFoundException {
 		Institute institute = null;
 		if (!StringUtils.isEmpty(instituteId)) {
-			institute = instituteDAO.get(UUID.fromString(instituteId));
+			institute = instituteDAO.get(instituteId);
 			if (ObjectUtils.isEmpty(institute)) {
 				log.error(messageTranslator.toLocale("courses.institute.id.invalid", instituteId, Locale.US));
 				throw new NotFoundException(messageTranslator.toLocale("courses.institute.id.invalid", instituteId));

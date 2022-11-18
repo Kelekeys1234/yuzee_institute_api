@@ -22,6 +22,11 @@
 		<java.version>16</java.version>
 		<spring-cloud.version>2020.0.2</spring-cloud.version>
 		<start-class>com.yuzee.app.YuzeeApplication</start-class>
+		<jacoco.version>0.8.8</jacoco.version>
+    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.language>java</sonar.language>
 	</properties>
 
 	<dependencies>
@@ -32,7 +37,6 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -47,6 +51,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+	    <dependency>
+    <groupId>org.jacoco</groupId>
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <version>0.8.8</version>
+  </dependency>
+
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
@@ -319,21 +330,30 @@
 				</dependencies>
 			</plugin>
 			<plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.4.0.905</version>
-            </plugin>
-           			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.16</version>
-                <configuration>
-                    <forkCount>5</forkCount>
-                    <reuseForks>true</reuseForks>
-                    <argLine>-Dnet.sf.ehcache.disabled=true</argLine>
-                   
-                </configuration>
-            </plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.8.0.2131</version>
+			</plugin>
+           	<plugin>
+                   <groupId>org.jacoco</groupId>
+                   <artifactId>jacoco-maven-plugin</artifactId>
+                   <version>${jacoco.version}</version>
+               <executions>
+                <execution>
+                  <id>jacoco-initialize</id>
+                    <goals>
+                     <goal>prepare-agent</goal>
+                  </goals>
+              </execution>
+               <execution>
+               <id>jacoco-site</id>
+               <phase>package</phase>
+               <goals>
+                 <goal>report</goal>
+              </goals>
+             </execution>
+              </executions>
+           </plugin>		
             
 		</plugins>
 		
@@ -380,8 +400,28 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
-				
-			</plugins>
+
+	       <plugin>
+	    	<groupId>org.jacoco</groupId>
+	 	   <artifactId>jacoco-maven-plugin</artifactId>
+		  <version>0.8.8</version>
+		    <executions>
+			<execution>
+				<id>jacoco-initialize</id>
+				<goals>
+					<goal>prepare-agent</goal>
+				</goals>
+			</execution>
+			<execution>
+				<id>jacoco-site</id>
+				<phase>package</phase>
+				<goals>
+					<goal>report</goal>
+				</goals>
+			</execution>
+		</executions>
+	</plugin>
+	</plugins>
 			
 		</pluginManagement>
 		<finalName>yuzee-institute</finalName>

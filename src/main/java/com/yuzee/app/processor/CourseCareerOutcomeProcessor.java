@@ -159,7 +159,7 @@ public class CourseCareerOutcomeProcessor {
 		}
 	}
 
-	private List<Careers> getCareerByIds(List<String> careerIds) throws ValidationException {
+	private List<Careers> getCareerByIds(List<String> careerIds)  {
 		log.info("inside CourseCareerOutcomeProcessor.getCareerByIds");
 		Map<String, Careers> careersMap = careerDao.findByIdIn(new ArrayList<>(careerIds)).stream()
 				.collect(Collectors.toMap(Careers::getId, e -> e));
@@ -169,8 +169,9 @@ public class CourseCareerOutcomeProcessor {
 			log.error(messageTranslator.toLocale("course_career.career.id.invalid", Locale.US));
 			throw new ValidationException(messageTranslator.toLocale("course_career.career.id.invalid"));
 		} else {
-			return careersMaps;
 		}
+		return careersMaps;
+
 
 	}
 
