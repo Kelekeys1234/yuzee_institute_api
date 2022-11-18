@@ -170,7 +170,7 @@ public interface CourseInterface {
 			@PathVariable final String instituteId) throws NotFoundException;
 
 ///// YET  TO IMPLEMENTS
-	@PostMapping(value = "/course/nearest", produces = "application/json")
+	@PostMapping(value = "/course/nearest")
 	public ResponseEntity<?> getNearestCourseList(@RequestBody final AdvanceSearchDto courseSearchDto) throws Exception;
 
 	@PostMapping(value = "/course/pageNumber/{pageNumber}/pageSize/{pageSize}/{countryName}")

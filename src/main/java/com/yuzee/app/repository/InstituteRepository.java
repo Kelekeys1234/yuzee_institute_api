@@ -22,7 +22,7 @@ import com.yuzee.app.dto.InstituteResponseDto;
 
 @Repository
 public interface InstituteRepository extends MongoRepository<Institute, String> {
-
+	
 	Page<Institute> findByCountryName(String countryName, @PageableDefault Pageable pageable);
 
 	@Query(value = "{'countryName' : ?0}", count = true)

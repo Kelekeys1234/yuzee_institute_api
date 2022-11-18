@@ -36,7 +36,7 @@ public interface InstituteDao {
 
 	public Institute addUpdateInstitute(Institute obj);
 
-	public Institute get(UUID id);
+	public Institute get(String id);
 
 	public List<InstituteResponseDto> getAllInstitutesByFilter(CourseSearchDto filterObj, String sortByField,
 			String sortByType, String searchKeyword, Integer startIndex, String cityId, String instituteTypeId,

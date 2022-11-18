@@ -8,30 +8,27 @@ import org.springframework.stereotype.Repository;
 
 import com.yuzee.app.bean.InstituteKeywords;
 import com.yuzee.app.dao.InstituteKeywordDao;
+import com.yuzee.app.repository.InstituteKeywordRepository;
 
 @Repository
 public class InstituteKeywordDaoImpl implements InstituteKeywordDao {
 	
 	@Autowired
-	private SessionFactory sessionFactory;
+	private InstituteKeywordRepository instituteKeywordRepository;
 	
 	
 	@Override
 	public void save(InstituteKeywords obj) {
-		Session session = sessionFactory.getCurrentSession();		
-		session.save(obj);	   					
+		instituteKeywordRepository.save(obj);					
 	}
 	
 	@Override
 	public void update(InstituteKeywords obj) {	
-		Session session = sessionFactory.getCurrentSession();		
-		session.update(obj);	   					
+		instituteKeywordRepository.save(obj);
 	}
 	
 	@Override
 	public List<InstituteKeywords> getAll() {
-		Session session = sessionFactory.getCurrentSession();		
-		Criteria crit = session.createCriteria(InstituteKeywords.class);
-		return crit.list();
+		return instituteKeywordRepository.findAll();
 	}
 }

@@ -63,7 +63,7 @@ public class InstituteCampusProcessor {
 
 		campusInstituteIds.add(instituteId);
 
-		Institute institutes = instituteDao.get(UUID.fromString(instituteId));
+		Institute institutes = instituteDao.get(instituteId);
 
 		campusInstituteIds.removeIf(e -> e.equals(instituteId));
 		Set<String> dbCampusInstituteIds = getInstituteCampuses(userId, instituteId).stream()
@@ -101,7 +101,7 @@ public class InstituteCampusProcessor {
 		log.debug("inside InstituteCampusProcessor.getInstituteCampuses method.");
 		List<InstituteCampus> instituteCampuses = null;
 		List<InstituteCampusDto> instituteCampusDtos = null;
-		Institute institute = instituteDao.get(UUID.fromString(instituteId));
+		Institute institute = instituteDao.get(instituteId);
 		if (!ObjectUtils.isEmpty(institute)) {
 			instituteCampuses = instituteCampusDao.findInstituteCampuses(UUID.fromString(instituteId));
 			if (!CollectionUtils.isEmpty(instituteCampuses)) {
@@ -142,7 +142,7 @@ public class InstituteCampusProcessor {
 	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
 	public List<InstituteCampusDto> getInstituteCampuses(String userId, String instituteId) throws NotFoundException {
 		log.debug("inside InstituteCampusProcessor.getInstituteCampuses method.");
-		Institute institute = instituteDao.get(UUID.fromString(instituteId));
+		Institute institute = instituteDao.get(instituteId);
 		if (!ObjectUtils.isEmpty(institute)) {
 			List<InstituteCampus> instituteCampuses = instituteCampusDao
 					.findInstituteCampuses(UUID.fromString(instituteId));

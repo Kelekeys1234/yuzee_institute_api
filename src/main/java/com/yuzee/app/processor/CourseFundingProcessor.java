@@ -60,7 +60,7 @@ public class CourseFundingProcessor {
 	public List<String> addFundingToAllInstituteCourses(String userId, String instituteId, List<String> fundingNameId)
 			throws ValidationException, NotFoundException, InvokeException {
 		log.info("inside CourseFundingProcessor.addFundingToAllInstituteCourses");
-		Institute institute = instituteDao.get(UUID.fromString(instituteId));
+		Institute institute = instituteDao.get(instituteId);
 		List<Course> courseToBeNotified = new ArrayList<>();
 		if (institute != null) {
 	    commonProcessor.getFundingsByFundingNameIds(fundingNameId, true);

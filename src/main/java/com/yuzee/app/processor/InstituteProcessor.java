@@ -183,7 +183,7 @@ public class InstituteProcessor {
 	private UserHandler userHandler;
 
 	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
-	public Institute get(final UUID id) {
+	public Institute get(final String id) {
 		return instituteDao.get(id);
 	}
 
@@ -267,7 +267,7 @@ public class InstituteProcessor {
 						.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
 			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
-		    publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
+		   // publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
 		} catch (Exception exception) {
 			log.error("Exception while saving institutes having exception ", exception.getMessage());
 			throw exception;
@@ -320,7 +320,7 @@ public class InstituteProcessor {
 		try {
 			List<InstituteSyncDTO> instituteElasticDtoList = new ArrayList<>();
 			log.info("fetching institute from DB having instituteId: {}", instituteId);
-			Institute oldInstitute = instituteDao.get(UUID.fromString(instituteId));
+			Institute oldInstitute = instituteDao.get(instituteId);
 			Institute newInstitute = new Institute();
 			log.info("Copying bean class to DTO class");
 			BeanUtils.copyProperties(instituteRequest, newInstitute);
@@ -360,12 +360,12 @@ public class InstituteProcessor {
 		institute = new Institute();
 		 if (id != null) {
 	            log.info("if instituteId in not null, then getInstitute from DB for id = " + id);
-	            institute = instituteDao.get(UUID.fromString(id));
+	            institute = instituteDao.get(id);
 	        } else {
 		institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 		institute.setCreatedBy("API");
 		institute.setIsActive(true);
-		institute.setId(instituteRequest.getInstituteId());
+		institute.setId(UUID.randomUUID().toString());
 	        } 
 		institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		institute.setUpdatedBy("API");
@@ -514,7 +514,7 @@ public class InstituteProcessor {
 		} else {
 			fundingsToBeAdded = instituteFundingDtos;
 		}
-		instituteFundings.addAll(fundingsToBeAdded);
+		//instituteFundings.addAll(fundingsToBeAdded);
 		institute.setInstituteFundings(instituteFundings);
 		instituteDao.addUpdateInstitute(institute);
 	}
@@ -664,7 +664,7 @@ public class InstituteProcessor {
             institute = instituteDao.findByReadableId(id);
         } else {
         }
-		institute = instituteDao.get(UUID.fromString(id));
+		institute = instituteDao.get(id);
 		if (institute == null) {
 			log.error(messageTranslator.toLocale("institute-processor.not_found.id", id, Locale.US));
 			throw new ValidationException(messageTranslator.toLocale("institute-processor.not_found.id", id));
@@ -688,40 +688,40 @@ public class InstituteProcessor {
 					.setInstituteTimings(CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
 		}
 
-		FollowerCountDto followerCountDto = connectionHandler.getFollowersCount(id);
-		if (!ObjectUtils.isEmpty(followerCountDto)) {
-			instituteRequestDto.setFollowersCount(followerCountDto.getConnection_number());
-		}
-
-		log.info("Calling review service to fetch user average review for instituteId");
-		Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("newInstitute", Arrays.asList(id));
-
-		ReviewStarDto reviewStarDto = yuzeeReviewMap.get(id);
-		if (!ObjectUtils.isEmpty(reviewStarDto)) {
-			instituteRequestDto.setStars(reviewStarDto.getReviewStars());
-			instituteRequestDto.setReviewsCount(reviewStarDto.getReviewsCount());
-		}
-
-		List<StorageDto> imageStorages = storageHandler.getStorages(Arrays.asList(id), EntityTypeEnum.INSTITUTE,
-				Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO));
-
-		if (!CollectionUtils.isEmpty(imageStorages)) {
-			List<StorageDto> instituteImages = imageStorages.stream()
-					.filter(s -> s.getEntityId().equals(instituteRequestDto.getId())).collect(Collectors.toList());
-
-			StorageDto logoStorage = instituteImages.stream()
-					.filter(e -> e.getEntitySubType().equals(EntitySubTypeEnum.LOGO)).findAny().orElse(null);
-			if (!ObjectUtils.isEmpty(logoStorage)) {
-				instituteRequestDto.setLogoUrl(logoStorage.getFileURL());
-			}
-
-			StorageDto coverStorage = instituteImages.stream()
-					.filter(e -> e.getEntitySubType().equals(EntitySubTypeEnum.COVER_PHOTO)).findAny().orElse(null);
-			if (!ObjectUtils.isEmpty(coverStorage)) {
-				instituteRequestDto.setCoverPhotoUrl(coverStorage.getFileURL());
-			}
-		}
-		instituteRequestDto.setFollowed(connectionHandler.checkFollowerExist(userId, id));
+//		FollowerCountDto followerCountDto = connectionHandler.getFollowersCount(id);
+//		if (!ObjectUtils.isEmpty(followerCountDto)) {
+//			instituteRequestDto.setFollowersCount(followerCountDto.getConnection_number());
+//		}
+//
+//		log.info("Calling review service to fetch user average review for instituteId");
+//		Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("newInstitute", Arrays.asList(id));
+//
+//		ReviewStarDto reviewStarDto = yuzeeReviewMap.get(id);
+//		if (!ObjectUtils.isEmpty(reviewStarDto)) {
+//			instituteRequestDto.setStars(reviewStarDto.getReviewStars());
+//			instituteRequestDto.setReviewsCount(reviewStarDto.getReviewsCount());
+//		}
+//
+//		List<StorageDto> imageStorages = storageHandler.getStorages(Arrays.asList(id), EntityTypeEnum.INSTITUTE,
+//				Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO));
+//
+//		if (!CollectionUtils.isEmpty(imageStorages)) {
+//			List<StorageDto> instituteImages = imageStorages.stream()
+//					.filter(s -> s.getEntityId().equals(instituteRequestDto.getId())).collect(Collectors.toList());
+//
+//			StorageDto logoStorage = instituteImages.stream()
+//					.filter(e -> e.getEntitySubType().equals(EntitySubTypeEnum.LOGO)).findAny().orElse(null);
+//			if (!ObjectUtils.isEmpty(logoStorage)) {
+//				instituteRequestDto.setLogoUrl(logoStorage.getFileURL());
+//			}
+//
+//			StorageDto coverStorage = instituteImages.stream()
+//					.filter(e -> e.getEntitySubType().equals(EntitySubTypeEnum.COVER_PHOTO)).findAny().orElse(null);
+//			if (!ObjectUtils.isEmpty(coverStorage)) {
+//				instituteRequestDto.setCoverPhotoUrl(coverStorage.getFileURL());
+//			}
+//		}
+//		instituteRequestDto.setFollowed(connectionHandler.checkFollowerExist(userId, id));
 		instituteRequestDto.setInstituteProviderCodes(new ValidList<>(institute.getInstituteProviderCodes().stream()
 				.map(e -> modelMapper.map(e, ProviderCodeDto.class)).toList()));
 		instituteRequestDto.setVerified(institute.isVerified());
@@ -898,7 +898,7 @@ public class InstituteProcessor {
 	public void deleteInstitute(final String id) throws ValidationException {
 		log.debug("Inside deleteInstitute() method");
 		log.info("Fetching institute from DB for id = " + id);
-		Institute institute = instituteDao.get(UUID.fromString(id));
+		Institute institute = instituteDao.get(id);
 		if (institute != null) {
 			log.info("Institute found making institute inActive");
 			institute.setIsActive(false);
@@ -1196,7 +1196,7 @@ public class InstituteProcessor {
 	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
 	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId) throws NotFoundException {
 		log.debug("inside processor.getInstituteFaculties method.");
-		if (!ObjectUtils.isEmpty(instituteDao.get(UUID.fromString(instituteId)))) {
+		if (!ObjectUtils.isEmpty(instituteDao.get(instituteId))) {
 			return instituteDao.getInstituteFaculties(instituteId, Sort.by(Sort.Direction.ASC, "facultyName"));
 		} else {
 			log.error(messageTranslator.toLocale("institute-processor.not_found.aganist_id", instituteId, Locale.US));
@@ -1255,7 +1255,7 @@ public class InstituteProcessor {
 
 	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
 	public List<StorageDto> getInstituteGallery(String instituteId) throws InternalServerException, NotFoundException {
-		Institute institute = instituteDao.get(UUID.fromString(instituteId));
+		Institute institute = instituteDao.get(instituteId);
 		if (!ObjectUtils.isEmpty(institute)) {
 			try {
 				List<StorageDto> storages = storageHandler.getStorages(Arrays.asList(instituteId),
@@ -1303,7 +1303,7 @@ public class InstituteProcessor {
 	public void changeInstituteStatus(String userId, String instituteId, boolean status) {
 		log.info("Inside InstituteProcessor.changeInstituteStatus method");
 
-		Institute existingInstitute = instituteDao.get(UUID.fromString(instituteId));
+		Institute existingInstitute = instituteDao.get(instituteId);
 		if (ObjectUtils.isEmpty(existingInstitute)) {
 			log.error(messageTranslator.toLocale("institute-processor.not_exist.institute", instituteId, Locale.US));
 			throw new NotFoundException(

@@ -66,7 +66,7 @@ public class InstituteServiceProcessor {
 			List<InstituteServiceDto> instituteServiceDtos) throws NotFoundException, ValidationException {
 		log.debug("inside addInstituteService() method");
 		log.info("Getting all exsisting services");
-		Institute institute = instituteDao.get(UUID.fromString(instituteId));
+		Institute institute = instituteDao.get(instituteId);
 		if (ObjectUtils.isEmpty(institute)) {
 			log.error(messageTranslator.toLocale("institute-services.invalid.id", instituteId, Locale.US));
 			throw new ValidationException(messageTranslator.toLocale("institute-services.invalid.id", instituteId));

@@ -92,12 +92,9 @@ public class InstituteDaoImpl implements InstituteDao {
 	}
 
 	@Override
-	public Institute get(final UUID instituteId) {
-		Optional<Institute> institute = instituteRepository.findById(instituteId.toString());
-		if (institute.isPresent()) {
-			return institute.get();
-		}
-		return null;
+	public Institute get(String instituteId) {
+	return instituteRepository.findById(instituteId).orElseGet(Institute::new);
+	
 	}
 
 	@Override

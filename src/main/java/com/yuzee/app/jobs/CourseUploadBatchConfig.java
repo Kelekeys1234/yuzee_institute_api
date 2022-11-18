@@ -60,7 +60,7 @@ public class CourseUploadBatchConfig {
     @Bean("courseItemWriter")
     @StepScope
     public MongoItemWriter<Course> writer(@Autowired MongoTemplate mongoTemplate) {
-		   return new MongoItemWriterBuilder<Course>().template(mongoTemplate).collection("courseCsv")
+		   return new MongoItemWriterBuilder<Course>().template(mongoTemplate).collection("course")
 	                .build();
     }
     

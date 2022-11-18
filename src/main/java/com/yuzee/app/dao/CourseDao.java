@@ -149,4 +149,6 @@ public interface CourseDao {
 	public boolean documentExistsById(String id);
 
 	Page<Course> findById(String courseId,Pageable page);
+	
+	List<Course> findByInstituteId(Pageable paging ,String instituteId);
 }

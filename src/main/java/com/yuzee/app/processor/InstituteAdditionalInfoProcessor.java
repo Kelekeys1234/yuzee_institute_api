@@ -49,7 +49,7 @@ public class InstituteAdditionalInfoProcessor {
 		log.debug("Inside addInstituteAdditionalInfo() method");
 		// TODO validate user ID passed in request have access to modify resource
 		log.info("Getting institute having institute id: {}", instituteId);
-		Institute instituteFromFb = instituteDAO.get(UUID.fromString(instituteId));
+		Institute instituteFromFb = instituteDAO.get(instituteId);
 		if (ObjectUtils.isEmpty(instituteFromFb)) {
 			log.error(messageTranslator.toLocale("institute_info.id.notfound",instituteId,Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notfound",instituteId));
@@ -72,7 +72,7 @@ public class InstituteAdditionalInfoProcessor {
 		log.debug("Inside getInstituteAdditionalInfo() method");
 
 		log.info("Getting institute having institute id: {}", instituteId);
-		Institute institute = instituteDAO.get(UUID.fromString(instituteId));
+		Institute institute = instituteDAO.get(instituteId);
 		if (ObjectUtils.isEmpty(institute)) {
 			log.error(messageTranslator.toLocale("institute_info.id.notFound",instituteId,Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notFound",instituteId));

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -138,6 +139,7 @@ public class HelpProcessor {
 			help.setStatus(HelpEnum.NOTASSIGNED.toString());
 		}
 		help.setUserId(userId);
+		help.setId(UUID.randomUUID().toString());
 		help.setCategory(helpDAO.getHelpCategory(dto.getCategoryId()));
 		help.setSubCategory(helpDAO.getHelpSubCategory(dto.getSubCategoryId()));
 		help.setCreatedBy("API");
@@ -245,6 +247,7 @@ public class HelpProcessor {
 	public HelpCategory convertHelpCategoryDtoToBean(final HelpCategoryDto helpCategoryDto) {
 		HelpCategory helpCategory = new HelpCategory();
 		helpCategory.setName(helpCategoryDto.getName());
+		helpCategory.setId(UUID.randomUUID().toString());
 		helpCategory.setCreatedBy("API");
 		helpCategory.setUpdatedBy("API");
 		helpCategory.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
@@ -266,6 +269,7 @@ public class HelpProcessor {
 	public HelpSubCategory convertHelpCategoryDtoToBean(final HelpSubCategoryDto helpSubCategoryDto) {
 		HelpSubCategory helpSubCategory = new HelpSubCategory();
 		helpSubCategory.setName(helpSubCategoryDto.getName());
+		helpSubCategory.setId(UUID.randomUUID().toString());
 		helpSubCategory.setCreatedBy("API");
 		helpSubCategory.setUpdatedBy("API");
 		helpSubCategory.setCreatedOn(DateUtil.getUTCdatetimeAsDate());

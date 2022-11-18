@@ -58,7 +58,7 @@ public class InstituteTypeProcessor {
 
 	public void addUpdateInstituteType(String instituteId, String instituteType) {
 		log.debug("Inside addUpdateInstituteType() method");
-		Institute institute = instituteDAO.get(UUID.fromString(instituteId));
+		Institute institute = instituteDAO.get(instituteId);
 		if(ObjectUtils.isEmpty(institute)){
 			log.error("no Institute Found");
 			throw new NotFoundException("No institute found");

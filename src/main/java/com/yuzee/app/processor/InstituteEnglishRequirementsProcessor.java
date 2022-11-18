@@ -53,7 +53,7 @@ public class InstituteEnglishRequirementsProcessor {
 		
 		  log.info("Getting institute english requirements having requirement id  "
 		  +englishRequirementId); Institute institute =
-		  instituteDAO.get(UUID.fromString(instituteEnglishRequirementsDto.getInstituteId()));
+		  instituteDAO.get(instituteEnglishRequirementsDto.getInstituteId());
 		  Optional<InstituteEnglishRequirements> optionalInstituteEnglishRequirements;
 		  InstituteEnglishRequirements instituteEnglishRequirements = new
 	  InstituteEnglishRequirements(); 
