@@ -39,9 +39,9 @@ pipelines:
           - export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
           - export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
           - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 607951638574.dkr.ecr.ap-southeast-1.amazonaws.com
-          - docker build -t institute .
-          - docker tag institute 607951638574.dkr.ecr.ap-southeast-1.amazonaws.com/institute:$BITBUCKET_BUILD_NUMBER
-          - docker push 607951638574.dkr.ecr.ap-southeast-1.amazonaws.com/institute:$BITBUCKET_BUILD_NUMBER     
+          - docker build -t institute-test .
+          - docker tag institute 607951638574.dkr.ecr.ap-southeast-1.amazonaws.com/institute-test:$BITBUCKET_BUILD_NUMBER
+          - docker push 607951638574.dkr.ecr.ap-southeast-1.amazonaws.com/institute-test:$BITBUCKET_BUILD_NUMBER     
     
     
     - step:
@@ -50,8 +50,8 @@ pipelines:
         script:
           - echo $KUBE_CONFIG | base64 -d > kubeconfig.yml
           - cat kubeconfig.yml
-          - kubectl --kubeconfig=kubeconfig.yml delete secret institute -n yuzee-dev || true
-          - kubectl --kubeconfig=kubeconfig.yml create secret generic institute --namespace=yuzee-dev --from-literal=db_username=$db_username --from-literal=db_password=$db_password --from-literal=db_url=$db_url --from-literal=dropbox_token=$dropbox_token --from-literal=google_api_key=$google_api_key --from-literal=aws_id=$aws_id --from-literal=aws_secret=$aws_secret         
+          - kubectl --kubeconfig=kubeconfig.yml delete secret institute-test -n yuzee-dev || true
+          - kubectl --kubeconfig=kubeconfig.yml create secret generic institute-test --namespace=yuzee-dev --from-literal=db_username=$db_username --from-literal=db_password=$db_password --from-literal=db_url=$db_url --from-literal=dropbox_token=$dropbox_token --from-literal=google_api_key=$google_api_key --from-literal=aws_id=$aws_id --from-literal=aws_secret=$aws_secret         
           - kubectl --kubeconfig=kubeconfig.yml delete secret regcred -n yuzee-dev || true
           - kubectl --kubeconfig=kubeconfig.yml create secret docker-registry regcred --docker-server=607951638574.dkr.ecr.ap-southeast-1.amazonaws.com --docker-username=AWS --docker-password=$value --namespace=yuzee-dev
           - cat institute-001.yaml | sed "s/{{BITBUCKET_BUILD_NUMBER}}/$BITBUCKET_BUILD_NUMBER/g" | kubectl  --kubeconfig=kubeconfig.yml apply -f -
@@ -63,5 +63,5 @@ pipelines:
         image: atlassian/pipelines-kubectl
         script:
           - echo $KUBE_CONFIG | base64 -d > kubeconfig.yml
-          - kubectl --kubeconfig=kubeconfig.yml rollout undo deploy institute-service -n yuzee-dev
+          - kubectl --kubeconfig=kubeconfig.yml rollout undo deploy institute-service-test -n yuzee-dev
      
