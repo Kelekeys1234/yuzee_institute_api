@@ -58,72 +58,57 @@ class CourseContactPersonTest {
 	CommonProcessor commonProcessor;
 	@DisplayName("saveCourseContactPerson")
 	@Test
-	 void saveCourseContactPerson() {
+	void saveCourseContactPerson() {
 		try {
-		ValidList<CourseContactPersonDto> courseContactPersonDtos = new ValidList<CourseContactPersonDto>();
-		UserInitialInfoDto user= new UserInitialInfoDto();
-		CourseContactPersonDto courseContactPersonDto = new CourseContactPersonDto();
-		courseContactPersonDto.setUserId(userId);
-		courseContactPersonDtos.add(courseContactPersonDto);
-		List<String> linkedCourseId = Arrays.asList(courseId);
-		CourseContactPersonRequestWrapper courseContactPersonRequestWrapper= new CourseContactPersonRequestWrapper();
-		courseContactPersonRequestWrapper.setCourseContactPersonDtos(courseContactPersonDtos);
-	    courseContactPersonRequestWrapper.setLinkedCourseIds(linkedCourseId);
-		Mockito.when(commonProcessor.validateAndGetUsersByUserIds(userId,
-				courseContactPersonDtos.stream().map(CourseContactPersonDto::getUserId).collect(Collectors.toList()))).thenReturn(new HashMap<>());
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add("userId", userId);
-		HttpEntity<CourseContactPersonRequestWrapper> entity = new HttpEntity<>(courseContactPersonRequestWrapper, headers);
-		ResponseEntity<CourseContactPersonRequestWrapper> response = testRestTemplate.exchange(
-				api + PATH_SEPARATOR +courseId + PATH_SEPARATOR + "contact-person",
-				HttpMethod.POST, entity, CourseContactPersonRequestWrapper.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}finally {
-			Map<String,List<String>> params= new HashMap<>();
-			params.put("userIds",Arrays.asList(userId));
-			
+			ValidList<CourseContactPersonDto> courseContactPersonDtos = new ValidList<CourseContactPersonDto>();
+			UserInitialInfoDto user = new UserInitialInfoDto();
+			CourseContactPersonDto courseContactPersonDto = new CourseContactPersonDto();
+			courseContactPersonDto.setUserId(userId);
+			courseContactPersonDtos.add(courseContactPersonDto);
+			List<String> linkedCourseId = Arrays.asList(courseId);
+			CourseContactPersonRequestWrapper courseContactPersonRequestWrapper = new CourseContactPersonRequestWrapper();
+			courseContactPersonRequestWrapper.setCourseContactPersonDtos(courseContactPersonDtos);
+			courseContactPersonRequestWrapper.setLinkedCourseIds(linkedCourseId);
+			Mockito.when(commonProcessor.validateAndGetUsersByUserIds(userId, courseContactPersonDtos.stream()
+					.map(CourseContactPersonDto::getUserId).collect(Collectors.toList()))).thenReturn(new HashMap<>());
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add("userId", userId);
+			HttpEntity<CourseContactPersonRequestWrapper> entity = new HttpEntity<>(courseContactPersonRequestWrapper,
+					headers);
+			ResponseEntity<CourseContactPersonRequestWrapper> response = testRestTemplate.exchange(
+					api + PATH_SEPARATOR + courseId + PATH_SEPARATOR + "contact-person", HttpMethod.POST, entity,
+					CourseContactPersonRequestWrapper.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		} finally {
+			Map<String, List<String>> params = new HashMap<>();
+			params.put("userIds", Arrays.asList(userId));
+
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.add("userId", userId);
 			HttpEntity<String> entity = new HttpEntity<>(headers);
 			ResponseEntity<CourseContactPersonRequestWrapper> response = testRestTemplate.exchange(
-					api + PATH_SEPARATOR +courseId + PATH_SEPARATOR + "contact-person?user_ids=",
-					HttpMethod.DELETE, entity, CourseContactPersonRequestWrapper.class,params);
+					api + PATH_SEPARATOR + courseId + PATH_SEPARATOR + "contact-person?user_ids=", HttpMethod.DELETE,
+					entity, CourseContactPersonRequestWrapper.class, params);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		}
 	}
 	
 	@DisplayName("deleteContactPerson")
 	@Test
-	 void deleteSaveContactPerson() {
-		Map<String,List<String>> params= new HashMap<>();
-		params.put("userIds",Arrays.asList(userId));
-		
+	void deleteSaveContactPerson() {
+		Map<String, List<String>> params = new HashMap<>();
+		params.put("userIds", Arrays.asList(userId));
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("userId", userId);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<CourseContactPersonRequestWrapper> response = testRestTemplate.exchange(
-				api + PATH_SEPARATOR +courseId + PATH_SEPARATOR + "contact-person?user_ids=",
-				HttpMethod.DELETE, entity, CourseContactPersonRequestWrapper.class,params);
+				api + PATH_SEPARATOR + courseId + PATH_SEPARATOR + "contact-person?user_ids=", HttpMethod.DELETE,
+				entity, CourseContactPersonRequestWrapper.class, params);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
-	
-//	@DisplayName("WrongIdContactPerson")
-//	@Test
-//	 void wrongIdSaveContactPerson() {
-//		Map<String,List<String>> params= new HashMap<>();
-//		params.put("userIds",Arrays.asList(userId));
-//		
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-//		headers.add("userId", userId);
-//		HttpEntity<String> entity = new HttpEntity<>(headers);
-//		ResponseEntity<CourseContactPersonRequestWrapper> response = testRestTemplate.exchange(
-//				api + PATH_SEPARATOR +"c4c5d73b-3eaf-4528-a3bb-2e09a7000" + PATH_SEPARATOR + "contact-person?user_ids=",
-//				HttpMethod.DELETE, entity, CourseContactPersonRequestWrapper.class,params);
-//		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-//	}
 }

@@ -167,8 +167,7 @@ public class TestInstituteBasicInfoController {
 				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}
-				
-				
+								
 	}
 
 	@DisplayName("WrongidaddUpdateInstituteBasicInfo")
@@ -185,7 +184,6 @@ public class TestInstituteBasicInfoController {
 				instituteBasicInfoDto.setStateName("mp");
 				instituteBasicInfoDto.setCityName("indore");
 				instituteBasicInfoDto.setAddress("myaddress");
-				
 				HttpHeaders header = new HttpHeaders();
 				header.setContentType(MediaType.APPLICATION_JSON);
 				header.set("userId", userId);
@@ -201,57 +199,59 @@ public class TestInstituteBasicInfoController {
 	@DisplayName("getInstituteBasicInfo test success")
 	@Test
      void getInstituteBasicInfo() throws IOException {
-		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
-		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
-		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
+			ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
+			ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
+			instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
 
-		List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
-		ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
-		instituteProviderCode.setName("TestProviderName");
-		instituteProviderCode.setValue(("TestProviderValue"));
-		listOfInstituteProviderCode.add(instituteProviderCode);
-
-		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
-		instituteRequestDto.setName("IIM");
-		instituteRequestDto.setCityName("AHMEDABAD");
-		instituteRequestDto.setCountryName("INDIA");
-		instituteRequestDto.setEditAccess(true);
-		instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
-		instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
-		instituteRequestDto.setLatitude(92.5);
-		instituteRequestDto.setLongitude(93.5);
-		instituteRequestDto.setEmail("info@testEmail.com");
-		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
-		instituteRequestDto.setReadableId(UUID.randomUUID().toString());
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		listOfInstituteRequestDto.add(instituteRequestDto);
-		listOfInstituteProviderCode.add(instituteProviderCode);
-		instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
-		HttpEntity<ValidList<InstituteRequestDto>> entity = new HttpEntity<>(listOfInstituteRequestDto, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, entity,
-				String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		GenericWrapperDto<ValidList<InstituteRequestDto>> genericResponse = ObjectMapperHelper.readValueFromJSON(
-				response.getBody(), new TypeReference<GenericWrapperDto<ValidList<InstituteRequestDto>>>() {
-				});
-		ValidList<InstituteRequestDto> r = genericResponse.getData();
-		for (InstituteRequestDto data : r) {
-		try {
-			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "basic" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
-					+ data.getInstituteId();
-			HttpEntity<String> entityy = new HttpEntity<>(headers);
-			ResponseEntity<String> responsed = testRestTemplate.exchange(path, HttpMethod.GET, entityy, String.class);
-			assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			// clean up code
-			ResponseEntity<String> responses = testRestTemplate.exchange(
-					INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null, String.class);
-			instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
-			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+			List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
+			ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
+			instituteProviderCode.setName("TestProviderName");
+			instituteProviderCode.setValue(("TestProviderValue"));
+			listOfInstituteProviderCode.add(instituteProviderCode);
+			InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+			instituteRequestDto.setName("IIM");
+			instituteRequestDto.setCityName("AHMEDABAD");
+			instituteRequestDto.setCountryName("INDIA");
+			instituteRequestDto.setEditAccess(true);
+			instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
+			instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
+			instituteRequestDto.setLatitude(92.5);
+			instituteRequestDto.setLongitude(93.5);
+			instituteRequestDto.setEmail("info@testEmail.com");
+			instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
+			instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+			instituteRequestDto.setReadableId(UUID.randomUUID().toString());
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			listOfInstituteRequestDto.add(instituteRequestDto);
+			listOfInstituteProviderCode.add(instituteProviderCode);
+			instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
+			HttpEntity<ValidList<InstituteRequestDto>> entity = new HttpEntity<>(listOfInstituteRequestDto, headers);
+			ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, entity,
+					String.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+			GenericWrapperDto<ValidList<InstituteRequestDto>> genericResponse = ObjectMapperHelper.readValueFromJSON(
+					response.getBody(), new TypeReference<GenericWrapperDto<ValidList<InstituteRequestDto>>>() {
+					});
+			ValidList<InstituteRequestDto> r = genericResponse.getData();
+			for (InstituteRequestDto data : r) {
+				try {
+					String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "basic" + PATH_SEPARATOR + "info"
+							+ PATH_SEPARATOR + data.getInstituteId();
+					HttpEntity<String> entityy = new HttpEntity<>(headers);
+					ResponseEntity<String> responsed = testRestTemplate.exchange(path, HttpMethod.GET, entityy,
+							String.class);
+					assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
+				} finally {
+					// clean up code
+					ResponseEntity<String> responses = testRestTemplate.exchange(
+							INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
+							String.class);
+					instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
+					assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+				}
+			}
 		}
-	}}
 
 	@DisplayName("WrongIdgetInstituteBasicInfo")
 	@Test
@@ -271,64 +271,65 @@ public class TestInstituteBasicInfoController {
 	@DisplayName("getInstitutePublicBasicInfo test success")
 	@Test
 	 void getInstitutePublicBasicInfo() throws IOException {
-		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
-		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
-		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
+			ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
+			ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
+			instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
 
-		List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
-		ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
-		instituteProviderCode.setName("TestProviderName");
-		instituteProviderCode.setValue(("TestProviderValue"));
-		listOfInstituteProviderCode.add(instituteProviderCode);
+			List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
+			ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
+			instituteProviderCode.setName("TestProviderName");
+			instituteProviderCode.setValue(("TestProviderValue"));
+			listOfInstituteProviderCode.add(instituteProviderCode);
 
-		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
-		instituteRequestDto.setName("IIM");
-		instituteRequestDto.setCityName("AHMEDABAD");
-		instituteRequestDto.setCountryName("INDIA");
-		instituteRequestDto.setEditAccess(true);
-		instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
-		instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
-		instituteRequestDto.setLatitude(92.5);
-		instituteRequestDto.setLongitude(93.5);
-		instituteRequestDto.setEmail("info@testEmail.com");
-		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
-		instituteRequestDto.setReadableId(UUID.randomUUID().toString());
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		listOfInstituteRequestDto.add(instituteRequestDto);
-		listOfInstituteProviderCode.add(instituteProviderCode);
-		instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
-		HttpEntity<ValidList<InstituteRequestDto>> entity = new HttpEntity<>(listOfInstituteRequestDto, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, entity,
-				String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		GenericWrapperDto<ValidList<InstituteRequestDto>> genericResponse = ObjectMapperHelper.readValueFromJSON(
-				response.getBody(), new TypeReference<GenericWrapperDto<ValidList<InstituteRequestDto>>>() {
-				});
-		ValidList<InstituteRequestDto> r = genericResponse.getData();
-		for (InstituteRequestDto data : r) {
-		try {
-			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "basic" + PATH_SEPARATOR
-					+ "info" + PATH_SEPARATOR + data.getInstituteId()+"?userId=8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
-			HttpHeaders headerss = new HttpHeaders();
+			InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+			instituteRequestDto.setName("IIM");
+			instituteRequestDto.setCityName("AHMEDABAD");
+			instituteRequestDto.setCountryName("INDIA");
+			instituteRequestDto.setEditAccess(true);
+			instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
+			instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
+			instituteRequestDto.setLatitude(92.5);
+			instituteRequestDto.setLongitude(93.5);
+			instituteRequestDto.setEmail("info@testEmail.com");
+			instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
+			instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+			instituteRequestDto.setReadableId(UUID.randomUUID().toString());
+			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.set("userId", userId);
-			Map<String, Boolean> params = new HashMap();
-			params.put("includeInstituteLogo", false);
-			params.put("includeDetail", false);
-			HttpEntity<String> entityy = new HttpEntity<>(headerss);
-			ResponseEntity<String> responsed = testRestTemplate.exchange(path, HttpMethod.GET, entityy, String.class,
-					params);
-			assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			// clean up code
-			ResponseEntity<String> responsed = testRestTemplate.exchange(
-					INSTITUTE_PRE_PATH + PATH_SEPARATOR +data.getInstituteId(), HttpMethod.DELETE, null,
+			listOfInstituteRequestDto.add(instituteRequestDto);
+			listOfInstituteProviderCode.add(instituteProviderCode);
+			instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
+			HttpEntity<ValidList<InstituteRequestDto>> entity = new HttpEntity<>(listOfInstituteRequestDto, headers);
+			ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, entity,
 					String.class);
-			instituteProcessor.deleteInstitute(data.getInstituteId());
-			assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}
-	}
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+			GenericWrapperDto<ValidList<InstituteRequestDto>> genericResponse = ObjectMapperHelper.readValueFromJSON(
+					response.getBody(), new TypeReference<GenericWrapperDto<ValidList<InstituteRequestDto>>>() {
+					});
+			ValidList<InstituteRequestDto> r = genericResponse.getData();
+			for (InstituteRequestDto data : r) {
+				try {
+					String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "basic"
+							+ PATH_SEPARATOR + "info" + PATH_SEPARATOR + data.getInstituteId()
+							+ "?userId=8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
+					HttpHeaders headerss = new HttpHeaders();
+					headers.setContentType(MediaType.APPLICATION_JSON);
+					headers.set("userId", userId);
+					Map<String, Boolean> params = new HashMap();
+					params.put("includeInstituteLogo", false);
+					params.put("includeDetail", false);
+					HttpEntity<String> entityy = new HttpEntity<>(headerss);
+					ResponseEntity<String> responsed = testRestTemplate.exchange(path, HttpMethod.GET, entityy,
+							String.class, params);
+					assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
+				} finally {
+					// clean up code
+					ResponseEntity<String> responsed = testRestTemplate.exchange(
+							INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
+							String.class);
+					instituteProcessor.deleteInstitute(data.getInstituteId());
+					assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
+				}
+			}
 		}
 }

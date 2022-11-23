@@ -688,40 +688,40 @@ public class InstituteProcessor {
 					.setInstituteTimings(CommonUtil.convertTimingResponseDtoToDayTimingDto(instituteTimingResponseDto));
 		}
 
-//		FollowerCountDto followerCountDto = connectionHandler.getFollowersCount(id);
-//		if (!ObjectUtils.isEmpty(followerCountDto)) {
-//			instituteRequestDto.setFollowersCount(followerCountDto.getConnection_number());
-//		}
-//
-//		log.info("Calling review service to fetch user average review for instituteId");
-//		Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("newInstitute", Arrays.asList(id));
-//
-//		ReviewStarDto reviewStarDto = yuzeeReviewMap.get(id);
-//		if (!ObjectUtils.isEmpty(reviewStarDto)) {
-//			instituteRequestDto.setStars(reviewStarDto.getReviewStars());
-//			instituteRequestDto.setReviewsCount(reviewStarDto.getReviewsCount());
-//		}
-//
-//		List<StorageDto> imageStorages = storageHandler.getStorages(Arrays.asList(id), EntityTypeEnum.INSTITUTE,
-//				Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO));
-//
-//		if (!CollectionUtils.isEmpty(imageStorages)) {
-//			List<StorageDto> instituteImages = imageStorages.stream()
-//					.filter(s -> s.getEntityId().equals(instituteRequestDto.getId())).collect(Collectors.toList());
-//
-//			StorageDto logoStorage = instituteImages.stream()
-//					.filter(e -> e.getEntitySubType().equals(EntitySubTypeEnum.LOGO)).findAny().orElse(null);
-//			if (!ObjectUtils.isEmpty(logoStorage)) {
-//				instituteRequestDto.setLogoUrl(logoStorage.getFileURL());
-//			}
-//
-//			StorageDto coverStorage = instituteImages.stream()
-//					.filter(e -> e.getEntitySubType().equals(EntitySubTypeEnum.COVER_PHOTO)).findAny().orElse(null);
-//			if (!ObjectUtils.isEmpty(coverStorage)) {
-//				instituteRequestDto.setCoverPhotoUrl(coverStorage.getFileURL());
-//			}
-//		}
-//		instituteRequestDto.setFollowed(connectionHandler.checkFollowerExist(userId, id));
+		FollowerCountDto followerCountDto = connectionHandler.getFollowersCount(id);
+		if (!ObjectUtils.isEmpty(followerCountDto)) {
+			instituteRequestDto.setFollowersCount(followerCountDto.getConnection_number());
+		}
+
+		log.info("Calling review service to fetch user average review for instituteId");
+		Map<String, ReviewStarDto> yuzeeReviewMap = reviewHandler.getAverageReview("newInstitute", Arrays.asList(id));
+
+		ReviewStarDto reviewStarDto = yuzeeReviewMap.get(id);
+		if (!ObjectUtils.isEmpty(reviewStarDto)) {
+			instituteRequestDto.setStars(reviewStarDto.getReviewStars());
+			instituteRequestDto.setReviewsCount(reviewStarDto.getReviewsCount());
+		}
+
+		List<StorageDto> imageStorages = storageHandler.getStorages(Arrays.asList(id), EntityTypeEnum.INSTITUTE,
+				Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO));
+
+		if (!CollectionUtils.isEmpty(imageStorages)) {
+			List<StorageDto> instituteImages = imageStorages.stream()
+					.filter(s -> s.getEntityId().equals(instituteRequestDto.getId())).collect(Collectors.toList());
+
+			StorageDto logoStorage = instituteImages.stream()
+					.filter(e -> e.getEntitySubType().equals(EntitySubTypeEnum.LOGO)).findAny().orElse(null);
+			if (!ObjectUtils.isEmpty(logoStorage)) {
+				instituteRequestDto.setLogoUrl(logoStorage.getFileURL());
+			}
+
+			StorageDto coverStorage = instituteImages.stream()
+					.filter(e -> e.getEntitySubType().equals(EntitySubTypeEnum.COVER_PHOTO)).findAny().orElse(null);
+			if (!ObjectUtils.isEmpty(coverStorage)) {
+				instituteRequestDto.setCoverPhotoUrl(coverStorage.getFileURL());
+			}
+		}
+		instituteRequestDto.setFollowed(connectionHandler.checkFollowerExist(userId, id));
 		instituteRequestDto.setInstituteProviderCodes(new ValidList<>(institute.getInstituteProviderCodes().stream()
 				.map(e -> modelMapper.map(e, ProviderCodeDto.class)).toList()));
 		instituteRequestDto.setVerified(institute.isVerified());

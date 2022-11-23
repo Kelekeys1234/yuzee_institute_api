@@ -2,7 +2,7 @@ package testController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.yuzee.app.YuzeeApplication;
 import com.yuzee.app.bean.Location;
 import com.yuzee.app.controller.v1.InstituteBasicInfoController;
@@ -43,8 +44,10 @@ import com.yuzee.app.processor.InstituteProcessor;
 import com.yuzee.app.repository.InstituteRepository;
 import com.yuzee.app.repository.InstituteServiceRepository;
 import com.yuzee.app.repository.ServiceRepository;
+import com.yuzee.common.lib.dto.GenericWrapperDto;
 import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
 import com.yuzee.common.lib.handler.PublishSystemEventHandler;
+import com.yuzee.common.lib.util.ObjectMapperHelper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -89,156 +92,165 @@ import lombok.extern.slf4j.Slf4j;
 	/// institute/service/instituteId/{instituteId}
 	@DisplayName("addInstituteService test success")
 	@Test
-	 void addInstituteService() {
-		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
-		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
-		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
+	 void addInstituteService() throws IOException {
+			ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
+			ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
+			instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
+			List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
+			ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
+			instituteProviderCode.setName("TestProviderName");
+			instituteProviderCode.setValue(("TestProviderValue"));
+			listOfInstituteProviderCode.add(instituteProviderCode);
+			InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+			instituteRequestDto.setName("IIM");
+			instituteRequestDto.setCityName("AHMEDABAD");
+			instituteRequestDto.setCountryName("INDIA");
+			instituteRequestDto.setEditAccess(true);
+			instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
+			instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
+			instituteRequestDto.setLatitude(92.5);
+			instituteRequestDto.setLongitude(93.5);
+			instituteRequestDto.setEmail("info@testEmail.com");
+			instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
+			instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+			instituteRequestDto.setReadableId(UUID.randomUUID().toString());
+			HttpHeaders headers = new HttpHeaders();
+			headers.set("userId", userId);
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			listOfInstituteRequestDto.add(instituteRequestDto);
+			listOfInstituteProviderCode.add(instituteProviderCode);
+			instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
+			HttpEntity<ValidList<InstituteRequestDto>> entity = new HttpEntity<>(listOfInstituteRequestDto, headers);
+			ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, entity,
+					String.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+			GenericWrapperDto<ValidList<InstituteRequestDto>> genericResponse = ObjectMapperHelper.readValueFromJSON(
+					response.getBody(), new TypeReference<GenericWrapperDto<ValidList<InstituteRequestDto>>>() {
+					});
+			ValidList<InstituteRequestDto> r = genericResponse.getData();
+			ServiceDto service = new ServiceDto();
+			for (InstituteRequestDto data : r) {
+			try {
 
-		List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
-		ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
-		instituteProviderCode.setName("TestProviderName");
-		instituteProviderCode.setValue(("TestProviderValue"));
-		listOfInstituteProviderCode.add(instituteProviderCode);
+				String path = INSTITUTE_PATH + PATH_SEPARATOR + "service" + PATH_SEPARATOR + "instituteId"
+						+ PATH_SEPARATOR + data.getInstituteId();
+				List<InstituteServiceDto> instituteServiceDto = new ArrayList<>();
+				service.setServiceId(UUID.randomUUID().toString());
+				service.setDescription("test service controller jUnit description");
+				service.setServiceName("testServiceName");
+				InstituteServiceDto dto = new InstituteServiceDto();
+				dto.setDescription("mydescription");
+				dto.setInstituteServiceId(UUID.randomUUID().toString());
+				dto.setService(service);
+				instituteServiceDto.add(dto);
+				HttpEntity<List<InstituteServiceDto>> entityy = new HttpEntity<>(instituteServiceDto, headers);
+				ResponseEntity<InstituteServiceDto> responses = testRestTemplate.exchange(path, HttpMethod.POST,
+						entityy, InstituteServiceDto.class);
+				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+			} finally {
+				// clean up code
+				ResponseEntity<String> responsed = testRestTemplate.exchange(
+						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE,
+						null, String.class);
+				instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
 
-//		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
-//		instituteRequestDto.setName("IIM");
-//		instituteRequestDto.setCityName("AHMEDABAD");
-//		instituteRequestDto.setCountryName("INDIA");
-//		instituteRequestDto.setEditAccess(true);
-//		instituteRequestDto.setAboutInfo(
-//				"Domestic Language School, Cambridge, is accredited by the French Council and is a small, friendly, city-centre English language school.Our aim is to give you a warm welcome and an excellent opportunity to learn English in a caring, friendly atmosphere. Our courses, from Beginner to Advanced level, run throughout the year. We also offer exam preparation. We only teach adults (from a minimum age of 18).The School is just 3 minutes' walk from the central bus station and near many restaurants, shops and the colleges of the University of Cambridge. Students from more than 90 different countries have studied with us and there is usually a good mix of nationalities in the school.The School was founded in 1996 by a group of Christians in Cambridge. ");
-//		instituteRequestDto.setDescription("Test update method Description");
-//		instituteRequestDto.setInstituteFundings(instituteFundingDto);
-//		instituteRequestDto.setEnrolmentLink("https://www.centrallanguageschool.com/enrol");
-//		instituteRequestDto.setWhatsNo("https://api.whatsapp.com/send?phone=60173010314");
-//		instituteRequestDto.setCourseStart("March, April, May");
-//		instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
-//		instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
-//		Location location = new Location(UUID.randomUUID().toString(), new GeoJsonPoint(25.32, 12.56));
-//		instituteRequestDto.setLatitude(location.getLocation().getY());
-//		instituteRequestDto.setLongitude(location.getLocation().getX());
-//		instituteRequestDto.setEmail("info@testEmail.com");
-//		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-//		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
-//		instituteRequestDto.setReadableId("DMS");
-//		instituteRequestDto.setInstituteId(IDS.toString());
-//		HttpHeaders createHeaders = new HttpHeaders();
-//		createHeaders.setContentType(MediaType.APPLICATION_JSON);
-//		listOfInstituteRequestDto.add(instituteRequestDto);
-//		listOfInstituteProviderCode.add(instituteProviderCode);
-//		instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
-//		HttpEntity<ValidList<InstituteRequestDto>> createEntity = new HttpEntity<>(listOfInstituteRequestDto,
-//				createHeaders);
-//		ResponseEntity<InstituteRequestDto> responseInstitute = testRestTemplate.exchange(INSTITUTE_PRE_PATH,
-//				HttpMethod.POST, createEntity, InstituteRequestDto.class);
-//		assertThat(responseInstitute.getStatusCode()).isEqualTo(HttpStatus.OK);
-		ServiceDto service = new ServiceDto();
-//		InstituteServiceDto r = new InstituteServiceDto(UUID.randomUUID().toString(), service, "test");
-//
-//		r.setDescription("testServiceDescription");
-//		try {
-		
+				assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
+			}
+	}}
+
+	@DisplayName("deleteById test success")
+	@Test
+	 void deleteById() {
+
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("userId", userId);
-			String path = INSTITUTE_PATH + PATH_SEPARATOR + "service" + PATH_SEPARATOR + "instituteId" + PATH_SEPARATOR
-					+ "694ddd0f-1e0b-43d9-9401-24403112e161";
+			/// institute/service/{instituteServiceId}
+			String instituteServiceId = "";
+			String path = INSTITUTE_PATH + PATH_SEPARATOR + "service" + PATH_SEPARATOR + IDS.toString();
 			List<InstituteServiceDto> instituteServiceDto = new ArrayList<>();
-			 service.setServiceId("6dc37172-4a10-48b6-b110-6970c187238d");
+			ServiceDto service = new ServiceDto();
 			service.setDescription("test service controller jUnit description");
 			service.setServiceName("testServiceName");
-			InstituteServiceDto dto =new InstituteServiceDto();
-			dto.setDescription("mydescription");
-			dto.setInstituteServiceId("694ddd0f-1e0b-43d9-9401-24403112e162");
-			dto.setService(service);
-			instituteServiceDto.add(dto);
+			instituteServiceDto.add(new InstituteServiceDto(instituteId, service, "testServiceDescription"));
 			HttpEntity<List<InstituteServiceDto>> entity = new HttpEntity<>(instituteServiceDto, headers);
-			ResponseEntity<InstituteServiceDto> response = testRestTemplate.exchange(path, HttpMethod.POST, entity,
-					InstituteServiceDto.class);
+			ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.DELETE, entity, String.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//		} finally {
-//			// clean up code
-//			ResponseEntity<String> response = testRestTemplate.exchange(
-//					INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteRequestDto.getInstituteId(), HttpMethod.DELETE, null,
-//					String.class);
-//			instituteProcessor.deleteInstitute(instituteRequestDto.getInstituteId());
-//		    
-//			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//		}
-	}
-
-//	@DisplayName("deleteById test success")
-//	@Test
-//	 void deleteById() {
-//
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-//		headers.set("userId", userId);
-//		/// institute/service/{instituteServiceId}
-//		String instituteServiceId = "";
-//		String path = INSTITUTE_PATH + PATH_SEPARATOR + "service" + PATH_SEPARATOR + IDS.toString();
-//		List<InstituteServiceDto> instituteServiceDto = new ArrayList<>();
-//		ServiceDto service = new ServiceDto();
-//		service.setDescription("test service controller jUnit description");
-//		service.setServiceName("testServiceName");
-//		instituteServiceDto.add(new InstituteServiceDto(instituteId, service, "testServiceDescription"));
-//		HttpEntity<List<InstituteServiceDto>> entity = new HttpEntity<>(instituteServiceDto, headers);
-//		ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.DELETE, entity, String.class);
-//		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//	}
+		}
 
 	@DisplayName("getInstituteServiceById")
 	@Test
-	 void getInstituteServiceById() {
-		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
-		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
-		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
+	 void getInstituteServiceById() throws IOException {
+			ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
+			ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
+			instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
+			List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
+			ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
+			instituteProviderCode.setName("TestProviderName");
+			instituteProviderCode.setValue(("TestProviderValue"));
+			listOfInstituteProviderCode.add(instituteProviderCode);
+			InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+			instituteRequestDto.setName("IIM");
+			instituteRequestDto.setCityName("AHMEDABAD");
+			instituteRequestDto.setCountryName("INDIA");
+			instituteRequestDto.setEditAccess(true);
+			instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
+			instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
+			instituteRequestDto.setLatitude(92.5);
+			instituteRequestDto.setLongitude(93.5);
+			instituteRequestDto.setEmail("info@testEmail.com");
+			instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
+			instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+			instituteRequestDto.setReadableId(UUID.randomUUID().toString());
+			HttpHeaders headers = new HttpHeaders();
+			headers.set("userId", userId);
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			listOfInstituteRequestDto.add(instituteRequestDto);
+			listOfInstituteProviderCode.add(instituteProviderCode);
+			instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
+			HttpEntity<ValidList<InstituteRequestDto>> entity = new HttpEntity<>(listOfInstituteRequestDto, headers);
+			ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, entity,
+					String.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+			GenericWrapperDto<ValidList<InstituteRequestDto>> genericResponse = ObjectMapperHelper.readValueFromJSON(
+					response.getBody(), new TypeReference<GenericWrapperDto<ValidList<InstituteRequestDto>>>() {
+					});
+			ValidList<InstituteRequestDto> r = genericResponse.getData();
+			ServiceDto service = new ServiceDto();
+			for (InstituteRequestDto data : r) {
 
-		List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
-		ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
-		instituteProviderCode.setName("TestProviderName");
-		instituteProviderCode.setValue(("TestProviderValue"));
-		listOfInstituteProviderCode.add(instituteProviderCode);
+				String path = INSTITUTE_PATH + PATH_SEPARATOR + "service" + PATH_SEPARATOR + "instituteId"
+						+ PATH_SEPARATOR + data.getInstituteId();
+				List<InstituteServiceDto> instituteServiceDto = new ArrayList<>();
+				service.setServiceId(UUID.randomUUID().toString());
+				service.setDescription("test service controller jUnit description");
+				service.setServiceName("testServiceName");
+				InstituteServiceDto dto = new InstituteServiceDto();
+				dto.setDescription("mydescription");
+				dto.setInstituteServiceId(UUID.randomUUID().toString());
+				dto.setService(service);
+				instituteServiceDto.add(dto);
+				HttpEntity<List<InstituteServiceDto>> entityy = new HttpEntity<>(instituteServiceDto, headers);
+				ResponseEntity<InstituteServiceDto> responses = testRestTemplate.exchange(path, HttpMethod.POST,
+						entityy, InstituteServiceDto.class);
+				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+				try {
+					HttpHeaders header = new HttpHeaders();
+					header.setContentType(MediaType.APPLICATION_JSON);
+					String paths = INSTITUTE_PATH + PATH_SEPARATOR + "service" + PATH_SEPARATOR + "instituteId"
+							+ PATH_SEPARATOR + data.getInstituteId();
+					HttpEntity<List<InstituteServiceDto>> entityys = new HttpEntity<>(null, header);
+					ResponseEntity<String> responsess = testRestTemplate.exchange(paths, HttpMethod.GET, entityys,
+							String.class);
+					assertThat(responsess.getStatusCode()).isEqualTo(HttpStatus.OK);
+				} finally {
+					ResponseEntity<String> responsed = testRestTemplate.exchange(
+							INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
+							String.class);
+					instituteProcessor.deleteInstitute(data.getInstituteId());
 
-		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
-		instituteRequestDto.setName("SMC");
-		instituteRequestDto.setCityName("AHMEDABAD");
-		instituteRequestDto.setCountryName("INDIA");
-		instituteRequestDto.setEditAccess(true);
-		instituteRequestDto.setAboutInfo(
-				"Domestic Language School, SMC, is accredited by the French Council and is a small, friendly, city-centre English language school.Our aim is to give you a warm welcome and an excellent opportunity to learn English in a caring, friendly atmosphere. Our courses, from Beginner to Advanced level, run throughout the year. We also offer exam preparation. We only teach adults (from a minimum age of 18).The School is just 3 minutes' walk from the central bus station and near many restaurants, shops and the colleges of the University of Cambridge. Students from more than 90 different countries have studied with us and there is usually a good mix of nationalities in the school.The School was founded in 1996 by a group of Christians in Cambridge. ");
-		instituteRequestDto.setDescription("Test update method Description");
-		instituteRequestDto.setInstituteFundings(instituteFundingDto);
-		instituteRequestDto.setEnrolmentLink("https://www.centrallanguageschool.com/enrol");
-		instituteRequestDto.setWhatsNo("https://api.whatsapp.com/send?phone=60173010314");
-		instituteRequestDto.setCourseStart("March, April, May");
-		instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
-		instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
-		Location location = new Location(UUID.randomUUID().toString(), new GeoJsonPoint(25.32, 12.56));
-		instituteRequestDto.setLatitude(location.getLocation().getY());
-		instituteRequestDto.setLongitude(location.getLocation().getX());
-		instituteRequestDto.setEmail("SMC@testEmail.com");
-		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("UNIVERSITY_COLLEGE");
-		instituteRequestDto.setReadableId("SMC");
-		instituteRequestDto.setId(UUID.randomUUID());
-		HttpHeaders createHeaders = new HttpHeaders();
-		createHeaders.setContentType(MediaType.APPLICATION_JSON);
-		listOfInstituteRequestDto.add(instituteRequestDto);
-		listOfInstituteProviderCode.add(instituteProviderCode);
-		instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
-//		HttpEntity<ValidList<InstituteRequestDto>> createEntity = new HttpEntity<>(listOfInstituteRequestDto,
-//				createHeaders);
-//		ResponseEntity<InstituteRequestDto> responseInstitute = testRestTemplate.exchange(INSTITUTE_PRE_PATH,
-//				HttpMethod.POST, createEntity, InstituteRequestDto.class);
-//		assertThat(responseInstitute.getStatusCode()).isEqualTo(HttpStatus.OK);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		// headers.set("userId", userId);
-		String path = INSTITUTE_PATH + PATH_SEPARATOR + "service" + PATH_SEPARATOR + "instituteId" + PATH_SEPARATOR
-				+ "694ddd0f-1e0b-43d9-9401-24403112e161";
-		HttpEntity<List<InstituteServiceDto>> entity = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.GET, entity, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}
+					assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
+				}
+			}
+		}
 }

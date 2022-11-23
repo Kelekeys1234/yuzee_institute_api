@@ -85,102 +85,101 @@ import lombok.extern.slf4j.Slf4j;
 	@DisplayName("addUpdateInstituteContactInfo test success")
 	@Test
 	  void addUpdateInstituteContactInfo() throws IOException {
-		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
-		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
-		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
+			ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
+			ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
+			instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
 
-		List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
-		ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
-		instituteProviderCode.setName("TestProviderName");
-		instituteProviderCode.setValue(("TestProviderValue"));
-		listOfInstituteProviderCode.add(instituteProviderCode);
+			List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
+			ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
+			instituteProviderCode.setName("TestProviderName");
+			instituteProviderCode.setValue(("TestProviderValue"));
+			listOfInstituteProviderCode.add(instituteProviderCode);
 
-		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
-		instituteRequestDto.setName("IIM");
-		instituteRequestDto.setCityName("AHMEDABAD");
-		instituteRequestDto.setCountryName("INDIA");
-		instituteRequestDto.setEditAccess(true);
+			InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+			instituteRequestDto.setName("IIM");
+			instituteRequestDto.setCityName("AHMEDABAD");
+			instituteRequestDto.setCountryName("INDIA");
+			instituteRequestDto.setEditAccess(true);
 
-		instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
-		instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
-		instituteRequestDto.setLatitude(92.5);
-		instituteRequestDto.setLongitude(93.5);
-		instituteRequestDto.setEmail("info@testEmail.com");
-		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
-		instituteRequestDto.setReadableId(UUID.randomUUID().toString());
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		listOfInstituteRequestDto.add(instituteRequestDto);
-		listOfInstituteProviderCode.add(instituteProviderCode);
-		instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
-		HttpEntity<ValidList<InstituteRequestDto>> entity = new HttpEntity<>(listOfInstituteRequestDto, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, entity,
-				String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		GenericWrapperDto<ValidList<InstituteRequestDto>> genericResponse = ObjectMapperHelper.readValueFromJSON(
-				response.getBody(), new TypeReference<GenericWrapperDto<ValidList<InstituteRequestDto>>>() {
-				});
-		ValidList<InstituteRequestDto> r = genericResponse.getData();
-		for (InstituteRequestDto data : r) {
+			instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
+			instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
+			instituteRequestDto.setLatitude(92.5);
+			instituteRequestDto.setLongitude(93.5);
+			instituteRequestDto.setEmail("info@testEmail.com");
+			instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
+			instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+			instituteRequestDto.setReadableId(UUID.randomUUID().toString());
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			listOfInstituteRequestDto.add(instituteRequestDto);
+			listOfInstituteProviderCode.add(instituteProviderCode);
+			instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
+			HttpEntity<ValidList<InstituteRequestDto>> entity = new HttpEntity<>(listOfInstituteRequestDto, headers);
+			ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, entity,
+					String.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+			GenericWrapperDto<ValidList<InstituteRequestDto>> genericResponse = ObjectMapperHelper.readValueFromJSON(
+					response.getBody(), new TypeReference<GenericWrapperDto<ValidList<InstituteRequestDto>>>() {
+					});
+			ValidList<InstituteRequestDto> r = genericResponse.getData();
+			for (InstituteRequestDto data : r) {
 
-			try {
-				String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "contact" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
-						+ data.getInstituteId();
-				HttpHeaders header = new HttpHeaders();
-				header.setContentType(MediaType.APPLICATION_JSON);
-				header.set("userId", userId);
-				InstituteContactInfoDto instituteContactInfoDto = new InstituteContactInfoDto();
-				instituteContactInfoDto.setEmail("testContrr@email.com");
-				instituteContactInfoDto.setContactNumber("5428923957");
-				instituteContactInfoDto.setLatitude(82.0);
-				instituteContactInfoDto.setLongitude(93.5);
-				instituteContactInfoDto.setWebsite("testWebsite.com");
-				instituteContactInfoDto.setAddress("test t-8, new test road, testNagar");
-				instituteContactInfoDto.setAverageLivingCost("4500");
-				instituteContactInfoDto.setOfficeHoursFrom("8 O'clock");
-				instituteContactInfoDto.setOfficeHoursTo("17 O'clock");
-				HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(instituteContactInfoDto, header);
+				try {
+					String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "contact" + PATH_SEPARATOR + "info"
+							+ PATH_SEPARATOR + data.getInstituteId();
+					HttpHeaders header = new HttpHeaders();
+					header.setContentType(MediaType.APPLICATION_JSON);
+					header.set("userId", userId);
+					InstituteContactInfoDto instituteContactInfoDto = new InstituteContactInfoDto();
+					instituteContactInfoDto.setEmail("testContrr@email.com");
+					instituteContactInfoDto.setContactNumber("5428923957");
+					instituteContactInfoDto.setLatitude(82.0);
+					instituteContactInfoDto.setLongitude(93.5);
+					instituteContactInfoDto.setWebsite("testWebsite.com");
+					instituteContactInfoDto.setAddress("test t-8, new test road, testNagar");
+					instituteContactInfoDto.setAverageLivingCost("4500");
+					instituteContactInfoDto.setOfficeHoursFrom("8 O'clock");
+					instituteContactInfoDto.setOfficeHoursTo("17 O'clock");
+					HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(instituteContactInfoDto, header);
 
-				ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.POST, entitys,
-						String.class);
+					ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.POST, entitys,
+							String.class);
 
-				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-			} finally {
-				// clean up code
-				ResponseEntity<String> respons = testRestTemplate.exchange(
-						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
-						String.class);
-				instituteProcessor.deleteInstitute(data.getInstituteId());
-				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
+					assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+				} finally {
+					// clean up code
+					ResponseEntity<String> respons = testRestTemplate.exchange(
+							INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
+							String.class);
+					instituteProcessor.deleteInstitute(data.getInstituteId());
+					assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
+				}
 			}
-		}
 	}
 	@DisplayName("WrongidaddUpdateInstituteContactInfo test success")
 	@Test
 	  void wrongIdaddUpdateInstituteContactInfo() throws IOException {
-				String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "contact" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
-						+ "98ae5e1d-7499-43cb-a18d-86d4";
-				HttpHeaders header = new HttpHeaders();
-				header.setContentType(MediaType.APPLICATION_JSON);
-				header.set("userId", userId);
-				InstituteContactInfoDto instituteContactInfoDto = new InstituteContactInfoDto();
-				instituteContactInfoDto.setEmail("testContrr@email.com");
-				instituteContactInfoDto.setContactNumber("5428923957");
-				instituteContactInfoDto.setLatitude(32.2);
-				instituteContactInfoDto.setLongitude(42.5);
-				instituteContactInfoDto.setWebsite("testWebsite.com");
-				instituteContactInfoDto.setAddress("test t-8, new test road, testNagar");
-				instituteContactInfoDto.setAverageLivingCost("4500");
-				instituteContactInfoDto.setOfficeHoursFrom("8 O'clock");
-				instituteContactInfoDto.setOfficeHoursTo("17 O'clock");
-				HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(instituteContactInfoDto, header);
+			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "contact" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
+					+ "98ae5e1d-7499-43cb-a18d-86d4";
+			HttpHeaders header = new HttpHeaders();
+			header.setContentType(MediaType.APPLICATION_JSON);
+			header.set("userId", userId);
+			InstituteContactInfoDto instituteContactInfoDto = new InstituteContactInfoDto();
+			instituteContactInfoDto.setEmail("testContrr@email.com");
+			instituteContactInfoDto.setContactNumber("5428923957");
+			instituteContactInfoDto.setLatitude(32.2);
+			instituteContactInfoDto.setLongitude(42.5);
+			instituteContactInfoDto.setWebsite("testWebsite.com");
+			instituteContactInfoDto.setAddress("test t-8, new test road, testNagar");
+			instituteContactInfoDto.setAverageLivingCost("4500");
+			instituteContactInfoDto.setOfficeHoursFrom("8 O'clock");
+			instituteContactInfoDto.setOfficeHoursTo("17 O'clock");
+			HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(instituteContactInfoDto, header);
 
-				ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.POST, entitys,
-						String.class);
+			ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.POST, entitys, String.class);
 
-				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-			
+			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
 		}
 	
 	@DisplayName("getInstituteContactInfo test success")
@@ -238,7 +237,7 @@ import lombok.extern.slf4j.Slf4j;
 				ResponseEntity<String> respons = testRestTemplate.exchange(
 						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
 						String.class);
-			instituteProcessor.deleteInstitute(data.getInstituteId());
+				instituteProcessor.deleteInstitute(data.getInstituteId());
 				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 			}
 		}
@@ -247,78 +246,78 @@ import lombok.extern.slf4j.Slf4j;
 	@DisplayName("WrongIdgetInstituteContactInfo")
 	@Test
 	 void wrongIdgetInstituteContactInfo() throws IOException {
-		
-				String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "contact" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
-						+ "54317df3-5515-4341-bf15-810818";
-				HttpHeaders header = new HttpHeaders();
-				header.setContentType(MediaType.APPLICATION_JSON);
-				header.set("userId", userId);
-				HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(header);
-				ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.GET, entitys,
-						String.class);
-				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-			
+
+			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "contact" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
+					+ "54317df3-5515-4341-bf15-810818";
+			HttpHeaders header = new HttpHeaders();
+			header.setContentType(MediaType.APPLICATION_JSON);
+			header.set("userId", userId);
+			HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(header);
+			ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.GET, entitys, String.class);
+			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
 		}
 	
 	
 	@DisplayName("getInstitutePublicContactInfo test success")
 	@Test
 	  void getInstitutePublicContactInfo() throws IOException {
-		ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
-		ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
-		instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
-		List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
-		ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
-		instituteProviderCode.setName("TestProviderName");
-		instituteProviderCode.setValue(("TestProviderValue"));
-		listOfInstituteProviderCode.add(instituteProviderCode);
-		InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
-		instituteRequestDto.setName("IIM");
-		instituteRequestDto.setCityName("AHMEDABAD");
-		instituteRequestDto.setCountryName("INDIA");
-		instituteRequestDto.setEditAccess(true);
-		instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
-		instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
-		instituteRequestDto.setLatitude(92.5);
-		instituteRequestDto.setLongitude(93.5);
-		instituteRequestDto.setEmail("info@testEmail.com");
-		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
-		instituteRequestDto.setReadableId(UUID.randomUUID().toString());
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		listOfInstituteRequestDto.add(instituteRequestDto);
-		listOfInstituteProviderCode.add(instituteProviderCode);
-		instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
-		HttpEntity<ValidList<InstituteRequestDto>> entity = new HttpEntity<>(listOfInstituteRequestDto, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, entity,
-				String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+			ValidList<InstituteRequestDto> listOfInstituteRequestDto = new ValidList<>();
+			ValidList<InstituteFundingDto> instituteFundingDto = new ValidList<>();
+			instituteFundingDto.add(0, new InstituteFundingDto(UUID.randomUUID().toString()));
+			List<ProviderCodeDto> listOfInstituteProviderCode = new ArrayList<>();
+			ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
+			instituteProviderCode.setName("TestProviderName");
+			instituteProviderCode.setValue(("TestProviderValue"));
+			listOfInstituteProviderCode.add(instituteProviderCode);
+			InstituteRequestDto instituteRequestDto = new InstituteRequestDto();
+			instituteRequestDto.setName("IIM");
+			instituteRequestDto.setCityName("AHMEDABAD");
+			instituteRequestDto.setCountryName("INDIA");
+			instituteRequestDto.setEditAccess(true);
+			instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
+			instituteRequestDto.setAddress("41 St Andrew's St, Cambridge CB2 3AR, UK");
+			instituteRequestDto.setLatitude(92.5);
+			instituteRequestDto.setLongitude(93.5);
+			instituteRequestDto.setEmail("info@testEmail.com");
+			instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
+			instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+			instituteRequestDto.setReadableId(UUID.randomUUID().toString());
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			listOfInstituteRequestDto.add(instituteRequestDto);
+			listOfInstituteProviderCode.add(instituteProviderCode);
+			instituteRequestDto.setProviderCodes(listOfInstituteProviderCode);
+			HttpEntity<ValidList<InstituteRequestDto>> entity = new HttpEntity<>(listOfInstituteRequestDto, headers);
+			ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH, HttpMethod.POST, entity,
+					String.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-		GenericWrapperDto<ValidList<InstituteRequestDto>> genericResponse = ObjectMapperHelper.readValueFromJSON(
-				response.getBody(), new TypeReference<GenericWrapperDto<ValidList<InstituteRequestDto>>>() {
-				});
-		ValidList<InstituteRequestDto> r = genericResponse.getData();
-		for (InstituteRequestDto data : r) {
+			GenericWrapperDto<ValidList<InstituteRequestDto>> genericResponse = ObjectMapperHelper.readValueFromJSON(
+					response.getBody(), new TypeReference<GenericWrapperDto<ValidList<InstituteRequestDto>>>() {
+					});
+			ValidList<InstituteRequestDto> r = genericResponse.getData();
+			for (InstituteRequestDto data : r) {
 
-			try {
-				String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "contact"
-						+ PATH_SEPARATOR + "info" + PATH_SEPARATOR + data.getInstituteId();
-				HttpHeaders header = new HttpHeaders();
-				header.setContentType(MediaType.APPLICATION_JSON);
-				header.set("userId", userId);
-				HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(header);
-				ResponseEntity<String> respons = testRestTemplate.exchange(path, HttpMethod.GET, entitys, String.class);
-				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
-			} finally {
-				// clean up code
-				ResponseEntity<String> responses = testRestTemplate.exchange(
-						INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
-						String.class);
-				instituteProcessor.deleteInstitute(data.getInstituteId());
-				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+				try {
+					String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "contact"
+							+ PATH_SEPARATOR + "info" + PATH_SEPARATOR + data.getInstituteId();
+					HttpHeaders header = new HttpHeaders();
+					header.setContentType(MediaType.APPLICATION_JSON);
+					header.set("userId", userId);
+					HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(header);
+					ResponseEntity<String> respons = testRestTemplate.exchange(path, HttpMethod.GET, entitys,
+							String.class);
+					assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
+				} finally {
+					// clean up code
+					ResponseEntity<String> responses = testRestTemplate.exchange(
+							INSTITUTE_PRE_PATH + PATH_SEPARATOR + data.getInstituteId(), HttpMethod.DELETE, null,
+							String.class);
+					instituteProcessor.deleteInstitute(data.getInstituteId());
+					assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+				}
 			}
 		}
-	}
 }
 

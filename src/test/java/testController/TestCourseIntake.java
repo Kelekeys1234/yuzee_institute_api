@@ -52,67 +52,9 @@ class TestCourseIntake {
 	private TestRestTemplate testRestTemplate;
 	@DisplayName("saveCourseIntake")
 	@Test
-	 void saveCourseIntake() {
+	void saveCourseIntake() {
 		try {
-		List<String>linkedCourseId = new ArrayList<>();
-		linkedCourseId.add("9230cdd1-7d12-41c6-bbd0-38e52b3595a4");
-		List<Date> date = new ArrayList<>();
-		date.add(new Date());
-		CourseIntakeDto courseIntake = new CourseIntakeDto();
-		courseIntake.setType("SPECIFIC");
-		courseIntake.setDates(date);
-		courseIntake.setLinkedCourseIds(linkedCourseId);
-		HttpHeaders headers = new HttpHeaders();
-		headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add("userId", userId);
-		HttpEntity<CourseIntakeDto> entity = new HttpEntity<>(courseIntake, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+"9230cdd1-7d12-41c6-bbd0-38e52b3595a4"
-				+PATH_SEPARATOR +"intake",
-				HttpMethod.POST, entity, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}finally {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add("userId", userId);
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+"9230cdd1-7d12-41c6-bbd0-38e52b3595a4"
-				+PATH_SEPARATOR +"intake",
-				HttpMethod.DELETE, entity, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}
-	}
-	
-	@DisplayName("sendWrongIdForSave")
-	@Test
-	 void WrongIdForsendSaveCourseIntake() {
-		List<String>linkedCourseId = new ArrayList<>();
-		linkedCourseId.add(Id);
-		List<Date> date = new ArrayList<>();
-		date.add(new Date());
-		CourseIntakeDto courseIntake = new CourseIntakeDto();
-		courseIntake.setType("SPECIFIC");
-		courseIntake.setDates(date);
-		courseIntake.setLinkedCourseIds(linkedCourseId);
-		HttpHeaders headers = new HttpHeaders();
-		headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add("userId", userId);
-		HttpEntity<CourseIntakeDto> entity = new HttpEntity<>(courseIntake, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+"96a2e11b-d64b-4964-9d28-2a4d7adfhdfhhhd"
-				+PATH_SEPARATOR +"intake",
-				HttpMethod.POST, entity, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-	}
-	
-	@DisplayName("deleteCourseIntake")
-	@Test
-	 void deleteIntake() {
-		try {
-			List<String>linkedCourseId = new ArrayList<>();
+			List<String> linkedCourseId = new ArrayList<>();
 			linkedCourseId.add("9230cdd1-7d12-41c6-bbd0-38e52b3595a4");
 			List<Date> date = new ArrayList<>();
 			date.add(new Date());
@@ -126,20 +68,73 @@ class TestCourseIntake {
 			headers.add("userId", userId);
 			HttpEntity<CourseIntakeDto> entity = new HttpEntity<>(courseIntake, headers);
 			ResponseEntity<String> response = testRestTemplate.exchange(
-					api +PATH_SEPARATOR+"9230cdd1-7d12-41c6-bbd0-38e52b3595a4"
-					+PATH_SEPARATOR +"intake",
+					api + PATH_SEPARATOR + "9230cdd1-7d12-41c6-bbd0-38e52b3595a4" + PATH_SEPARATOR + "intake",
 					HttpMethod.POST, entity, String.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}finally {
+		} finally {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add("userId", userId);
+			HttpEntity<String> entity = new HttpEntity<>(null, headers);
+			ResponseEntity<String> response = testRestTemplate.exchange(
+					api + PATH_SEPARATOR + "9230cdd1-7d12-41c6-bbd0-38e52b3595a4" + PATH_SEPARATOR + "intake",
+					HttpMethod.DELETE, entity, String.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		}
+	}
+	
+	@DisplayName("sendWrongIdForSave")
+	@Test
+	void WrongIdForsendSaveCourseIntake() {
+		List<String> linkedCourseId = new ArrayList<>();
+		linkedCourseId.add(Id);
+		List<Date> date = new ArrayList<>();
+		date.add(new Date());
+		CourseIntakeDto courseIntake = new CourseIntakeDto();
+		courseIntake.setType("SPECIFIC");
+		courseIntake.setDates(date);
+		courseIntake.setLinkedCourseIds(linkedCourseId);
 		HttpHeaders headers = new HttpHeaders();
+		headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("userId", userId);
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		HttpEntity<CourseIntakeDto> entity = new HttpEntity<>(courseIntake, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+"9230cdd1-7d12-41c6-bbd0-38e52b3595a4"
-				+PATH_SEPARATOR +"intake",
-				HttpMethod.DELETE, entity, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+				api + PATH_SEPARATOR + "96a2e11b-d64b-4964-9d28-2a4d7adfhdfhhhd" + PATH_SEPARATOR + "intake",
+				HttpMethod.POST, entity, String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 	}
+
+	@DisplayName("deleteCourseIntake")
+	@Test
+	void deleteIntake() {
+		try {
+			List<String> linkedCourseId = new ArrayList<>();
+			linkedCourseId.add("9230cdd1-7d12-41c6-bbd0-38e52b3595a4");
+			List<Date> date = new ArrayList<>();
+			date.add(new Date());
+			CourseIntakeDto courseIntake = new CourseIntakeDto();
+			courseIntake.setType("SPECIFIC");
+			courseIntake.setDates(date);
+			courseIntake.setLinkedCourseIds(linkedCourseId);
+			HttpHeaders headers = new HttpHeaders();
+			headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add("userId", userId);
+			HttpEntity<CourseIntakeDto> entity = new HttpEntity<>(courseIntake, headers);
+			ResponseEntity<String> response = testRestTemplate.exchange(
+					api + PATH_SEPARATOR + "9230cdd1-7d12-41c6-bbd0-38e52b3595a4" + PATH_SEPARATOR + "intake",
+					HttpMethod.POST, entity, String.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		} finally {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add("userId", userId);
+			HttpEntity<String> entity = new HttpEntity<>(null, headers);
+			ResponseEntity<String> response = testRestTemplate.exchange(
+					api + PATH_SEPARATOR + "9230cdd1-7d12-41c6-bbd0-38e52b3595a4" + PATH_SEPARATOR + "intake",
+					HttpMethod.DELETE, entity, String.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		}
+	}
 }

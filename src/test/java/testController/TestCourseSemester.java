@@ -53,94 +53,92 @@ import lombok.extern.slf4j.Slf4j;
 	@DisplayName("saveCourseSemster")
 	@Test
 	  void saveCourseSemester() {
-		try {
-		com.yuzee.app.dto.ValidList<CourseSemesterDto> courseSemesterDtos = new com.yuzee.app.dto.ValidList<CourseSemesterDto>();
-		ValidList<SemesterSubjectDto> subjects = new ValidList<SemesterSubjectDto> ();
-		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto();
-		semesterSubjectDto.setName("semester name");
-		semesterSubjectDto.setDescription("Description");
-		subjects.add(semesterSubjectDto);
-		CourseSemesterDto courseSemesterDto = new CourseSemesterDto();
-		courseSemesterDto.setId("1e348e15-45b6-477f-a457-883738227e09");
-		courseSemesterDto.setType("Type");
-		courseSemesterDto.setDescription("description");
-		courseSemesterDto.setName("semester name");
-		courseSemesterDto.setSubjects(subjects);
-		courseSemesterDtos.add(courseSemesterDto);
-		
-		List<String>linkedCourseId = new ArrayList<>();
-		linkedCourseId.add(courseid);
-		
-		CourseSemesterRequestWrapper request = new CourseSemesterRequestWrapper();
-		request.setCourseSemesterDtos(courseSemesterDtos);
-		request.setLinkedCourseIds(linkedCourseId);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add("userId", userId);
-		HttpEntity<CourseSemesterRequestWrapper > entity = new HttpEntity<>(request, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+courseid
-				+PATH_SEPARATOR +"semester",
-				HttpMethod.POST, entity, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}finally {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add("userId", userId);
-		HttpEntity<String> entity = new HttpEntity<>(headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+courseid
-				+PATH_SEPARATOR +"semester?=course_semester_ids=1e348e15-45b6-477f-a457-883738227e09",
-				HttpMethod.DELETE, entity, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}
-	}
+			try {
+				com.yuzee.app.dto.ValidList<CourseSemesterDto> courseSemesterDtos = new com.yuzee.app.dto.ValidList<CourseSemesterDto>();
+				ValidList<SemesterSubjectDto> subjects = new ValidList<SemesterSubjectDto>();
+				SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto();
+				semesterSubjectDto.setName("semester name");
+				semesterSubjectDto.setDescription("Description");
+				subjects.add(semesterSubjectDto);
+				CourseSemesterDto courseSemesterDto = new CourseSemesterDto();
+				courseSemesterDto.setId("1e348e15-45b6-477f-a457-883738227e09");
+				courseSemesterDto.setType("Type");
+				courseSemesterDto.setDescription("description");
+				courseSemesterDto.setName("semester name");
+				courseSemesterDto.setSubjects(subjects);
+				courseSemesterDtos.add(courseSemesterDto);
+
+				List<String> linkedCourseId = new ArrayList<>();
+				linkedCourseId.add(courseid);
+
+				CourseSemesterRequestWrapper request = new CourseSemesterRequestWrapper();
+				request.setCourseSemesterDtos(courseSemesterDtos);
+				request.setLinkedCourseIds(linkedCourseId);
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+				headers.add("userId", userId);
+				HttpEntity<CourseSemesterRequestWrapper> entity = new HttpEntity<>(request, headers);
+				ResponseEntity<String> response = testRestTemplate.exchange(
+						api + PATH_SEPARATOR + courseid + PATH_SEPARATOR + "semester", HttpMethod.POST, entity,
+						String.class);
+				assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+			} finally {
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+				headers.add("userId", userId);
+				HttpEntity<String> entity = new HttpEntity<>(headers);
+				ResponseEntity<String> response = testRestTemplate.exchange(
+						api + PATH_SEPARATOR + courseid + PATH_SEPARATOR
+								+ "semester?=course_semester_ids=1e348e15-45b6-477f-a457-883738227e09",
+						HttpMethod.DELETE, entity, String.class);
+				assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+			}
+		}
 	
 	@DisplayName("deleteCourseSemster")
 	@Test
 	  void deleteCourseSemester() {
-		try {
-			com.yuzee.app.dto.ValidList<CourseSemesterDto> courseSemesterDtos = new com.yuzee.app.dto.ValidList<CourseSemesterDto>();
-			ValidList<SemesterSubjectDto> subjects = new ValidList<SemesterSubjectDto> ();
-			SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto();
-			semesterSubjectDto.setName("semester name");
-			semesterSubjectDto.setDescription("Description");
-			subjects.add(semesterSubjectDto);
-			CourseSemesterDto courseSemesterDto = new CourseSemesterDto();
-			courseSemesterDto.setId("1e348e15-45b6-477f-a457-883738227e09");
-			courseSemesterDto.setType("Type");
-			courseSemesterDto.setDescription("description");
-			courseSemesterDto.setName("semester name");
-			courseSemesterDto.setSubjects(subjects);
-			courseSemesterDtos.add(courseSemesterDto);
-			
-			List<String>linkedCourseId = new ArrayList<>();
-			linkedCourseId.add(courseid);
-			
-			CourseSemesterRequestWrapper request = new CourseSemesterRequestWrapper();
-			request.setCourseSemesterDtos(courseSemesterDtos);
-			request.setLinkedCourseIds(linkedCourseId);
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add("userId", userId);
-			HttpEntity<CourseSemesterRequestWrapper > entity = new HttpEntity<>(request, headers);
-			ResponseEntity<String> response = testRestTemplate.exchange(
-					api +PATH_SEPARATOR+courseid
-					+PATH_SEPARATOR +"semester",
-					HttpMethod.POST, entity, String.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}finally {
-		
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add("userId", userId);
-		HttpEntity<String> entity = new HttpEntity<>(headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+courseid
-				+PATH_SEPARATOR +"semester?=course_semester_ids=1e348e15-45b6-477f-a457-883738227e09",
-				HttpMethod.DELETE, entity, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}
+			try {
+				com.yuzee.app.dto.ValidList<CourseSemesterDto> courseSemesterDtos = new com.yuzee.app.dto.ValidList<CourseSemesterDto>();
+				ValidList<SemesterSubjectDto> subjects = new ValidList<SemesterSubjectDto>();
+				SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto();
+				semesterSubjectDto.setName("semester name");
+				semesterSubjectDto.setDescription("Description");
+				subjects.add(semesterSubjectDto);
+				CourseSemesterDto courseSemesterDto = new CourseSemesterDto();
+				courseSemesterDto.setId("1e348e15-45b6-477f-a457-883738227e09");
+				courseSemesterDto.setType("Type");
+				courseSemesterDto.setDescription("description");
+				courseSemesterDto.setName("semester name");
+				courseSemesterDto.setSubjects(subjects);
+				courseSemesterDtos.add(courseSemesterDto);
+
+				List<String> linkedCourseId = new ArrayList<>();
+				linkedCourseId.add(courseid);
+
+				CourseSemesterRequestWrapper request = new CourseSemesterRequestWrapper();
+				request.setCourseSemesterDtos(courseSemesterDtos);
+				request.setLinkedCourseIds(linkedCourseId);
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+				headers.add("userId", userId);
+				HttpEntity<CourseSemesterRequestWrapper> entity = new HttpEntity<>(request, headers);
+				ResponseEntity<String> response = testRestTemplate.exchange(
+						api + PATH_SEPARATOR + courseid + PATH_SEPARATOR + "semester", HttpMethod.POST, entity,
+						String.class);
+				assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+			} finally {
+
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+				headers.add("userId", userId);
+				HttpEntity<String> entity = new HttpEntity<>(headers);
+				ResponseEntity<String> response = testRestTemplate.exchange(
+						api + PATH_SEPARATOR + courseid + PATH_SEPARATOR
+								+ "semester?=course_semester_ids=1e348e15-45b6-477f-a457-883738227e09",
+						HttpMethod.DELETE, entity, String.class);
+				assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+			}
 		}
 	
 	@DisplayName("EmptyCourseSemster")
