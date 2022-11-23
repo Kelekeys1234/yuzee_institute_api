@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: institute-service
+  name: institute-service-test
   namespace: yuzee-dev
   labels:
-    app: institute-service
+    app: institute-service-test
 spec:
   replicas: 1
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: institute-service
+      app: institute-service-test
   template:
     metadata:
       labels:
-        app: institute-service
+        app: institute-service-test
     spec:
       initContainers:
       - name: sleepy
         image: alpine
         command: ['sleep', '230']
       containers:
-        - name: institute-service
-          image:  607951638574.dkr.ecr.ap-southeast-1.amazonaws.com/institute:{{BITBUCKET_BUILD_NUMBER}}
+        - name: institute-service-test
+          image:  607951638574.dkr.ecr.ap-southeast-1.amazonaws.com/institute-test:{{BITBUCKET_BUILD_NUMBER}}
           resources:
             limits:
               cpu: "450m"
@@ -35,74 +35,74 @@ spec:
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: institute
+                  name: institute-test
                   key: db_username
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: institute
+                  name: institute-test
                   key: db_password
             - name: DB_URL
               valueFrom:
                 secretKeyRef:
-                  name: institute
+                  name: institute-test
                   key: db_url
             - name: DROPBOX_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: institute
+                  name: institute-test
                   key: dropbox_token
             - name: GOOGLE_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: institute
+                  name: institute-test
                   key: google_api_key
             - name: AWS_ID
               valueFrom:
                 secretKeyRef:
-                  name: institute
+                  name: institute-test
                   key: aws_id
             - name: AWS_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: institute
+                  name: institute-test
                   key: aws_secret
             
-          ports:
-          - containerPort: 8905
-          livenessProbe:
-            httpGet:
-              path: /institute/actuator/health/liveness
-              port: 8905
-            initialDelaySeconds: 300
-            timeoutSeconds: 2
-            periodSeconds: 15
-            failureThreshold: 2
+          #ports:
+          #- containerPort: 8905
+          #livenessProbe:
+          #  httpGet:
+          #    path: /institute/actuator/health/liveness
+          #    port: 8905
+          #  initialDelaySeconds: 300
+          #  timeoutSeconds: 2
+          #  periodSeconds: 15
+          #  failureThreshold: 2
 
-          readinessProbe:
-            httpGet:
-              path: /institute/actuator/health/readiness
-              port: 8905
-            initialDelaySeconds: 300
-            timeoutSeconds: 3
-            periodSeconds: 15
-            failureThreshold: 3
+          #readinessProbe:
+          #  httpGet:
+          #    path: /institute/actuator/health/readiness
+          #    port: 8905
+          #  initialDelaySeconds: 300
+          #  timeoutSeconds: 3
+          #  periodSeconds: 15
+          #  failureThreshold: 3
             
           imagePullPolicy: Always
       imagePullSecrets:
-        - name: reg-institute
+        - name: reg-institute-test
      
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: institute-service
+  name: institute-service-test
   namespace: yuzee-dev
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
     - port: 8905
       targetPort: 8905
       protocol: TCP
   selector:
-    app: institute-service
+    app: institute-service-test
