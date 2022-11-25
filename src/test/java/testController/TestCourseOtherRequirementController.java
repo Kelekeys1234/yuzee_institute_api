@@ -2,8 +2,7 @@ package testController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +31,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.yuzee.app.YuzeeApplication;
 import com.yuzee.app.dto.CourseOtherRequirementDto;
+import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseVaccineRequirementDto;
 import com.yuzee.app.dto.CourseWorkExperienceRequirementDto;
 import com.yuzee.app.dto.CourseWorkPlacementRequirementDto;
@@ -39,13 +39,8 @@ import com.yuzee.common.lib.dto.common.VaccinationDto;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@RunWith(JUnitPlatform.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-@ContextConfiguration(classes = YuzeeApplication.class)
 
- class TestCourseOtherRequirementController {
+ class TestCourseOtherRequirementController extends CreateCourseAndInstitute{
 	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 	private static final String COURSE_PATH = "/api/v1";
 	private static final String PATH_SEPARATOR = "/";
@@ -55,7 +50,9 @@ import lombok.extern.slf4j.Slf4j;
 
 	@DisplayName("Add work_experience_work_placement")
 	@Test
-	 void addWorkExperienceWorkPlacement() {
+	 void addWorkExperienceWorkPlacement() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
 		CourseVaccineRequirementDto vaccine =new CourseVaccineRequirementDto();
 		vaccine.setDescription("hello this is vaccine");
@@ -90,7 +87,7 @@ import lombok.extern.slf4j.Slf4j;
 
 		HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(courseOtherRequirementDto, headers);
 		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate.exchange(
-				COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "23d459e9-7942-4cd1-9a29-bfd7cb22cd39"
+				COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
 						+ PATH_SEPARATOR + "other-requirement",
 				HttpMethod.POST, entity, CourseOtherRequirementDto.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -99,7 +96,9 @@ import lombok.extern.slf4j.Slf4j;
 
 	@DisplayName("Update work_experience_work_placement")
 	@Test
-     void updateWorkExperienceWorkPlacement() {
+     void updateWorkExperienceWorkPlacement() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
 		CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
 		workExperience.setDescription("Hello this is my  workExperience ");
@@ -125,7 +124,7 @@ import lombok.extern.slf4j.Slf4j;
 
 		HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(courseOtherRequirementDto, headers);
 		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate.exchange(
-				COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "d9a7072b-5c51-4373-82e0-c632b1f64e51"
+				COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
 						+ PATH_SEPARATOR + "other-requirement",
 				HttpMethod.POST, entity, CourseOtherRequirementDto.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -134,7 +133,9 @@ import lombok.extern.slf4j.Slf4j;
 
 	@DisplayName("Add multiple_fields_work_experience_work_placement")
 	@Test
-	  void addMultipleFieldsWorkExperienceWorkPlacement() {
+	  void addMultipleFieldsWorkExperienceWorkPlacement() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
 		CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
 		workExperience.setDescription("Hello this is my  work_experience ");
@@ -162,7 +163,7 @@ import lombok.extern.slf4j.Slf4j;
 
 		HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(courseOtherRequirementDto, headers);
 		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate.exchange(
-				COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "2db27264-a0f4-42d3-b4f2-98776b11a03b"
+				COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR +courseId.getId()
 						+ PATH_SEPARATOR + "other-requirement",
 				HttpMethod.POST, entity, CourseOtherRequirementDto.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -171,7 +172,9 @@ import lombok.extern.slf4j.Slf4j;
 
 	@DisplayName("Remove singal_fields_work_experience_work_placement")
 	@Test
-     void removeSingalFieldsWorkExperienceWorkPlacement() {
+     void removeSingalFieldsWorkExperienceWorkPlacement() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
 		CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
 		workExperience.setDescription("Hello this is my  workExperience ");
@@ -197,7 +200,7 @@ import lombok.extern.slf4j.Slf4j;
 
 		HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(courseOtherRequirementDto, headers);
 		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate.exchange(
-				COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "96a2e11b-d64b-4964-9d28-2a4d7a41d944"
+				COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR +courseId
 						+ PATH_SEPARATOR + "other-requirement",
 				HttpMethod.POST, entity, CourseOtherRequirementDto.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -206,16 +209,17 @@ import lombok.extern.slf4j.Slf4j;
 
 	@DisplayName("Get all_work_experience_work_placement")
 	@Test
-     void getAllWorkExperienceWorkPlacement() {
-
+     void getAllWorkExperienceWorkPlacement() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set("userId", userId);
 
 		HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(headers);
 		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate.exchange(
-				COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "2db27264-a0f4-42d3-b4f2-98776b11a03b"
-						+ PATH_SEPARATOR + "other-requirement",
+				COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
+					+ PATH_SEPARATOR + "other-requirement",
 				HttpMethod.GET, entity, CourseOtherRequirementDto.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -275,7 +279,9 @@ import lombok.extern.slf4j.Slf4j;
 	
 	@DisplayName("Send NullWorkExp_WorkPlac")
 	@Test
-	 void SendNullWorkExperienceWorkPlacement() {
+	 void SendNullWorkExperienceWorkPlacement() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
 		CourseVaccineRequirementDto vaccine =new CourseVaccineRequirementDto();
 		vaccine=null;
@@ -294,7 +300,7 @@ import lombok.extern.slf4j.Slf4j;
 
 		HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(courseOtherRequirementDto, headers);
 		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate.exchange(
-				COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "23d459e9-7942-4cd1-9a29-bfd7cb22cd39"
+				COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
 						+ PATH_SEPARATOR + "other-requirement",
 				HttpMethod.POST, entity, CourseOtherRequirementDto.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

@@ -32,7 +32,7 @@ public interface CourseInterface {
 
 	@PostMapping("/institute/{instituteId}/course")
 	public ResponseEntity<?> save(@RequestHeader("userId") final String userId,
-			@PathVariable("instituteId") String instituteId, @Valid @RequestBody final CourseRequest course)
+			@PathVariable("instituteId") String instituteId,  @RequestBody final CourseRequest course)
 			throws Exception;
 
 	@PutMapping("/institute/{instituteId}/course/{id}")

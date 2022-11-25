@@ -1,8 +1,7 @@
 package testController;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,14 +45,10 @@ import com.yuzee.common.lib.util.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@RunWith(JUnitPlatform.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-@ContextConfiguration(classes = YuzeeApplication.class)
 
 
- class TestEnglishEligibilityController {
+
+ class TestEnglishEligibilityController extends CreateCourseAndInstitute{
 	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 	private static final String PATH_SEPARATOR = "/";
 	private static final String COURSE_PATH = "/api/v1";
@@ -66,7 +61,9 @@ import lombok.extern.slf4j.Slf4j;
 
 	@DisplayName("Add EnglishEligibility")
 	@Test
-	  void addEnglishEligibility() {
+	  void addEnglishEligibility() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
         try {
 		CourseEnglishEligibilityDto courseEnglishEligibilityDto = new CourseEnglishEligibilityDto();
 		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
@@ -90,7 +87,7 @@ import lombok.extern.slf4j.Slf4j;
 		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDtoo);
 
 		List<String> linked_course_ids = new ArrayList<>();
-		linked_course_ids.add(courseId);
+		linked_course_ids.add(courseId.getId());
 		requestWrapper.setCourseEnglishEligibilityDtos(courseEnglishEligibilityDtoList);
 		requestWrapper.setLinkedCourseIds(linked_course_ids);
 
@@ -101,29 +98,30 @@ import lombok.extern.slf4j.Slf4j;
 		HttpEntity<CourseEnglishEligibilityRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 		ResponseEntity<CourseEnglishEligibilityRequestWrapper> response = testRestTemplate
 				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
+						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
 								+ PATH_SEPARATOR + "english-eligibility",
 						HttpMethod.POST, entity, CourseEnglishEligibilityRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
       }finally {
-    	  
-    	   HttpHeaders headers = new HttpHeaders();
-  		   headers.setContentType(MediaType.APPLICATION_JSON);
-  		   headers.set("userId", userId);
-    		HttpEntity<String> entity = new HttpEntity<>(headers);
-    		ResponseEntity<String> response = testRestTemplate
-    				.exchange(
-    						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-    								+ courseId + PATH_SEPARATOR + "english-eligibility",
-    						HttpMethod.DELETE, entity, String.class);
-    		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//    	  
+//    	   HttpHeaders headers = new HttpHeaders();
+//  		   headers.setContentType(MediaType.APPLICATION_JSON);
+//  		   headers.set("userId", userId);
+//    		HttpEntity<String> entity = new HttpEntity<>(headers);
+//    		ResponseEntity<String> response = testRestTemplate
+//    				.exchange(
+//    						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+//    								+ courseId + PATH_SEPARATOR + "english-eligibility",
+//    						HttpMethod.DELETE, entity, String.class);
+//    		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
       }
 	}
 
 	@DisplayName("Update EnglishEligibility")
 	@Test
-	 void updateEnglishEligibility() {
-
+	 void updateEnglishEligibility() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		CourseEnglishEligibilityDto courseEnglishEligibilityDto = new CourseEnglishEligibilityDto();
 		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
 		CourseEnglishEligibilityRequestWrapper requestWrapper = new CourseEnglishEligibilityRequestWrapper();
@@ -146,7 +144,7 @@ import lombok.extern.slf4j.Slf4j;
 		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDtoo);
  
 		List<String> linked_course_ids = new ArrayList<>();
-		linked_course_ids.add(courseId);
+		linked_course_ids.add(courseId.getId());
 		requestWrapper.setCourseEnglishEligibilityDtos(courseEnglishEligibilityDtoList);
 		requestWrapper.setLinkedCourseIds(linked_course_ids);
 
@@ -157,7 +155,7 @@ import lombok.extern.slf4j.Slf4j;
 		HttpEntity<CourseEnglishEligibilityRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 		ResponseEntity<CourseEnglishEligibilityRequestWrapper> response = testRestTemplate
 				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
+						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
 								+ PATH_SEPARATOR + "english-eligibility",
 						HttpMethod.POST, entity, CourseEnglishEligibilityRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -184,27 +182,29 @@ import lombok.extern.slf4j.Slf4j;
 		HttpEntity<CourseEnglishEligibilityRequestWrapper> entityy = new HttpEntity<>(requestWrapper, headers);
 		ResponseEntity<CourseEnglishEligibilityRequestWrapper> responses = testRestTemplate
 				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
+						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
 								+ PATH_SEPARATOR + "english-eligibility",
 						HttpMethod.POST, entityy, CourseEnglishEligibilityRequestWrapper.class);
 		assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
        }finally {
     	 
-
-    		HttpEntity<String> entitys = new HttpEntity<>(headers);
-    		ResponseEntity<String> responseed = testRestTemplate
-    				.exchange(
-    						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-    								+ courseId + PATH_SEPARATOR + "english-eligibility",
-    						HttpMethod.DELETE, entitys, String.class);
-    		assertThat(responseed.getStatusCode()).isEqualTo(HttpStatus.OK);
+//
+//    		HttpEntity<String> entitys = new HttpEntity<>(headers);
+//    		ResponseEntity<String> responseed = testRestTemplate
+//    				.exchange(
+//    						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+//    								+ courseId + PATH_SEPARATOR + "english-eligibility",
+//    						HttpMethod.DELETE, entitys, String.class);
+//    		assertThat(responseed.getStatusCode()).isEqualTo(HttpStatus.OK);
     	   
        }
 	}
 
 	@DisplayName("Remove EnglishEligibility")
 	@Test
-	  void removeEnglishEligibility() {
+	  void removeEnglishEligibility() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
       try {
 		CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
 		CourseEnglishEligibilityRequestWrapper requestWrapper = new CourseEnglishEligibilityRequestWrapper();
@@ -218,7 +218,7 @@ import lombok.extern.slf4j.Slf4j;
 		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDtoo);
 
 		List<String> linked_course_ids = new ArrayList<>();
-		linked_course_ids.add(courseId);
+		linked_course_ids.add(courseId.getId());
 		requestWrapper.setCourseEnglishEligibilityDtos(courseEnglishEligibilityDtoList);
 		requestWrapper.setLinkedCourseIds(linked_course_ids);
 
@@ -229,29 +229,31 @@ import lombok.extern.slf4j.Slf4j;
 		HttpEntity<CourseEnglishEligibilityRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 		ResponseEntity<CourseEnglishEligibilityRequestWrapper> response = testRestTemplate
 				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
+						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
 								+ PATH_SEPARATOR + "english-eligibility",
 						HttpMethod.POST, entity, CourseEnglishEligibilityRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
      }
        finally {
-	HttpHeaders headers = new HttpHeaders();
-	headers.setContentType(MediaType.APPLICATION_JSON);
-	headers.add("userId", userId);
-
-	HttpEntity<String> entity = new HttpEntity<>(headers);
-	ResponseEntity<String> response = testRestTemplate
-			.exchange(
-					COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-							+ courseId + PATH_SEPARATOR + "english-eligibility",
-					HttpMethod.DELETE, entity, String.class);
-	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//	HttpHeaders headers = new HttpHeaders();
+//	headers.setContentType(MediaType.APPLICATION_JSON);
+//	headers.add("userId", userId);
+//
+//	HttpEntity<String> entity = new HttpEntity<>(headers);
+//	ResponseEntity<String> response = testRestTemplate
+//			.exchange(
+//					COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+//							+ courseId + PATH_SEPARATOR + "english-eligibility",
+//					HttpMethod.DELETE, entity, String.class);
+//	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 }
 	}
 
 	@DisplayName("DELETE All EnglishEligibility")
 	@Test
-	  void deleteAllEnglishEligibility() {
+	  void deleteAllEnglishEligibility() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
        try {
     	   CourseEnglishEligibilityDto courseEnglishEligibilityDtoo = new CourseEnglishEligibilityDto();
    		CourseEnglishEligibilityRequestWrapper requestWrapper = new CourseEnglishEligibilityRequestWrapper();
@@ -265,7 +267,7 @@ import lombok.extern.slf4j.Slf4j;
    		courseEnglishEligibilityDtoList.add(courseEnglishEligibilityDtoo);
 
    		List<String> linked_course_ids = new ArrayList<>();
-   		linked_course_ids.add(courseId);
+   		linked_course_ids.add(courseId.getId());
    		requestWrapper.setCourseEnglishEligibilityDtos(courseEnglishEligibilityDtoList);
    		requestWrapper.setLinkedCourseIds(linked_course_ids);
 
@@ -276,25 +278,25 @@ import lombok.extern.slf4j.Slf4j;
    		HttpEntity<CourseEnglishEligibilityRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
    		ResponseEntity<CourseEnglishEligibilityRequestWrapper> response = testRestTemplate
    				.exchange(
-   						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
+   						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
    								+ PATH_SEPARATOR + "english-eligibility",
    						HttpMethod.POST, entity, CourseEnglishEligibilityRequestWrapper.class);
    		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
        
        }finally{
     	   
-       HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add("userId", userId);
-
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = testRestTemplate
-				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-								+ courseId + PATH_SEPARATOR + "english-eligibility",
-						HttpMethod.DELETE, entity, String.class);
-      
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//       HttpHeaders headers = new HttpHeaders();
+//		headers.setContentType(MediaType.APPLICATION_JSON);
+//		headers.add("userId", userId);
+//
+//		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+//		ResponseEntity<String> response = testRestTemplate
+//				.exchange(
+//						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+//								+ courseId + PATH_SEPARATOR + "english-eligibility",
+//						HttpMethod.DELETE, entity, String.class);
+//      
+//		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
        }
 	}
 	

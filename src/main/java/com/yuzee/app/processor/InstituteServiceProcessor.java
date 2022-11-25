@@ -96,10 +96,10 @@ public class InstituteServiceProcessor {
 		Map<String, Service> mapServicesByName = servicesFromDb.stream()
 				.collect(Collectors.toMap(Service::getName, e -> e));
 
-		if (serviceIds.size() != servicesFromDb.size()) {
-			log.error(messageTranslator.toLocale("institute-service.invalid", Locale.US));
-			throw new ValidationException(messageTranslator.toLocale("institute-service.invalid"));
-		}
+//		if (serviceIds.size() != servicesFromDb.size()) {
+//			log.error(messageTranslator.toLocale("institute-service.invalid", Locale.US));
+//			throw new ValidationException(messageTranslator.toLocale("institute-service.invalid"));
+//		}
 
 		List<InstituteService> existingInstituteServices = instituteServiceDao.getAllInstituteService(instituteId);
 		Set<String> existingServiceIds = existingInstituteServices.stream().map(e -> e.getService().getId().toString())

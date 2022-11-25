@@ -42,7 +42,7 @@ public class CourseRequest {
 
 	@JsonProperty("id")
 
-	private UUID id;
+	private String id;
 
 	@JsonProperty("instituteId")
 	private String instituteId;

@@ -2,7 +2,7 @@ package testController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,12 +37,8 @@ import com.yuzee.common.lib.dto.institute.CoursePreRequisiteDto;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@RunWith(JUnitPlatform.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-@ContextConfiguration(classes = YuzeeApplication.class)
- class TestCoursePreRequisiteIds {
+
+ class TestCoursePreRequisiteIds extends CreateCourseAndInstitute {
 	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 	private static final String Id = "96a2e11b-d64b-4964-9d28-2a4d7a41d944";
 	private static final String jobsId= "7132d88e-cf2c-4f48-ac6e-82214208f677";
@@ -54,10 +50,12 @@ import lombok.extern.slf4j.Slf4j;
 	
 	@DisplayName("saveCoursePreRequisiteDtos")
 	@Test
-     void savePreRequisiteIds() {
+     void savePreRequisiteIds() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		try {
 		ValidList<CoursePreRequisiteDto> coursePreRequisiteDtos = new 	ValidList<CoursePreRequisiteDto>();
-		List<String> linkedCourseId = Arrays.asList(courseId);
+		List<String> linkedCourseId = Arrays.asList(courseId.getId());
 		CoursePreRequisiteDto coursePreRequisiteDto = new CoursePreRequisiteDto();
 		coursePreRequisiteDto.setDescription("Description");
 		coursePreRequisiteDtos.add(coursePreRequisiteDto);
@@ -69,19 +67,19 @@ import lombok.extern.slf4j.Slf4j;
 		headers.add("userId", userId);
 		HttpEntity<CoursePreRequisiteRequestWrapper> entity = new HttpEntity<>(request, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+courseId
+				api +PATH_SEPARATOR+courseId.getId()
 				+PATH_SEPARATOR +"pre-requisite",
 				HttpMethod.POST, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}finally {
 		Map<String,String> param= new HashMap<>();
-		param.put("course_pre_requisite_ids", courseId);
+		param.put("course_pre_requisite_ids", courseId.getId());
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("userId", userId);
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+courseId
+				api +PATH_SEPARATOR+courseId.getId()
 				+PATH_SEPARATOR +"pre-requisite",
 				HttpMethod.DELETE, entity,String.class,param);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -90,7 +88,9 @@ import lombok.extern.slf4j.Slf4j;
 	
 	@DisplayName("WrongIdCoursePreRequisiteDtos")
 	@Test
-     void WrongIdPreRequisiteIds() {
+     void WrongIdPreRequisiteIds() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		ValidList<CoursePreRequisiteDto> coursePreRequisiteDtos = new 	ValidList<CoursePreRequisiteDto>();
 		List<String> linkedCourseId = Arrays.asList("96a2e11b-d64b-4964-9d28-2a4d7a41d7ref");
 		CoursePreRequisiteDto coursePreRequisiteDto = new CoursePreRequisiteDto();
@@ -104,7 +104,7 @@ import lombok.extern.slf4j.Slf4j;
 		headers.add("userId", userId);
 		HttpEntity<CoursePreRequisiteRequestWrapper> entity = new HttpEntity<>(request, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+"96a2e11b-d64b-4964-9d28-2a4d7a41d7ref"
+				api +PATH_SEPARATOR+ courseId.getId()
 				+PATH_SEPARATOR +"pre-requisite",
 				HttpMethod.POST, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -112,10 +112,12 @@ import lombok.extern.slf4j.Slf4j;
 	
 	@DisplayName("deleteCoursePreRequisiteDtos")
 	@Test
-	  void deletePreRequisiteIds() {
+	  void deletePreRequisiteIds() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		try {
 			ValidList<CoursePreRequisiteDto> coursePreRequisiteDtos = new 	ValidList<CoursePreRequisiteDto>();
-			List<String> linkedCourseId = Arrays.asList(courseId);
+			List<String> linkedCourseId = Arrays.asList(courseId.getId());
 			CoursePreRequisiteDto coursePreRequisiteDto = new CoursePreRequisiteDto();
 			coursePreRequisiteDto.setDescription("Description");
 			coursePreRequisiteDtos.add(coursePreRequisiteDto);
@@ -127,19 +129,19 @@ import lombok.extern.slf4j.Slf4j;
 			headers.add("userId", userId);
 			HttpEntity<CoursePreRequisiteRequestWrapper> entity = new HttpEntity<>(request, headers);
 			ResponseEntity<String> response = testRestTemplate.exchange(
-					api +PATH_SEPARATOR+courseId
+					api +PATH_SEPARATOR+courseId.getId()
 					+PATH_SEPARATOR +"pre-requisite",
 					HttpMethod.POST, entity, String.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		}finally {
 			Map<String,String> param= new HashMap<>();
-			param.put("course_pre_requisite_ids", courseId);
+			param.put("course_pre_requisite_ids", courseId.getId());
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.add("userId", userId);
 			HttpEntity<String> entity = new HttpEntity<>(null, headers);
 			ResponseEntity<String> response = testRestTemplate.exchange(
-					api +PATH_SEPARATOR+courseId
+					api +PATH_SEPARATOR+courseId.getId()
 					+PATH_SEPARATOR +"pre-requisite",
 					HttpMethod.DELETE, entity,String.class,param);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

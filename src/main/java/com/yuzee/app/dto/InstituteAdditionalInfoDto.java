@@ -45,7 +45,7 @@ public class InstituteAdditionalInfoDto {
 	@JsonProperty("employment_rate")
 	private Integer rateOfEmployment;
 
-	@NotBlank(message = "{about_info.is_required}")
+	///@NotBlank(message = "{about_info.is_required}")
 	@JsonProperty(value = "about_info", access = Access.WRITE_ONLY)
 	private String aboutInfo;
 

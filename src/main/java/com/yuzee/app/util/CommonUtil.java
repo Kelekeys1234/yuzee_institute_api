@@ -111,7 +111,7 @@ public class CommonUtil {
 	}
 
 	public static void copyCourseToCourseRequest(final Course course, CourseRequest courseRequest) {
-		courseRequest.setId(UUID.fromString(course.getId()));
+		courseRequest.setId(course.getId());
 
 		if (course.getWorldRanking() != null) {
 			courseRequest.setWorldRanking(String.valueOf(course.getWorldRanking()));

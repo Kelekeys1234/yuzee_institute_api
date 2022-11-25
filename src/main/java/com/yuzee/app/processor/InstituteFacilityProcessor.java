@@ -41,14 +41,14 @@ public class InstituteFacilityProcessor {
 		// userAccessUtils.validateUserAccess(userId, instituteId, "facility page",
 		// "add");
 
-		Optional<Institute> institute = instituteDao.getInstituteByInstituteId(UUID.fromString(instituteId));
-		if (institute.isEmpty()) {
+		Institute institute = instituteDao.get(instituteId);
+		if (ObjectUtils.isEmpty(institute)) {
 			log.error(messageTranslator.toLocale("institute.id.illegal", instituteId, Locale.US));
 			throw new NotFoundException(messageTranslator.toLocale("inst()itute.id.illegal", instituteId));
 		}
 
 		log.info("checking all existing facility to match with facility passed in request ");
-		List<InstituteFacility> listOfExistingInstituteFacility = institute.get().getInstituteFacilities();
+		List<InstituteFacility> listOfExistingInstituteFacility = institute.getInstituteFacilities();
 
 		for (FacilityDto facilityDto : instituteFacilityDto.getFacilities()) {
 			InstituteFacility instituteFacilityFromDB = listOfExistingInstituteFacility.stream()
@@ -68,7 +68,7 @@ public class InstituteFacilityProcessor {
 							messageTranslator.toLocale("institute.facility.id.illegal", facilityDto.getFacilityId()));
 				}
 
-				InstituteFacility instituteFacility = new InstituteFacility(institute.get().getId(), service.get());
+				InstituteFacility instituteFacility = new InstituteFacility(institute.getId(), service.get());
 
 				listOfFacilityToBeSaved.add(instituteFacility);
 			} else {
@@ -77,8 +77,8 @@ public class InstituteFacilityProcessor {
 			}
 
 			log.info("Persisting facility list to DB ");
-			institute.get().setInstituteFacilities(listOfFacilityToBeSaved);
-			instituteDao.addUpdateInstitute(institute.get());
+			institute.setInstituteFacilities(listOfFacilityToBeSaved);
+			instituteDao.addUpdateInstitute(institute);
 		}
 	}
 

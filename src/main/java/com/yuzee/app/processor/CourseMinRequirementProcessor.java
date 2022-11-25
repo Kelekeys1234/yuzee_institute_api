@@ -62,10 +62,10 @@ public class CourseMinRequirementProcessor {
 		log.info("inside CourseMinRequirementProcessor.saveCourseMinRequirement for courseId : {}", courseId);
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
 		List<Course> savedCourses=null;
-//		if (!course.getCreatedBy().equals(userId)) {
-//			log.error(messageTranslator.toLocale("min_requirement.add.no.access", Locale.US));
-//			throw new ForbiddenException(messageTranslator.toLocale("min_requirement.add.no.access"));
-//		}
+		if (!course.getCreatedBy().equals(userId)) {
+			log.error(messageTranslator.toLocale("min_requirement.add.no.access", Locale.US));
+			throw new ForbiddenException(messageTranslator.toLocale("min_requirement.add.no.access"));
+		}
 		saveUpdateCourseMinRequirements(userId, course, courseMinRequirementDtos, false);
 		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 		coursesToBeSavedOrUpdated.add(course);
@@ -88,12 +88,12 @@ public class CourseMinRequirementProcessor {
 	           for(CourseMinRequirementDto dto :courseMinRequirementDtos) {
 	        	   log.info("checking if CourseMinRequirementId exist in dataBase");
 	        		if (!CollectionUtils.isEmpty(courseMinRequirementDtos)) {
-//	        			if (deleteMissing) {
-//	        				Set<String> updateRequestIds = courseMinRequirementDtos.stream()
-//	        						.filter(e -> StringUtils.hasText(e.getId())).map(CourseMinRequirementDto::getId)
-//	        						.collect(Collectors.toSet());
-//	        				courseMinRequirements.removeIf(e -> !updateRequestIds.contains(e.getCourseMinRequirementsId()));
-//	        			}
+	        			if (deleteMissing) {
+	        				Set<String> updateRequestIds = courseMinRequirementDtos.stream()
+	        						.filter(e -> StringUtils.hasText(e.getId())).map(CourseMinRequirementDto::getId)
+	        						.collect(Collectors.toSet());
+	        				courseMinRequirements.removeIf(e -> !updateRequestIds.contains(e.getCourseMinRequirementsId()));
+	        			}
 						
 						courseMinRequirementDtos.stream().forEach(dtos -> {
 							CourseMinRequirement courseMinRequirement = new CourseMinRequirement();

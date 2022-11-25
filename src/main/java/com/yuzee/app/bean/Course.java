@@ -3,6 +3,7 @@ package com.yuzee.app.bean;
 import java.io.Serializable;
 
 
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

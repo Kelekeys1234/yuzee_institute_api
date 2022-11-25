@@ -261,7 +261,7 @@ public class InstituteProcessor {
 					saveWorldRankingHistory(institute, null);
 				}
 				log.info("Copying institute data from instituteBean to elasticSearchDTO");
-				instituteRequest.setInstituteId(institute.getId().toString());
+				instituteRequest.setInstituteId(institute.getId());
 				instituteRequest.setEditAccess(true);
 				instituteElasticDtoList
 						.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
@@ -365,7 +365,7 @@ public class InstituteProcessor {
 		institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 		institute.setCreatedBy("API");
 		institute.setIsActive(true);
-		institute.setId(UUID.randomUUID().toString());
+		institute.setId(instituteRequest.getInstituteId());
 	        } 
 		institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		institute.setUpdatedBy("API");

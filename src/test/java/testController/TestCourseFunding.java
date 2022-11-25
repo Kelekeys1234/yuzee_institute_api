@@ -1,10 +1,8 @@
-package testController;
+ package testController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,14 +42,10 @@ import com.yuzee.common.lib.dto.institute.CareerDto;
 import com.yuzee.common.lib.dto.institute.CourseCareerOutcomeDto;
 import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
 import com.yuzee.common.lib.dto.institute.CourseFundingDto;
+
 import lombok.extern.slf4j.Slf4j;
 
-@RunWith(JUnitPlatform.class)
-@Slf4j
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-@ContextConfiguration(classes = YuzeeApplication.class)
- class TestCourseFunding {
+ class TestCourseFunding extends CreateCourseAndInstitute {
 	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 	private static final String Id = "1e348e15-45b6-477f-a457-883738227e05";
 	private static final String jobsId= "7132d88e-cf2c-4f48-ac6e-82214208f677";
@@ -63,7 +57,9 @@ import lombok.extern.slf4j.Slf4j;
 	CommonProcessor commonProcessor;
 	@DisplayName("savecourseFunding")
 	@Test
-	 void saveCourseFunding() {
+	 void saveCourseFunding() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		List<String> fundingId= new ArrayList<>();
 		fundingId.add(Id);
 		Map<String,String> courseCareer= new HashMap<>();
@@ -74,21 +70,23 @@ import lombok.extern.slf4j.Slf4j;
 		Mockito.when( commonProcessor.getFundingsByFundingNameIds(fundingId, true)).thenReturn(new HashMap<>());
 		HttpEntity<List<String> > entity = new HttpEntity<>(fundingId, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api + PATH_SEPARATOR +"funding"+PATH_SEPARATOR +"instituteId"+PATH_SEPARATOR+"ed767c27-0124-4c1f-968a-9b09244b5cb6"
+				api + PATH_SEPARATOR +"funding"+PATH_SEPARATOR +"instituteId"+PATH_SEPARATOR+ instituteId
 				+PATH_SEPARATOR +"add-funding-to-all-courses",
 				HttpMethod.POST, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
   }
 	@DisplayName("saveAllcourseFunding")
 	@Test
-	 void saveAllFunding() {
+	 void saveAllFunding() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		ValidList<CourseFundingDto> courseFundingDtos = new ValidList<>();
 		CourseFundingRequestWrapper request = new CourseFundingRequestWrapper();
 		List<String> fundingId= new ArrayList<>();
 		fundingId.add(Id);
 		
 		CourseFundingDto courseFundingDto= new CourseFundingDto();
-	//	courseFundingDto.setFundingNameId(fundingId);
+	     courseFundingDto.setFundingNameId(fundingId);
 		courseFundingDtos.add(courseFundingDto);
 		Mockito.when( commonProcessor.getFundingsByFundingNameIds(fundingId, true)).thenReturn(new HashMap<>());
 		Map<String,String> courseCareer= new HashMap<>();
@@ -98,12 +96,14 @@ import lombok.extern.slf4j.Slf4j;
 		headers.add("userId", userId);
 		HttpEntity<CourseFundingRequestWrapper> entity = new HttpEntity<>(request, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+"96a2e11b-d64b-4964-9d28-2a4d7a41d944"
+				api +PATH_SEPARATOR + courseId.getId()
 				+PATH_SEPARATOR +"funding",
 				HttpMethod.POST, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-	public void deleteFunding() {
+	public void deleteFunding() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		Map<String,String> courseCareer= new HashMap<>();
 		courseCareer.put("course_career_outcome_ids", Id);
 		HttpHeaders headers = new HttpHeaders();
@@ -111,7 +111,7 @@ import lombok.extern.slf4j.Slf4j;
 		headers.add("userId", userId);
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		ResponseEntity<CourseRequest> response = testRestTemplate.exchange(
-				api + PATH_SEPARATOR +"8772d763-4829-4000-a860-2c79a82905c7" + PATH_SEPARATOR + "career-outcome",
+				api + PATH_SEPARATOR +courseId.getId() + PATH_SEPARATOR + "career-outcome",
 				HttpMethod.DELETE, entity, CourseRequest.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}

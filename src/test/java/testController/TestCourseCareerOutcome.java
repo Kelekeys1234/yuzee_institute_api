@@ -3,12 +3,12 @@ package testController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
@@ -46,59 +46,62 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
- class TestCourseCareerOutcome {
+class TestCourseCareerOutcome extends CreateCourseAndInstitute {
 	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 	private static final String Id = "96a2e11b-d64b-4964-9d28-2a4d7a41d944";
-	private static final String jobsId= "c4c5d73b-3eaf-4528-a3bb-2e09a70007f0";
-	private static final String api= "/api/v1/course";
+	private static final String jobsId = "c4c5d73b-3eaf-4528-a3bb-2e09a70007f0";
+	private static final String api = "/api/v1/course";
 	private static final String PATH_SEPARATOR = "/";
 	@Autowired
 	private TestRestTemplate testRestTemplate;
-	List<String> jobIds = new ArrayList<>();
-	
-	
+
 	@DisplayName("CourseCareerOutcome")
 	@Test
-	 void TestSaveCourseCareerOutCome() {
-		ValidList<CourseCareerOutcomeDto> courseContactPersonDtos=new ValidList<>();
+	void TestSaveCourseCareerOutCome() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
+		ValidList<CourseCareerOutcomeDto> courseContactPersonDtos = new ValidList<>();
 		List<String> jobIds = new ArrayList<>();
-		jobIds.add(jobsId);
-		CareerDto careerDto = new CareerDto(Id,"career", jobIds);
+		jobIds.add(courseId.getId());
+		CareerDto careerDto = new CareerDto(UUID.randomUUID().toString(), "career", jobIds);
 		careerDto.setId(Id);
 		careerDto.setCareer("career");
 		careerDto.setJobIds(jobIds);
-		
+
 		CourseCareerOutcomeDto dto = new CourseCareerOutcomeDto();
+		dto.setId(UUID.randomUUID().toString());
 		dto.setCareer(careerDto);
+		dto.setCareerId(Id);
 		courseContactPersonDtos.add(dto);
 		CourseCareerOutcomeRequestWrapper request = new CourseCareerOutcomeRequestWrapper();
 		request.setCourseCareerOutcomeDtos(courseContactPersonDtos);
 		request.setLinkedCourseIds(jobIds);
-		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("userId", userId);
 		HttpEntity<CourseCareerOutcomeRequestWrapper> entity = new HttpEntity<>(request, headers);
 		ResponseEntity<CourseRequest> response = testRestTemplate.exchange(
-				api + PATH_SEPARATOR +"c4c5d73b-3eaf-4528-a3bb-2e09a70007f0" + PATH_SEPARATOR + "career-outcome",
-				HttpMethod.POST, entity, CourseRequest.class);
+				api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "career-outcome", HttpMethod.POST, entity,
+				CourseRequest.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
-//	
-////	@DisplayName("deleteCourseCareerOutcome")
-////	@Test
-////	 void deleteCourseCareerOutcome() {
-////		Map<String,String> courseCareer= new HashMap<>();
-////		courseCareer.put("course_career_outcome_ids", Id);
-////		HttpHeaders headers = new HttpHeaders();
-////		headers.setContentType(MediaType.APPLICATION_JSON);
-////		headers.add("userId", userId);
-////		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-////		ResponseEntity<CourseRequest> response = testRestTemplate.exchange(
-////				api + PATH_SEPARATOR +"8772d763-4829-4000-a860-2c79a82905c7" + PATH_SEPARATOR + "career-outcome",
-////				HttpMethod.DELETE, entity, CourseRequest.class);
-////		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-////	}
-//
-}
 
+	@DisplayName("deleteCourseCareerOutcome")
+	@Test
+	void deleteCourseCareerOutcome() throws IOException {
+
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
+		Map<String, String> courseCareer = new HashMap<>();
+		courseCareer.put("course_career_outcome_ids", Id);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("userId", userId);
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		ResponseEntity<CourseRequest> response = testRestTemplate.exchange(
+				api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "career-outcome", HttpMethod.DELETE, entity,
+				CourseRequest.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
+
+}

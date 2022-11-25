@@ -180,7 +180,6 @@ public class CourseCareerOutcomeProcessor {
 		log.info("inside courseProcessor.replicateCourseCarerOutcomes");
 		Set<String> careerIds = courseCareerOutcomeDtos.stream().map(e -> e.getCareer().getId())
 				.collect(Collectors.toSet());
-		//List<Careers> careersMap = getCareerByIds(careerIds.stream().collect(Collectors.toList()));
 		if (!CollectionUtils.isEmpty(courseIds)) {
 			List<Course> courses = courseProcessor.validateAndGetCourseByIds(courseIds);
 			courses.stream().forEach(course -> {
@@ -201,11 +200,8 @@ public class CourseCareerOutcomeProcessor {
 
 							courseCareerOutcomes.add(courseCareerOutcome);
 						}
-//						for (Careers r : careersMap) {
-//
-//							courseCareerOutcome.setCareer(r.getCareer());
-//						}
-					});
+				}
+					);
 				}
 			});
 			return courses;

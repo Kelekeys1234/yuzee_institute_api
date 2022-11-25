@@ -32,4 +32,5 @@ public class SubjectDaoImpl implements SubjectDao {
 	public Subject findByNameAndEducationSystemId(String name, String educationSystemId) {
 		return subjectRepository.findByNameAndEducationSystemId(name, educationSystemId);
 	}
+	
 }

@@ -401,7 +401,7 @@ public class CourseProcessor {
 			Course copyCourse = new Course();
 			BeanUtils.copyProperties(course, copyCourse);
 			course.setCreatedBy(loggedInUserId);
-			CourseUpdateListener.putCourseInTransaction(course.getId(), copyCourse);
+			//CourseUpdateListener.putCourseInTransaction(course.getId(), copyCourse);
 			if (ObjectUtils.isEmpty(course)) {
 				log.error(messageTranslator.toLocale("courses.id.invalid", courseId, Locale.US));
 				throw new Exception(messageTranslator.toLocale("courses.id.invalid", courseId));
@@ -488,7 +488,7 @@ public class CourseProcessor {
 			course.setCode(UUID.randomUUID().toString());
 			course.setOffCampusCourse(offCampusCourse);
 			offCampusCourse.setCourse(course);
-			courseDao.addUpdateCourse(course);
+			//courseDao.addUpdateCourse(course);
 		}
 	}
 
@@ -536,7 +536,7 @@ public class CourseProcessor {
 			log.info("Course languages is not null, start iterating data");
 			dbLanguages.addAll(courseLanguages.stream().collect(Collectors.toList()));
 			course.setCourseLanguages(courseLanguages);			
-			courseDao.addUpdateCourse(course);
+			
 		} else if (!CollectionUtils.isEmpty(dbLanguages)) {
 			dbLanguages.clear();
 		}
@@ -671,9 +671,9 @@ public class CourseProcessor {
 		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, instituteId, id, courseDto);
 
 		course = courseDao.addUpdateCourse(course);
-		 timingProcessor.saveUpdateDeleteTimings(loggedInUserId,
-		 EntityTypeEnum.COURSE, courseDto.getCourseTimings(),
-     	 course.getId());
+//		 timingProcessor.saveUpdateDeleteTimings(loggedInUserId,
+//		 EntityTypeEnum.COURSE, courseDto.getCourseTimings(),
+//     	 course.getId());
 		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
 
 		return course.getId();
@@ -689,11 +689,11 @@ public class CourseProcessor {
 	private Faculty getFaculty(final String facultyId) throws NotFoundException {
 		Faculty faculty = null;
 		if (!StringUtils.isEmpty(facultyId)) {
-			faculty = facultyDAO.get(facultyId).get();
-			if (ObjectUtils.isEmpty(faculty)) {
-				log.error(messageTranslator.toLocale("courses.faculty.id.invalid", facultyId, Locale.US));
-				throw new NotFoundException(messageTranslator.toLocale("courses.faculty.id.invalid", facultyId));
-			}
+//			faculty = facultyDAO.get(facultyId).get();
+//			if (ObjectUtils.isEmpty(faculty)) {
+//				log.error(messageTranslator.toLocale("courses.faculty.id.invalid", facultyId, Locale.US));
+//				throw new NotFoundException(messageTranslator.toLocale("courses.faculty.id.invalid", facultyId));
+//			}
 		}
 		return faculty;
 	}
@@ -1711,21 +1711,7 @@ public class CourseProcessor {
 				}).collect(Collectors.toList())));
 		courseRequest.setCourseMinRequirementDtos(new ValidList<>(course.getCourseMinRequirements().stream()
 				.map(e -> courseMinRequirementProcessor.modelToDto(e)).toList()));
-//		if (!fundingNameIds.isEmpty()) {
-//			log.info("going to get fundings");
-//			Map<String, FundingResponseDto> fundingsMap = commonProcessor.getFundingsByFundingNameIds(fundingNameIds,
-//					false);
-//			if (!CollectionUtils.isEmpty(fundingsMap)) {
-//				courseRequest.getCourseFundings().stream()
-//						.forEach(e -> e.setFunding(fundingsMap.get(e.getFundingNameId())));
-//				courseRequest.getCourseDeliveryModes().stream().forEach(delMode -> {
-//					if (!CollectionUtils.isEmpty(delMode.getFundings())) {
-//						delMode.getFundings().stream()
-//								.forEach(e -> e.setFunding(fundingsMap.get(e.getFundingNameId())));
-//					}
-//				});
-//			}
-//		}
+		
 
 		List<CourseContactPersonDto> courseContactPersons = courseRequest.getCourseContactPersons();
 		if (!CollectionUtils.isEmpty(courseContactPersons)) {

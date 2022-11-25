@@ -82,7 +82,7 @@ public class CourseController implements CourseInterface {
 			throws Exception {
 		log.info("Start process to save new course in DB");
 		com.yuzee.app.util.ValidationUtil.validateTimingDtoFromCourseRequest(course);
-		String courseId = courseProcessor.saveOrUpdateCourse(userId, instituteId, course, UUID.randomUUID().toString());
+		String courseId = courseProcessor.saveOrUpdateCourse(userId, instituteId, course,course.getId() );
 		return new GenericResponseHandlers.Builder().setStatus(HttpStatus.OK).setData(courseId)
 				.setMessage(messageTranslator.toLocale("course.added")).create();
 	}

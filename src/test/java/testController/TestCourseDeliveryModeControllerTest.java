@@ -2,8 +2,7 @@ package testController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,95 +26,89 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import com.yuzee.app.YuzeeApplication;
 import com.yuzee.app.dto.CourseDeliveryModeRequestWrapper;
+import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.common.lib.dto.ValidList;
 import com.yuzee.common.lib.dto.institute.CourseDeliveryModeFundingDto;
 import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
 import com.yuzee.common.lib.dto.institute.CourseFeesDto;
 
 import lombok.extern.slf4j.Slf4j;
-@Slf4j
-@RunWith(JUnitPlatform.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-@ContextConfiguration(classes = YuzeeApplication.class)
 
- class TestCourseDeliveryModeControllerTest {
-	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
-	private static final String PATH_SEPARATOR = "/";
-	private static final String COURSE_PATH = "/api/v1";
-	private static final String courseId="9230cdd1-7d12-41c6-bbd0-38e52b3595a4";
+class TestCourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 
 	@DisplayName("Add CourseDeliveryMode")
 	@Test
-	 void addCourseDeliveryMode() {
+	void addCourseDeliveryMode() throws IOException {
 		try {
-		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
-		CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
-		courseDeliveryModesDto.setDeliveryType("demo");
-		courseDeliveryModesDto.setStudyMode("online");
-		courseDeliveryModesDto.setDuration(7.5);
-		courseDeliveryModesDto.setDurationTime("hour");
-		courseDeliveryModesDto.setAccessibility("yes");
-		courseDeliveryModesDto.setIsGovernmentEligible(true);
+			String instituteId = testCreateInstitute();
+			CourseRequest courseId = createCourses(instituteId);
+			CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
+			CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
+			courseDeliveryModesDto.setDeliveryType("demo");
+			courseDeliveryModesDto.setStudyMode("online");
+			courseDeliveryModesDto.setDuration(7.5);
+			courseDeliveryModesDto.setDurationTime("hour");
+			courseDeliveryModesDto.setAccessibility("yes");
+			courseDeliveryModesDto.setIsGovernmentEligible(true);
 
-		ValidList<CourseFeesDto> fees = new ValidList<>();
-		CourseFeesDto dto = new CourseFeesDto();
-		dto.setName("root");
-		dto.setAmount(4.00);
-		dto.setCurrency("INR");
-		fees.add(dto);
-		courseDeliveryModesDto.setFees(fees);
+			ValidList<CourseFeesDto> fees = new ValidList<>();
+			CourseFeesDto dto = new CourseFeesDto();
+			dto.setName("root");
+			dto.setAmount(4.00);
+			dto.setCurrency("INR");
+			fees.add(dto);
+			courseDeliveryModesDto.setFees(fees);
 
-		CourseDeliveryModeFundingDto courseDeliveryModeFundingDto = new CourseDeliveryModeFundingDto();
-		ValidList<CourseDeliveryModeFundingDto> fundings = new ValidList<>();
-		courseDeliveryModeFundingDto.setName("root");
-		courseDeliveryModeFundingDto.setFundingNameId("rootId");
-		courseDeliveryModeFundingDto.setAmount(4.00);
-		courseDeliveryModeFundingDto.setCurrency("INR");
-		fundings.add(courseDeliveryModeFundingDto);
-		courseDeliveryModesDto.setFundings(fundings);
+			CourseDeliveryModeFundingDto courseDeliveryModeFundingDto = new CourseDeliveryModeFundingDto();
+			ValidList<CourseDeliveryModeFundingDto> fundings = new ValidList<>();
+			courseDeliveryModeFundingDto.setName("root");
+			courseDeliveryModeFundingDto.setFundingNameId("rootId");
+			courseDeliveryModeFundingDto.setAmount(4.00);
+			courseDeliveryModeFundingDto.setCurrency("INR");
+			fundings.add(courseDeliveryModeFundingDto);
+			courseDeliveryModesDto.setFundings(fundings);
 
-		ValidList<CourseDeliveryModesDto> courseDeliveryModesDtoList = new ValidList<>();
-		courseDeliveryModesDtoList.add(courseDeliveryModesDto);
+			ValidList<CourseDeliveryModesDto> courseDeliveryModesDtoList = new ValidList<>();
+			courseDeliveryModesDtoList.add(courseDeliveryModesDto);
 
-		List<String> linked_course_ids = new ArrayList<>();
-		linked_course_ids.add(courseId);
-		requestWrapper.setLinkedCourseIds(linked_course_ids);
-		requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
+			List<String> linked_course_ids = new ArrayList<>();
+			linked_course_ids.add(courseId.getId());
+			requestWrapper.setLinkedCourseIds(linked_course_ids);
+			requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("userId", userId);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("userId", userId);
 
-		HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
-		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate
-				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
-								+ PATH_SEPARATOR + "delivery-mode",
-						HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		
-		}finally {
+			HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
+			ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate.exchange(COURSE
+					+ PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode",
+					HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		} finally {
+			String instituteId = testCreateInstitute();
+			CourseRequest courseId = createCourses(instituteId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.add("userId", userId);
 
 			HttpEntity<String> entity = new HttpEntity<>(headers);
-			ResponseEntity<String> response = testRestTemplate
-					.exchange(
-							COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-									+ courseId + PATH_SEPARATOR + "delivery-mode",
-							HttpMethod.DELETE, entity, String.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+			ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
+					+ PATH_SEPARATOR +courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entity,
+					String.class);
+		
 		}
 	}
 
 	@DisplayName("Update CourseDeliveryMode")
 	@Test
-	  void updateCourseDeliveryMode() {
+	void updateCourseDeliveryMode() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 		CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 		courseDeliveryModesDto.setDeliveryType("demo");
@@ -147,7 +140,7 @@ import lombok.extern.slf4j.Slf4j;
 		requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
 
 		List<String> linked_course_ids = new ArrayList<>();
-		linked_course_ids.add(courseId);
+		linked_course_ids.add(courseId.getId());
 		requestWrapper.setLinkedCourseIds(linked_course_ids);
 
 		HttpHeaders headers = new HttpHeaders();
@@ -155,57 +148,53 @@ import lombok.extern.slf4j.Slf4j;
 		headers.set("userId", userId);
 
 		HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
-		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate
-				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
-								+ PATH_SEPARATOR + "delivery-mode",
-						HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
+		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate.exchange(
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode",
+				HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    try {
-	courseDeliveryModesDto.setDeliveryType("demo");
-	courseDeliveryModesDto.setStudyMode("online");
-	courseDeliveryModesDto.setDuration(9.5);
-	courseDeliveryModesDto.setDurationTime("hour");
-	courseDeliveryModesDto.setAccessibility("yes");
-	courseDeliveryModesDto.setIsGovernmentEligible(true);
-	dto.setName("root");
-	dto.setAmount(5.00);
-	dto.setCurrency("PNR");
-	fees.add(dto);
-	courseDeliveryModesDto.setFees(fees);
-	
-	courseDeliveryModeFundingDto.setName("root");
-	courseDeliveryModeFundingDto.setFundingNameId("rootId");
-	courseDeliveryModeFundingDto.setAmount(5.00);
-	courseDeliveryModeFundingDto.setCurrency("PNR");
-	fundings.add(courseDeliveryModeFundingDto);
-	courseDeliveryModesDto.setFundings(fundings);
-	requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
-	requestWrapper.setLinkedCourseIds(linked_course_ids);
+		try {
+			courseDeliveryModesDto.setDeliveryType("demo");
+			courseDeliveryModesDto.setStudyMode("online");
+			courseDeliveryModesDto.setDuration(9.5);
+			courseDeliveryModesDto.setDurationTime("hour");
+			courseDeliveryModesDto.setAccessibility("yes");
+			courseDeliveryModesDto.setIsGovernmentEligible(true);
+			dto.setName("root");
+			dto.setAmount(5.00);
+			dto.setCurrency("PNR");
+			fees.add(dto);
+			courseDeliveryModesDto.setFees(fees);
 
+			courseDeliveryModeFundingDto.setName("root");
+			courseDeliveryModeFundingDto.setFundingNameId("rootId");
+			courseDeliveryModeFundingDto.setAmount(5.00);
+			courseDeliveryModeFundingDto.setCurrency("PNR");
+			fundings.add(courseDeliveryModeFundingDto);
+			courseDeliveryModesDto.setFundings(fundings);
+			requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
+			requestWrapper.setLinkedCourseIds(linked_course_ids);
 
-	HttpEntity<CourseDeliveryModeRequestWrapper> entityy = new HttpEntity<>(requestWrapper, headers);
-	ResponseEntity<CourseDeliveryModeRequestWrapper> responses = testRestTemplate
-			.exchange(
-					COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
-							+ PATH_SEPARATOR + "delivery-mode",
-					HttpMethod.POST, entityy, CourseDeliveryModeRequestWrapper.class);
-	assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-  }finally {
-	  HttpEntity<String> entitys = new HttpEntity<>(null, headers);
-		ResponseEntity<String> responsed = testRestTemplate
-				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-								+ courseId + PATH_SEPARATOR + "delivery-mode",
-						HttpMethod.DELETE, entitys, String.class);
-		assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
+			HttpEntity<CourseDeliveryModeRequestWrapper> entityy = new HttpEntity<>(requestWrapper, headers);
+			ResponseEntity<CourseDeliveryModeRequestWrapper> responses = testRestTemplate
+					.exchange(
+							COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId + PATH_SEPARATOR
+									+ "delivery-mode",
+							HttpMethod.POST, entityy, CourseDeliveryModeRequestWrapper.class);
+			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+		} finally {
+			HttpEntity<String> entitys = new HttpEntity<>(null, headers);
+			ResponseEntity<String> responsed = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
+					+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entitys,
+					String.class);
+		
+		}
 	}
-  }
-	
 
 	@DisplayName("send  multipleCourseDeliveryMode")
 	@Test
-	 void sendMultipleCourseDeliveryMode() {
+	void sendMultipleCourseDeliveryMode() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 		CourseDeliveryModesDto courseDeliveryModesFirstList = new CourseDeliveryModesDto();
 		courseDeliveryModesFirstList.setDeliveryType("demo");
@@ -263,7 +252,7 @@ import lombok.extern.slf4j.Slf4j;
 		requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
 
 		List<String> linked_course_ids = new ArrayList<>();
-		linked_course_ids.add(courseId);
+		linked_course_ids.add(courseId.getId());
 		requestWrapper.setLinkedCourseIds(linked_course_ids);
 
 		HttpHeaders headers = new HttpHeaders();
@@ -271,127 +260,123 @@ import lombok.extern.slf4j.Slf4j;
 		headers.set("userId", userId);
 
 		HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
-		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate
-				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
-								+ PATH_SEPARATOR + "delivery-mode",
-						HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
+		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate.exchange(
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId + PATH_SEPARATOR + "delivery-mode",
+				HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-      try {
-    	  courseDeliveryModesFirstList.setDeliveryType("demo");
-  		  courseDeliveryModesFirstList.setStudyMode("offline");
-  		  courseDeliveryModesFirstList.setDuration(8.5);
-  		  courseDeliveryModesFirstList.setDurationTime("hour");
-  		  courseDeliveryModesFirstList.setAccessibility("yes");
-  		  courseDeliveryModesFirstList.setIsGovernmentEligible(true);
-  		dto.setName("root");
-		dto.setAmount(5.00);
-		dto.setCurrency("INR");
-		firstFeeesList.add(dto);
-		courseDeliveryModesFirstList.setFees(firstFeeesList);
-		secondcourseDeliveryModeFunding.setName("root");
-		secondcourseDeliveryModeFunding.setFundingNameId("rootId");
-		secondcourseDeliveryModeFunding.setAmount(4.00);
-		secondcourseDeliveryModeFunding.setCurrency("INR");
-		secondfundings.add(secondcourseDeliveryModeFunding);
-		courseDeliveryModesSecondList.setFundings(secondfundings);
+		try {
+			courseDeliveryModesFirstList.setDeliveryType("demo");
+			courseDeliveryModesFirstList.setStudyMode("offline");
+			courseDeliveryModesFirstList.setDuration(8.5);
+			courseDeliveryModesFirstList.setDurationTime("hour");
+			courseDeliveryModesFirstList.setAccessibility("yes");
+			courseDeliveryModesFirstList.setIsGovernmentEligible(true);
+			dto.setName("root");
+			dto.setAmount(5.00);
+			dto.setCurrency("INR");
+			firstFeeesList.add(dto);
+			courseDeliveryModesFirstList.setFees(firstFeeesList);
+			secondcourseDeliveryModeFunding.setName("root");
+			secondcourseDeliveryModeFunding.setFundingNameId("rootId");
+			secondcourseDeliveryModeFunding.setAmount(4.00);
+			secondcourseDeliveryModeFunding.setCurrency("INR");
+			secondfundings.add(secondcourseDeliveryModeFunding);
+			courseDeliveryModesSecondList.setFundings(secondfundings);
+
+			courseDeliveryModesSecondList.setDeliveryType("easy");
+			courseDeliveryModesSecondList.setStudyMode("online");
+			courseDeliveryModesSecondList.setDuration(7.5);
+			courseDeliveryModesSecondList.setDurationTime("hour");
+			courseDeliveryModesSecondList.setAccessibility("yes");
+			courseDeliveryModesSecondList.setIsGovernmentEligible(true);
+			dtoo.setName("root");
+			dtoo.setAmount(4.00);
+			dtoo.setCurrency("INR");
+			secondFeesList.add(dtoo);
+			courseDeliveryModesSecondList.setFees(secondFeesList);
+			secondcourseDeliveryModeFunding.setName("root");
+			secondcourseDeliveryModeFunding.setFundingNameId("rootId");
+			secondcourseDeliveryModeFunding.setAmount(4.00);
+			secondcourseDeliveryModeFunding.setCurrency("INR");
+			secondfundings.add(secondcourseDeliveryModeFunding);
+			courseDeliveryModesSecondList.setFundings(secondfundings);
+		} finally {
+			HttpEntity<String> entitys = new HttpEntity<>(headers);
+			ResponseEntity<String> responsed = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
+					+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entitys,
+					String.class);
 		
-		courseDeliveryModesSecondList.setDeliveryType("easy");
-		courseDeliveryModesSecondList.setStudyMode("online");
-		courseDeliveryModesSecondList.setDuration(7.5);
-		courseDeliveryModesSecondList.setDurationTime("hour");
-		courseDeliveryModesSecondList.setAccessibility("yes");
-		courseDeliveryModesSecondList.setIsGovernmentEligible(true);
-		dtoo.setName("root");
-		dtoo.setAmount(4.00);
-		dtoo.setCurrency("INR");
-		secondFeesList.add(dtoo);
-		courseDeliveryModesSecondList.setFees(secondFeesList);
-		secondcourseDeliveryModeFunding.setName("root");
-		secondcourseDeliveryModeFunding.setFundingNameId("rootId");
-		secondcourseDeliveryModeFunding.setAmount(4.00);
-		secondcourseDeliveryModeFunding.setCurrency("INR");
-		secondfundings.add(secondcourseDeliveryModeFunding);
-		courseDeliveryModesSecondList.setFundings(secondfundings);
-      }finally{
-    	  HttpEntity<String> entitys = new HttpEntity<>(headers);
-  		 ResponseEntity<String> responsed = testRestTemplate
-  				.exchange(
-  						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-  								+ courseId + PATH_SEPARATOR + "delivery-mode",
-  						HttpMethod.DELETE, entitys, String.class);
-  		assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
-      }
+		}
 	}
 
 	@DisplayName("Remove  SingalCourseDeliveryMode")
 	@Test
-	 void removeSingalCourseDeliveryMode() {
+	void removeSingalCourseDeliveryMode() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		try {
-		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
-		CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
+		
+			CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
+			CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 
-		courseDeliveryModesDto.setDeliveryType("demo");
-		courseDeliveryModesDto.setStudyMode("offline");
-		courseDeliveryModesDto.setDuration(8.5);
-		courseDeliveryModesDto.setDurationTime("hour");
-		courseDeliveryModesDto.setAccessibility("yes");
-		courseDeliveryModesDto.setIsGovernmentEligible(true);
+			courseDeliveryModesDto.setDeliveryType("demo");
+			courseDeliveryModesDto.setStudyMode("offline");
+			courseDeliveryModesDto.setDuration(8.5);
+			courseDeliveryModesDto.setDurationTime("hour");
+			courseDeliveryModesDto.setAccessibility("yes");
+			courseDeliveryModesDto.setIsGovernmentEligible(true);
 
-		ValidList<CourseFeesDto> fess = new ValidList<>();
-		CourseFeesDto dto = new CourseFeesDto();
-		dto.setName("root");
-		dto.setAmount(5.00);
-		dto.setCurrency("INR");
-		fess.add(dto);
-		courseDeliveryModesDto.setFees(fess);
+			ValidList<CourseFeesDto> fess = new ValidList<>();
+			CourseFeesDto dto = new CourseFeesDto();
+			dto.setName("root");
+			dto.setAmount(5.00);
+			dto.setCurrency("INR");
+			fess.add(dto);
+			courseDeliveryModesDto.setFees(fess);
 
-		CourseDeliveryModeFundingDto courseDeliveryModeFundingDto = new CourseDeliveryModeFundingDto();
-		ValidList<CourseDeliveryModeFundingDto> fundings = new ValidList<>();
-		courseDeliveryModeFundingDto.setName("root");
-		courseDeliveryModeFundingDto.setFundingNameId("rootId");
-		courseDeliveryModeFundingDto.setAmount(5.00);
-		courseDeliveryModeFundingDto.setCurrency("INR");
-		fundings.add(courseDeliveryModeFundingDto);
-		courseDeliveryModesDto.setFundings(fundings);
+			CourseDeliveryModeFundingDto courseDeliveryModeFundingDto = new CourseDeliveryModeFundingDto();
+			ValidList<CourseDeliveryModeFundingDto> fundings = new ValidList<>();
+			courseDeliveryModeFundingDto.setName("root");
+			courseDeliveryModeFundingDto.setFundingNameId("rootId");
+			courseDeliveryModeFundingDto.setAmount(5.00);
+			courseDeliveryModeFundingDto.setCurrency("INR");
+			fundings.add(courseDeliveryModeFundingDto);
+			courseDeliveryModesDto.setFundings(fundings);
 
-		ValidList<CourseDeliveryModesDto> courseDeliveryModesDtoList = new ValidList<>();
-		courseDeliveryModesDtoList.add(courseDeliveryModesDto);
-		requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
+			ValidList<CourseDeliveryModesDto> courseDeliveryModesDtoList = new ValidList<>();
+			courseDeliveryModesDtoList.add(courseDeliveryModesDto);
+			requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
 
-		List<String> linked_course_ids = new ArrayList<>();
-		linked_course_ids.add(courseId);
-		requestWrapper.setLinkedCourseIds(linked_course_ids);
+			List<String> linked_course_ids = new ArrayList<>();
+			linked_course_ids.add(courseId.getId());
+			requestWrapper.setLinkedCourseIds(linked_course_ids);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("userId", userId);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("userId", userId);
 
-		HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
-		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate
-				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR +courseId
-								+ PATH_SEPARATOR + "delivery-mode",
-						HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}finally {
+			HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
+			ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate.exchange(COURSE_PATH
+					+ PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId + PATH_SEPARATOR + "delivery-mode",
+					HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		} finally {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("userId", userId);
 			HttpEntity<String> entitys = new HttpEntity<>(headers);
-	  		 ResponseEntity<String> responsed = testRestTemplate
-	  				.exchange(
-	  						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-	  								+ courseId + PATH_SEPARATOR + "delivery-mode",
-	  						HttpMethod.DELETE, entitys, String.class);
-	  		assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
+			ResponseEntity<String> responsed = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
+					+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entitys,
+					String.class);
+			assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
 		}
 	}
 
 	@DisplayName("DELETE All CourseDeliveryMode")
 	@Test
-	 void deleteAllCourseDeliveryMode() {
-        
+	void deleteAllCourseDeliveryMode() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		try {
 			CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 			CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
@@ -425,7 +410,7 @@ import lombok.extern.slf4j.Slf4j;
 			requestWrapper.setCourseDelieveryModeDtos(courseDeliveryModesDtoList);
 
 			List<String> linked_course_ids = new ArrayList<>();
-			linked_course_ids.add(courseId);
+			linked_course_ids.add(courseId.getId());
 			requestWrapper.setLinkedCourseIds(linked_course_ids);
 
 			HttpHeaders headers = new HttpHeaders();
@@ -433,31 +418,27 @@ import lombok.extern.slf4j.Slf4j;
 			headers.set("userId", userId);
 
 			HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
-			ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate
-					.exchange(
-							COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId
-									+ PATH_SEPARATOR + "delivery-mode",
-							HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
+			ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate.exchange(COURSE
+					+ PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId + PATH_SEPARATOR + "delivery-mode",
+					HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}finally {
+		} finally {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.add("userId", userId);
 
 			HttpEntity<String> entity = new HttpEntity<>(headers);
-			ResponseEntity<String> response = testRestTemplate
-					.exchange(
-							COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-									+ courseId + PATH_SEPARATOR + "delivery-mode",
-							HttpMethod.DELETE, entity, String.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}
+			ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
+					+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entity,
+					String.class);
 		
+		}
+
 	}
 
 	@DisplayName("Send Wrong_Id")
 	@Test
-	  void wrongIdCourseDeliveryMode() {
+	void wrongIdCourseDeliveryMode() {
 		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 		CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 		courseDeliveryModesDto.setDeliveryType("demo");
@@ -500,7 +481,7 @@ import lombok.extern.slf4j.Slf4j;
 		HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate
 				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "hhfadhsfhaundfhfffjh"
+						COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "hhfadhsfhaundfhfffjh"
 								+ PATH_SEPARATOR + "delivery-mode",
 						HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -509,7 +490,7 @@ import lombok.extern.slf4j.Slf4j;
 
 	@DisplayName("Send EmptyCourseDelivery")
 	@Test
-	 void sendEmptyCourseDeliveryMode() {
+	void sendEmptyCourseDeliveryMode() {
 		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 		CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 		courseDeliveryModesDto.setDeliveryType("");
@@ -550,25 +531,24 @@ import lombok.extern.slf4j.Slf4j;
 		headers.set("userId", userId);
 
 		HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
-		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate
-				.exchange(
-						COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "96a2e11b-d64b-4964-9d28-2a4d7a41d944"
-								+ PATH_SEPARATOR + "delivery-mode",
-						HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
+		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate.exchange(
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "96a2e11b-d64b-4964-9d28-2a4d7a41d944"
+						+ PATH_SEPARATOR + "delivery-mode",
+				HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
 	}
 
 	@DisplayName("Send Wrong CourseID")
 	@Test
-	 void sendWrongCourseIDForDeleteALL() {
+	void sendWrongCourseIDForDeleteALL() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("userId", userId);
 
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(COURSE_PATH + PATH_SEPARATOR + "course"
+		ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
 				+ PATH_SEPARATOR + "jhdfhnsdffsdnfndfnhfn" + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE,
 				entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);

@@ -2,8 +2,7 @@ package testController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,12 +37,8 @@ import com.yuzee.common.lib.dto.institute.CoursePaymentItemDto;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@RunWith(JUnitPlatform.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-@ContextConfiguration(classes = YuzeeApplication.class)
- class TestCoursePayment {
+
+ class TestCoursePayment extends CreateCourseAndInstitute{
 	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 	private static final String Id = "96a2e11b-d64b-4964-9d28-2a4d7a41d944";
 	private static final String jobsId= "7132d88e-cf2c-4f48-ac6e-82214208f677";
@@ -55,18 +50,20 @@ import lombok.extern.slf4j.Slf4j;
 	
 	@DisplayName("saveCoursePayment")
 	@Test
-     void saveCoursePayment() {
+     void saveCoursePayment() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		try {
 	 ValidList<CoursePaymentItemDto> paymentItems = new ValidList<>();
 	 CoursePaymentItemDto coursePaymentItemDto= new CoursePaymentItemDto();
-	 List<String>linkedCourseId = Arrays.asList(courseId);
-	    coursePaymentItemDto.setId(courseId);
+	 List<String>linkedCourseId = Arrays.asList(courseId.getId());
+	    coursePaymentItemDto.setId(courseId.getId());
 	    coursePaymentItemDto.setAmount(123.00);
 	    paymentItems.add(coursePaymentItemDto);
 	    coursePaymentItemDto.setName("name");
 	    
 		CoursePaymentDto coursePaymentDto= new CoursePaymentDto();
-		coursePaymentDto.setId(courseId);
+		coursePaymentDto.setId(courseId.getId());
 		coursePaymentDto.setDescription("Description");
 		coursePaymentDto.setPaymentItems(paymentItems);
 		coursePaymentDto.setLinkedCourseIds(linkedCourseId);
@@ -76,7 +73,7 @@ import lombok.extern.slf4j.Slf4j;
 		headers.add("userId", userId);
 		HttpEntity<CoursePaymentDto> entity = new HttpEntity<>(coursePaymentDto, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+courseId
+				api +PATH_SEPARATOR+courseId.getId()
 				+PATH_SEPARATOR +"payment",
 				HttpMethod.POST, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -86,7 +83,7 @@ import lombok.extern.slf4j.Slf4j;
 		headers.add("userId", userId);
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+courseId
+				api +PATH_SEPARATOR+courseId.getId()
 				+PATH_SEPARATOR +"payment",
 				HttpMethod.DELETE, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -94,7 +91,9 @@ import lombok.extern.slf4j.Slf4j;
 	}
 	@DisplayName("saveCoursePaymentWrongId")
 	@Test
-     void saveCoursePaymentWrongId() {
+     void saveCoursePaymentWrongId() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 	 ValidList<CoursePaymentItemDto> paymentItems = new ValidList<>();
 	 CoursePaymentItemDto coursePaymentItemDto= new CoursePaymentItemDto();
 	 List<String>linkedCourseId = Arrays.asList(Id);
@@ -114,7 +113,7 @@ import lombok.extern.slf4j.Slf4j;
 		headers.add("userId", userId);
 		HttpEntity<CoursePaymentDto> entity = new HttpEntity<>(coursePaymentDto, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+"96a2e11b-d64b-4964-9d28-2a4d7a41d8g5"
+				api +PATH_SEPARATOR + courseId.getId()
 				+PATH_SEPARATOR +"payment",
 				HttpMethod.POST, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -122,18 +121,20 @@ import lombok.extern.slf4j.Slf4j;
 	
 	@DisplayName("deleteCoursePayment")
 	@Test
-	  void delete() {
+	  void delete() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		try {
 			 ValidList<CoursePaymentItemDto> paymentItems = new ValidList<>();
 			 CoursePaymentItemDto coursePaymentItemDto= new CoursePaymentItemDto();
-			 List<String>linkedCourseId = Arrays.asList(courseId);
-			    coursePaymentItemDto.setId(courseId);
+			 List<String>linkedCourseId = Arrays.asList(courseId.getId());
+			    coursePaymentItemDto.setId(courseId.getId());
 			    coursePaymentItemDto.setAmount(123.00);
 			    paymentItems.add(coursePaymentItemDto);
 			    coursePaymentItemDto.setName("name");
 			    
 				CoursePaymentDto coursePaymentDto= new CoursePaymentDto();
-				coursePaymentDto.setId(courseId);
+				coursePaymentDto.setId(courseId.getId());
 				coursePaymentDto.setDescription("Description");
 				coursePaymentDto.setPaymentItems(paymentItems);
 				coursePaymentDto.setLinkedCourseIds(linkedCourseId);
@@ -143,7 +144,7 @@ import lombok.extern.slf4j.Slf4j;
 				headers.add("userId", userId);
 				HttpEntity<CoursePaymentDto> entity = new HttpEntity<>(coursePaymentDto, headers);
 				ResponseEntity<String> response = testRestTemplate.exchange(
-						api +PATH_SEPARATOR+courseId
+						api +PATH_SEPARATOR+courseId.getId()
 						+PATH_SEPARATOR +"payment",
 						HttpMethod.POST, entity, String.class);
 				assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -154,7 +155,7 @@ import lombok.extern.slf4j.Slf4j;
 		headers.add("userId", userId);
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+courseId
+				api +PATH_SEPARATOR+courseId.getId()
 				+PATH_SEPARATOR +"payment",
 				HttpMethod.DELETE, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

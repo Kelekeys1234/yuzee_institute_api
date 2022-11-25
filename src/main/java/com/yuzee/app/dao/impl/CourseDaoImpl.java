@@ -112,8 +112,12 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public Course get(final String courseId) {
-	return courseRepository.findById(courseId).orElseGet(Course::new);	}
-
+	Optional<Course> optionalCourse = courseRepository.findById(courseId);
+	if (optionalCourse.isPresent()) {
+		return optionalCourse.get();
+	}
+	return null;
+}
 	@Override
 	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto, final String searchKeyword,
 			List<String> entityIds) {
