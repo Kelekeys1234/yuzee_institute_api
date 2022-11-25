@@ -91,7 +91,7 @@ public class CourseFundingProcessor {
 		if (!ObjectUtils.isEmpty(course)) {
 		    log.info("inserting courseFunding inside fundingId");
 			List<String>fundingId=course.getCourseFundings();
-		    fundingId.addAll(courseFundingDto.stream().map(e->e.getFundingNameId().toString()).toList());
+		    fundingId.addAll(courseFundingDto.stream().map(e->e.getFundingNameId()).toList());
 		
 			List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 			coursesToBeSavedOrUpdated.add(course);
