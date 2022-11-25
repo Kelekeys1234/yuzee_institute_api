@@ -145,10 +145,10 @@ public class ConversionProcessor {
 	public InstituteSyncDTO convertToInstituteInstituteSyncDTOSynDataEntity(Institute institute) {
 		log.info("inside DTOUtils.convertToInstituteInstituteSyncDTOSynDataEntity");
 		InstituteSyncDTO dto = modelMapper.map(institute, InstituteSyncDTO.class);
-//		dto.setInstituteProviderCodes(institute.getInstituteProviderCodes().stream()
-//				.map(instituteProviderCode -> new ProviderCodeDto(instituteProviderCode.getName(),
-//						instituteProviderCode.getValue(), null))
-//				.collect(Collectors.toList()));
+		dto.setInstituteProviderCodes(institute.getInstituteProviderCodes().stream()
+				.map(instituteProviderCode -> new ProviderCodeDto(instituteProviderCode.getName(),
+						instituteProviderCode.getValue(), null))
+				.collect(Collectors.toList()));
 		return dto;
 	}
 
