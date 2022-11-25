@@ -112,7 +112,7 @@ public class TestInstituteEnglishRequirementController extends CreateCourseAndIn
 		InstituteEnglishRequirementsDto instituteEnglishRequirementsDto = new InstituteEnglishRequirementsDto();
 		try {
 			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirements" + PATH_SEPARATOR
-					+ instituteId;
+					+ "fgsrfgsdlpkmkmdf";
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("userId", userId);
@@ -148,7 +148,7 @@ public class TestInstituteEnglishRequirementController extends CreateCourseAndIn
 			HttpHeaders header = new HttpHeaders();
 			header.setContentType(MediaType.APPLICATION_JSON);
 			header.set("userId", userId);
-			instituteEnglishRequirementsDto.setInstituteId("561ba731-1f44-4cdd-8776-4addcc562fbc");
+			instituteEnglishRequirementsDto.setInstituteId(instituteId);
 			instituteEnglishRequirementsDto.setExamName("update");
 			instituteEnglishRequirementsDto.setListeningMarks(66.88);
 			instituteEnglishRequirementsDto.setOralMarks(66.88);

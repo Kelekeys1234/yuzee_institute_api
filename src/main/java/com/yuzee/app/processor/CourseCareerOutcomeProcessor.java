@@ -70,8 +70,8 @@ public class CourseCareerOutcomeProcessor {
 				return clone;
 			}).collect(Collectors.toList());
 
-		    Set<String> careerIds = courseCareerOutcomeDtos.stream().map(e->e.getCareer().getId())
-					.collect(Collectors.toSet());
+//		    Set<String> careerIds = courseCareerOutcomeDtos.stream().map(e->e.getCareer().getId())
+//					.collect(Collectors.toSet());
 			List<Careers> courseCareerOutcomes = course.getCourseCareerOutcomes();
 
 			log.info("preparing map of exsiting course career outcomes");
@@ -81,18 +81,18 @@ public class CourseCareerOutcomeProcessor {
 			log.info("loop the requested list to collect the entitities to be saved/updated");
 			courseCareerOutcomeDtos.stream().forEach(e -> {
 				Careers courseCareerOutcome = new Careers();
-				if (!StringUtils.isEmpty(e.getCareer().getId())) {
-					log.info(
-							"entityId is present so going to see if it is present in db if yes then we have to update it");
-					courseCareerOutcome = existingCourseCareerOutcomesMap.get(e.getCareer().getId());
-					if (courseCareerOutcome == null) {
-						log.error(messageTranslator.toLocale("course_outcome.id.invalid", e.getCareer().getId(), Locale.US));
-						throw new RuntimeNotFoundException(
-								messageTranslator.toLocale("course_outcome.id.invalid", e.getCareer().getId()));
-					}
-				} else {
+//				if (!StringUtils.isEmpty(e.getCareer().getId())) {
+//					log.info(
+//							"entityId is present so going to see if it is present in db if yes then we have to update it");
+//					courseCareerOutcome = existingCourseCareerOutcomesMap.get(e.getCareer().getId());
+//					if (courseCareerOutcome == null) {
+//						log.error(messageTranslator.toLocale("course_outcome.id.invalid", e.getCareer().getId(), Locale.US));
+//						throw new RuntimeNotFoundException(
+//								messageTranslator.toLocale("course_outcome.id.invalid", e.getCareer().getId()));
+//					}
+//				} else {
 				courseCareerOutcomes.add(courseCareerOutcome);
-				 }
+				// }
 
 				BeanUtils.copyProperties(e, courseCareerOutcome);
 				courseCareerOutcome.setId(e.getCareer().getId());
@@ -180,10 +180,6 @@ public class CourseCareerOutcomeProcessor {
 		log.info("inside courseProcessor.replicateCourseCarerOutcomes");
 		Set<String> careerIds = courseCareerOutcomeDtos.stream().map(e -> e.getCareer().getId())
 				.collect(Collectors.toSet());
-<<<<<<< HEAD
-=======
-		List<Careers> careersMap = getCareerByIds(careerIds.stream().collect(Collectors.toList()));
->>>>>>> c3b5ca2c3b9e98b4f07b293e6c9ea3a5469b6711
 		if (!CollectionUtils.isEmpty(courseIds)) {
 			List<Course> courses = courseProcessor.validateAndGetCourseByIds(courseIds);
 			courses.stream().forEach(course -> {
@@ -204,16 +200,8 @@ public class CourseCareerOutcomeProcessor {
 
 							courseCareerOutcomes.add(courseCareerOutcome);
 						}
-<<<<<<< HEAD
 				}
 					);
-=======
-						for (Careers r : careersMap) {
-
-							courseCareerOutcome.setCareer(r.getCareer());
-						}
-					});
->>>>>>> c3b5ca2c3b9e98b4f07b293e6c9ea3a5469b6711
 				}
 			});
 			return courses;

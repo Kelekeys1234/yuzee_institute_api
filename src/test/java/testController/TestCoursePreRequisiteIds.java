@@ -104,7 +104,7 @@ import lombok.extern.slf4j.Slf4j;
 		headers.add("userId", userId);
 		HttpEntity<CoursePreRequisiteRequestWrapper> entity = new HttpEntity<>(request, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+ courseId.getId()
+				api +PATH_SEPARATOR + "ffvafgr1234"
 				+PATH_SEPARATOR +"pre-requisite",
 				HttpMethod.POST, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
