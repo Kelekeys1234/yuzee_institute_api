@@ -30,7 +30,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
-
 import com.yuzee.app.YuzeeApplication;
 import com.yuzee.app.dto.CourseCareerOutcomeRequestWrapper;
 import com.yuzee.app.dto.CourseFundingRequestWrapper;
@@ -45,11 +44,9 @@ import com.yuzee.common.lib.dto.institute.CourseFundingDto;
 import lombok.extern.slf4j.Slf4j;
 
 class TestCourseFunding extends CreateCourseAndInstitute {
-	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
+
 	private static final String Id = "1e348e15-45b6-477f-a457-883738227e05";
-	private static final String jobsId = "7132d88e-cf2c-4f48-ac6e-82214208f677";
-	private static final String api = "/api/v1/course";
-	private static final String PATH_SEPARATOR = "/";
+
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 	@MockBean
@@ -84,11 +81,10 @@ class TestCourseFunding extends CreateCourseAndInstitute {
 		CourseFundingRequestWrapper request = new CourseFundingRequestWrapper();
 		List<String> fundingId = new ArrayList<>();
 		fundingId.add(Id);
-
 		CourseFundingDto courseFundingDto = new CourseFundingDto();
 		courseFundingDto.setFundingNameId(Id);
 		courseFundingDtos.add(courseFundingDto);
-		
+		request.setCourseFundingDtos(courseFundingDtos);
 		Mockito.when(commonProcessor.getFundingsByFundingNameIds(fundingId, true)).thenReturn(new HashMap<>());
 		Map<String, String> courseCareer = new HashMap<>();
 		courseCareer.put("course_career_outcome_ids", Id);

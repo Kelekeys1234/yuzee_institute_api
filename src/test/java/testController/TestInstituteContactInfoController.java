@@ -150,10 +150,10 @@ public class TestInstituteContactInfoController extends CreateCourseAndInstitute
 			// clean up code
 
 			instituteProcessor.deleteInstitute(instituteId);
-	
-	}
 
-}
+		}
+
+	}
 
 	@DisplayName("WrongIdgetInstituteContactInfo")
 	@Test
@@ -173,20 +173,20 @@ public class TestInstituteContactInfoController extends CreateCourseAndInstitute
 	@DisplayName("getInstitutePublicContactInfo test success")
 	@Test
 	void getInstitutePublicContactInfo() throws IOException {
-	      String instituteId = testCreateInstitute();
-			try {
-				String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "contact"
-						+ PATH_SEPARATOR + "info" + PATH_SEPARATOR + instituteId;
-				HttpHeaders header = new HttpHeaders();
-				header.setContentType(MediaType.APPLICATION_JSON);
-				header.set("userId", userId);
-				HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(header);
-				ResponseEntity<String> respons = testRestTemplate.exchange(path, HttpMethod.GET, entitys, String.class);
-				assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
-			} finally {
-				// clean up code
-				instituteProcessor.deleteInstitute(instituteId);
-		
+		String instituteId = testCreateInstitute();
+		try {
+			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "contact" + PATH_SEPARATOR
+					+ "info" + PATH_SEPARATOR + instituteId;
+			HttpHeaders header = new HttpHeaders();
+			header.setContentType(MediaType.APPLICATION_JSON);
+			header.set("userId", userId);
+			HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(header);
+			ResponseEntity<String> respons = testRestTemplate.exchange(path, HttpMethod.GET, entitys, String.class);
+			assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
+		} finally {
+			// clean up code
+			instituteProcessor.deleteInstitute(instituteId);
+
 		}
 	}
 }

@@ -1478,10 +1478,9 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public List<Course> getAllCoursesUsingId(final List<String> listOfRecommendedCourseIds) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Course.class, "course");
-		crit.add(Restrictions.in("id", listOfRecommendedCourseIds));
-		return crit.list();
+		org.springframework.data.mongodb.core.query.Query mongoQuery = new org.springframework.data.mongodb.core.query.Query();
+		mongoQuery.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("id").is(listOfRecommendedCourseIds));
+		return mongoTemplate.find(mongoQuery,Course.class,"course");
 	}
 
 	/*

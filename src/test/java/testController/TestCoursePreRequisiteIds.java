@@ -92,7 +92,7 @@ import lombok.extern.slf4j.Slf4j;
 		String instituteId = testCreateInstitute();
 		CourseRequest courseId = createCourses(instituteId);
 		ValidList<CoursePreRequisiteDto> coursePreRequisiteDtos = new 	ValidList<CoursePreRequisiteDto>();
-		List<String> linkedCourseId = Arrays.asList("96a2e11b-d64b-4964-9d28-2a4d7a41d7ref");
+		List<String> linkedCourseId = Arrays.asList(courseId.getId());
 		CoursePreRequisiteDto coursePreRequisiteDto = new CoursePreRequisiteDto();
 		coursePreRequisiteDto.setDescription("Description");
 		coursePreRequisiteDtos.add(coursePreRequisiteDto);
@@ -104,10 +104,10 @@ import lombok.extern.slf4j.Slf4j;
 		headers.add("userId", userId);
 		HttpEntity<CoursePreRequisiteRequestWrapper> entity = new HttpEntity<>(request, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR + "ffvafgr1234"
+				api +PATH_SEPARATOR+ courseId.getId()
 				+PATH_SEPARATOR +"pre-requisite",
 				HttpMethod.POST, entity, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 	
 	@DisplayName("deleteCoursePreRequisiteDtos")

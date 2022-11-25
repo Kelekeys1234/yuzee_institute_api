@@ -51,7 +51,6 @@ import com.yuzee.common.lib.util.ObjectMapperHelper;
 
 import lombok.extern.slf4j.Slf4j;
 
-
 public class TestInstituteFacilitiesController extends CreateCourseAndInstitute {
 
 	private static final String entityId = UUID.randomUUID().toString();
@@ -115,7 +114,7 @@ public class TestInstituteFacilitiesController extends CreateCourseAndInstitute 
 		String instituteId = testCreateInstitute();
 		try {
 			/// add facility
-			
+
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			String path = INSTITUTE_PATH + PATH_SEPARATOR + "getFacilities" + PATH_SEPARATOR
@@ -126,52 +125,51 @@ public class TestInstituteFacilitiesController extends CreateCourseAndInstitute 
 		} finally {
 			// clean up code
 			instituteProcessor.deleteInstitute(instituteId);
-			
+
 		}
 	}
-
 
 	@DisplayName("deleteInstituteFacilitiesById test success")
 	@Test
 	void deleteInstituteFacilitiesById() throws IOException {
 		String instituteId = testCreateInstitute();
-			try {
-				/// add facility
+		try {
+			/// add facility
 
-				Map<String, List<String>> params = new HashMap<>();
-				params.put("institute_facility_id", Arrays.asList("6f91fa9b-6911-4fd3-beec-894d83545f35"));
-				HttpHeaders headers = new HttpHeaders();
-				headers.setContentType(MediaType.APPLICATION_JSON);
-				String path = INSTITUTE_PATH + PATH_SEPARATOR + "facilities" + PATH_SEPARATOR + instituteId;
-				HttpEntity<List<FacilityDto>> entity = new HttpEntity<>(null, headers);
-				ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.DELETE, entity,
-						String.class, params);
-			//	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-			} finally {
-				// clean up code
-				instituteProcessor.deleteInstitute(instituteId);
-					}
+			Map<String, List<String>> params = new HashMap<>();
+			params.put("institute_facility_id", Arrays.asList("6f91fa9b-6911-4fd3-beec-894d83545f35"));
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			String path = INSTITUTE_PATH + PATH_SEPARATOR + "facilities" + PATH_SEPARATOR + instituteId;
+			HttpEntity<List<FacilityDto>> entity = new HttpEntity<>(null, headers);
+			ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.DELETE, entity, String.class,
+					params);
+			// assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		} finally {
+			// clean up code
+			instituteProcessor.deleteInstitute(instituteId);
+		}
 	}
 
 	@DisplayName("getInstitutePublicFacilities test success")
 	@Test
 	void getInstitutePublicFacilities() throws IOException {
 		String instituteId = testCreateInstitute();
-			try {
-				/// add facility
-				HttpHeaders headers = new HttpHeaders();
-				headers.setContentType(MediaType.APPLICATION_JSON);
-				String path = INSTITUTE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "facilities"
-						+ PATH_SEPARATOR + instituteId;
-				HttpEntity<List<FacilityDto>> entity = new HttpEntity<>(null, headers);
-				ResponseEntity<InstituteFacilityDto> response = testRestTemplate.exchange(path, HttpMethod.GET, entity,
-						InstituteFacilityDto.class);
-				assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		try {
+			/// add facility
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			String path = INSTITUTE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "facilities" + PATH_SEPARATOR
+					+ instituteId;
+			HttpEntity<List<FacilityDto>> entity = new HttpEntity<>(null, headers);
+			ResponseEntity<InstituteFacilityDto> response = testRestTemplate.exchange(path, HttpMethod.GET, entity,
+					InstituteFacilityDto.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-			} finally {
-				// clean up code
-				instituteProcessor.deleteInstitute(instituteId);
-			
-			}
+		} finally {
+			// clean up code
+			instituteProcessor.deleteInstitute(instituteId);
+
 		}
 	}
+}

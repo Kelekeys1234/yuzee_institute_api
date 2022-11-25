@@ -90,6 +90,8 @@ public class CreateCourseAndInstitute {
 	protected static final String PAGE_SIZE_PATH = "/pageSize";
 	protected static final String COURSE_IDS = "829af0d4-8b28-4f8b-82b1-7b32f1308967";
 	protected static final String INSTITUTE_PRE_PATH = "/api/v1";
+	protected static final String api = "/api/v1/course";
+	protected static final String INSTITUTE_PATH = "/api/v1/institute";
 
 	@Autowired
 	protected TestRestTemplate testRestTemplate;

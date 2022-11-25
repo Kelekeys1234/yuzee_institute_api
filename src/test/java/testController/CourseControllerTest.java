@@ -752,14 +752,12 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 	void getCourseByIds() throws RestClientException, IOException {
 		String instituteId = testCreateInstitute();
 		CourseRequest courseId = createCourses(instituteId);
-		CourseControllerTest courses = new CourseControllerTest();
-		List<String> course = new ArrayList<>();
-		course.add(courseId.getId());
+		List<String> course = Arrays.asList(courseId.getId());
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<List<String>> entity = new HttpEntity<>(course, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + Arrays.asList(courseId.getId()), HttpMethod.GET,
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "courseIds" , HttpMethod.GET,
 				entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
@@ -817,7 +815,7 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 		headers.add("userId", userId);
 		HttpEntity<CourseRequest> entity = new HttpEntity<>(couseRequest, headers);
 		ResponseEntity<CourseRequest> response = testRestTemplate.exchange(COURSE_PATH + PATH_SEPARATOR
-				+ couseRequest.getId() + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "basic" + PATH_SEPARATOR + "info",
+				+ instituteId + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "basic" + PATH_SEPARATOR + "info",
 				HttpMethod.POST, entity, CourseRequest.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 

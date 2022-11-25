@@ -200,7 +200,7 @@ import lombok.extern.slf4j.Slf4j;
 
 		HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(courseOtherRequirementDto, headers);
 		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate.exchange(
-				COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR +courseId
+				COURSE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR +courseId.getId()
 						+ PATH_SEPARATOR + "other-requirement",
 				HttpMethod.POST, entity, CourseOtherRequirementDto.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

@@ -47,11 +47,8 @@ import lombok.extern.slf4j.Slf4j;
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
 class TestCourseCareerOutcome extends CreateCourseAndInstitute {
-	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
-	private static final String Id = "96a2e11b-d64b-4964-9d28-2a4d7a41d944";
-	private static final String jobsId = "c4c5d73b-3eaf-4528-a3bb-2e09a70007f0";
-	private static final String api = "/api/v1/course";
-	private static final String PATH_SEPARATOR = "/";
+
+
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 
@@ -64,14 +61,15 @@ class TestCourseCareerOutcome extends CreateCourseAndInstitute {
 		List<String> jobIds = new ArrayList<>();
 		jobIds.add(courseId.getId());
 		CareerDto careerDto = new CareerDto(UUID.randomUUID().toString(), "career", jobIds);
-		careerDto.setId(Id);
+		careerDto.setId(UUID.randomUUID().toString());
 		careerDto.setCareer("career");
 		careerDto.setJobIds(jobIds);
 
 		CourseCareerOutcomeDto dto = new CourseCareerOutcomeDto();
 		dto.setId(UUID.randomUUID().toString());
+		dto.setCareerId(UUID.randomUUID().toString());
 		dto.setCareer(careerDto);
-		dto.setCareerId(Id);
+		careerDto.setId(UUID.randomUUID().toString());
 		courseContactPersonDtos.add(dto);
 		CourseCareerOutcomeRequestWrapper request = new CourseCareerOutcomeRequestWrapper();
 		request.setCourseCareerOutcomeDtos(courseContactPersonDtos);
@@ -93,7 +91,7 @@ class TestCourseCareerOutcome extends CreateCourseAndInstitute {
 		String instituteId = testCreateInstitute();
 		CourseRequest courseId = createCourses(instituteId);
 		Map<String, String> courseCareer = new HashMap<>();
-		courseCareer.put("course_career_outcome_ids", Id);
+		courseCareer.put("course_career_outcome_ids", UUID.randomUUID().toString());
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("userId", userId);

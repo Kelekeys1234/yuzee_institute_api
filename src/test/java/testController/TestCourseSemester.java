@@ -77,7 +77,7 @@ import lombok.extern.slf4j.Slf4j;
 		headers.add("userId", userId);
 		HttpEntity<CourseSemesterRequestWrapper > entity = new HttpEntity<>(request, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+courseId.getId()
+				api +PATH_SEPARATOR+ courseId.getId()
 				+PATH_SEPARATOR +"semester",
 				HttpMethod.POST, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

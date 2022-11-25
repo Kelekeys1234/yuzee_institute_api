@@ -79,9 +79,11 @@ class TestCourseIntake extends CreateCourseAndInstitute{
 	
 	@DisplayName("sendWrongIdForSave")
 	@Test
-	 void WrongIdForsendSaveCourseIntake() {
+	 void WrongIdForsendSaveCourseIntake() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
 		List<String>linkedCourseId = new ArrayList<>();
-		linkedCourseId.add(Id);
+		linkedCourseId.add(courseId.getId());
 		List<Date> date = new ArrayList<>();
 		date.add(new Date());
 		CourseIntakeDto courseIntake = new CourseIntakeDto();
@@ -94,10 +96,11 @@ class TestCourseIntake extends CreateCourseAndInstitute{
 		headers.add("userId", userId);
 		HttpEntity<CourseIntakeDto> entity = new HttpEntity<>(courseIntake, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+"96a2e11b-d64b-4964-9d28-2a4d7adfhdfhhhd"
+				api +PATH_SEPARATOR+courseId.getId()
 				+PATH_SEPARATOR +"intake",
 				HttpMethod.POST, entity, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	
 	}
 	
 	@DisplayName("deleteCourseIntake")

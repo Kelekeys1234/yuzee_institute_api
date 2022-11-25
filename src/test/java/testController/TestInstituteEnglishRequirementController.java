@@ -77,7 +77,7 @@ public class TestInstituteEnglishRequirementController extends CreateCourseAndIn
 	@DisplayName("addInstituteEnglishRequirements test success")
 	@Test
 	void addInstituteEnglishRequirements() throws IOException {
-        String instituteId = testCreateInstitute();
+		String instituteId = testCreateInstitute();
 		InstituteEnglishRequirementsDto instituteEnglishRequirementsDto = new InstituteEnglishRequirementsDto();
 		try {
 			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirements" + PATH_SEPARATOR + instituteId;
@@ -108,7 +108,7 @@ public class TestInstituteEnglishRequirementController extends CreateCourseAndIn
 	@DisplayName("WrongIdaddInstituteEnglishRequirementWith")
 	@Test
 	void wrongiDaddInstituteEnglishRequirements() throws IOException {
-	    String instituteId = testCreateInstitute();
+		String instituteId = testCreateInstitute();
 		InstituteEnglishRequirementsDto instituteEnglishRequirementsDto = new InstituteEnglishRequirementsDto();
 		try {
 			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirements" + PATH_SEPARATOR
@@ -165,7 +165,6 @@ public class TestInstituteEnglishRequirementController extends CreateCourseAndIn
 		}
 	}
 
-
 	@DisplayName("getInstitutePublicEnglishRequirementsByInstituteId test success")
 	@Test
 	void getInstitutePublicEnglishRequirementsByInstituteId() throws IOException {
@@ -173,8 +172,7 @@ public class TestInstituteEnglishRequirementController extends CreateCourseAndIn
 		InstituteEnglishRequirementsDto instituteEnglishRequirementsDto = new InstituteEnglishRequirementsDto();
 
 		/// create new objject
-		String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirements" + PATH_SEPARATOR
-				+ instituteId;
+		String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirements" + PATH_SEPARATOR + instituteId;
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set("userId", userId);
@@ -189,21 +187,21 @@ public class TestInstituteEnglishRequirementController extends CreateCourseAndIn
 		ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.POST, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		try {
-		String pathe = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "englishRequirements"
-				+ PATH_SEPARATOR + instituteId;
-		HttpHeaders header = new HttpHeaders();
-		header.setContentType(MediaType.APPLICATION_JSON);
-		header.set("userId", userId);
-		HttpEntity<InstituteEnglishRequirementsDto> entitys = new HttpEntity<>(header);
-		ResponseEntity<String> responses = testRestTemplate.exchange(pathe, HttpMethod.GET, entitys, String.class);
-		assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}
+			String pathe = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "englishRequirements"
+					+ PATH_SEPARATOR + instituteId;
+			HttpHeaders header = new HttpHeaders();
+			header.setContentType(MediaType.APPLICATION_JSON);
+			header.set("userId", userId);
+			HttpEntity<InstituteEnglishRequirementsDto> entitys = new HttpEntity<>(header);
+			ResponseEntity<String> responses = testRestTemplate.exchange(pathe, HttpMethod.GET, entitys, String.class);
+			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+		}
 		// clean up codefinally {
 		finally {
 			// clean up code
 			instituteRepository.deleteById(instituteId);
 			instituteEnglishRequirementRepository.deleteById(instituteEnglishRequirementsDto.getInstituteId());
-	}
+		}
 	}
 
 //
@@ -211,8 +209,7 @@ public class TestInstituteEnglishRequirementController extends CreateCourseAndIn
 	@Test
 	void deleteInstituteEnglishRequirementsByRequirementsId() throws IOException {
 		String instituteId = testCreateInstitute();
-		String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirements" + PATH_SEPARATOR
-				+ instituteId;
+		String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirements" + PATH_SEPARATOR + instituteId;
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set("userId", userId);
@@ -221,13 +218,11 @@ public class TestInstituteEnglishRequirementController extends CreateCourseAndIn
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
-	
 	@DisplayName("WrongIddeleteInstituteEnglishRequirementsByRequirementsWrongId")
 	@Test
-	  void wrongIddeleteInstituteEnglishRequirementsByRequirementsId() throws IOException {
+	void wrongIddeleteInstituteEnglishRequirementsByRequirementsId() throws IOException {
 		String instituteId = testCreateInstitute();
-		String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirements" + PATH_SEPARATOR
-				+ instituteId;
+		String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirements" + PATH_SEPARATOR + instituteId;
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set("userId", userId);

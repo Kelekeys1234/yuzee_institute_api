@@ -98,9 +98,9 @@ class TestCourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 
 			HttpEntity<String> entity = new HttpEntity<>(headers);
 			ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
-					+ PATH_SEPARATOR +courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entity,
+					+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entity,
 					String.class);
-		
+
 		}
 	}
 
@@ -148,9 +148,9 @@ class TestCourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 		headers.set("userId", userId);
 
 		HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
-		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate.exchange(
-				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode",
-				HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
+		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR
+				+ "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.POST,
+				entity, CourseDeliveryModeRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		try {
 			courseDeliveryModesDto.setDeliveryType("demo");
@@ -177,7 +177,7 @@ class TestCourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 			HttpEntity<CourseDeliveryModeRequestWrapper> entityy = new HttpEntity<>(requestWrapper, headers);
 			ResponseEntity<CourseDeliveryModeRequestWrapper> responses = testRestTemplate
 					.exchange(
-							COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId + PATH_SEPARATOR
+							COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR
 									+ "delivery-mode",
 							HttpMethod.POST, entityy, CourseDeliveryModeRequestWrapper.class);
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -186,7 +186,7 @@ class TestCourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 			ResponseEntity<String> responsed = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
 					+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entitys,
 					String.class);
-		
+
 		}
 	}
 
@@ -260,9 +260,9 @@ class TestCourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 		headers.set("userId", userId);
 
 		HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
-		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate.exchange(
-				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId + PATH_SEPARATOR + "delivery-mode",
-				HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
+		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR
+				+ "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.POST,
+				entity, CourseDeliveryModeRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		try {
 			courseDeliveryModesFirstList.setDeliveryType("demo");
@@ -301,11 +301,11 @@ class TestCourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 			secondfundings.add(secondcourseDeliveryModeFunding);
 			courseDeliveryModesSecondList.setFundings(secondfundings);
 		} finally {
-			HttpEntity<String> entitys = new HttpEntity<>(headers);
-			ResponseEntity<String> responsed = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
-					+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entitys,
-					String.class);
-		
+//			HttpEntity<String> entitys = new HttpEntity<>(headers);
+//			ResponseEntity<String> responsed = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
+//					+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entitys,
+//					String.class);
+
 		}
 	}
 
@@ -315,7 +315,7 @@ class TestCourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 		String instituteId = testCreateInstitute();
 		CourseRequest courseId = createCourses(instituteId);
 		try {
-		
+
 			CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 			CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 
@@ -357,7 +357,7 @@ class TestCourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 
 			HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 			ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate.exchange(COURSE_PATH
-					+ PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId + PATH_SEPARATOR + "delivery-mode",
+					+ PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode",
 					HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		} finally {
@@ -419,7 +419,7 @@ class TestCourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 
 			HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
 			ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate.exchange(COURSE
-					+ PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId + PATH_SEPARATOR + "delivery-mode",
+					+ PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode",
 					HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		} finally {
@@ -431,7 +431,7 @@ class TestCourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 			ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
 					+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entity,
 					String.class);
-		
+
 		}
 
 	}
@@ -479,11 +479,9 @@ class TestCourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 		headers.set("userId", userId);
 
 		HttpEntity<CourseDeliveryModeRequestWrapper> entity = new HttpEntity<>(requestWrapper, headers);
-		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate
-				.exchange(
-						COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "hhfadhsfhaundfhfffjh"
-								+ PATH_SEPARATOR + "delivery-mode",
-						HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
+		ResponseEntity<CourseDeliveryModeRequestWrapper> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR
+				+ "course" + PATH_SEPARATOR + "hhfadhsfhaundfhfffjh" + PATH_SEPARATOR + "delivery-mode",
+				HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
 	}
@@ -548,9 +546,8 @@ class TestCourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 		headers.add("userId", userId);
 
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
-				+ PATH_SEPARATOR + "jhdfhnsdffsdnfndfnhfn" + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE,
-				entity, String.class);
+		ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+				+ "jhdfhnsdffsdnfndfnhfn" + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
 	}

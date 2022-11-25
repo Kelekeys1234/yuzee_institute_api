@@ -1458,7 +1458,7 @@ public class CourseProcessor {
 		List<CourseResponseDto> nearestCourseList = new ArrayList<>();
 		log.info("fetching courses from DB for instituteID "+instituteId);
 		Pageable paging = PageRequest.of(pageNumber - 1, pageSize);
-		List<Course> courseList = courseRepository.findByInstituteId(paging, instituteId);
+		List<Course> courseList = courseDao.findByInstituteId(instituteId);
 	    Long totalCount = courseDao.getTotalCountOfCourseByInstituteId(instituteId);
 		if(!CollectionUtils.isEmpty(courseList)) {
 			log.info("if course is not coming null then start iterating data");

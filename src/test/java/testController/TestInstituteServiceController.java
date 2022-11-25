@@ -132,7 +132,8 @@ class TestInstituteServiceController extends CreateCourseAndInstitute {
 		headers.set("userId", userId);
 		/// institute/service/{instituteServiceId}
 		String instituteServiceId = "";
-		String path = INSTITUTE_PATH + PATH_SEPARATOR + "service" + PATH_SEPARATOR + "6dc37172-4a10-48b6-b110-6970c187238d";
+		String path = INSTITUTE_PATH + PATH_SEPARATOR + "service" + PATH_SEPARATOR
+				+ "6dc37172-4a10-48b6-b110-6970c187238d";
 		List<InstituteServiceDto> instituteServiceDto = new ArrayList<>();
 		ServiceDto service = new ServiceDto();
 		service.setDescription("test service controller jUnit description");
