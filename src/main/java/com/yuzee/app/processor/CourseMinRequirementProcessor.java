@@ -126,9 +126,6 @@ public class CourseMinRequirementProcessor {
 	           }
 	}
 
-	    	
-
-
 	@Transactional
 	public List<CourseMinRequirementDto> getAllCourseMinimumRequirements(String userId, String courseId ) {
 		log.info("inside Course.getAllCourseMinimumRequirements");
@@ -145,21 +142,21 @@ public class CourseMinRequirementProcessor {
 			List<String> linkedCourseIds) throws NotFoundException, ForbiddenException, ValidationException {
 		log.info("inside CourseMinRequirementProcessor.deleteCourseMinRequirement");
 		Course course = courseProcessor.validateAndGetCourseById(courseId);
-//		if (!course.getCreatedBy().equals(userId)) {
-//			log.error(messageTranslator.toLocale("min_requirement.delete.no.access", Locale.US));
-//			throw new ForbiddenException(messageTranslator.toLocale("min_requirement.delete.no.access"));
-//		}
+		if (!course.getCreatedBy().equals(userId)) {
+			log.error(messageTranslator.toLocale("min_requirement.delete.no.access", Locale.US));
+			throw new ForbiddenException(messageTranslator.toLocale("min_requirement.delete.no.access"));
+		}
 
 		List<CourseMinRequirement> courseMinRequirements = course.getCourseMinRequirements();
 		courseMinRequirements.removeIf(e -> courseMinRequirementIds.contains(e.getCourseMinRequirementsId()));
 		course.setCourseMinRequirements(courseMinRequirements);
 		List<Course> coursesToBeSavedOrUpdated = new ArrayList<>();
 		coursesToBeSavedOrUpdated.add(course);
-//		if (!CollectionUtils.isEmpty(linkedCourseIds)) {
-//			List<CourseMinRequirementDto> dtosToReplicate = courseMinRequirements.stream().map(e -> modelToDto(e))
-//					.collect(Collectors.toList());
-//			coursesToBeSavedOrUpdated.addAll(replicateCourseMinRequirements(userId, linkedCourseIds, dtosToReplicate));
-//		}
+		if (!CollectionUtils.isEmpty(linkedCourseIds)) {
+			List<CourseMinRequirementDto> dtosToReplicate = courseMinRequirements.stream().map(e -> modelToDto(e))
+					.collect(Collectors.toList());
+			coursesToBeSavedOrUpdated.addAll(replicateCourseMinRequirements(userId, linkedCourseIds, dtosToReplicate));
+		}
 		courseDao.saveAll(coursesToBeSavedOrUpdated);
 		commonProcessor.notifyCourseUpdates("COURSE_CONTENT_UPDATED", coursesToBeSavedOrUpdated);
 		commonProcessor.saveElasticCourses(coursesToBeSavedOrUpdated);
@@ -167,45 +164,45 @@ public class CourseMinRequirementProcessor {
 
 	
 
-//	private List<Course> replicateCourseMinRequirements(String userId, List<String> courseIds,
-//			List<CourseMinRequirementDto> courseMinRequirementDtos) throws ValidationException, NotFoundException {
-//		log.info("inside courseProcessor.replicateCourseMinRequirements");
-//
-//		if (!CollectionUtils.isEmpty(courseIds)) {
-//			List<Course> courses = courseProcessor.validateAndGetCourseByIds(courseIds);
-//			courses.stream().forEach(course -> {
-//				List<CourseMinRequirement> courseMinRequirements = course.getCourseMinRequirements();
-//				if (CollectionUtils.isEmpty(courseMinRequirementDtos)) {
-//					courseMinRequirements.clear();
-//				} else {
-//					courseMinRequirements.removeIf(e -> !contains(courseMinRequirementDtos, e));
-//					courseMinRequirementDtos.stream().forEach(dto -> {
-//						Optional<CourseMinRequirement> existingMinRequirementOp = courseMinRequirements.stream()
-//								.filter(e -> e.getCountryName().equalsIgnoreCase(dto.getCountryName())
-//										&& e.getStateName().equalsIgnoreCase(dto.getStateName())
-//										&& e.getEducationSystem().getId().equals(dto.getEducationSystem().getId()))
-//								.findAny();
-//						CourseMinRequirement courseMinRequirement = null;
-//						if (existingMinRequirementOp.isPresent()) {
-//							courseMinRequirement = existingMinRequirementOp.get();
-//						} else {
-//							courseMinRequirement = new CourseMinRequirement();
-//							courseMinRequirements.add(courseMinRequirement);
-//						}
-//						saveUpdateSubjects(userId, courseMinRequirement, dto.getMinRequirementSubjects());
-//						
-//						courseMinRequirement.setCountryName(dto.getCountryName());
-//						courseMinRequirement.setStateName(dto.getStateName());
-//						courseMinRequirement.setGradePoint(dto.getGradePoint());
-//						courseMinRequirement.setStudyLanguages(dto.getStudyLanguages());
-//					
-//					});
-//				}
-//			});
-//			return courses;
-//		}
-//		return new ArrayList<>();
-//	}
+	private List<Course> replicateCourseMinRequirements(String userId, List<String> courseIds,
+			List<CourseMinRequirementDto> courseMinRequirementDtos) throws ValidationException, NotFoundException {
+		log.info("inside courseProcessor.replicateCourseMinRequirements");
+
+		if (!CollectionUtils.isEmpty(courseIds)) {
+			List<Course> courses = courseProcessor.validateAndGetCourseByIds(courseIds);
+			courses.stream().forEach(course -> {
+				List<CourseMinRequirement> courseMinRequirements = course.getCourseMinRequirements();
+				if (CollectionUtils.isEmpty(courseMinRequirementDtos)) {
+					courseMinRequirements.clear();
+				} else {
+					courseMinRequirements.removeIf(e -> !contains(courseMinRequirementDtos, e));
+					courseMinRequirementDtos.stream().forEach(dto -> {
+						Optional<CourseMinRequirement> existingMinRequirementOp = courseMinRequirements.stream()
+								.filter(e -> e.getCountryName().equalsIgnoreCase(dto.getCountryName())
+										&& e.getStateName().equalsIgnoreCase(dto.getStateName())
+										&& e.getEducationSystem().getId().equals(dto.getEducationSystem().getId()))
+								.findAny();
+						CourseMinRequirement courseMinRequirement = null;
+						if (existingMinRequirementOp.isPresent()) {
+							courseMinRequirement = existingMinRequirementOp.get();
+						} else {
+							courseMinRequirement = new CourseMinRequirement();
+							courseMinRequirements.add(courseMinRequirement);
+						}
+						saveUpdateSubjects(userId, courseMinRequirement, dto.getMinRequirementSubjects());
+						
+						courseMinRequirement.setCountryName(dto.getCountryName());
+						courseMinRequirement.setStateName(dto.getStateName());
+						courseMinRequirement.setGradePoint(dto.getGradePoint());
+						courseMinRequirement.setStudyLanguages(dto.getStudyLanguages());
+					
+					});
+				}
+			});
+			return courses;
+		}
+		return new ArrayList<>();
+	}
 
 	public static boolean contains(List<CourseMinRequirementDto> lst, CourseMinRequirement target) {
 		return lst.stream()
@@ -228,24 +225,24 @@ public class CourseMinRequirementProcessor {
 					.map(e->e.getName()).collect(Collectors.toList());
 			subjects.removeIf(e -> !Utils.contains(updateRequestIds, e.getName()));
 
-//			log.info("preparing map of exsiting course min requirement subject");
-//			Map<String, CourseMinRequirementSubject> existingSubjectMap = subjects.stream()
-//					.filter(e -> StringUtils.hasText(e.getName()))
-//					.collect(Collectors.toMap(CourseMinRequirementSubject::getName, e -> e));
+			log.info("preparing map of exsiting course min requirement subject");
+			Map<String, CourseMinRequirementSubject> existingSubjectMap = subjects.stream()
+					.filter(e -> StringUtils.hasText(e.getName()))
+					.collect(Collectors.toMap(CourseMinRequirementSubject::getName, e -> e));
 
 			subjectDtos.stream().forEach(dto -> {
 			CourseMinRequirementSubject model = new CourseMinRequirementSubject();
-//			if (StringUtils.hasText(dto.getName())) {
-//				log.info("id is present so going to see if it is present in db if yes then we have to update it");
-//					model = existingSubjectMap.get(dto.getName());
-//					if (ObjectUtils.isEmpty(model)) {
-//						log.error("invalid course min requirement subject id : {}", dto.getName());
-//					throw new RuntimeNotFoundException(
-//							"invalid course min requirement subject id : " + dto.getName());
-//					}
-//				} else {
+			if (StringUtils.hasText(dto.getName())) {
+				log.info("id is present so going to see if it is present in db if yes then we have to update it");
+					model = existingSubjectMap.get(dto.getName());
+					if (ObjectUtils.isEmpty(model)) {
+						log.error("invalid course min requirement subject id : {}", dto.getName());
+					throw new RuntimeNotFoundException(
+							"invalid course min requirement subject id : " + dto.getName());
+					}
+				} else {
 					subjects.add(model);
-//				}
+				}
 				model.setName(dto.getName());
 				model.setGrade(dto.getGrade());
 				model.setAuditFields(userId);

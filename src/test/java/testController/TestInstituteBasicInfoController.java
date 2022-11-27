@@ -121,10 +121,7 @@ public class TestInstituteBasicInfoController extends CreateCourseAndInstitute{
 				// clean up code
 			
 				instituteProcessor.deleteInstitute(instituteId);
-			}
-
-				
-				
+			}						
 	}
 
 	@DisplayName("WrongidaddUpdateInstituteBasicInfo")
@@ -191,12 +188,18 @@ public class TestInstituteBasicInfoController extends CreateCourseAndInstitute{
 	
 	@DisplayName("getInstitutePublicBasicInfo test success")
 	@Test
-	 void getInstitutePublicBasicInfo() throws IOException {
-	      String instituteId = testCreateInstitute();
+	void getInstitutePublicBasicInfo() throws IOException {
+
+		String instituteId = testCreateInstitute();
 		try {
+			List<String>instituteIds=new ArrayList();
+			instituteIds.add(instituteId);
 			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "basic" + PATH_SEPARATOR
 					+ "info" + PATH_SEPARATOR + instituteId;
-			HttpHeaders headers= new HttpHeaders();
+			Mockito.when(storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.LOGO))
+			.thenReturn(new ArrayList());
+			Mockito.when(reviewHandler.getAverageReview(EntityTypeEnum.INSTITUTE.name(), instituteIds)).thenReturn(new HashMap<>());
+			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			headers.set("userId", userId);
 			Map<String, Boolean> params = new HashMap();
@@ -208,9 +211,9 @@ public class TestInstituteBasicInfoController extends CreateCourseAndInstitute{
 			assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
 		} finally {
 			// clean up code
-		
+
 			instituteProcessor.deleteInstitute(instituteId);
 		}
 	}
-	
+
 }

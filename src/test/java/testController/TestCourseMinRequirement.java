@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,23 +56,22 @@ class TestCourseMinRequirement extends CreateCourseAndInstitute {
 	void saveMinRequirement() throws IOException {
 		String instituteId = testCreateInstitute();
 		CourseRequest courseId = createCourses(instituteId);
+		List<CourseMinRequirementDto> coursePreRequisiteDtos = new ArrayList<>();
+		ValidList<CourseMinRequirementSubjectDto> minRequirementSubjects = new ValidList<>();
+		CourseMinRequirementSubjectDto subjectDto = new CourseMinRequirementSubjectDto();
+		subjectDto.setName("name");
+		subjectDto.setGrade("grade");
 		try {
-			List<CourseMinRequirementDto> coursePreRequisiteDtos = new ArrayList<>();
-			ValidList<CourseMinRequirementSubjectDto> minRequirementSubjects = new ValidList<>();
-			CourseMinRequirementSubjectDto subjectDto = new CourseMinRequirementSubjectDto();
-			subjectDto.setName("myname");
-			subjectDto.setGrade("mygrade");
-			minRequirementSubjects.add(subjectDto);
 			Set<String> language = new HashSet<>();
 			language.add("English");
 			List<String> linkedCourseId = new ArrayList<>();
 			linkedCourseId.add(courseId.getId());
 			CourseMinRequirementDto minRequirementDto = new CourseMinRequirementDto();
-			minRequirementDto.setId(Id);
+			minRequirementDto.setId(UUID.randomUUID().toString());
 			minRequirementDto.setCountryName("India");
-			minRequirementDto.setStateName("Delhi");
-			minRequirementDto.setEducationSystemId("d640121d-2f57-11ec-ad9d-023e60730569");
-			minRequirementDto.setGradePoint(12.3);
+			minRequirementDto.setStateName("MP");
+			minRequirementDto.setEducationSystemId(UUID.randomUUID().toString());
+			minRequirementDto.setGradePoint(15.3);
 			minRequirementDto.setMinRequirementSubjects(minRequirementSubjects);
 			minRequirementDto.setStudyLanguages(language);
 			coursePreRequisiteDtos.add(minRequirementDto);
@@ -88,18 +88,14 @@ class TestCourseMinRequirement extends CreateCourseAndInstitute {
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		} finally {
-			Map<String, String> params = new HashMap<>();
-			params.put("course_min_requirement_ids", Id);
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add("userId", userId);
-			HttpEntity<String> entity = new HttpEntity<>(headers);
-			ResponseEntity<String> response = testRestTemplate
-					.exchange(
-							api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR
-									+ "min-requirement?course_min_requirement_ids=" + Id,
-							HttpMethod.DELETE, entity, String.class, params);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+			HttpHeaders header = new HttpHeaders();
+			header.setContentType(MediaType.APPLICATION_JSON);
+			header.add("userId", userId);
+			HttpEntity<String> entityer = new HttpEntity<>(header);
+			ResponseEntity<String> responseds = testRestTemplate.exchange(
+					COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + courseId,
+					HttpMethod.DELETE, entityer, String.class);
+			assertThat(responseds.getStatusCode()).isEqualTo(HttpStatus.OK);
 		}
 	}
 
@@ -113,16 +109,15 @@ class TestCourseMinRequirement extends CreateCourseAndInstitute {
 		CourseMinRequirementSubjectDto subjectDto = new CourseMinRequirementSubjectDto();
 		subjectDto.setName("name");
 		subjectDto.setGrade("grade");
-
 		Set<String> language = new HashSet<>();
 		language.add("English");
 		List<String> linkedCourseId = new ArrayList<>();
 		linkedCourseId.add(courseId.getId());
 		CourseMinRequirementDto minRequirementDto = new CourseMinRequirementDto();
-		minRequirementDto.setId("1e348e15-45b6-477f-a457-883738227e05");
+		minRequirementDto.setId(UUID.randomUUID().toString());
 		minRequirementDto.setCountryName("India");
 		minRequirementDto.setStateName("MP");
-		minRequirementDto.setEducationSystemId("d640121d-2f57-11ec-ad9d-023e60730568");
+		minRequirementDto.setEducationSystemId(UUID.randomUUID().toString());
 		minRequirementDto.setGradePoint(15.3);
 		minRequirementDto.setMinRequirementSubjects(minRequirementSubjects);
 		minRequirementDto.setStudyLanguages(language);
@@ -141,10 +136,10 @@ class TestCourseMinRequirement extends CreateCourseAndInstitute {
 		try {
 			language.add("Hindi");
 			linkedCourseId.add(courseId.getId());
-			minRequirementDto.setId("1e348e15-45b6-477f-a457-883738227e05");
+			minRequirementDto.setId(minRequirementDto.getId());
 			minRequirementDto.setCountryName("India");
 			minRequirementDto.setStateName("Pune");
-			minRequirementDto.setEducationSystemId("d640121d-2f57-11ec-ad9d-023e60730568");
+			minRequirementDto.setEducationSystemId(minRequirementDto.getEducationSystemId());
 			minRequirementDto.setGradePoint(16.3);
 			minRequirementDto.setMinRequirementSubjects(minRequirementSubjects);
 			minRequirementDto.setStudyLanguages(language);
@@ -157,14 +152,14 @@ class TestCourseMinRequirement extends CreateCourseAndInstitute {
 					String.class);
 			assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
 		} finally {
-			Map<String, String> params = new HashMap<>();
-			params.put("course_min_requirement_ids", "1e348e15-45b6-477f-a457-883738227e05");
-			HttpEntity<String> entitys = new HttpEntity<>(headers);
-			ResponseEntity<String> responsee = testRestTemplate.exchange(
-					api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR
-							+ "min-requirement?course_min_requirement_ids="+Id,
-					HttpMethod.DELETE, entitys, String.class, params);
-			assertThat(responsee.getStatusCode()).isEqualTo(HttpStatus.OK);
+			HttpHeaders header = new HttpHeaders();
+			header.setContentType(MediaType.APPLICATION_JSON);
+			header.add("userId", userId);
+			HttpEntity<String> entityer = new HttpEntity<>(header);
+			ResponseEntity<String> responseds = testRestTemplate.exchange(
+					COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + courseId,
+					HttpMethod.DELETE, entityer, String.class);
+			assertThat(responseds.getStatusCode()).isEqualTo(HttpStatus.OK);
 		}
 	}
 
@@ -176,19 +171,16 @@ class TestCourseMinRequirement extends CreateCourseAndInstitute {
 		List<CourseMinRequirementDto> coursePreRequisiteDtos = new ArrayList<>();
 		ValidList<CourseMinRequirementSubjectDto> minRequirementSubjects = new ValidList<>();
 		CourseMinRequirementSubjectDto subjectDto = new CourseMinRequirementSubjectDto();
-		subjectDto.setName("myname");
-		subjectDto.setGrade("mygrade");
-		minRequirementSubjects.add(subjectDto);
 		Set<String> language = new HashSet<>();
 		language.add("English");
 		List<String> linkedCourseId = new ArrayList<>();
 		linkedCourseId.add(courseId.getId());
 		CourseMinRequirementDto minRequirementDto = new CourseMinRequirementDto();
-		minRequirementDto.setId(Id);
+		minRequirementDto.setId(UUID.randomUUID().toString());
 		minRequirementDto.setCountryName("India");
-		minRequirementDto.setStateName("Delhi");
-		minRequirementDto.setEducationSystemId("d640121d-2f57-11ec-ad9d-023e60730569");
-		minRequirementDto.setGradePoint(12.3);
+		minRequirementDto.setStateName("MP");
+		minRequirementDto.setEducationSystemId(UUID.randomUUID().toString());
+		minRequirementDto.setGradePoint(15.3);
 		minRequirementDto.setMinRequirementSubjects(minRequirementSubjects);
 		minRequirementDto.setStudyLanguages(language);
 		coursePreRequisiteDtos.add(minRequirementDto);
@@ -207,22 +199,19 @@ class TestCourseMinRequirement extends CreateCourseAndInstitute {
 
 			HttpEntity<String> entityy = new HttpEntity<>(headers);
 			ResponseEntity<String> responses = testRestTemplate.exchange(
-					api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "min-requirement", HttpMethod.GET, entityy,
-					String.class);
+					api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "min-requirement", HttpMethod.GET,
+					entityy, String.class);
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 		} finally {
 
-//			Map<String, String> params = new HashMap<>();
-//			params.put("course_min_requirement_ids", Id);
-//			HttpHeaders headerss = new HttpHeaders();
-//			headerss.setContentType(MediaType.APPLICATION_JSON);
-//			headerss.add("userId", userId);
-//			HttpEntity<String> entityt = new HttpEntity<>(headerss);
-//			ResponseEntity<String> responses = testRestTemplate.exchange(
-//					api + PATH_SEPARATOR + courseId + PATH_SEPARATOR
-//							+ "min-requirement?course_min_requirement_ids="+ Id,
-//					HttpMethod.DELETE, entityt, String.class, params);
-//			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+			HttpHeaders header = new HttpHeaders();
+			header.setContentType(MediaType.APPLICATION_JSON);
+			header.add("userId", userId);
+			HttpEntity<String> entityer = new HttpEntity<>(header);
+			ResponseEntity<String> responseds = testRestTemplate.exchange(
+					COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + courseId,
+					HttpMethod.DELETE, entityer, String.class);
+			assertThat(responseds.getStatusCode()).isEqualTo(HttpStatus.OK);
 		}
 
 	}
@@ -232,50 +221,58 @@ class TestCourseMinRequirement extends CreateCourseAndInstitute {
 	void deleteMinRequrement() throws IOException {
 		String instituteId = testCreateInstitute();
 		CourseRequest courseId = createCourses(instituteId);
-		try {
-			List<CourseMinRequirementDto> coursePreRequisiteDtos = new ArrayList<>();
-			ValidList<CourseMinRequirementSubjectDto> minRequirementSubjects = new ValidList<>();
-			CourseMinRequirementSubjectDto subjectDto = new CourseMinRequirementSubjectDto();
-			subjectDto.setName("myname");
-			subjectDto.setGrade("mygrade");
-			minRequirementSubjects.add(subjectDto);
-			Set<String> language = new HashSet<>();
-			language.add("English");
-			List<String> linkedCourseId = new ArrayList<>();
-			linkedCourseId.add(courseId.getId());
-			CourseMinRequirementDto minRequirementDto = new CourseMinRequirementDto();
-			minRequirementDto.setId("1e348e15-45b6-477f-a457-883738227e01");
-			minRequirementDto.setCountryName("India");
-			minRequirementDto.setStateName("Delhi");
-			minRequirementDto.setEducationSystemId("d640121d-2f57-11ec-ad9d-023e60730569");
-			minRequirementDto.setGradePoint(12.3);
-			minRequirementDto.setMinRequirementSubjects(minRequirementSubjects);
-			minRequirementDto.setStudyLanguages(language);
-			coursePreRequisiteDtos.add(minRequirementDto);
-			CourseMinRequirementRequestWrapper request = new CourseMinRequirementRequestWrapper();
-			request.setCoursePreRequisiteDtos(coursePreRequisiteDtos);
-			request.setLinkedCourseIds(linkedCourseId);
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add("userId", userId);
-			HttpEntity<CourseMinRequirementRequestWrapper> entity = new HttpEntity<>(request, headers);
-			ResponseEntity<String> response = testRestTemplate.exchange(
-					api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "min-requirement", HttpMethod.POST, entity,
-					String.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
+		List<CourseMinRequirementDto> coursePreRequisiteDtos = new ArrayList<>();
+		ValidList<CourseMinRequirementSubjectDto> minRequirementSubjects = new ValidList<>();
+		CourseMinRequirementSubjectDto subjectDto = new CourseMinRequirementSubjectDto();
+		subjectDto.setName("name");
+		subjectDto.setGrade("grade");
+		Set<String> language = new HashSet<>();
+		language.add("English");
+		List<String> linkedCourseId = new ArrayList<>();
+		linkedCourseId.add(courseId.getId());
+		CourseMinRequirementDto minRequirementDto = new CourseMinRequirementDto();
+		minRequirementDto.setId(UUID.randomUUID().toString());
+		minRequirementDto.setCountryName("India");
+		minRequirementDto.setStateName("MP");
+		minRequirementDto.setEducationSystemId(UUID.randomUUID().toString());
+		minRequirementDto.setGradePoint(15.3);
+		minRequirementDto.setMinRequirementSubjects(minRequirementSubjects);
+		minRequirementDto.setStudyLanguages(language);
+		coursePreRequisiteDtos.add(minRequirementDto);
+		CourseMinRequirementRequestWrapper request = new CourseMinRequirementRequestWrapper();
+		request.setCoursePreRequisiteDtos(coursePreRequisiteDtos);
+		request.setLinkedCourseIds(linkedCourseId);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("userId", userId);
+		HttpEntity<CourseMinRequirementRequestWrapper> entity = new HttpEntity<>(request, headers);
+		ResponseEntity<String> response = testRestTemplate.exchange(
+				api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "min-requirement", HttpMethod.POST, entity,
+				String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-//			Map<String, String> params = new HashMap<>();
-//			params.put("course_min_requirement_ids", Id);
-//			HttpHeaders headers = new HttpHeaders();
-//			headers.setContentType(MediaType.APPLICATION_JSON);
-//			headers.add("userId", userId);
-//			HttpEntity<String> entity = new HttpEntity<>(headers);
-//			ResponseEntity<String> response = testRestTemplate.exchange(
-//					api + PATH_SEPARATOR + courseId + PATH_SEPARATOR
-//							+ "min-requirement?course_min_requirement_ids="+Id,
-//					HttpMethod.DELETE, entity, String.class, params);
-//			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		try {
+			Map<String, String> params = new HashMap<>();
+			params.put("course_min_requirement_ids", Id);
+			HttpEntity<String> entityy = new HttpEntity<>(headers);
+			ResponseEntity<String> responses = testRestTemplate
+					.exchange(
+							api + PATH_SEPARATOR + courseId + PATH_SEPARATOR
+									+ "min-requirement?course_min_requirement_ids=" + minRequirementDto.getId(),
+							HttpMethod.DELETE, entityy, String.class, params);
+			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+		}
+
+		finally {
+			HttpHeaders header = new HttpHeaders();
+			header.setContentType(MediaType.APPLICATION_JSON);
+			header.add("userId", userId);
+			HttpEntity<String> entityer = new HttpEntity<>(header);
+			ResponseEntity<String> responseds = testRestTemplate.exchange(
+					COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + courseId,
+					HttpMethod.DELETE, entityer, String.class);
+			assertThat(responseds.getStatusCode()).isEqualTo(HttpStatus.OK);
+
 		}
 	}
 }

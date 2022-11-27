@@ -113,7 +113,7 @@ class TestCoursePayment extends CreateCourseAndInstitute {
 		ResponseEntity<String> response = testRestTemplate.exchange(
 				api + PATH_SEPARATOR + courseId.getCountryName() + PATH_SEPARATOR + "payment", HttpMethod.DELETE, entity,
 				String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 	}
 
 	@DisplayName("deleteCoursePayment")

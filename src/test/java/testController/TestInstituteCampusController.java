@@ -91,6 +91,7 @@ class TestInstituteCampusController extends CreateCourseAndInstitute {
 
 	@DisplayName("getInstituteCampuses test success")
 	@Test
+
 	void getInstituteCampuses() throws IOException {
 		String instituteId = testCreateInstitute();
 		// create new campus
@@ -123,7 +124,6 @@ class TestInstituteCampusController extends CreateCourseAndInstitute {
 		} finally {
 			// clean up code
 		//	instituteProcessor.deleteInstitute(instituteId);
-
 		}
 	}
 
@@ -149,4 +149,5 @@ class TestInstituteCampusController extends CreateCourseAndInstitute {
 				instituteProcessor.deleteInstitute(instituteId);
 			}
 		}
+	  
 }

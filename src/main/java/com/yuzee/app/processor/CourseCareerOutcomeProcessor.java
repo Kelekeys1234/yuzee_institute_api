@@ -180,10 +180,8 @@ public class CourseCareerOutcomeProcessor {
 		log.info("inside courseProcessor.replicateCourseCarerOutcomes");
 		Set<String> careerIds = courseCareerOutcomeDtos.stream().map(e -> e.getCareer().getId())
 				.collect(Collectors.toSet());
-<<<<<<< HEAD
-=======
+
 		List<Careers> careersMap = getCareerByIds(careerIds.stream().collect(Collectors.toList()));
->>>>>>> c3b5ca2c3b9e98b4f07b293e6c9ea3a5469b6711
 		if (!CollectionUtils.isEmpty(courseIds)) {
 			List<Course> courses = courseProcessor.validateAndGetCourseByIds(courseIds);
 			courses.stream().forEach(course -> {
@@ -191,8 +189,9 @@ public class CourseCareerOutcomeProcessor {
 				if (CollectionUtils.isEmpty(courseCareerOutcomeDtos)) {
 					courseCareerOutcomes.clear();
 				} else {
-					courseCareerOutcomes.removeIf(
-							e -> !Utils.containsIgnoreCase(careerIds.stream().collect(Collectors.toList()), e.getId()));
+					courseCareerOutcomes
+							.removeIf(e -> !Utils.containsIgnoreCase(careerIds.stream().collect(Collectors.toList()),
+									e.getId()));
 					courseCareerOutcomeDtos.stream().forEach(dto -> {
 						Optional<Careers> existingScholarshipOp = courseCareerOutcomes.stream()
 								.filter(e -> e.getId().equals(dto.getCareer().getId())).findAny();
@@ -201,19 +200,14 @@ public class CourseCareerOutcomeProcessor {
 							courseCareerOutcome = existingScholarshipOp.get();
 						} else {
 							courseCareerOutcome = new Careers();
-
+						
 							courseCareerOutcomes.add(courseCareerOutcome);
 						}
-<<<<<<< HEAD
-				}
-					);
-=======
 						for (Careers r : careersMap) {
-
+					
 							courseCareerOutcome.setCareer(r.getCareer());
 						}
 					});
->>>>>>> c3b5ca2c3b9e98b4f07b293e6c9ea3a5469b6711
 				}
 			});
 			return courses;
