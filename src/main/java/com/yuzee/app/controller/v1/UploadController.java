@@ -38,10 +38,6 @@ public class UploadController implements UploadInterface {
 
 	@Autowired
 	private InstituteProcessor instituteProcessor;
-
-//	@Autowired
-//	private ScholarshipProcessor scholarshipProcessor;
-
 	@Autowired
 	private SubjectProcessor subjectProcessor;
 	@Autowired
