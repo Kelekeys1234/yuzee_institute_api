@@ -1,4 +1,4 @@
-package testController;
+package com.yuzee.app.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,7 +43,7 @@ import com.yuzee.common.lib.dto.institute.CourseFundingDto;
 
 import lombok.extern.slf4j.Slf4j;
 
-class TestCourseFunding extends CreateCourseAndInstitute {
+class CourseFundingTest extends CreateCourseAndInstitute {
 
 	private static final String Id = "1e348e15-45b6-477f-a457-883738227e05";
 

@@ -1,4 +1,4 @@
-package testController;
+package com.yuzee.app.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,7 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
-class TestInstituteServiceController extends CreateCourseAndInstitute {
+class InstituteServiceControllerTest extends CreateCourseAndInstitute {
 
 	private static final String entityId = UUID.randomUUID().toString();
 	private static final String instituteId = "714964e7-ce52-4c07-ac0b-2e8dc6d7d444";

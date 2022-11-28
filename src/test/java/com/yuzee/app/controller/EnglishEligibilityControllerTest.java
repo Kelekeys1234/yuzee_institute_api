@@ -1,4 +1,4 @@
-package testController;
+package com.yuzee.app.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
@@ -48,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 
 
 
- class TestEnglishEligibilityController extends CreateCourseAndInstitute{
+ class EnglishEligibilityControllerTest extends CreateCourseAndInstitute{
 	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 	private static final String PATH_SEPARATOR = "/";
 	private static final String COURSE_PATH = "/api/v1";

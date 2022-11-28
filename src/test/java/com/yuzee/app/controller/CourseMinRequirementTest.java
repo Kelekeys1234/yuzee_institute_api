@@ -1,4 +1,4 @@
-package testController;
+package com.yuzee.app.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,7 +41,7 @@ import com.yuzee.common.lib.dto.institute.CourseMinRequirementSubjectDto;
 
 import lombok.extern.slf4j.Slf4j;
 
-class TestCourseMinRequirement extends CreateCourseAndInstitute {
+class CourseMinRequirementTest extends CreateCourseAndInstitute {
 	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
 	private static final String Id = "1e348e15-45b6-477f-a457-883738227e06";
 	private static final String jobsId = "7132d88e-cf2c-4f48-ac6e-82214208f677";

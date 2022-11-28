@@ -1,5 +1,5 @@
 
-package testController;
+package com.yuzee.app.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -59,7 +59,7 @@ import com.yuzee.common.lib.util.ObjectMapperHelper;
 import lombok.extern.slf4j.Slf4j;
 
 
-public class TestInstituteBasicInfoController extends CreateCourseAndInstitute{
+public class InstituteBasicInfoControllerTest extends CreateCourseAndInstitute{
 
 	private static final String entityId = UUID.randomUUID().toString();
 	private static final String instituteId = "a2a00b2a-6b2d-41f1-8501-8ba882ee2b2a";

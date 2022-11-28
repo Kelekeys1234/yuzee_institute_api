@@ -1,5 +1,5 @@
 
-package testController;
+package com.yuzee.app.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,7 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
-class TestCourseCareerOutcome extends CreateCourseAndInstitute {
+class CourseCareerOutcomeTest extends CreateCourseAndInstitute {
 
 
 	@Autowired

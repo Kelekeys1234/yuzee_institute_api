@@ -1,4 +1,4 @@
-package testController;
+package com.yuzee.app.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,7 +34,7 @@ import com.yuzee.common.lib.dto.institute.CourseFeesDto;
 
 import lombok.extern.slf4j.Slf4j;
 
-class TestCourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
+class CourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;

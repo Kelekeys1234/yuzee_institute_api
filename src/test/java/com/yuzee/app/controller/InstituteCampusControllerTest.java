@@ -1,4 +1,4 @@
-package testController;
+package com.yuzee.app.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,7 +50,7 @@ import com.yuzee.common.lib.util.ObjectMapperHelper;
 import lombok.extern.slf4j.Slf4j;
 
 
-class TestInstituteCampusController extends CreateCourseAndInstitute {
+class InstituteCampusControllerTest extends CreateCourseAndInstitute {
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
