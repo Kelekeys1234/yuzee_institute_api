@@ -1,11 +1,11 @@
 package com.yuzee.app.service;
 
 import java.util.Date;
+
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import com.yuzee.app.bean.AuditErrorReport;
 import com.yuzee.app.bean.ErrorReportCategory;
 import com.yuzee.app.dto.ErrorReportCategoryDto;
 import com.yuzee.app.dto.ErrorReportDto;
@@ -38,8 +38,6 @@ public interface IErrorReportService {
 	void deleteByErrorReportId(String errorReportId);
 
 	void saveErrorReportCategory(ErrorReportCategoryDto errorReportCategoryDto);
-
-	List<AuditErrorReport> getAuditListByErrorReport(String errorReportId);
 
 	void archiveErrorReport(String errorReportId, boolean isArchive) throws ValidationException;
 }

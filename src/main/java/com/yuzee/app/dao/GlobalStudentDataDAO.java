@@ -1,15 +1,13 @@
 package com.yuzee.app.dao;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import com.yuzee.app.bean.GlobalData;
@@ -19,60 +17,57 @@ import com.yuzee.app.repository.GlobalDataRepository;
 public class GlobalStudentDataDAO implements IGlobalStudentDataDAO {
 
 	@Autowired
-	private SessionFactory sessionFactory;
+	private MongoTemplate mongoTemplate;
+	
+	private MongoOperations mongoOperation;
 	
 	@Autowired
 	private GlobalDataRepository globalDataRepository;
 
 	@Override
 	public void save(final GlobalData globalDataDato) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(globalDataDato);
+		globalDataRepository.save(globalDataDato);
 	}
 
 	@Override
 	public void deleteAll() {
-		Session session = sessionFactory.getCurrentSession();
-		session.createSQLQuery("delete from global_student_data").executeUpdate();
+		globalDataRepository.deleteAll();
 	}
 
 	@Override
 	public List<GlobalData> getCountryWiseStudentList(final String countryName) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(GlobalData.class, "global_data");
-		crit.add(Restrictions.eq("sourceCountry", countryName));
-		crit.add(Restrictions.ne("totalNumberOfStudent", 0D));
-		crit.addOrder(Order.desc("totalNumberOfStudent"));
-		return crit.list();
+		Query query = new Query();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("sourceCountry").is(countryName));
+		return mongoTemplate.find(query, GlobalData.class,"global_student_data");
 	}
 
 	@Override
 	public long getNonZeroCountOfStudentsForCountry(final String countryName) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(GlobalData.class, "global_data");
-		crit.add(Restrictions.eq("sourceCountry", countryName));
-		crit.setProjection(Projections.rowCount());
-		return (long) crit.uniqueResult();
+		Query query = new Query();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("sourceCountry").is(countryName));
+		return (long) mongoOperation.count(query, GlobalData.class ,"global_student_data");
 	}
 
 	@Override
 	public List<String> getDistinctMigratedCountryForStudentCountry(final String countryName) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(GlobalData.class, "global_data");
-		crit.add(Restrictions.eq("sourceCountry", countryName));
-		crit.setProjection(Projections.property("destinationCountry"));
-		return crit.list() != null ? crit.list() : new ArrayList<>();
+		Query query = new Query();
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("sourceCountry").is(countryName));
+		List<GlobalData> globalList=mongoTemplate.find(query, GlobalData.class,"global_student_data");
+		String list= globalList.stream().map(e->e.getSourceCountry()).toString();
+		List<String> listGlobal = Arrays.asList(list);
+		return listGlobal ;
 	}
 
 	@Override
 	public List<String> getDistinctMigratedCountryForStudentCountryOrderByNumberOfStudents(final String countryName) {
 
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(GlobalData.class, "global_data");
-		crit.add(Restrictions.eq("sourceCountry", countryName));
-		crit.addOrder(Order.desc("totalNumberOfStudent"));
-		crit.setProjection(Projections.property("destinationCountry"));
-		return crit.list() != null ? crit.list() : new ArrayList<>();
+		Query query = new Query();
+		query.with(Sort.by(Sort.Direction.ASC,"totalNumberOfStudent"));
+		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("sourceCountry").is(countryName));
+		List<GlobalData> globalList=mongoTemplate.find(query, GlobalData.class,"global_student_data");
+		String list= globalList.stream().map(e->e.getSourceCountry()).toString();
+		List<String> listGlobal = Arrays.asList(list);
+		return listGlobal;
 	}
 
 	@Override

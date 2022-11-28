@@ -1,7 +1,11 @@
 package com.yuzee.app.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
+
 @Data
 @EqualsAndHashCode
 @AllArgsConstructor

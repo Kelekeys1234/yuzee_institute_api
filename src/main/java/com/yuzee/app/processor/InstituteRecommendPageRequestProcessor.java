@@ -1,12 +1,12 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,8 +64,7 @@ public class InstituteRecommendPageRequestProcessor {
 		}
 		return listOfInstituteRecommendPageRequestDto;
 	}
-	
-	@Transactional(rollbackOn = Throwable.class)
+
 	public void updateInstituteRecommedRequestStatus(String instituteRecommendRequestId, String status) throws Exception{
 		log.debug("inside updateInstituteRecommedRequestStatus() method");
 		log.info("Updating institute recommend request for id "+instituteRecommendRequestId+ " to status "+status );

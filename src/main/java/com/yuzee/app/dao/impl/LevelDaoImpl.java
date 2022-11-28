@@ -2,12 +2,12 @@ package com.yuzee.app.dao.impl;
 
 import java.util.HashMap;
 
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -114,7 +114,6 @@ public class LevelDaoImpl implements LevelDao {
 	}
 
 	@Override
-	@Transactional
 	public Map<String, UUID> getAllLevelMap() {
 		Map<String, UUID> levelMap = new HashMap<>();
 		List<Level> levels = levelRepository.findAll();

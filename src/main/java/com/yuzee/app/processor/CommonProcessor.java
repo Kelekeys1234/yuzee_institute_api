@@ -1,14 +1,12 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -135,7 +133,7 @@ public class CommonProcessor {
 		return map;
 	}
 
-	@Transactional
+	
 	public void saveElasticCourses(List<Course> courses) {
 		log.info("Calling elastic service to save/update courses on elastic index ");
 //		if (!CollectionUtils.isEmpty(courses)) {

@@ -1,34 +1,28 @@
 package com.yuzee.app.dao;import java.util.ArrayList;
-import java.util.List;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.yuzee.app.bean.Category;
 import com.yuzee.app.dto.CategoryDto;
+import com.yuzee.app.repository.CategoryRepository;
 
 @Repository
 @SuppressWarnings("unchecked")
 public class CategoryDAO implements ICategoryDAO {
-
-    @Autowired
-    private SessionFactory sessionFactory;
+	@Autowired
+	private CategoryRepository categoryRepository;
 
     @Override
     public List<CategoryDto> getAllCategories() {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createSQLQuery("SELECT c.id, c.name as name FROM category c where c.active=1 ORDER BY c.name");
-        List<Object[]> rows = query.list();
-        
+        List<Category> getAll = categoryRepository.findAll();
         List<CategoryDto> categoryDtos = new ArrayList<CategoryDto>();
         CategoryDto categoryDto = null;
-        for (Object[] row : rows) {
+        for (Category row : getAll) {
             categoryDto = new CategoryDto();
-            categoryDto.setId(row[0].toString());
-            categoryDto.setName(row[1].toString());
+            categoryDto.setId(row.getId());
+            categoryDto.setName(row.getName());
             categoryDtos.add(categoryDto);
         }
         return categoryDtos;
@@ -36,8 +30,7 @@ public class CategoryDAO implements ICategoryDAO {
 
     @Override
     public CategoryDto getCategoryById(String categoryId) {
-        Session session = sessionFactory.getCurrentSession();
-        Category category = session.get(Category.class, categoryId);
+      Category category = categoryRepository.findById(categoryId).orElse(new Category());
         CategoryDto categoryDto = null;
         if (category != null) {
             categoryDto = new CategoryDto();
@@ -49,24 +42,19 @@ public class CategoryDAO implements ICategoryDAO {
 
     @Override
     public Category findCategoryById(String categoryId) {
-        Session session = sessionFactory.getCurrentSession();
-        Category category = session.get(Category.class, categoryId);
-        return category;
+        return categoryRepository.findById(categoryId).get();
     }
 
     @Override
     public Category findById(String id) {
-        Session session = sessionFactory.getCurrentSession();
-        Category category = session.get(Category.class, id);
-        return category;
+        return categoryRepository.findById(id).get();
     }
 
     @Override
     public boolean saveCategory(Category category) {
         boolean status = true;
         try {
-            Session session = sessionFactory.getCurrentSession();
-            session.save(category);
+        	categoryRepository.save(category);
         } catch (Exception exception) {
             status = false;
         }

@@ -3,13 +3,13 @@ package com.yuzee.app.processor;
 import java.util.Arrays;
 
 
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
-import org.hibernate.collection.spi.PersistentCollection;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +58,8 @@ public class ConversionProcessor {
 	@PostConstruct
 	private void postConstrut() {
 
-		modelMapper.getConfiguration()
-				.setPropertyCondition(context -> !(context.getSource() instanceof PersistentCollection));
+//		modelMapper.getConfiguration()
+//				.setPropertyCondition(context -> !(context.getSource() instanceof PersistentCollection));
 
 		Converter<List<InstituteEnglishRequirements>, List<InstituteEnglishRequirementsElasticDto>> instituteEnglishRequirementElasticDtoConverter = ctx -> ctx
 				.getSource() == null

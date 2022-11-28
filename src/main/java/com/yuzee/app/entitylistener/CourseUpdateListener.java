@@ -2,11 +2,8 @@ package com.yuzee.app.entitylistener;
 
 import java.util.Arrays;
 
-import javax.persistence.PostUpdate;
-
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -22,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@Aspect
+
 public class CourseUpdateListener {
 
 	private static CommonProcessor commonProcessor;
@@ -36,7 +33,6 @@ public class CourseUpdateListener {
 		RequestContextHolder.getRequestAttributes().setAttribute(key, value, RequestAttributes.SCOPE_REQUEST);
 	}
 
-	@PostUpdate
 	public void afterCourseUpdate(Course course) {
 		log.info("after course update");
 		Course courseBeforeUpdate = (Course) RequestContextHolder.getRequestAttributes().getAttribute(course.getId(),
@@ -86,7 +82,7 @@ public class CourseUpdateListener {
 				&& Long.compare(obj1.getEndDate().getTime(), obj2.getEndDate().getTime()) == 0);
 	}
 
-	@After("execution(* com.yuzee.app.controller.v1.CourseController.*(..)) && args(loggedInUserId,instituteId,courseDto,id,..)")
+	//@After("execution(* com.yuzee.app.controller.v1.CourseController.*(..)) && args(loggedInUserId,instituteId,courseDto,id,..)")
 	public void afterCourseUpdate(String loggedInUserId, String instituteId, CourseRequest courseDto, String id) {
 		log.info("removing course cache loggedInUserId {} instituteId {} courseId {}", loggedInUserId, instituteId, id);
 		RequestContextHolder.getRequestAttributes().removeAttribute(id, RequestAttributes.SCOPE_REQUEST);

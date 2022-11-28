@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -38,6 +39,7 @@ import com.yuzee.app.util.FileStorageProperties;
 @EnableConfigurationProperties({ FileStorageProperties.class })
 @EnableAsync
 @EnableCaching
+@EnableMongoAuditing 
 public class YuzeeApplication {
 
 	@Autowired

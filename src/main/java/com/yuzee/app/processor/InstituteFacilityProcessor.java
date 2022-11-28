@@ -1,12 +1,12 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +82,7 @@ public class InstituteFacilityProcessor {
 		}
 	}
 
-	@Transactional(rollbackOn = Throwable.class)
+
 	public void deleteInstituteFacilities(String instituteId, List<String> instituteFacilitiesId) {
 		log.debug("inside deleteInstituteFacilities() method");
 		 //userAccessUtils.validateUserAccess(userId, instituteId, "facility page",

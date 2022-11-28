@@ -1,6 +1,7 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -10,7 +11,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -145,7 +145,6 @@ public class InstituteServiceProcessor {
 				.map(e -> modelMapper.map(e, InstituteServiceDto.class)).collect(Collectors.toList());
 	}
 
-	@Transactional(rollbackOn = Throwable.class)
 	public void deleteInstituteService(String userId, String instituteServiceId)
 			throws NotFoundException, InvokeException {
 		log.debug("inside deleteInstituteService() method");

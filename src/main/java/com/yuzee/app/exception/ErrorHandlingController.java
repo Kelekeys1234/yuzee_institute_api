@@ -1,17 +1,15 @@
 package com.yuzee.app.exception;
 
 import java.text.ParseException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuzee.common.lib.exception.BaseException;
 import com.yuzee.common.lib.exception.BaseRuntimeException;
-import com.yuzee.common.lib.exception.ConstraintVoilationException;
 import com.yuzee.common.lib.exception.ForbiddenException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
@@ -30,10 +27,10 @@ import lombok.extern.slf4j.Slf4j;
 @ControllerAdvice(basePackages = "com.yuzee.app")
 @Slf4j
 public class ErrorHandlingController {
-	
+
 	@Autowired
 	private MessageTranslator messageTranslator;
-	
+
 	/**
 	 * Central exception handler and generate common custom response
 	 *
@@ -49,19 +46,11 @@ public class ErrorHandlingController {
 		if (exception instanceof ParseException) {
 			status = ((BaseException) exception).getStatus();
 			message = exception.getMessage();
-		}else if (exception instanceof DataIntegrityViolationException) {
+		} else if (exception instanceof DataIntegrityViolationException) {
 			status = HttpStatus.BAD_REQUEST;
 			message = exception.getMessage();
-			DataIntegrityViolationException ex = (DataIntegrityViolationException)exception;
-			if (ex.getCause() instanceof ConstraintVoilationException) {
-				String constraintName = ((ConstraintViolationException) ex.getCause()).getConstraintName();
-				if (!ObjectUtils.isEmpty(constraintName)) {
-					String msg =  messageTranslator.toLocale(constraintName);
-					if (!ObjectUtils.isEmpty(msg)) {
-						message = msg;	
-					}
-				}
-			}
+			DataIntegrityViolationException ex = (DataIntegrityViolationException) exception;
+
 		} else if (exception instanceof ForbiddenException) {
 			status = ((ForbiddenException) exception).getStatus();
 			message = exception.getMessage();

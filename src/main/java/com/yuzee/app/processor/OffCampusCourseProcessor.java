@@ -2,11 +2,11 @@ package com.yuzee.app.processor;
 
 import java.util.ArrayList;
 
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,6 @@ public class OffCampusCourseProcessor {
 	@Autowired
 	private TimingProcessor timingProcessor;
 
-	@Transactional(rollbackOn = Throwable.class)
 	public PaginationResponseDto getOffCampusCoursesByInstituteId(String instituteId, Integer pageNumber,
 			Integer pageSize) throws NotFoundException {
 		log.debug("inside OffCampusCourseController.getOffCampusCoursesByInstituteId");

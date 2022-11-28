@@ -1,6 +1,7 @@
 package com.yuzee.app.controller.v1;
 
 import java.util.Date;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.yuzee.app.bean.AuditErrorReport;
 import com.yuzee.app.bean.ErrorReportCategory;
 import com.yuzee.app.dto.ErrorReportCategoryDto;
 import com.yuzee.app.dto.ErrorReportDto;
@@ -153,10 +152,4 @@ public class ErrorReportController {
 		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("error_report.updated")).setStatus(HttpStatus.OK).create();
 	}
 
-	@GetMapping("/audit/{id}")
-	public ResponseEntity<?> getErrorReportHistoryById(@PathVariable(name = "id") final String errorReportId) throws ValidationException {
-		List<AuditErrorReport> errorReport = errorReportService.getAuditListByErrorReport(errorReportId);
-		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("error_report.audit.list")).setData(errorReport).setStatus(HttpStatus.OK)
-				.create();
-	}
 }

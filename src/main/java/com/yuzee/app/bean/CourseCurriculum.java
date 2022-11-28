@@ -1,8 +1,6 @@
 package com.yuzee.app.bean;
 
 import java.io.Serializable;
-import java.util.Date;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

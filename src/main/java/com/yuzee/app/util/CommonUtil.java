@@ -1,6 +1,7 @@
 package com.yuzee.app.util;
 
 import java.io.IOException;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -30,7 +31,6 @@ import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteAdditionalInfo;
 import com.yuzee.app.bean.InstituteFacility;
-import com.yuzee.app.bean.Todo;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.DayTimingDto;
 import com.yuzee.app.dto.FacilityDto;
@@ -197,39 +197,23 @@ public class CommonUtil {
 
 	}
 
-	public static Todo convertTodoDtoIntoTodo(final TodoDto todoDto) {
-		Todo todo = new Todo();
-		todo.setDescription(todoDto.getDescription());
-		todo.setTitle(todoDto.getTitle());
-		todo.setUserId(todoDto.getUserId());
-		todo.setStatus(todoDto.getStatus());
-		todo.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-		todo.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
-		todo.setFolderId(todoDto.getFolderId());
-		todo.setCreatedBy(todoDto.getCreatedBy());
-		todo.setUpdatedBy(todoDto.getUpdatedBy());
-		todo.setIsActive(true);
-		if (todoDto.getDueDate() != null) {
-			todo.setDueDate(DateUtil.convertStringDateToDate(todoDto.getDueDate()));
-		}
-		return todo;
-	}
+	
 
-	public static TodoDto convertTodoIntoTodoDto(final Todo todo) {
-		TodoDto todoDto = new TodoDto();
-		todoDto.setId(todo.getId());
-		todoDto.setDescription(todo.getDescription());
-		todoDto.setTitle(todo.getTitle());
-		todoDto.setUserId(todo.getUserId());
-		todoDto.setStatus(todo.getStatus());
-		todoDto.setFolderId(todo.getFolderId());
-		todoDto.setCreatedBy(todo.getCreatedBy());
-		todoDto.setUpdatedBy(todo.getUpdatedBy());
-		if (todo.getDueDate() != null) {
-			todoDto.setDueDate(DateUtil.convertDateToString(todo.getDueDate()));
-		}
-		return todoDto;
-	}
+//	public static TodoDto convertTodoIntoTodoDto(final Todo todo) {
+//		TodoDto todoDto = new TodoDto();
+//		todoDto.setId(todo.getId());
+//		todoDto.setDescription(todo.getDescription());
+//		todoDto.setTitle(todo.getTitle());
+//		todoDto.setUserId(todo.getUserId());
+//		todoDto.setStatus(todo.getStatus());
+//		todoDto.setFolderId(todo.getFolderId());
+//		todoDto.setCreatedBy(todo.getCreatedBy());
+//		todoDto.setUpdatedBy(todo.getUpdatedBy());
+//		if (todo.getDueDate() != null) {
+//			todoDto.setDueDate(DateUtil.convertDateToString(todo.getDueDate()));
+//		}
+//		return todoDto;
+//	}
 
 	public static final Map<String, String> currencyNameMap = new HashMap<>();
 

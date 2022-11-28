@@ -1,12 +1,11 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-
-import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +86,6 @@ public class InstituteJoinRequestProcessor {
 		return listOfInstituteJoinRequestDto;
 	}
 	
-	@Transactional(rollbackOn = Throwable.class)
 	public void updateInstituteJoinRequestStatus(String instituteJoinRequestId, String status) throws Exception{
 		log.debug("inside updateInstituteJoinRequestStatus() method");
 		log.info("Updating institute join request for id "+instituteJoinRequestId+ " to status "+status );

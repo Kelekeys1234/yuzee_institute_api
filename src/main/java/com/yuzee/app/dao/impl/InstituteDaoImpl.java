@@ -1,6 +1,7 @@
 package com.yuzee.app.dao.impl;
 
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,9 +14,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -54,6 +52,7 @@ import com.yuzee.app.dto.InstituteTypeDto;
 import com.yuzee.app.dto.ServiceDto;
 import com.yuzee.app.enumeration.CourseSortBy;
 import com.yuzee.app.repository.InstituteRepository;
+import com.yuzee.app.repository.InstituteServiceRepository;
 import com.yuzee.app.repository.ServiceRepository;
 import com.yuzee.common.lib.exception.NotFoundException;
 import com.yuzee.common.lib.util.PaginationUtil;
@@ -65,13 +64,13 @@ import lombok.extern.slf4j.Slf4j;
 @SuppressWarnings({ "deprecation", "rawtypes", "unchecked" })
 public class InstituteDaoImpl implements InstituteDao {
 
-	@Autowired
-	private SessionFactory sessionFactory;
 
 	@Autowired
 	private InstituteRepository instituteRepository;
 	@Autowired
 	private ServiceRepository serviceRepository;
+	@Autowired
+	private InstituteServiceRepository institueService;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -714,8 +713,7 @@ public class InstituteDaoImpl implements InstituteDao {
 
 	@Override
 	public void saveInstituteServiceDetails(final InstituteService instituteServiceDetails) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(instituteServiceDetails);
+		institueService.save(instituteServiceDetails);
 	}
 
 	@Override
@@ -729,8 +727,8 @@ public class InstituteDaoImpl implements InstituteDao {
 
 	@Override
 	public void saveInstituteIntake(final String instituteIntake) {
-		Session session = sessionFactory.getCurrentSession();
-		session.save(instituteIntake);
+//		Session session = sessionFactory.getCurrentSession();
+//		session.save(instituteIntake);
 
 	}
 
@@ -839,23 +837,23 @@ public class InstituteDaoImpl implements InstituteDao {
 	// mongoModel
 	@Override
 	public List<InstituteResponseDto> getNearestInstituteListForAdvanceSearch(AdvanceSearchDto courseSearchDto) {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "SELECT institute.id,institute.name,count(course.id),min(cai.usd_international_fee),max(cai.usd_international_fee),institute.latitude,institute.longitude,"
-				+ " 6371 * ACOS(SIN(RADIANS('" + courseSearchDto.getLatitude()
-				+ "')) * SIN(RADIANS(institute.latitude)) +" + " COS(RADIANS('" + courseSearchDto.getLatitude()
-				+ "')) * COS(RADIANS(institute.latitude)) * COS(RADIANS(institute.longitude) -" + " RADIANS('"
-				+ courseSearchDto.getLongitude() + "'))) AS distance_in_km,institute.world_ranking,"
-				+ " institute.domestic_ranking,MIN(course.stars) as stars,course.currency,institute.country_name,institute.city_name,course.name as courseName,"
-				+ " instAdd.student_number,institute.about_us_info,institute.website,institute.email,institute.address,"
-				+ " institute.is_active, institute.institute_type,institute.tag_line"
-				+ " FROM institute left join institute_additional_info instAdd  on instAdd.institute_id=institute.id "
-				+ " institute inner join course on institute.id = course.institute_id"
-				+ " inner join faculty f  on f.id = course.faculty_id "
-				+ " left join institute_service iis  on iis.institute_id = institute.id"
-				+ " LEFT JOIN course_delivery_modes cai on cai.course_id = course.id"
-				+ " where institute.latitude is not null and institute.longitude is not null"
-				+ " and institute.latitude!= " + courseSearchDto.getLatitude() + " and institute.longitude!= "
-				+ courseSearchDto.getLongitude();
+//		Session session = sessionFactory.getCurrentSession();
+//		String sqlQuery = "SELECT institute.id,institute.name,count(course.id),min(cai.usd_international_fee),max(cai.usd_international_fee),institute.latitude,institute.longitude,"
+//				+ " 6371 * ACOS(SIN(RADIANS('" + courseSearchDto.getLatitude()
+//				+ "')) * SIN(RADIANS(institute.latitude)) +" + " COS(RADIANS('" + courseSearchDto.getLatitude()
+//				+ "')) * COS(RADIANS(institute.latitude)) * COS(RADIANS(institute.longitude) -" + " RADIANS('"
+//				+ courseSearchDto.getLongitude() + "'))) AS distance_in_km,institute.world_ranking,"
+//				+ " institute.domestic_ranking,MIN(course.stars) as stars,course.currency,institute.country_name,institute.city_name,course.name as courseName,"
+//				+ " instAdd.student_number,institute.about_us_info,institute.website,institute.email,institute.address,"
+//				+ " institute.is_active, institute.institute_type,institute.tag_line"
+//				+ " FROM institute left join institute_additional_info instAdd  on instAdd.institute_id=institute.id "
+//				+ " institute inner join course on institute.id = course.institute_id"
+//				+ " inner join faculty f  on f.id = course.faculty_id "
+//				+ " left join institute_service iis  on iis.institute_id = institute.id"
+//				+ " LEFT JOIN course_delivery_modes cai on cai.course_id = course.id"
+//				+ " where institute.latitude is not null and institute.longitude is not null"
+//				+ " and institute.latitude!= " + courseSearchDto.getLatitude() + " and institute.longitude!= "
+//				+ courseSearchDto.getLongitude();
 		MatchOperation matchStage = Aggregation.match(new Criteria("minUsdInsternationFee").is("usdInternationFee"));
 		ProjectionOperation projectStage = Aggregation.project("id", "name", "");
 
@@ -892,25 +890,25 @@ public class InstituteDaoImpl implements InstituteDao {
 		// .aggregate(aggregation, "zips", StatePopulation.class);
 		// StatePopulation smallestState = result.getUniqueMappedResult();
 
-		sqlQuery = addCondition(sqlQuery, courseSearchDto);
+//		sqlQuery = addCondition(sqlQuery, courseSearchDto);
+//
+//		sqlQuery += " group by institute.id HAVING distance_in_km <= " + courseSearchDto.getInitialRadius();
 
-		sqlQuery += " group by institute.id HAVING distance_in_km <= " + courseSearchDto.getInitialRadius();
-
-		String sortingQuery = "";
-		if (courseSearchDto.getSortBy() != null && !courseSearchDto.getSortBy().isEmpty()) {
-			sortingQuery = addSorting(sortingQuery, courseSearchDto);
-		}
-
-		if (courseSearchDto.getPageNumber() != null && courseSearchDto.getMaxSizePerPage() != null) {
-			PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
-			sqlQuery += sortingQuery + " LIMIT "
-					+ PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage())
-					+ " ," + courseSearchDto.getMaxSizePerPage();
-		} else {
-			sqlQuery += sortingQuery;
-		}
-		System.out.println(sqlQuery);
-//        Query query = session.createSQLQuery(sqlQuery);
+//		String sortingQuery = "";
+//		if (courseSearchDto.getSortBy() != null && !courseSearchDto.getSortBy().isEmpty()) {
+//			sortingQuery = addSorting(sortingQuery, courseSearchDto);
+//		}
+//
+//		if (courseSearchDto.getPageNumber() != null && courseSearchDto.getMaxSizePerPage() != null) {
+//			PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
+//			sqlQuery += sortingQuery + " LIMIT "
+//					+ PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage())
+//					+ " ," + courseSearchDto.getMaxSizePerPage();
+//		} else {
+//			sqlQuery += sortingQuery;
+//		}
+//		System.out.println(sqlQuery);
+////        Query query = session.createSQLQuery(sqlQuery);
 		// List<Object[]> rows = query.list();
 		List<InstituteResponseDto> instituteResponseDtos = new ArrayList<>();
 //        for (Object[] row : rows) {
@@ -1011,97 +1009,97 @@ public class InstituteDaoImpl implements InstituteDao {
 	}
 
 	private String addCondition(String sqlQuery, final AdvanceSearchDto courseSearchDto) {
-		if (null != courseSearchDto.getCountryNames() && !courseSearchDto.getCountryNames().isEmpty()) {
-			sqlQuery += " and institute.country_name in ('"
-					+ courseSearchDto.getCountryNames().stream().map(String::valueOf).collect(Collectors.joining(","))
-					+ "')";
-		}
-		if (null != courseSearchDto.getCityNames() && !courseSearchDto.getCityNames().isEmpty()) {
-			sqlQuery += " and institute.city_name in ('"
-					+ courseSearchDto.getCityNames().stream().map(String::valueOf).collect(Collectors.joining(","))
-					+ "')";
-		}
-		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
-			sqlQuery += " and course.level_id in ('"
-					+ courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(","))
-					+ "')";
-		}
-
-		if (null != courseSearchDto.getFaculties() && !courseSearchDto.getFaculties().isEmpty()) {
-			sqlQuery += " and course.faculty_id in ('"
-					+ courseSearchDto.getFaculties().stream().map(String::valueOf).collect(Collectors.joining(","))
-					+ "')";
-		}
-
-		if (null != courseSearchDto.getCourseKeys() && !courseSearchDto.getCourseKeys().isEmpty()) {
-			sqlQuery += " and course.name in ("
-					+ courseSearchDto.getCourseKeys().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
-		}
-		/**
-		 * This is added as in advanced search names are to be passed now, so not
-		 * disturbing the already existing code, this condition has been kept in place.
-		 */
-		else if (null != courseSearchDto.getNames() && !courseSearchDto.getNames().isEmpty()) {
-			sqlQuery += " and course.name in ('"
-					+ courseSearchDto.getNames().stream().map(String::valueOf).collect(Collectors.joining(","))
-					+ "\"')";
-		}
-
-//		if (null != courseSearchDto.getServiceIds() && !courseSearchDto.getServiceIds().isEmpty()) {
-//			sqlQuery += " and iis.service_id in ('" + courseSearchDto.getServiceIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
+//		if (null != courseSearchDto.getCountryNames() && !courseSearchDto.getCountryNames().isEmpty()) {
+//			sqlQuery += " and institute.country_name in ('"
+//					+ courseSearchDto.getCountryNames().stream().map(String::valueOf).collect(Collectors.joining(","))
+//					+ "')";
 //		}
-
-		if (null != courseSearchDto.getMinCost() && courseSearchDto.getMinCost() >= 0) {
-			sqlQuery += " and course.cost_range >= " + courseSearchDto.getMinCost();
-		}
-
-		if (null != courseSearchDto.getMaxCost() && courseSearchDto.getMaxCost() >= 0) {
-			sqlQuery += " and course.cost_range <= " + courseSearchDto.getMaxCost();
-		}
-
-		if (null != courseSearchDto.getMinDuration() && courseSearchDto.getMinDuration() >= 0) {
-			sqlQuery += " and cast(cai.duration as DECIMAL(9,2)) >= " + courseSearchDto.getMinDuration();
-		}
-
-		if (null != courseSearchDto.getMaxDuration() && courseSearchDto.getMaxDuration() >= 0) {
-			sqlQuery += " and cast(cai.duration as DECIMAL(9,2)) <= " + courseSearchDto.getMaxDuration();
-		}
-
-		if (null != courseSearchDto.getInstituteId()) {
-			sqlQuery += " and institute.id ='" + courseSearchDto.getInstituteId() + "'";
-		}
-
-		if (courseSearchDto.getSearchKeyword() != null) {
-			sqlQuery += " and ( institute.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%'";
-			sqlQuery += " or institute.country_name like '%" + courseSearchDto.getSearchKeyword().trim() + "%'";
-			sqlQuery += " or course.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%' )";
-		}
-
-		if (!CollectionUtils.isEmpty(courseSearchDto.getStudyModes()) && courseSearchDto.getStudyModes() != null) {
-			sqlQuery += " and cai.study_mode in ("
-					+ courseSearchDto.getStudyModes().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
-		}
-
-		if (!CollectionUtils.isEmpty(courseSearchDto.getDeliveryMethods())
-				&& courseSearchDto.getDeliveryMethods() != null) {
-			sqlQuery += " and cai.delivery_type in ("
-					+ courseSearchDto.getDeliveryMethods().stream().map(addQuotes).collect(Collectors.joining(","))
-					+ ")";
-		}
-
-		/**
-		 * This filter is added to get domestic courses from user country and
-		 * international courses from other countries, the courses with availbilty ='A'
-		 * will be shown to all users and with availbilty='N' will be shown to no one.
-		 *
-		 */
-		if (null != courseSearchDto.getUserCountryName()) {
-			sqlQuery += " and ((institute.country_name ='" + courseSearchDto.getUserCountryName()
-					+ "' and course.availability = 'D') OR (institute.country_name <>'"
-					+ courseSearchDto.getUserCountryName()
-					+ "' and course.availability = 'I') OR course.availability = 'A')";
-		}
-		return sqlQuery;
+//		if (null != courseSearchDto.getCityNames() && !courseSearchDto.getCityNames().isEmpty()) {
+//			sqlQuery += " and institute.city_name in ('"
+//					+ courseSearchDto.getCityNames().stream().map(String::valueOf).collect(Collectors.joining(","))
+//					+ "')";
+//		}
+//		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
+//			sqlQuery += " and course.level_id in ('"
+//					+ courseSearchDto.getLevelIds().stream().map(String::valueOf).collect(Collectors.joining(","))
+//					+ "')";
+//		}
+//
+//		if (null != courseSearchDto.getFaculties() && !courseSearchDto.getFaculties().isEmpty()) {
+//			sqlQuery += " and course.faculty_id in ('"
+//					+ courseSearchDto.getFaculties().stream().map(String::valueOf).collect(Collectors.joining(","))
+//					+ "')";
+//		}
+//
+//		if (null != courseSearchDto.getCourseKeys() && !courseSearchDto.getCourseKeys().isEmpty()) {
+//			sqlQuery += " and course.name in ("
+//					+ courseSearchDto.getCourseKeys().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
+//		}
+//		/**
+//		 * This is added as in advanced search names are to be passed now, so not
+//		 * disturbing the already existing code, this condition has been kept in place.
+//		 */
+//		else if (null != courseSearchDto.getNames() && !courseSearchDto.getNames().isEmpty()) {
+//			sqlQuery += " and course.name in ('"
+//					+ courseSearchDto.getNames().stream().map(String::valueOf).collect(Collectors.joining(","))
+//					+ "\"')";
+//		}
+//
+////		if (null != courseSearchDto.getServiceIds() && !courseSearchDto.getServiceIds().isEmpty()) {
+////			sqlQuery += " and iis.service_id in ('" + courseSearchDto.getServiceIds().stream().map(String::valueOf).collect(Collectors.joining(",")) + "')";
+////		}
+//
+//		if (null != courseSearchDto.getMinCost() && courseSearchDto.getMinCost() >= 0) {
+//			sqlQuery += " and course.cost_range >= " + courseSearchDto.getMinCost();
+//		}
+//
+//		if (null != courseSearchDto.getMaxCost() && courseSearchDto.getMaxCost() >= 0) {
+//			sqlQuery += " and course.cost_range <= " + courseSearchDto.getMaxCost();
+//		}
+//
+//		if (null != courseSearchDto.getMinDuration() && courseSearchDto.getMinDuration() >= 0) {
+//			sqlQuery += " and cast(cai.duration as DECIMAL(9,2)) >= " + courseSearchDto.getMinDuration();
+//		}
+//
+//		if (null != courseSearchDto.getMaxDuration() && courseSearchDto.getMaxDuration() >= 0) {
+//			sqlQuery += " and cast(cai.duration as DECIMAL(9,2)) <= " + courseSearchDto.getMaxDuration();
+//		}
+//
+//		if (null != courseSearchDto.getInstituteId()) {
+//			sqlQuery += " and institute.id ='" + courseSearchDto.getInstituteId() + "'";
+//		}
+//
+//		if (courseSearchDto.getSearchKeyword() != null) {
+//			sqlQuery += " and ( institute.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%'";
+//			sqlQuery += " or institute.country_name like '%" + courseSearchDto.getSearchKeyword().trim() + "%'";
+//			sqlQuery += " or course.name like '%" + courseSearchDto.getSearchKeyword().trim() + "%' )";
+//		}
+//
+//		if (!CollectionUtils.isEmpty(courseSearchDto.getStudyModes()) && courseSearchDto.getStudyModes() != null) {
+//			sqlQuery += " and cai.study_mode in ("
+//					+ courseSearchDto.getStudyModes().stream().map(addQuotes).collect(Collectors.joining(",")) + ")";
+//		}
+//
+//		if (!CollectionUtils.isEmpty(courseSearchDto.getDeliveryMethods())
+//				&& courseSearchDto.getDeliveryMethods() != null) {
+//			sqlQuery += " and cai.delivery_type in ("
+//					+ courseSearchDto.getDeliveryMethods().stream().map(addQuotes).collect(Collectors.joining(","))
+//					+ ")";
+//		}
+//
+//		/**
+//		 * This filter is added to get domestic courses from user country and
+//		 * international courses from other countries, the courses with availbilty ='A'
+//		 * will be shown to all users and with availbilty='N' will be shown to no one.
+//		 *
+//		 */
+//		if (null != courseSearchDto.getUserCountryName()) {
+//			sqlQuery += " and ((institute.country_name ='" + courseSearchDto.getUserCountryName()
+//					+ "' and course.availability = 'D') OR (institute.country_name <>'"
+//					+ courseSearchDto.getUserCountryName()
+//					+ "' and course.availability = 'I') OR course.availability = 'A')";
+//		}
+		return null;
 	}
 
 	private String addSorting(String sortingQuery, final AdvanceSearchDto courseSearchDto) {
@@ -1138,20 +1136,20 @@ public class InstituteDaoImpl implements InstituteDao {
 	@Override
 	public List<InstituteResponseDto> getNearestInstituteList(Integer pageNumber, Integer pageSize, Double latitutde,
 			Double longitude, Integer initialRadius) {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "SELECT institute.id,institute.name,count(course.id),min(cai.usd_international_fee),max(cai.usd_international_fee),institute.latitude,institute.longitude,"
-				+ " 6371 * ACOS(SIN(RADIANS('" + latitutde + "')) * SIN(RADIANS(institute.latitude)) +"
-				+ " COS(RADIANS('" + latitutde
-				+ "')) * COS(RADIANS(institute.latitude)) * COS(RADIANS(institute.longitude) -" + " RADIANS('"
-				+ longitude
-				+ "'))) AS distance_in_km,institute.world_ranking,institute.domestic_ranking,MIN(course.stars) as stars,course.currency,institute.country_name,institute.city_name,"
-				+ " instAdd.student_number,institute.about_us_info,institute.website,institute.email,institute.address,"
-				+ " institute.is_active, institute.institute_type,institute.tag_line"
-				+ " FROM institute institute left join institute_additional_info instAdd  on instAdd.institute_id=institute.id  inner join course on institute.id = course.institute_id LEFT JOIN course_delivery_modes cai on cai.course_id = course.id"
-				+ " where institute.latitude is not null and institute.longitude is not null"
-				+ " and institute.latitude!= " + latitutde + " and institute.longitude!= " + longitude
-				+ " group by institute.id" + " HAVING distance_in_km <= " + initialRadius
-				+ " ORDER BY distance_in_km ASC LIMIT " + pageNumber + "," + pageSize;
+//		Session session = sessionFactory.getCurrentSession();
+//		String sqlQuery = "SELECT institute.id,institute.name,count(course.id),min(cai.usd_international_fee),max(cai.usd_international_fee),institute.latitude,institute.longitude,"
+//				+ " 6371 * ACOS(SIN(RADIANS('" + latitutde + "')) * SIN(RADIANS(institute.latitude)) +"
+//				+ " COS(RADIANS('" + latitutde
+//				+ "')) * COS(RADIANS(institute.latitude)) * COS(RADIANS(institute.longitude) -" + " RADIANS('"
+//				+ longitude
+//				+ "'))) AS distance_in_km,institute.world_ranking,institute.domestic_ranking,MIN(course.stars) as stars,course.currency,institute.country_name,institute.city_name,"
+//				+ " instAdd.student_number,institute.about_us_info,institute.website,institute.email,institute.address,"
+//				+ " institute.is_active, institute.institute_type,institute.tag_line"
+//				+ " FROM institute institute left join institute_additional_info instAdd  on instAdd.institute_id=institute.id  inner join course on institute.id = course.institute_id LEFT JOIN course_delivery_modes cai on cai.course_id = course.id"
+//				+ " where institute.latitude is not null and institute.longitude is not null"
+//				+ " and institute.latitude!= " + latitutde + " and institute.longitude!= " + longitude
+//				+ " group by institute.id" + " HAVING distance_in_km <= " + initialRadius
+//				+ " ORDER BY distance_in_km ASC LIMIT " + pageNumber + "," + pageSize;
 //        Query query = session.createSQLQuery(sqlQuery);
 //        List<Object[]> rows = query.list();
 		List<InstituteResponseDto> instituteResponseDtos = new ArrayList<>();
@@ -1185,15 +1183,15 @@ public class InstituteDaoImpl implements InstituteDao {
 
 	@Override
 	public Integer getTotalCountOfNearestInstitutes(Double latitude, Double longitude, Integer initialRadius) {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "SELECT institute.id," + " 6371 * ACOS(SIN(RADIANS('" + latitude
-				+ "')) * SIN(RADIANS(institute.latitude)) + COS(RADIANS('" + latitude
-				+ "')) * COS(RADIANS(institute.latitude)) *" + " COS(RADIANS(institute.longitude) - RADIANS('"
-				+ longitude + "'))) AS distance_in_km FROM institute institute inner join course on"
-				+ " institute.id = course.institute_id where institute.latitude is not null"
-				+ " and institute.longitude is not null and institute.latitude!= " + latitude
-				+ " and institute.longitude!= " + longitude + " group by institute.id HAVING distance_in_km <= "
-				+ initialRadius;
+//		Session session = sessionFactory.getCurrentSession();
+//		String sqlQuery = "SELECT institute.id," + " 6371 * ACOS(SIN(RADIANS('" + latitude
+//				+ "')) * SIN(RADIANS(institute.latitude)) + COS(RADIANS('" + latitude
+//				+ "')) * COS(RADIANS(institute.latitude)) *" + " COS(RADIANS(institute.longitude) - RADIANS('"
+//				+ longitude + "'))) AS distance_in_km FROM institute institute inner join course on"
+//				+ " institute.id = course.institute_id where institute.latitude is not null"
+//				+ " and institute.longitude is not null and institute.latitude!= " + latitude
+//				+ " and institute.longitude!= " + longitude + " group by institute.id HAVING distance_in_km <= "
+//				+ initialRadius;
 //        Query query = session.createSQLQuery(sqlQuery);
 //        List<Object[]> rows = query.list();
 //        Integer totalCount = rows.size();

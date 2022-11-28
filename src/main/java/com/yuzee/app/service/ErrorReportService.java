@@ -1,6 +1,7 @@
 package com.yuzee.app.service;
 
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.yuzee.app.bean.AuditErrorReport;
 import com.yuzee.app.bean.ErrorReport;
 import com.yuzee.app.bean.ErrorReportCategory;
 import com.yuzee.app.dao.IErrorReportDAO;
@@ -100,12 +100,12 @@ public class ErrorReportService implements IErrorReportService {
 		errorReport.setUpdatedOn(new Date());
 		errorReport.setCaseNumber(caseNumber);
 		errorReportDAO.update(errorReport);
-		AuditErrorReport auditErrorReport = new AuditErrorReport();
-		auditErrorReport.setErrorReport(errorReport);
-		auditErrorReport.setNote(errorReportDto.getNote());
-		auditErrorReport.setCreatedBy("API");
-		auditErrorReport.setCreatedOn(new Date());
-		errorReportDAO.addErrorRepoerAudit(auditErrorReport);
+//		AuditErrorReport auditErrorReport = new AuditErrorReport();
+//		auditErrorReport.setErrorReport(errorReport);
+//		auditErrorReport.setNote(errorReportDto.getNote());
+//		auditErrorReport.setCreatedBy("API");
+//		auditErrorReport.setCreatedOn(new Date());
+		//errorReportDAO.addErrorRepoerAudit(auditErrorReport);
 	}
 
 	@Override
@@ -204,13 +204,14 @@ public class ErrorReportService implements IErrorReportService {
 		errorReportDAO.update(errorReport);
 	}
 
-	@Override
-	public List<AuditErrorReport> getAuditListByErrorReport(final String errorReportId) {
-		return errorReportDAO.getAuditListByErrorReport(errorReportId);
-	}
+//	@Override
+//	public List<AuditErrorReport> getAuditListByErrorReport(final String errorReportId) {
+//		return null;
+//	}
 
 	@Override
 	public void archiveErrorReport(final String errorReportId, final boolean isArchive) throws ValidationException {
+
 		ErrorReport errorReport = errorReportDAO.getErrorReportById(errorReportId);
 		if (errorReport == null) {
 			throw new ValidationException(messageTranslator.toLocale("report.not_found.id", errorReportId));
@@ -220,5 +221,7 @@ public class ErrorReportService implements IErrorReportService {
 		errorReport.setUpdatedOn(new Date());
 		errorReportDAO.update(errorReport);
 	}
+
+
 
 }

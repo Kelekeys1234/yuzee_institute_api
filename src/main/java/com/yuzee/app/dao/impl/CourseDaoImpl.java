@@ -2,9 +2,9 @@ package com.yuzee.app.dao.impl;
 
 import java.math.BigInteger;
 
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +20,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.GeoResult;
+import org.springframework.data.geo.GeoResults;
 import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -68,7 +70,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CourseDaoImpl implements CourseDao {
 
 	@Autowired
-	private  CourseRepository courseRepository;
+	private CourseRepository courseRepository;
 	@Autowired
 	InstituteRepository instituteRepository;
 	@Autowired
@@ -104,12 +106,13 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public Course get(final String courseId) {
-	Optional<Course> optionalCourse = courseRepository.findById(courseId);
-	if (optionalCourse.isPresent()) {
-		return optionalCourse.get();
+		Optional<Course> optionalCourse = courseRepository.findById(courseId);
+		if (optionalCourse.isPresent()) {
+			return optionalCourse.get();
+		}
+		return null;
 	}
-	return null;
-}
+
 	@Override
 	public int getCountforNormalCourse(final CourseSearchDto courseSearchDto, final String searchKeyword,
 			List<String> entityIds) {
@@ -206,8 +209,7 @@ public class CourseDaoImpl implements CourseDao {
 		boolean showIntlCost = false;
 
 		if (!CollectionUtils.isEmpty(entityIds)) {
-			mongoQuery
-					.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("id").is(entityIds));
+			mongoQuery.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("id").is(entityIds));
 			mongoTemplate.find(mongoQuery, Course.class);
 		}
 
@@ -256,8 +258,7 @@ public class CourseDaoImpl implements CourseDao {
 
 		if (courseIds != null) {
 			for (String r : courseIds) {
-				mongoQuery.addCriteria(
-						org.springframework.data.mongodb.core.query.Criteria.where("id").in(courseIds));
+				mongoQuery.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("id").in(courseIds));
 
 			}
 			mongoTemplate.find(mongoQuery, Course.class);
@@ -267,7 +268,7 @@ public class CourseDaoImpl implements CourseDao {
 			mongoQuery.addCriteria(
 					org.springframework.data.mongodb.core.query.Criteria.where("name").regex(searchKeyword));
 			mongoTemplate.find(mongoQuery, Course.class);
-			
+
 			mongoQuery.addCriteria(
 					org.springframework.data.mongodb.core.query.Criteria.where("name").regex(searchKeyword));
 
@@ -282,9 +283,9 @@ public class CourseDaoImpl implements CourseDao {
 //		sqlQuery += " ";
 		String sortingQuery = "";
 		String sortTypeValue = "ASC";
-		//if (!courseSearchDto.getSortAscending()) {
-			//mongoQuery.with(Sort.by(Sort.Direction.DESC));
-	//	}
+		// if (!courseSearchDto.getSortAscending()) {
+		// mongoQuery.with(Sort.by(Sort.Direction.DESC));
+		// }
 		if (courseSearchDto.getSortBy() != null && !courseSearchDto.getSortBy().isEmpty()) {
 			if (courseSearchDto.getSortBy().equalsIgnoreCase(CourseSortBy.DURATION.toString())) {
 				mongoQuery.with(Sort.by(Sort.Direction.ASC, "duration"));
@@ -355,7 +356,7 @@ public class CourseDaoImpl implements CourseDao {
 						courseResponseDto.setCost(localFees + " " + newCurrencyCode);
 					}
 					courseResponseDto.setLatitude((Double) row.getInstitute().getLocation().getLocation().getY());
-							
+
 					courseResponseDto.setLongitude((Double) row.getInstitute().getLocation().getLocation().getY());
 					courseResponseDto.setCountryName(String.valueOf(row.getInstitute().getCountryName()));
 					courseResponseDto.setCityName(String.valueOf(row.getInstitute().getCityName()));
@@ -373,7 +374,7 @@ public class CourseDaoImpl implements CourseDao {
 						courseResponseDto.setCurrencyCode(courseSearchDto.getCurrencyCode());
 
 					}
-					if (row.getCurrency()!= null) {
+					if (row.getCurrency() != null) {
 						courseResponseDto.setCurrencyCode(row.getCurrency());
 					}
 					courseResponseDto.setUpdatedOn((Date) row.getUpdatedOn());
@@ -382,8 +383,8 @@ public class CourseDaoImpl implements CourseDao {
 					} else {
 						courseResponseDto.setIsActive(false);
 					}
-				additionalInfoDto.setDeliveryType(row.getCourseDeliveryModes().stream().toString());
-				additionalInfoDto.setCourseId(row.getId());
+					additionalInfoDto.setDeliveryType(row.getCourseDeliveryModes().stream().toString());
+					additionalInfoDto.setCourseId(row.getId());
 
 					additionalInfoDtos.add(additionalInfoDto);
 					courseResponseDto.setCourseDeliveryModes(additionalInfoDtos);
@@ -554,24 +555,13 @@ public class CourseDaoImpl implements CourseDao {
 	}
 
 	public CourseResponseDto getCourse(final String instituteId, final CourseSearchDto courseSearchDto) {
-////		Session session = sessionFactory.getCurrentSession();
-////		String sqlQuery = "select A.*,count(1) over () totalRows from  (select distinct crs.id as courseId,crs.name as courseName,"
-////				+ "inst.id as instId,inst.name as instName,"
-////				+ " crs.cost_range,crs.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
-////				+ "ctry.name as countryName,crs.world_ranking,crs.language,crs.stars,crs.recognition,crs.domestic_fee,crs.international_fee "
-////				+ "from course crs inner join institute inst "
-////				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = inst.country_id inner join "
-////				+ "city ci  on ci.id = inst.city_id inner join faculty f  on f.id = crs.faculty_id "
-////				+ "left join institute_service iis  on iis.institute_id = inst.id where crs.institute_id = "
-////				+ instituteId;
-//
 		Query query = new Query();
 		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
-			query.addCriteria(Criteria.where("levelIds").is(courseSearchDto.getLevelIds()));
+			query.addCriteria(Criteria.where("level.id").is(courseSearchDto.getLevelIds()));
 		}
 
 		if (null != courseSearchDto.getFacultyIds() && !courseSearchDto.getFacultyIds().isEmpty()) {
-			query.addCriteria(Criteria.where("facultyId").is(courseSearchDto.getFacultyIds()));
+			query.addCriteria(Criteria.where("faculty.id").is(courseSearchDto.getFacultyIds()));
 		}
 
 		if (null != courseSearchDto.getCourseKeys() && !courseSearchDto.getCourseKeys().isEmpty()) {
@@ -588,84 +578,38 @@ public class CourseDaoImpl implements CourseDao {
 				}
 				i++;
 			}
-			sqlQuery += " and crs.name in (" + value + ")";
-		}
-
-		if (null != courseSearchDto.getMinCost() && courseSearchDto.getMinCost() >= 0) {
-			sqlQuery += " and crs.cost_range >= " + courseSearchDto.getMinCost();
-		}
-
-		if (null != courseSearchDto.getMaxCost() && courseSearchDto.getMaxCost() >= 0) {
-			sqlQuery += " and crs.cost_range <= " + courseSearchDto.getMaxCost();
-		}
-
-		if (null != courseSearchDto.getMinDuration() && courseSearchDto.getMinDuration() >= 0) {
-			sqlQuery += " and cast(crs.duration as DECIMAL(9,2)) >= " + courseSearchDto.getMinDuration();
-		}
-
-		if (null != courseSearchDto.getMaxDuration() && courseSearchDto.getMaxDuration() >= 0) {
-			sqlQuery += " and cast(crs.duration as DECIMAL(9,2)) <= " + courseSearchDto.getMaxDuration();
 		}
 
 		if (null != courseSearchDto.getSearchKey() && !courseSearchDto.getSearchKey().isEmpty()) {
-			sqlQuery += " and crs.name like '%" + courseSearchDto.getSearchKey().trim() + "%'";
+			query.addCriteria(Criteria.where("name").is(courseSearchDto.getSearchKey()));
 		}
-		sqlQuery += ") A ";
 
 		String sortingQuery = "";
 		if (null != courseSearchDto.getSortingObj()) {
 			CourseSearchFilterDto sortingObj = courseSearchDto.getSortingObj();
-			if (null != sortingObj.getPrice() && !sortingObj.getPrice().isEmpty()) {
-				if (sortingObj.getPrice().equals("ASC")) {
-					sortingQuery = " order by A.cost_range asc";
-				} else {
-					sortingQuery = " order by A.cost_range desc";
-				}
-			}
 
 			if (null != sortingObj.getLocation() && !sortingObj.getLocation().isEmpty()) {
 				if (sortingObj.getLocation().equals("ASC")) {
-					sortingQuery = " order by A.countryName, A.cityName asc";
+					query.with(Sort.by(Sort.Direction.ASC, "institute.countryName"));
+					query.with(Sort.by(Sort.Direction.ASC, "institue.cityName"));
 				} else {
-					sortingQuery = " order by A.countryName, A.cityName desc";
+					query.with(Sort.by(Sort.Direction.DESC, "institue.countryNames"));
+					query.with(Sort.by(Sort.Direction.DESC, "institute.cityNames"));
 				}
 			}
 
-			if (null != sortingObj.getDuration() && !sortingObj.getDuration().isEmpty()) {
-				if (sortingObj.getDuration().equals("ASC")) {
-					sortingQuery = " order by A.duration asc";
-				} else {
-					sortingQuery = " order by A.duration desc";
-				}
-			}
-
-			if (null != sortingObj.getRecognition() && !sortingObj.getRecognition().isEmpty()) {
-				if (sortingObj.getRecognition().equals("ASC")) {
-					sortingQuery = " order by A.recognition asc";
-				} else {
-					sortingQuery = " order by A.recognition desc";
-				}
-			}
 		} else {
-			sortingQuery = " order by A.cost_range asc";
+			query.with(Sort.by(Sort.Direction.ASC, "cost"));
 		}
-		sqlQuery += sortingQuery + " OFFSET (" + courseSearchDto.getPageNumber() + "-1)*"
-				+ courseSearchDto.getMaxSizePerPage() + " ROWS FETCH NEXT " + courseSearchDto.getMaxSizePerPage()
-				+ " ROWS ONLY";
-
-		System.out.println(sqlQuery);
-		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
+		List<Course> rows = mongoTemplate.find(query, Course.class);
 		List<CourseResponseDto> list = new ArrayList<>();
 		CourseResponseDto obj = null;
-		for (Object[] row : rows) {
+		for (Course row : rows) {
 			obj = new CourseResponseDto();
-			obj.setId(String.valueOf(row[0]));
-			obj.setName(String.valueOf(row[1]));
-			obj.setCost(String.valueOf(row[4]) + " " + String.valueOf(row[5]));
-			obj.setCourseRanking(Integer.valueOf(String.valueOf(row[12])));
-			obj.setStars(Double.valueOf(String.valueOf(row[14])));
-			obj.setTotalCount(Integer.parseInt(String.valueOf(row[18])));
+			obj.setId(row.getId());
+			obj.setName(row.getName());
+			obj.setCourseRanking(row.getWorldRanking());
+			obj.setStars(Double.valueOf(row.getStars()));
 			list.add(obj);
 		}
 		return obj;
@@ -678,16 +622,16 @@ public class CourseDaoImpl implements CourseDao {
 		org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
 		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("faculty.id").is(facultyId));
 		List<Course> rows = mongoTemplate.find(query, Course.class, "course");
-		for(Course row :rows) {
-		CourseResponseDto courseResponseDto = new CourseResponseDto();
-		courseResponseDto.setId(row.getId());
-		courseResponseDto.setName(row.getName());
-		courseResponseDto.setInstituteId(row.getInstituteId());
-		courseResponseDto.setInstituteName(row.getInstitute().getName());
-		courseResponseDto.setCityName(row.getInstitute().getCityName());
-		courseResponseDto.setCountryName(row.getInstitute().getCountryName());
-		courseResponseDto.setLocation(row.getInstitute().getLocation().toString());
-		courseResponseDtos.add(courseResponseDto);
+		for (Course row : rows) {
+			CourseResponseDto courseResponseDto = new CourseResponseDto();
+			courseResponseDto.setId(row.getId());
+			courseResponseDto.setName(row.getName());
+			courseResponseDto.setInstituteId(row.getInstituteId());
+			courseResponseDto.setInstituteName(row.getInstitute().getName());
+			courseResponseDto.setCityName(row.getInstitute().getCityName());
+			courseResponseDto.setCountryName(row.getInstitute().getCountryName());
+			courseResponseDto.setLocation(row.getInstitute().getLocation().toString());
+			courseResponseDtos.add(courseResponseDto);
 		}
 		return courseResponseDtos;
 	}
@@ -903,7 +847,7 @@ public class CourseDaoImpl implements CourseDao {
 	public int findTotalCountByUserId(final String userId) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("id").is(userId));
-		return (int)  mongoOperations.count(query, Course.class);
+		return (int) mongoOperations.count(query, Course.class);
 	}
 
 	@Override
@@ -980,7 +924,7 @@ public class CourseDaoImpl implements CourseDao {
 //			}
 //		}
 		boolean showIntlCost = false;
-	//	sqlQuery = addCondition(sqlQuery, courseSearchDto);
+		// sqlQuery = addCondition(sqlQuery, courseSearchDto);
 //		sqlQuery += " group by crs.id";
 
 //		String sortingQuery = "";
@@ -988,7 +932,7 @@ public class CourseDaoImpl implements CourseDao {
 //			sortingQuery = addSorting(sortingQuery, courseSearchDto);
 //		}
 //		if (courseSearchDto.getPageNumber() != null && courseSearchDto.getMaxSizePerPage() != null) {
-			PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
+		PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
 //			sqlQuery += sortingQuery + " LIMIT "
 //					+ PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage())
 //					+ " ," + courseSearchDto.getMaxSizePerPage();
@@ -1272,12 +1216,6 @@ public class CourseDaoImpl implements CourseDao {
 	@Override
 	public List<CourseRequest> courseFilter(final int pageNumber, final Integer pageSize,
 			final CourseFilterDto courseFilter) {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select c.id , c.institute_id, inst.country_name , inst.city_name, c.faculty_id, c.name,"
-				+ " c.description, c.intake, c.availabilty, c.created_by, c.updated_by, c.campus_location, c.website,"
-				+ " c.recognition_type, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.remarks, c.level_id FROM course c join institute inst"
-				+ " on c.institute_id = inst.id inner join faculty f  on f.id = c.faculty_id "
-				+ " left join institute_service iis  on iis.institute_id = inst.id where c.is_active = 1 and c.deleted_on IS NULL ";
 		org.springframework.data.mongodb.core.query.Query mongoQuery = new org.springframework.data.mongodb.core.query.Query();
 		Pageable pageable = PageRequest.of(pageNumber, pageSize);
 		mongoQuery.with(pageable);
@@ -1332,25 +1270,14 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public int findTotalCountCourseFilter(final CourseFilterDto courseFilter) {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select count(*) FROM course c join institute inst"
-				+ " on c.institute_id = inst.id inner join faculty f on f.id = c.faculty_id "
-				+ " left join institute_service iis on iis.institute_id = inst.id where c.is_active = 1 and c.deleted_on IS NULL ";
-		sqlQuery = addCourseFilterCondition(sqlQuery, courseFilter);
-		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
-		return rows.size();
+		Query query = new Query();
+		query.addCriteria(Criteria.where("isActive").is(1));
+		return (int) mongoOperations.count(query, Course.class, "course");
 	}
 
 	@Override
 	public List<CourseRequest> autoSearch(final int pageNumber, final Integer pageSize, final String searchKey) {
-//		Session session = sessionFactory.getCurrentSession();
-//		String sqlQuery = "select c.id , c.institute_id, ist.country_name , ist.city_name, c.faculty_id, c.name,"
-//				+ " c.description, c.intake, c.availabilty, c.created_by, c.updated_by, c.campus_location, c.website,"
-//				+ " c.recognition_type, c.abbreviation, c.updated_on, c.world_ranking, c.stars, c.remarks, c.level_id  FROM course c inner join"
-//				+ " institute ist on c.institute_id = ist.id"
-//				+ " where c.is_active = 1 and c.deleted_on IS NULL and (c.name like '%" + searchKey
-//				+ "%' or ist.name like '%" + searchKey + " %') ORDER BY c.created_on DESC ";
+
 		org.springframework.data.mongodb.core.query.Query mongoQuery = new org.springframework.data.mongodb.core.query.Query();
 		Pageable pageable = PageRequest.of(pageNumber, pageSize);
 		mongoQuery.with(pageable);
@@ -1373,31 +1300,27 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public Long autoSearchTotalCount(final String searchKey) {
-		Session session = sessionFactory.getCurrentSession();
-		BigInteger count = (BigInteger) session
-				.createNativeQuery("select count(*) FROM course c inner join institute ist on c.institute_id = ist.id"
-						+ " where c.is_active = 1 and c.deleted_on IS NULL and (c.name like '%" + searchKey
-						+ "%' or ist.name like '%" + searchKey + " %') ORDER BY c.created_on DESC ")
-				.uniqueResult();
-		return count != null ? count.longValue() : 0L;
+		Query query = new Query();
+		query.addCriteria(Criteria.where("name").is(searchKey));
+		return mongoOperations.count(query, Course.class, "course");
 	}
 
 	@Override
 	public List<Course> facultyWiseCourseForTopInstitute(final List<Faculty> facultyList, final Institute institute) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Course.class, "course");
-		crit.add(Restrictions.eq("institute", institute));
-		crit.add(Restrictions.in("faculty", facultyList));
-		return crit.list();
+		Query query = new Query();
+		for (Faculty r : facultyList) {
+			query.addCriteria(Criteria.where("faculty.id").is(r.getId()));
+			query.addCriteria(Criteria.where("insitute").is(institute.getId()));
+		}
+
+		return mongoTemplate.find(query, Course.class, "course");
 	}
 
 	@Override
 	public long getCourseCountForCountry(final String country) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Course.class, "course");
-		crit.add(Restrictions.eq("country", country));
-		crit.setProjection(Projections.rowCount());
-		return (long) crit.uniqueResult();
+		Query query = new Query();
+		query.addCriteria(Criteria.where("institute.countryName").is(country));
+		return (long) mongoOperations.count(query, Course.class, "course");
 	}
 
 	@Override
@@ -1469,8 +1392,9 @@ public class CourseDaoImpl implements CourseDao {
 	@Override
 	public List<Course> getAllCoursesUsingId(final List<String> listOfRecommendedCourseIds) {
 		org.springframework.data.mongodb.core.query.Query mongoQuery = new org.springframework.data.mongodb.core.query.Query();
-		mongoQuery.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("id").is(listOfRecommendedCourseIds));
-		return mongoTemplate.find(mongoQuery,Course.class,"course");
+		mongoQuery.addCriteria(
+				org.springframework.data.mongodb.core.query.Criteria.where("id").is(listOfRecommendedCourseIds));
+		return mongoTemplate.find(mongoQuery, Course.class, "course");
 	}
 
 	/*
@@ -1486,346 +1410,345 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public Long getCountOfDistinctInstitutesOfferingCoursesForCountry(final UserDto userDto, final String country) {
-		Session session = sessionFactory.getCurrentSession();
-
-		BigInteger count = (BigInteger) session.createNativeQuery(
-				"select count(*) from (Select count(*) from course where country_id = ? and is_active = ? group by country_name, institute_id) as temp_table")
-				.setParameter(1, country).setParameter(2, 1).uniqueResult();
-		return count != null ? count.longValue() : 0L;
+//		Session session = sessionFactory.getCurrentSession();
+//
+//		BigInteger count = (BigInteger) session.createNativeQuery(
+//				"select count(*) from (Select count(*) from course where country_id = ? and is_active = ? group by country_name, institute_id) as temp_table")
+//				.setParameter(1, country).setParameter(2, 1).uniqueResult();
+		return 1L;
 	}
 
 	@Override
 	public List<String> getDistinctCountryBasedOnCourses(final List<String> topSearchedCourseIds) {
-		Session session = sessionFactory.getCurrentSession();
-		String ids = topSearchedCourseIds.stream().map(String::toString).collect(Collectors.joining(","));
-		System.out.println("IDs -- " + ids);
-		List<String> countryIds = session.createNativeQuery(
-				"Select distinct i.country_name from course c join institute i on i.id=c.institute_id  where i.country_name is not null and "
-						+ "c.id in ('" + ids.replace(",", "','") + "')")
-				.getResultList();
-		return countryIds;
+//		Session session = sessionFactory.getCurrentSession();
+//		String ids = topSearchedCourseIds.stream().map(String::toString).collect(Collectors.joining(","));
+//		System.out.println("IDs -- " + ids);
+//		List<String> countryIds = session.createNativeQuery(
+//				"Select distinct i.country_name from course c join institute i on i.id=c.institute_id  where i.country_name is not null and "
+//						+ "c.id in ('" + ids.replace(",", "','") + "')")
+//				.getResultList();
+		return new ArrayList<>();
 	}
 
 	@Override
 	public List<String> getCourseListForCourseBasedOnParameters(final String courseId, final String instituteId,
 			final String facultyId, final String countryId, final String cityId) {
-		Session session = sessionFactory.getCurrentSession();
-		StringBuilder query = new StringBuilder();
-		query.append("Select c.id from course c left join institute i on c.institute_id = i.id where 1=1");
+		Query query = new Query();
 		if (courseId != null) {
-			query.append(" and c.id = '" + courseId + "'");
+			query.addCriteria(Criteria.where("id").is(courseId));
 		}
 		if (instituteId != null) {
-			query.append(" and c.institute_id ='" + instituteId + "'");
+			query.addCriteria(Criteria.where("institute.id").is(instituteId));
 		}
 		if (facultyId != null) {
-			query.append(" and c.faculty_id = '" + facultyId + "'");
+			query.addCriteria(Criteria.where("faculty.id").is(instituteId));
 		}
 		if (countryId != null) {
-			query.append(" and i.country_name = " + countryId);
+			query.addCriteria(Criteria.where("institute.countryName").is(countryId));
 		}
 		if (cityId != null) {
-			query.append(" and i.city_name = " + cityId);
+			query.addCriteria(Criteria.where("institute.cityName").is(cityId));
 		}
-		List<String> courseIds = session.createNativeQuery(query.toString()).getResultList();
-		return courseIds;
+		List<Course> courseIds = mongoTemplate.find(query, Course.class, "course");
+		List<String> course = Arrays.asList(courseIds.toString());
+		return course;
 	}
 
 	@Override
 	public List<String> getCourseIdsForCountry(final String country) {
-		Session session = sessionFactory.getCurrentSession();
-		List<String> courseList = session
-				.createNativeQuery("select c.id from course c left join institute i on i.id = c.institute_id"
-						+ " where i.country_name ='" + country + "'")
-				.getResultList();
+		Query query = new Query();
+		query.addCriteria(Criteria.where("institute.countryName").is(country));
+		List<Course> countrys = mongoTemplate.find(query, Course.class, "course");
+		String getCountry = countrys.stream().map(e -> e.getInstitute().getCountryName()).toString();
+		List<String> courseList = Arrays.asList(getCountry);
 		return courseList;
 	}
 
 	@Override
 	public List<String> getAllCoursesForCountry(final List<String> otherCountryIds) {
-		Session session = sessionFactory.getCurrentSession();
-		String ids = otherCountryIds.stream().map(String::toString).collect(Collectors.joining(","));
-		List<String> courseIdList = session
-				.createNativeQuery("Select c.id from course c left join institute i on i.id = c.institute_id"
-						+ " where i.country_name in ('" + ids.replace("'", "") + "')")
-				.getResultList();
-		return courseIdList;
+		Query query = new Query();
+		query.addCriteria(Criteria.where("institute.countryName").is(otherCountryIds));
+		List<Course> countrys = mongoTemplate.find(query, Course.class, "course");
+		String getCountry = countrys.stream().map(e -> e.getInstitute().getCountryName()).toString();
+		List<String> courseList = Arrays.asList(getCountry);
+		return courseList;
 	}
 
 	@Override
 	public int updateCourseForCurrency(final CurrencyRateDto currencyRate) {
-		Session session = sessionFactory.getCurrentSession();
-		System.out.println(currencyRate);
-		Integer count = session
-				.createNativeQuery("update course_delivery_modes cai inner join course c on c.id = cai.course_id "
-						+ "set cai.usd_domestic_fee = domestic_fee * ?, cai.usd_international_fee = international_fee * ?, cai.updated_on = now() where c.currency = ?")
-				.setParameter(1, 1 / currencyRate.getConversionRate())
-				.setParameter(2, 1 / currencyRate.getConversionRate()).setParameter(3, currencyRate.getToCurrencyCode())
-				.executeUpdate();
-		System.out.println("courses updated for " + currencyRate.getToCurrencyCode() + "-" + count);
-		return count;
+//		Session session = sessionFactory.getCurrentSession();
+//		System.out.println(currencyRate);
+//		Integer count = session
+//				.createNativeQuery("update course_delivery_modes cai inner join course c on c.id = cai.course_id "
+//						+ "set cai.usd_domestic_fee = domestic_fee * ?, cai.usd_international_fee = international_fee * ?, cai.updated_on = now() where c.currency = ?")
+//				.setParameter(1, 1 / currencyRate.getConversionRate())
+//				.setParameter(2, 1 / currencyRate.getConversionRate()).setParameter(3, currencyRate.getToCurrencyCode())
+//				.executeUpdate();
+//		System.out.println("courses updated for " + currencyRate.getToCurrencyCode() + "-" + count);
+//		return count;
+		return 1;
 	}
 
 	@Override
 	public Integer getTotalCourseCountForInstitute(final String instituteId) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(Course.class, "course");
-		criteria.createAlias("institute", "institute");
-		criteria.add(Restrictions.eq("institute.id", instituteId));
-		criteria.setProjection(Projections.rowCount());
-		Long count = (Long) criteria.uniqueResult();
-		return count == null ? 0 : count.intValue();
+		Query query = new Query();
+		query.addCriteria(Criteria.where("institute.id").is(instituteId));
+		return (int) mongoOperations.count(query, Course.class, "course");
 	}
 
 	@Override
 	public List<CourseSyncDTO> getUpdatedCourses(final Date updatedOn, final Integer startIndex, final Integer limit) {
-		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createNativeQuery("select crs.id, crs.name, crs.world_ranking as courseRanking, \r\n"
-				+ "crs.stars,crs.recognition,\r\n" + "crs.duration, \r\n"
-				+ "crs.website, crs.language, crs.abbreviation,\r\n" + "crs.rec_date ,crs.remarks, crs.description,\r\n"
-				+ "crs.is_active, crs.created_on, crs.updated_on,\r\n"
-				+ "crs.deleted_on, crs.created_by, crs.updated_by, crs.is_deleted,\r\n"
-				+ "crs.availbilty, crs.part_full, crs.study_mode, crs.international_fee,\r\n"
-				+ "crs.domestic_fee, crs.currency, crs.currency_time, crs.usd_international_fee,\r\n"
-				+ "crs.usd_domestic_fee, crs.cost_range, crs.content, \r\n"
-				+ "inst.id as institute_id, inst.name as institute_name, fac.id as faculty_id,\r\n"
-				+ "fac.name as faculty_name,\r\n"
-				+ "fac.description as faculty_description, cntry.name as country_name,\r\n"
-				+ "ct.name as city_name, lev.id as level_id, lev.code as level_code, lev.name as level_name, crs.recognition_type,"
-				+ "crs.duration_time from course crs \r\n"
-				+ "inner join institute inst on crs.institute_id = inst.id\r\n"
-				+ "inner join faculty fac on crs.faculty_id = fac.id\r\n"
-				+ "inner join country cntry on inst.country_id = cntry.id\r\n"
-				+ "inner join city ct on crs.city_id = ct.id\r\n" + "inner join level lev on crs.level_id = lev.id\r\n"
-				+ "where crs.updated_on >= ? \r\n" + "limit ?,?;");
-		query.setParameter(1, updatedOn).setParameter(2, startIndex).setParameter(3, limit);
+//		Session session = sessionFactory.getCurrentSession();
+//		Query query = session.createNativeQuery("select crs.id, crs.name, crs.world_ranking as courseRanking, \r\n"
+//				+ "crs.stars,crs.recognition,\r\n" + "crs.duration, \r\n"
+//				+ "crs.website, crs.language, crs.abbreviation,\r\n" + "crs.rec_date ,crs.remarks, crs.description,\r\n"
+//				+ "crs.is_active, crs.created_on, crs.updated_on,\r\n"
+//				+ "crs.deleted_on, crs.created_by, crs.updated_by, crs.is_deleted,\r\n"
+//				+ "crs.availbilty, crs.part_full, crs.study_mode, crs.international_fee,\r\n"
+//				+ "crs.domestic_fee, crs.currency, crs.currency_time, crs.usd_international_fee,\r\n"
+//				+ "crs.usd_domestic_fee, crs.cost_range, crs.content, \r\n"
+//				+ "inst.id as institute_id, inst.name as institute_name, fac.id as faculty_id,\r\n"
+//				+ "fac.name as faculty_name,\r\n"
+//				+ "fac.description as faculty_description, cntry.name as country_name,\r\n"
+//				+ "ct.name as city_name, lev.id as level_id, lev.code as level_code, lev.name as level_name, crs.recognition_type,"
+//				+ "crs.duration_time from course crs \r\n"
+//				+ "inner join institute inst on crs.institute_id = inst.id\r\n"
+//				+ "inner join faculty fac on crs.faculty_id = fac.id\r\n"
+//				+ "inner join country cntry on inst.country_id = cntry.id\r\n"
+//				+ "inner join city ct on crs.city_id = ct.id\r\n" + "inner join level lev on crs.level_id = lev.id\r\n"
+//				+ "where crs.updated_on >= ? \r\n" + "limit ?,?;");
+//		query.setParameter(1, updatedOn).setParameter(2, startIndex).setParameter(3, limit);
+//        Query query = new Query();
+//        query.addCriteria(Criteria.where(s3URL))
+//		List<Object[]> rows = query.list();
+//		List<CourseSyncDTO> courseElasticSearchList = new ArrayList<>();
+//		for (Object[] objects : rows) {
+//			CourseSyncDTO courseDtoElasticSearch = new CourseSyncDTO();
+//			courseDtoElasticSearch.setId(String.valueOf(objects[0]));
+//			courseDtoElasticSearch.setName(String.valueOf(objects[1]));
+//			if (String.valueOf(objects[2]) != null && !String.valueOf(objects[2]).isEmpty()
+//					&& !"null".equalsIgnoreCase(String.valueOf(objects[2]))) {
+//				courseDtoElasticSearch.setWorldRanking(Integer.valueOf(String.valueOf(objects[2])));
+//			} else {
+//				courseDtoElasticSearch.setWorldRanking(null);
+//			}
+//
+//			if (String.valueOf(objects[3]) != null && !String.valueOf(objects[3]).isEmpty()
+//					&& !"null".equalsIgnoreCase(String.valueOf(objects[3]))) {
+//				courseDtoElasticSearch.setStars(Integer.valueOf(String.valueOf(objects[3])));
+//			} else {
+//				courseDtoElasticSearch.setStars(null);
+//			}
+//
+//			courseDtoElasticSearch.setRecognition(String.valueOf(objects[4]));
+//			courseDtoElasticSearch.setWebsite(String.valueOf(objects[6]));
+//			courseDtoElasticSearch.setAbbreviation(String.valueOf(objects[8]));
+//			courseDtoElasticSearch.setRemarks(String.valueOf(objects[10]));
+//			courseDtoElasticSearch.setDescription(String.valueOf(objects[11]));
+//			courseDtoElasticSearch.setAvailabilty(String.valueOf(objects[19]));
+//
+//			courseDtoElasticSearch.setCurrency(String.valueOf(objects[24]));
+//			courseDtoElasticSearch.setCurrencyTime(String.valueOf(objects[25]));
+//
+//			courseDtoElasticSearch.setContent(String.valueOf(objects[29]));
+//
+//			InstituteSyncDTO institute = new InstituteSyncDTO();
+//			institute.setId(String.valueOf(objects[30]));
+//			institute.setName(String.valueOf(objects[31]));
+//			courseDtoElasticSearch.setInstitute(institute);
+//
+//			FacultyDto facultyDto = new FacultyDto();
+//			facultyDto.setId(String.valueOf(objects[32]));
+//			facultyDto.setName(String.valueOf(objects[33]));
+//			facultyDto.setDescription(String.valueOf(objects[34]));
+//			courseDtoElasticSearch.setFaculty(facultyDto);
 
-		List<Object[]> rows = query.list();
-		List<CourseSyncDTO> courseElasticSearchList = new ArrayList<>();
-		for (Object[] objects : rows) {
-			CourseSyncDTO courseDtoElasticSearch = new CourseSyncDTO();
-			courseDtoElasticSearch.setId(String.valueOf(objects[0]));
-			courseDtoElasticSearch.setName(String.valueOf(objects[1]));
-			if (String.valueOf(objects[2]) != null && !String.valueOf(objects[2]).isEmpty()
-					&& !"null".equalsIgnoreCase(String.valueOf(objects[2]))) {
-				courseDtoElasticSearch.setWorldRanking(Integer.valueOf(String.valueOf(objects[2])));
-			} else {
-				courseDtoElasticSearch.setWorldRanking(null);
-			}
+		// courseDtoElasticSearch.setCountryName(String.valueOf(objects[35]));
+		// courseDtoElasticSearch.setCityName(String.valueOf(objects[36]));
 
-			if (String.valueOf(objects[3]) != null && !String.valueOf(objects[3]).isEmpty()
-					&& !"null".equalsIgnoreCase(String.valueOf(objects[3]))) {
-				courseDtoElasticSearch.setStars(Integer.valueOf(String.valueOf(objects[3])));
-			} else {
-				courseDtoElasticSearch.setStars(null);
-			}
-
-			courseDtoElasticSearch.setRecognition(String.valueOf(objects[4]));
-			courseDtoElasticSearch.setWebsite(String.valueOf(objects[6]));
-			courseDtoElasticSearch.setAbbreviation(String.valueOf(objects[8]));
-			courseDtoElasticSearch.setRemarks(String.valueOf(objects[10]));
-			courseDtoElasticSearch.setDescription(String.valueOf(objects[11]));
-			courseDtoElasticSearch.setAvailabilty(String.valueOf(objects[19]));
-
-			courseDtoElasticSearch.setCurrency(String.valueOf(objects[24]));
-			courseDtoElasticSearch.setCurrencyTime(String.valueOf(objects[25]));
-
-			courseDtoElasticSearch.setContent(String.valueOf(objects[29]));
-
-			InstituteSyncDTO institute = new InstituteSyncDTO();
-			institute.setId(String.valueOf(objects[30]));
-			institute.setName(String.valueOf(objects[31]));
-			courseDtoElasticSearch.setInstitute(institute);
-
-			FacultyDto facultyDto = new FacultyDto();
-			facultyDto.setId(String.valueOf(objects[32]));
-			facultyDto.setName(String.valueOf(objects[33]));
-			facultyDto.setDescription(String.valueOf(objects[34]));
-			courseDtoElasticSearch.setFaculty(facultyDto);
-
-			// courseDtoElasticSearch.setCountryName(String.valueOf(objects[35]));
-			// courseDtoElasticSearch.setCityName(String.valueOf(objects[36]));
-
-			LevelDto levelDto = new LevelDto();
-			levelDto.setId(String.valueOf(objects[37]));
-			levelDto.setCode(String.valueOf(objects[38]));
-			levelDto.setName(String.valueOf(objects[39]));
-			courseDtoElasticSearch.setLevel(levelDto);
-
-			courseDtoElasticSearch.setRecognitionType(String.valueOf(objects[40]));
-			courseElasticSearchList.add(courseDtoElasticSearch);
-		}
-		return courseElasticSearchList;
+//			LevelDto levelDto = new LevelDto();
+//			levelDto.setId(String.valueOf(objects[37]));
+//			levelDto.setCode(String.valueOf(objects[38]));
+//			levelDto.setName(String.valueOf(objects[39]));
+//			courseDtoElasticSearch.setLevel(levelDto);
+//
+//			courseDtoElasticSearch.setRecognitionType(String.valueOf(objects[40]));
+//			courseElasticSearchList.add(courseDtoElasticSearch);
+//		}
+		return null;
 	}
 
 	@Override
 	public Integer getCountOfTotalUpdatedCourses(final Date utCdatetimeAsOnlyDate) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(Course.class, "course");
-		criteria.add(Restrictions.ge("updatedOn", utCdatetimeAsOnlyDate));
-		criteria.setProjection(Projections.rowCount());
-		Long count = (Long) criteria.uniqueResult();
-		return count != null ? count.intValue() : 0;
+		Query query = new Query();
+		query.addCriteria(Criteria.where("updatedOn").is(utCdatetimeAsOnlyDate));
+		return (int) mongoOperations.count(query, Course.class, "course");
 	}
 
 	@Override
 	public List<CourseSyncDTO> getCoursesToBeRetriedForElasticSearch(final List<String> courseIds,
 			final Integer startIndex, final Integer limit) {
-		if (courseIds == null || courseIds.isEmpty()) {
-			return new ArrayList<>();
-		}
-		Session session = sessionFactory.getCurrentSession();
-		StringBuilder queryString = new StringBuilder(
-				"select crs.id, crs.name, crs.world_ranking as courseRanking, \r\n" + "crs.stars,crs.recognition,\r\n"
-						+ "crs.duration, \r\n" + "crs.website, crs.language, crs.abbreviation,\r\n"
-						+ "crs.rec_date ,crs.remarks, crs.description,\r\n"
-						+ "crs.is_active, crs.created_on, crs.updated_on,\r\n"
-						+ "crs.deleted_on, crs.created_by, crs.updated_by, crs.is_deleted,\r\n"
-						+ "crs.availbilty, crs.part_full, crs.study_mode, crs.international_fee,\r\n"
-						+ "crs.domestic_fee, crs.currency, crs.currency_time, crs.usd_international_fee,\r\n"
-						+ "crs.usd_domestic_fee, crs.cost_range, crs.content, \r\n"
-						+ "inst.id as institute_id, inst.name as institute_name, fac.id as faculty_id, fac.name as faculty_name,\r\n"
-						+ "fac.description as faculty_description, cntry.name as country_name,\r\n"
-						+ "ct.name as city_name, lev.id as level_id, lev.code as level_code, lev.name as level_name, crs.recognition_type,"
-						+ "crs.duration_time from course crs \r\n"
-						+ "inner join institute inst on crs.institute_id = inst.id\r\n"
-						+ "inner join faculty fac on crs.faculty_id = fac.id\r\n"
-						+ "inner join country cntry on inst.country_id = cntry.id\r\n"
-						+ "inner join city ct on crs.city_id = ct.id\r\n"
-						+ "inner join level lev on crs.level_id = lev.id\r\n" + "where crs.id in (");
-
-		for (int i = 0; i < courseIds.size(); i++) {
-			queryString.append("?");
-			if (!(i == courseIds.size() - 1)) {
-				queryString.append(",");
-			}
-		}
-		queryString.append(")");
-		Query query = session.createNativeQuery(queryString.toString());
-		for (int i = 0; i < courseIds.size(); i++) {
-			query.setParameter(i + 1, courseIds.get(i));
-		}
-
-		List<Object[]> rows = query.list();
-		List<CourseSyncDTO> courseElasticSearchList = new ArrayList<>();
-		for (Object[] objects : rows) {
-			CourseSyncDTO courseDtoElasticSearch = new CourseSyncDTO();
-			courseDtoElasticSearch.setId(String.valueOf(objects[0]));
-			courseDtoElasticSearch.setName(String.valueOf(objects[1]));
-			if (String.valueOf(objects[2]) != null && !String.valueOf(objects[2]).isEmpty()
-					&& !"null".equalsIgnoreCase(String.valueOf(objects[2]))) {
-				courseDtoElasticSearch.setWorldRanking(Integer.valueOf(String.valueOf(objects[2])));
-			} else {
-				courseDtoElasticSearch.setWorldRanking(null);
-			}
-
-			if (String.valueOf(objects[3]) != null && !String.valueOf(objects[3]).isEmpty()
-					&& !"null".equalsIgnoreCase(String.valueOf(objects[3]))) {
-				courseDtoElasticSearch.setStars(Integer.valueOf(String.valueOf(objects[3])));
-			} else {
-				courseDtoElasticSearch.setStars(null);
-			}
-
-			courseDtoElasticSearch.setRecognition(String.valueOf(objects[4]));
-			courseDtoElasticSearch.setWebsite(String.valueOf(objects[6]));
-			courseDtoElasticSearch.setAbbreviation(String.valueOf(objects[8]));
-			courseDtoElasticSearch.setRemarks(String.valueOf(objects[10]));
-			courseDtoElasticSearch.setDescription(String.valueOf(objects[11]));
-			courseDtoElasticSearch.setAvailabilty(String.valueOf(objects[19]));
-
-			courseDtoElasticSearch.setCurrency(String.valueOf(objects[24]));
-			courseDtoElasticSearch.setCurrencyTime(String.valueOf(objects[25]));
-
-			courseDtoElasticSearch.setContent(String.valueOf(objects[29]));
-
-			InstituteSyncDTO institute = new InstituteSyncDTO();
-			institute.setId(String.valueOf(objects[30]));
-			institute.setName(String.valueOf(objects[31]));
-			courseDtoElasticSearch.setInstitute(institute);
-
-			FacultyDto facultyDto = new FacultyDto();
-			facultyDto.setId(String.valueOf(objects[32]));
-			facultyDto.setName(String.valueOf(objects[33]));
-			facultyDto.setDescription(String.valueOf(objects[34]));
-			courseDtoElasticSearch.setFaculty(facultyDto);
-
-//			courseDtoElasticSearch.setCountryName(String.valueOf(objects[35]));
-//			courseDtoElasticSearch.setCityName(String.valueOf(objects[36]));
-
-			LevelDto levelDto = new LevelDto();
-			levelDto.setId(String.valueOf(objects[37]));
-			levelDto.setCode(String.valueOf(objects[38]));
-			levelDto.setName(String.valueOf(objects[39]));
-			courseDtoElasticSearch.setLevel(levelDto);
-
-			courseDtoElasticSearch.setRecognitionType(String.valueOf(objects[40]));
-			courseElasticSearchList.add(courseDtoElasticSearch);
-		}
-		return courseElasticSearchList;
+//		if (courseIds == null || courseIds.isEmpty()) {
+//			return new ArrayList<>();
+//		}
+//		Session session = sessionFactory.getCurrentSession();
+//		StringBuilder queryString = new StringBuilder(
+//				"select crs.id, crs.name, crs.world_ranking as courseRanking, \r\n" + "crs.stars,crs.recognition,\r\n"
+//						+ "crs.duration, \r\n" + "crs.website, crs.language, crs.abbreviation,\r\n"
+//						+ "crs.rec_date ,crs.remarks, crs.description,\r\n"
+//						+ "crs.is_active, crs.created_on, crs.updated_on,\r\n"
+//						+ "crs.deleted_on, crs.created_by, crs.updated_by, crs.is_deleted,\r\n"
+//						+ "crs.availbilty, crs.part_full, crs.study_mode, crs.international_fee,\r\n"
+//						+ "crs.domestic_fee, crs.currency, crs.currency_time, crs.usd_international_fee,\r\n"
+//						+ "crs.usd_domestic_fee, crs.cost_range, crs.content, \r\n"
+//						+ "inst.id as institute_id, inst.name as institute_name, fac.id as faculty_id, fac.name as faculty_name,\r\n"
+//						+ "fac.description as faculty_description, cntry.name as country_name,\r\n"
+//						+ "ct.name as city_name, lev.id as level_id, lev.code as level_code, lev.name as level_name, crs.recognition_type,"
+//						+ "crs.duration_time from course crs \r\n"
+//						+ "inner join institute inst on crs.institute_id = inst.id\r\n"
+//						+ "inner join faculty fac on crs.faculty_id = fac.id\r\n"
+//						+ "inner join country cntry on inst.country_id = cntry.id\r\n"
+//						+ "inner join city ct on crs.city_id = ct.id\r\n"
+//						+ "inner join level lev on crs.level_id = lev.id\r\n" + "where crs.id in (");
+//
+//		for (int i = 0; i < courseIds.size(); i++) {
+//			queryString.append("?");
+//			if (!(i == courseIds.size() - 1)) {
+//				queryString.append(",");
+//			}
+//		}
+//		queryString.append(")");
+//		Query query = session.createNativeQuery(queryString.toString());
+//		for (int i = 0; i < courseIds.size(); i++) {
+//			query.setParameter(i + 1, courseIds.get(i));
+//		}
+//
+//		List<Object[]> rows = query.list();
+//		List<CourseSyncDTO> courseElasticSearchList = new ArrayList<>();
+//		for (Object[] objects : rows) {
+//			CourseSyncDTO courseDtoElasticSearch = new CourseSyncDTO();
+//			courseDtoElasticSearch.setId(String.valueOf(objects[0]));
+//			courseDtoElasticSearch.setName(String.valueOf(objects[1]));
+//			if (String.valueOf(objects[2]) != null && !String.valueOf(objects[2]).isEmpty()
+//					&& !"null".equalsIgnoreCase(String.valueOf(objects[2]))) {
+//				courseDtoElasticSearch.setWorldRanking(Integer.valueOf(String.valueOf(objects[2])));
+//			} else {
+//				courseDtoElasticSearch.setWorldRanking(null);
+//			}
+//
+//			if (String.valueOf(objects[3]) != null && !String.valueOf(objects[3]).isEmpty()
+//					&& !"null".equalsIgnoreCase(String.valueOf(objects[3]))) {
+//				courseDtoElasticSearch.setStars(Integer.valueOf(String.valueOf(objects[3])));
+//			} else {
+//				courseDtoElasticSearch.setStars(null);
+//			}
+//
+//			courseDtoElasticSearch.setRecognition(String.valueOf(objects[4]));
+//			courseDtoElasticSearch.setWebsite(String.valueOf(objects[6]));
+//			courseDtoElasticSearch.setAbbreviation(String.valueOf(objects[8]));
+//			courseDtoElasticSearch.setRemarks(String.valueOf(objects[10]));
+//			courseDtoElasticSearch.setDescription(String.valueOf(objects[11]));
+//			courseDtoElasticSearch.setAvailabilty(String.valueOf(objects[19]));
+//
+//			courseDtoElasticSearch.setCurrency(String.valueOf(objects[24]));
+//			courseDtoElasticSearch.setCurrencyTime(String.valueOf(objects[25]));
+//
+//			courseDtoElasticSearch.setContent(String.valueOf(objects[29]));
+//
+//			InstituteSyncDTO institute = new InstituteSyncDTO();
+//			institute.setId(String.valueOf(objects[30]));
+//			institute.setName(String.valueOf(objects[31]));
+//			courseDtoElasticSearch.setInstitute(institute);
+//
+//			FacultyDto facultyDto = new FacultyDto();
+//			facultyDto.setId(String.valueOf(objects[32]));
+//			facultyDto.setName(String.valueOf(objects[33]));
+//			facultyDto.setDescription(String.valueOf(objects[34]));
+//			courseDtoElasticSearch.setFaculty(facultyDto);
+//
+////			courseDtoElasticSearch.setCountryName(String.valueOf(objects[35]));
+////			courseDtoElasticSearch.setCityName(String.valueOf(objects[36]));
+//
+//			LevelDto levelDto = new LevelDto();
+//			levelDto.setId(String.valueOf(objects[37]));
+//			levelDto.setCode(String.valueOf(objects[38]));
+//			levelDto.setName(String.valueOf(objects[39]));
+//			courseDtoElasticSearch.setLevel(levelDto);
+//
+//			courseDtoElasticSearch.setRecognitionType(String.valueOf(objects[40]));
+//			courseElasticSearchList.add(courseDtoElasticSearch);
+//		}
+		return null;
 	}
 
 	@Override
 	public List<CourseIntake> getCourseIntakeBasedOnCourseId(final String courseId) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(CourseIntake.class, "courseIntake");
-		crit.createAlias("courseIntake.course", "course");
-		crit.add(Restrictions.eq("course.id", courseId));
-		return crit.list();
+//		Session session = sessionFactory.getCurrentSession();
+//		Criteria crit = session.createCriteria(CourseIntake.class, "courseIntake");
+//		crit.createAlias("courseIntake.course", "course");
+//		crit.add(Restrictions.eq("course.id", courseId));
+		return null;
 	}
 
 	@Override
 	public void deleteCourseDeliveryMethod(final String courseId) {
-		Session session = sessionFactory.getCurrentSession();
-		String hql = "delete CourseDeliveryMethod where course_id = :courseId";
-		Query q = session.createQuery(hql).setParameter("courseId", courseId);
-		q.executeUpdate();
+//		Session session = sessionFactory.getCurrentSession();
+//		String hql = "delete CourseDeliveryMethod where course_id = :courseId";
+//		Query q = session.createQuery(hql).setParameter("courseId", courseId);
+//		q.executeUpdate();
 	}
 
 	@Override
 	public List<String> getUserSearchCourseRecommendation(final Integer startIndex, final Integer pageSize,
 			final String searchKeyword) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(Course.class);
-		criteria.setProjection(Projections.property("name"));
-		if (searchKeyword != null && !searchKeyword.isEmpty()) {
-			criteria.add(Restrictions.ilike("name", searchKeyword, MatchMode.ANYWHERE));
-		}
-		if (startIndex != null && pageSize != null) {
-			criteria.setFirstResult(startIndex);
-			criteria.setMaxResults(pageSize);
-		}
-		return criteria.list();
+//		Session session = sessionFactory.getCurrentSession();
+//		Criteria criteria = session.createCriteria(Course.class);
+//		criteria.setProjection(Projections.property("name"));
+//		if (searchKeyword != null && !searchKeyword.isEmpty()) {
+//			criteria.add(Restrictions.ilike("name", searchKeyword, MatchMode.ANYWHERE));
+//		}
+//		if (startIndex != null && pageSize != null) {
+//			criteria.setFirstResult(startIndex);
+//			criteria.setMaxResults(pageSize);
+//		}
+		return null;
 	}
 
 	@Override
 	public int getDistinctCourseCountbyName(String courseName) {
-		Session session = sessionFactory.getCurrentSession();
-		StringBuilder sqlQuery = new StringBuilder("select distinct c.name as courseName from course c");
+		Query query = new Query();
 		if (StringUtils.isNotEmpty(courseName)) {
-			sqlQuery.append(" where name like ('" + "%" + courseName.trim() + "%')");
+			query.addCriteria(Criteria.where("name").is(courseName));
 		}
-		Query query = session.createSQLQuery(sqlQuery.toString());
-		List<Object[]> rows = query.list();
-		return rows.size();
+
+		return (int) mongoOperations.count(query, Course.class, "course");
 	}
 
 	@Override
 	public List<CourseResponseDto> getDistinctCourseListByName(Integer startIndex, Integer pageSize,
 			String courseName) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(Course.class)
-				.setProjection(Projections.projectionList().add(Projections.groupProperty("name").as("name"))
-						.add(Projections.property("id").as("id"))
-						.add(Projections.property("worldRanking").as("courseRanking"))
-						.add(Projections.property("currency").as("currencyCode"))
-						.add(Projections.property("readableId").as("readableId")))
-				.setResultTransformer(Transformers.aliasToBean(CourseResponseDto.class));
+		Query query = new Query();
 		if (StringUtils.isNotEmpty(courseName)) {
-			criteria.add(Restrictions.like("name", courseName, MatchMode.ANYWHERE));
+			query.addCriteria(Criteria.where("name").is(courseName));
 		}
-		criteria.setFirstResult(startIndex);
-		criteria.setMaxResults(pageSize);
-		return criteria.list();
+		Pageable page = PageRequest.of(startIndex, pageSize);
+		query.with(page);
+		List<Course> course = mongoTemplate.find(query, Course.class, "course");
+		List<CourseResponseDto> dto = new ArrayList<>();
+
+		for (Course row : course) {
+			CourseResponseDto courseResponseDto = new CourseResponseDto();
+			courseResponseDto.setId(row.getId());
+			courseResponseDto.setName(row.getName());
+			courseResponseDto.setInstituteId(row.getInstituteId());
+			courseResponseDto.setInstituteName(row.getInstitute().getName());
+			courseResponseDto.setCityName(row.getInstitute().getCityName());
+			courseResponseDto.setCountryName(row.getInstitute().getCountryName());
+			courseResponseDto.setLocation(row.getInstitute().getLocation().toString());
+			dto.add(courseResponseDto);
+
+		}
+		return dto;
 	}
 
 	public Integer getCoursesCountBylevelId(final String levelId) {
@@ -1852,56 +1775,11 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public List<CourseResponseDto> getNearestCourseForAdvanceSearch(AdvanceSearchDto courseSearchDto) {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQueryForCourse = "SELECT DISTINCT crs.id as courseId,crs.name as courseName,crs.world_ranking,crs.stars as stars, inst.id, inst.name as instituteName,"
-				+ " inst.country_name, inst.city_name, crs.currency, inst.latitude, inst.longitude, cai.duration, cai.duration_time,"
-				+ " cai.study_mode, cai.usd_domestic_fee, cai.usd_international_fee, cai.id as additionalInfoId, cai.delivery_type,"
-				+ " 6371 * ACOS(SIN(RADIANS('" + courseSearchDto.getLatitude()
-				+ "')) * SIN(RADIANS(inst.latitude)) + COS(RADIANS('" + courseSearchDto.getLatitude()
-				+ "')) * COS(RADIANS(inst.latitude)) * COS(RADIANS(inst.longitude)-" + " RADIANS('"
-				+ courseSearchDto.getLongitude()
-				+ "'))) AS distance_in_km FROM course crs inner join institute inst on inst.id = crs.institute_id"
-				+ " inner join faculty f on f.id = crs.faculty_id LEFT JOIN institute_service iis on iis.institute_id = inst.id"
-				+ " LEFT JOIN course_delivery_modes cai on cai.course_id = crs.id where crs.is_off_campus false and inst.latitude is not null and"
-				+ " inst.longitude is not null and inst.latitude!= " + courseSearchDto.getLatitude()
-				+ " and inst.longitude!= " + courseSearchDto.getLongitude();
-
-		String sqlQueryForOffCampusCourse = "SELECT DISTINCT crs.id as courseId,crs.name as courseName,crs.world_ranking,crs.stars as stars, inst.id, inst.name as instituteName,"
-				+ " inst.country_name, inst.city_name, crs.currency, occ.latitude, occ.longitude, cai.duration, cai.duration_time,"
-				+ " cai.study_mode, cai.usd_domestic_fee, cai.usd_international_fee, cai.id as additionalInfoId, cai.delivery_type,"
-				+ " 6371 * ACOS(SIN(RADIANS('" + courseSearchDto.getLatitude()
-				+ "')) * SIN(RADIANS(occ.latitude)) + COS(RADIANS('" + courseSearchDto.getLatitude()
-				+ "')) * COS(RADIANS(occ.latitude)) * COS(RADIANS(occ.longitude)-" + " RADIANS('"
-				+ courseSearchDto.getLongitude() + "'))) AS distance_in_km "
-				+ " FROM off_campus_course occ LEFT JOIN course crs ON crs.id = occ.course_id inner join institute inst on inst.id = crs.institute_id"
-				+ " inner join faculty f on f.id = crs.faculty_id LEFT JOIN institute_service iis on iis.institute_id = inst.id"
-				+ " LEFT JOIN course_delivery_modes cai on cai.course_id = crs.id where inst.latitude is not null and"
-				+ " inst.longitude is not null and occ.latitude!= " + courseSearchDto.getLatitude()
-				+ " and occ.longitude!= " + courseSearchDto.getLongitude();
-
-		sqlQueryForCourse = addCondition(sqlQueryForCourse, courseSearchDto);
-		sqlQueryForOffCampusCourse = addCondition(sqlQueryForOffCampusCourse, courseSearchDto);
-
-		sqlQueryForCourse += " HAVING distance_in_km <= " + courseSearchDto.getInitialRadius();
-		sqlQueryForOffCampusCourse += " HAVING distance_in_km <= " + courseSearchDto.getInitialRadius();
-
-		String sortingQuery = "";
-		if (courseSearchDto.getSortBy() != null && !courseSearchDto.getSortBy().isEmpty()) {
-			sortingQuery = addSorting(sortingQuery, courseSearchDto);
-		}
-
-		if (courseSearchDto.getPageNumber() != null && courseSearchDto.getMaxSizePerPage() != null) {
-			PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage());
-			sqlQueryForCourse += " UNION " + sqlQueryForOffCampusCourse + " LIMIT "
-					+ PaginationUtil.getStartIndex(courseSearchDto.getPageNumber(), courseSearchDto.getMaxSizePerPage())
-					+ " ," + courseSearchDto.getMaxSizePerPage();
-		} else {
-			sqlQueryForCourse += " UNION " + sqlQueryForOffCampusCourse;
-		}
-		System.out.println(sqlQueryForCourse);
-		org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
-		addParameter(query, courseSearchDto);
-		List<CourseResponseDto> rows = mongoTemplate.find(query, CourseResponseDto.class, "course");
+		Point location = new Point(courseSearchDto.getLongitude(), courseSearchDto.getLatitude());
+		NearQuery querys = NearQuery.near(location)
+				.maxDistance(new Distance(courseSearchDto.getInitialRadius() / 1000, Metrics.KILOMETERS));
+		Query query = new Query();
+		List<CourseResponseDto> rows = mongoTemplate.find(query, CourseResponseDto.class);
 		List<CourseResponseDto> nearestCourseDTOs = new ArrayList<>();
 		List<CourseDeliveryModesDto> additionalInfoDtos = new ArrayList<>();
 		for (CourseResponseDto row : rows) {
@@ -1990,7 +1868,7 @@ public class CourseDaoImpl implements CourseDao {
 //// Query Is Not UnderStandable......
 	@Override
 	public Integer getTotalCountOfNearestCourses(Double latitude, Double longitude, Integer initialRadius) {
-		Session session = sessionFactory.getCurrentSession();
+
 //		String sqlQuery = "SELECT course.id," + " 6371 * ACOS(SIN(RADIANS('" + latitude
 //				+ "')) * SIN(RADIANS(institute.latitude)) + COS(RADIANS('" + latitude
 //				+ "')) * COS(RADIANS(institute.latitude)) *" + " COS(RADIANS(institute.longitude) - RADIANS('"
@@ -2182,7 +2060,7 @@ public class CourseDaoImpl implements CourseDao {
 		org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
 		query.with(paging);
 		query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("institute.id").is(instituteId));
-		return mongoTemplate.find(query, Course.class,"course");
-		}
+		return mongoTemplate.find(query, Course.class, "course");
+	}
 
 }

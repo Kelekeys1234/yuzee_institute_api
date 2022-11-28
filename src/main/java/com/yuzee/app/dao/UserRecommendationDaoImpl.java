@@ -3,14 +3,13 @@ package com.yuzee.app.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -21,25 +20,25 @@ import com.yuzee.app.bean.Course;
 public class UserRecommendationDaoImpl implements UserRecommendationDao {
 
 	@Autowired
-	private SessionFactory sessionFactory;
+	private MongoTemplate mongoTemplate;
 
 	@Override
-	public List<Course> getRecommendCourse(final String facultyId, final String instituteId, final String countryId, final String cityId,
-			final Double price, final Double variablePrice, final int pageSize, final List<String> courseIds) {
-		return getRelatedCourse(facultyId, instituteId, countryId, cityId, price, variablePrice, pageSize, courseIds, null);
+	public List<Course> getRecommendCourse(final String facultyId, final String instituteId, final String countryId,
+			final String cityId, final Double price, final Double variablePrice, final int pageSize,
+			final List<String> courseIds) {
+		return getRelatedCourse(facultyId, instituteId, countryId, cityId, price, variablePrice, pageSize, courseIds,
+				null);
 	}
 
 	@Override
-	public List<Course> getRelatedCourse(final String facultyId, final String instituteId, final String countryId, final String cityId,
-			final Double price, final Double variablePrice, final int pageSize, final List<String> courseIds, final String courseName) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Course.class, "course");
-		crit.createAlias("course.faculty", "faculty");
+	public List<Course> getRelatedCourse(final String facultyId, final String instituteId, final String countryId,
+			final String cityId, final Double price, final Double variablePrice, final int pageSize,
+			final List<String> courseIds, final String courseName) {
+		org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
 
-		crit.createAlias("course.institute", "institute");
-		crit.add(Restrictions.eq("faculty.id", facultyId));
 		if (instituteId != null) {
-			crit.add(Restrictions.eq("institute.id", instituteId));
+			query.addCriteria(
+					org.springframework.data.mongodb.core.query.Criteria.where("instituteId").is(instituteId));
 		}
 
 		if (price != null) {
@@ -48,79 +47,79 @@ public class UserRecommendationDaoImpl implements UserRecommendationDao {
 				low = Double.valueOf(0);
 			}
 			Double high = price + variablePrice;
-			crit.add(Restrictions.between("course.usdInternationFee", low, high));
-			crit.addOrder(Order.asc("course.usdInternationFee"));
+			org.springframework.data.mongodb.core.query.Criteria criteria = new org.springframework.data.mongodb.core.query.Criteria();
+			criteria.andOperator(
+					org.springframework.data.mongodb.core.query.Criteria.where("usdInternationalApplicationFee")
+							.gte(low),
+					org.springframework.data.mongodb.core.query.Criteria.where("usdInternationalApplicationFee")
+							.lt(high));
+			query.with(Sort.by(Sort.Direction.ASC, "usdInternationalApplicationFee"));
 		}
 		if (courseIds != null && !courseIds.isEmpty()) {
-			crit.add(Restrictions.not(Restrictions.in("course.id", courseIds.toArray())));
+			query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("id").is(courseIds));
 		}
 
 		if (courseName != null) {
-			crit.add(Restrictions.eq("course.name", courseName));
+			query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("name").is(courseName));
 		}
 
-		crit.setFirstResult(0);
-		crit.setMaxResults(pageSize);
+		Pageable pagabe = PageRequest.of(pageSize, pageSize);
+		query.with(pagabe);
 
-		return crit.list();
+		return mongoTemplate.find(query, Course.class, "course");
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public List<Course> getCourseNoResultRecommendation(final String facultyId, final String countryId, final List<String> courseIds,
-			final Integer startIndex, final Integer pageSize) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria crit = session.createCriteria(Course.class, "course");
-		crit.createAlias("course.faculty", "faculty");
+	public List<Course> getCourseNoResultRecommendation(final String facultyId, final String countryId,
+			final List<String> courseIds, final Integer startIndex, final Integer pageSize) {
+		org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
+
 		if (facultyId != null) {
-			crit.add(Restrictions.eq("faculty.id", facultyId));
+			query.addCriteria(Criteria.where("faculty.id").is(facultyId));
 		}
 
 		if (courseIds != null && !courseIds.isEmpty()) {
-			crit.add(Restrictions.not(Restrictions.in("course.id", courseIds.toArray())));
+			query.addCriteria(Criteria.where("id").is(courseIds));
 		}
 		if (startIndex != null && pageSize != null) {
-			crit.setFirstResult(startIndex);
-			crit.setMaxResults(pageSize);
+			Pageable page = PageRequest.of(startIndex, pageSize);
+			query.with(page);
 		}
-		return crit.list();
+		return mongoTemplate.find(query, Course.class, "course");
 	}
 
 	@Override
-	public List<Course> getCheapestCourse(final String facultyId, final String countryId, final String levelId, final String cityId,
-			final List<String> courseIds, final Integer startIndex, final Integer pageSize) {
-		Session session = sessionFactory.getCurrentSession();
+	public List<Course> getCheapestCourse(final String facultyId, final String countryId, final String levelId,
+			final String cityId, final List<String> courseIds, final Integer startIndex, final Integer pageSize) {
+	Query query = new Query();
 		
-		String sqlQuery = "select c.id, c.name, c.world_ranking, c.stars, c.availabilty, c.currency, c.website, c.recognition, c.description"
-				+ " from course c left join course_delivery_modes cai on cai.course_id = c.id";
-		
-		if(!StringUtils.isEmpty(facultyId)) {
-			sqlQuery+= " where c.faculty_id = '"+ facultyId +"'";
+
+		if (!StringUtils.isEmpty(facultyId)) {
+			query.addCriteria(Criteria.where("faculty.id").is(facultyId));
 		}
-		
-		if(!StringUtils.isEmpty(levelId)) {
-			sqlQuery+= " and c.level_id = '"+ levelId +"'";
+
+		if (!StringUtils.isEmpty(levelId)) {
+			query.addCriteria(Criteria.where("level.id").is(levelId));
 		}
-		
-		if(!CollectionUtils.isEmpty(courseIds)) {
-			sqlQuery += " and c.id not in ("+ courseIds.stream().map(String::valueOf).collect(Collectors.joining("','", "'", "'")) + ")";
+
+		if (!CollectionUtils.isEmpty(courseIds)) {
+			query.addCriteria(Criteria.where("id").is(courseIds));
 		}
-		sqlQuery += " order by cai.usd_international_fee desc limit " + startIndex + ", " + pageSize;
-		
-		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
+	  Pageable page = PageRequest.of(startIndex,pageSize);
+		List<Course> rows = mongoTemplate.find(query, Course.class, "course");
 		List<Course> courses = new ArrayList<>();
-		for (Object[] row : rows) {
+		for (Course row : rows) {
 			Course course = new Course();
-			course.setId(row[0].toString());
-			course.setName(row[1].toString());
-			course.setWorldRanking(Integer.parseInt(row[2].toString()));
-			course.setStars(Integer.parseInt(row[3].toString()));
-			course.setAvailabilty(row[4].toString());
-			course.setCurrency(row[5].toString());
-			course.setWebsite(row[6].toString());
-			course.setRecognition(row[7].toString());
-			course.setDescription(row[8].toString());
+			course.setId(row.getId());
+			course.setName(row.getName());
+			course.setWorldRanking(row.getWorldRanking());
+			course.setStars(row.getStars());
+			course.setAvailabilty(row.getAvailabilty());
+			course.setCurrency(row.getCurrency());
+			course.setWebsite(row.getWebsite());
+			course.setRecognition(row.getRecognition());
+			course.setDescription(row.getDescription());
 			courses.add(course);
 		}
 		return courses;

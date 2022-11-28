@@ -1,11 +1,9 @@
 package com.yuzee.app.processor;
 
 import java.util.Locale;
+
 import java.util.Optional;
 import java.util.UUID;
-
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +25,6 @@ public class InstituteContactInfoProcessor {
 	@Autowired
 	private MessageTranslator messageTranslator;
 
-	@Transactional(rollbackOn = Throwable.class)
 	public void addUpdateInstituteContactInfo(String userId, String instituteId,
 			InstituteContactInfoDto instituteContactInfoDto) throws Exception {
 		log.debug("Inside addUpdateInstituteContactInfo() method");

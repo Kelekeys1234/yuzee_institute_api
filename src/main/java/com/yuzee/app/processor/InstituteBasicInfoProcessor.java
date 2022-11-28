@@ -3,8 +3,6 @@ package com.yuzee.app.processor;
 import java.util.*;
 
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -45,7 +43,6 @@ public class InstituteBasicInfoProcessor {
 	@Autowired
 	private MessageTranslator messageTranslator;
 
-	@Transactional(rollbackOn = Throwable.class)
 	public void addUpdateInstituteBasicInfo(String userId, String instituteId, InstituteBasicInfoDto instituteBasicInfoDto ) throws Exception {
 		log.debug("Inside addUpdateInstituteBasicInfo() method");
 		//TODO validate user ID passed in request have access to modify resource
@@ -75,7 +72,6 @@ public class InstituteBasicInfoProcessor {
 		instituteDAO.addUpdateInstitute(institute);
 	}
 
-	@Transactional
 	public InstituteBasicInfoDto getInstituteBasicInfo (String userId , String instituteId, String caller, boolean includeInstituteLogo, boolean includeDetail) throws Exception {
 		InstituteBasicInfoDto instituteBasicInfoDto = new InstituteBasicInfoDto();
 		List<StorageDto> listOfStorageDto = null;

@@ -2,14 +2,10 @@ package com.yuzee.app.dao.impl;
 
 import static org.hamcrest.CoreMatchers.is;
 
+
 import java.util.ArrayList;
 
 import java.util.List;
-
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -23,8 +19,6 @@ import com.yuzee.app.repository.GradeDetailRepository;
 @Component
 public class GradeDaoImpl implements GradeDao {
 
-	@Autowired
-	private SessionFactory sessionFactory;
 	@Autowired
  	private MongoTemplate mongoTemplate;
 	@Autowired

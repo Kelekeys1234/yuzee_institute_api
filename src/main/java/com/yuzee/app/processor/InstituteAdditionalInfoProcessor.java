@@ -1,11 +1,11 @@
 package com.yuzee.app.processor;
 
 import java.util.Date;
+
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +43,6 @@ public class InstituteAdditionalInfoProcessor {
 	@Autowired
 	private MessageTranslator messageTranslator;
 	
-	@Transactional(rollbackOn = Throwable.class)
 	public void addUpdateInstituteAdditionalInfo(String userId, String instituteId,
 			InstituteAdditionalInfoDto instituteAdditionalInfoDto) throws NotFoundException {
 		log.debug("Inside addInstituteAdditionalInfo() method");

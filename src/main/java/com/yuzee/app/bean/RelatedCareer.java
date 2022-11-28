@@ -1,11 +1,8 @@
 package com.yuzee.app.bean;
 
 import java.io.Serializable;
+
 import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
