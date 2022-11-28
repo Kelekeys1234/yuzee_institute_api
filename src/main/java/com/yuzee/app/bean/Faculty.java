@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 @Document("faculty")
 @NoArgsConstructor
 @AllArgsConstructor
-/*@Table(name = "faculty", uniqueConstraints = @UniqueConstraint(columnNames = { "name" }, name = "UK_FACULY_NA"), 
-	indexes = {@Index(name = "IDX_FACULTY_NAME", columnList = "name", unique = true) }) */
 public class Faculty implements Serializable {
 
 	private static final long serialVersionUID = -5502957778916515394L;

@@ -1,7 +1,6 @@
 package com.yuzee.app.bean;
 
-import javax.persistence.Id;
-
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,7 +19,6 @@ import lombok.ToString;
 @Document(collection = "location")
 public class Location {
 	@Id
-
 	private String id;
 	@EqualsAndHashCode.Include
 	private GeoJsonPoint location;

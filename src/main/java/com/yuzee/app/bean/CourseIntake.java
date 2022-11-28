@@ -13,8 +13,7 @@ import lombok.ToString;
 @Data
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-/*@Table(name = "course_intake", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"course_id" }, name = "UK_COURSE_ID")) */
+
 public class CourseIntake implements Serializable {
 
 	private static final long serialVersionUID = 1L;

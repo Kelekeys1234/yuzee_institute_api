@@ -2,20 +2,14 @@ package com.yuzee.app.bean;
 
 import java.io.Serializable;
 
-
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import javax.persistence.EntityListeners;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.ObjectUtils;
 
-import com.yuzee.app.entitylistener.CourseUpdateListener;
 import com.yuzee.common.lib.enumeration.CourseTypeEnum;
 
 import lombok.Data;
@@ -26,16 +20,8 @@ import lombok.ToString;
 //@Entity
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@EntityListeners(CourseUpdateListener.class)
-@Document(collection="course")
+@Document(collection = "course")
 public class Course implements Serializable {
-//	, @UniqueConstraint(name = "UK_COURSE_F_L_I_N_C", columnNames = {})	, columnNames = { "faculty_id",
-//		"level_id", "institute_id", "name", "code" }), indexes = {
-//@Index(name = "IDX_FACULTY_ID", columnList = "faculty_id", unique = false),
-//@Index(name = "IDX_INSTITUTE_ID", columnList = "institute_id", unique = false),
-//@Index(name = "IDX_LEVEL_ID", columnList = "level_id", unique = false),
-//@Index(name = "IDX_COURSE_NAME", columnList = "name", unique = false),
-//@Index(name = "IDX_COURSE_CURRICULUM", columnList = "curriculum_id", unique = false) }
 	private static final long serialVersionUID = 8492390790670110780L;
 
 	@Id
@@ -48,7 +34,7 @@ public class Course implements Serializable {
 
 	@DBRef
 	private Institute institute;
-	
+
 	private String instituteId;
 
 	@DBRef(lazy = true)

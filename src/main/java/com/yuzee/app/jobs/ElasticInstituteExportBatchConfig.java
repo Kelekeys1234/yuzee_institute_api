@@ -1,7 +1,5 @@
 package com.yuzee.app.jobs;
 
-import javax.persistence.EntityManagerFactory;
-
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -10,12 +8,15 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.data.MongoItemReader;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
+import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.Institute;
 import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 import com.yuzee.common.lib.exception.InvokeException;
@@ -27,12 +28,11 @@ public class ElasticInstituteExportBatchConfig {
 	
 	@StepScope
 	@Bean("instituteJpaItemReader")
-	public JpaPagingItemReader<Institute> instituteJpaItemReader(@Autowired EntityManagerFactory emf) {
-	    JpaPagingItemReader<Institute> instituteItemReader = new JpaPagingItemReader<>();
-	    instituteItemReader.setEntityManagerFactory(emf);
-	    instituteItemReader.setQueryString("SELECT I FROM Institute I"); 
-	    instituteItemReader.setPageSize(1);
-	    return instituteItemReader;
+	public MongoItemReader<Institute> instituteJpaItemReader(@Autowired MongoTemplate mongoTemplate) {
+		  MongoItemReader<Institute> reader = new MongoItemReader<Institute>();
+		    reader.setTemplate(mongoTemplate);
+		    reader.setPageSize(1);
+	    return reader;
 	}
 	
 	@Bean

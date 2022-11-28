@@ -15,9 +15,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "enrollment_status")
+@Document("enrollment_status")
 public class EnrollmentStatus implements Serializable {
 
 	/**
@@ -25,22 +26,17 @@ public class EnrollmentStatus implements Serializable {
 	 */
 	private static final long serialVersionUID = -1493487191397729023L;
 
-	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
+	@org.springframework.data.annotation.Id
 	private String id;
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "enrollment_id", nullable = false)
+	@DBRef
 	private Enrollment enrollment;
-	@Column(name = "status", nullable = false)
+
 	private String status;
-	@Column(name = "dead_line", length = 19)
+
 	private Date deadLine;
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
+
 	private Date createdOn;
-	@Column(name = "created_by", length = 50)
+
 	private String createdBy;
 
 	public String getId() {
@@ -164,8 +160,9 @@ public class EnrollmentStatus implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("EnrollmentStatus [id=").append(id).append(", enrollment=").append(enrollment).append(", status=").append(status).append(", deadLine=")
-				.append(deadLine).append(", createdOn=").append(createdOn).append(", createdBy=").append(createdBy).append("]");
+		builder.append("EnrollmentStatus [id=").append(id).append(", enrollment=").append(enrollment)
+				.append(", status=").append(status).append(", deadLine=").append(deadLine).append(", createdOn=")
+				.append(createdOn).append(", createdBy=").append(createdBy).append("]");
 		return builder.toString();
 	}
 

@@ -2,6 +2,7 @@ package com.yuzee.app.jobs;
 
 import java.io.IOException;
 
+
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.batch.core.ItemWriteListener;
@@ -24,7 +25,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
 
 import com.yuzee.app.bean.Level;
 import com.yuzee.common.lib.dto.institute.LevelDto;

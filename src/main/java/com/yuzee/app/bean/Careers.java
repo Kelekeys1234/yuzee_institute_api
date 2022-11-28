@@ -16,22 +16,17 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-
-@Document(collection="career_list")
+@Document(collection = "career_list")
 @ToString
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-/*
- * @Table(name = "career_list", uniqueConstraints
- * = @UniqueConstraint(columnNames = { "career" }, name = "UK_CAREER_NAME"))
- */
+
 public class Careers implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	private String id;
-
 	@EqualsAndHashCode.Include
 	private String career;
 	@EqualsAndHashCode.Include
@@ -48,8 +43,6 @@ public class Careers implements Serializable {
 
 	@DBRef
 	private List<CareerJob> careerJobs = new ArrayList<>();
-
-	
 
 	public String getId() {
 		return id;
@@ -115,11 +108,8 @@ public class Careers implements Serializable {
 		this.careerJobs = careerJobs;
 	}
 
-
 	public Careers() {
 		super();
 	}
-    
-	
 
 }

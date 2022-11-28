@@ -1,10 +1,8 @@
 package com.yuzee.app.dao.impl;
 
 import java.util.List;
+
 import java.util.Optional;
-
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +27,7 @@ public class AccrediatedDetailDaoImpl implements AccrediatedDetailDao {
 	}
 
 	@Override
-	@Transactional
+	@org.springframework.transaction.annotation.Transactional
 	public void deleteAccrediationDetailByEntityId(String entityId) {
 		accrediatedDetailRepository.deleteByEntityId(entityId);
 	}
@@ -45,7 +43,7 @@ public class AccrediatedDetailDaoImpl implements AccrediatedDetailDao {
 	}
 
 	@Override
-	@Transactional
+	@org.springframework.transaction.annotation.Transactional
 	public void deleteAccrediationDetailById(String id) {
 		accrediatedDetailRepository.deleteById(id);
 	}

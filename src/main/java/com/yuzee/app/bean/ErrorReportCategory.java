@@ -2,18 +2,10 @@ package com.yuzee.app.bean;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import org.hibernate.annotations.GenericGenerator;
-
-@Entity
-@Table(name = "error_report_category")
+@Document("error_report_category")
 public class ErrorReportCategory implements java.io.Serializable {
 
     /**
@@ -35,9 +27,6 @@ public class ErrorReportCategory implements java.io.Serializable {
      * @return the id
      */
     @Id
-    @GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
     public String getId() {
         return id;
     }
@@ -53,7 +42,7 @@ public class ErrorReportCategory implements java.io.Serializable {
     /**
      * @return the subjectName
      */
-    @Column(name = "name", length = 500)
+
     public String getName() {
         return name;
     }
@@ -66,8 +55,7 @@ public class ErrorReportCategory implements java.io.Serializable {
         this.name = name;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_on", length = 19)
+
     public Date getCreatedOn() {
         return this.createdOn;
     }
@@ -76,8 +64,6 @@ public class ErrorReportCategory implements java.io.Serializable {
         this.createdOn = createdOn;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_on", length = 19)
     public Date getUpdatedOn() {
         return this.updatedOn;
     }
@@ -86,8 +72,6 @@ public class ErrorReportCategory implements java.io.Serializable {
         this.updatedOn = updatedOn;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "deleted_on", length = 19)
     public Date getDeletedOn() {
         return this.deletedOn;
     }
@@ -96,7 +80,6 @@ public class ErrorReportCategory implements java.io.Serializable {
         this.deletedOn = deletedOn;
     }
 
-    @Column(name = "created_by", length = 50)
     public String getCreatedBy() {
         return this.createdBy;
     }
@@ -105,7 +88,6 @@ public class ErrorReportCategory implements java.io.Serializable {
         this.createdBy = createdBy;
     }
 
-    @Column(name = "updated_by", length = 50)
     public String getUpdatedBy() {
         return this.updatedBy;
     }
@@ -117,7 +99,6 @@ public class ErrorReportCategory implements java.io.Serializable {
     /**
      * @return the isActive
      */
-    @Column(name = "is_active")
     public Boolean getIsActive() {
         return isActive;
     }
@@ -218,7 +199,6 @@ public class ErrorReportCategory implements java.io.Serializable {
                         + updatedBy + ", deletedOn=" + deletedOn + ", isActive=" + isActive + "]";
     }
 
-    @Column(name = "error_category_type", length = 100)
     public String getErrorCategoryType() {
         return errorCategoryType;
     }

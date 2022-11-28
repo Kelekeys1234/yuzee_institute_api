@@ -1,12 +1,6 @@
 package com.yuzee.app.bean;
 
 import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -25,8 +19,7 @@ import lombok.NoArgsConstructor;
 @Document("Timing")
 public class Timing {
 
-	@Id
-
+	@org.springframework.data.annotation.Id
 	private String id;
 
 	@EqualsAndHashCode.Include
@@ -62,12 +55,9 @@ public class Timing {
 	private String entityId;
 
 	@EqualsAndHashCode.Include
-	@Enumerated(EnumType.STRING)
-
 	private TimingType timingType;
 
 	@EqualsAndHashCode.Include
-
 	private EntityTypeEnum entityType;
 
 	private Date createdOn;

@@ -38,9 +38,6 @@ public class Help implements Serializable {
 	private static final long serialVersionUID = 6922844940897956622L;
 
 	@Id
-//	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-//	@GeneratedValue(generator = "generator")
-//	@Column(name = "id", unique = true, nullable = false, length=36)
 	private String id;
 //
 //	@ManyToOne(fetch = FetchType.LAZY)

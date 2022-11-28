@@ -2,8 +2,6 @@ package com.yuzee.app.bean;
 
 import java.util.Date;
 
-import javax.persistence.Id;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,7 +16,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstituteCampus {
 
-	@Id
+	@org.springframework.data.annotation.Id
 	private String id;
 
 	private String instituteId;

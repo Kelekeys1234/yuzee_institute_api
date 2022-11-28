@@ -1,21 +1,12 @@
 package com.yuzee.app.bean;
 
 import java.io.Serializable;
+
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "enrollment")
+@Document("enrollment")
 public class Enrollment implements Serializable {
 
 	/**
@@ -23,98 +14,75 @@ public class Enrollment implements Serializable {
 	 */
 	private static final long serialVersionUID = -2176239464548120692L;
 
-	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length = 36)
+	@org.springframework.data.annotation.Id
 	private String id;
 
-//	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-//	@JoinColumn(name = "institute_id", nullable = false)
-//	private Institute institute;
-
-	@Column(name = "user_id", nullable = false)
 	private String userId;
 
 	@DBRef(lazy = true)
 	private Course course;
 
-	@Column(name = "is_international_student", nullable = false)
 	private Boolean isInternationalStudent;
 
-//	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-//	@JoinColumn(name = "institute_type_id", nullable = false)
-//	private InstituteType instituteType;
-
-	@Column(name = "previous_institute")
 	private String previousInstitute;
 
-	@Column(name = "previous_course_name")
 	private String previousCourseName;
 
-	@Column(name = "graduation_date")
 	private Date graduationDate;
 
-	@Column(name = "status")
 	private String status;
 
-	@Column(name = "english_qualificaiton_test")
 	private String englishQualificaitonTest;
 
-	@Column(name = "latest_academic_qualification")
 	private String latestAcademicQualification;
 
 	/**
 	 * Visa
 	 */
-	@Column(name = "purpose_of_stay")
 	private String purposeOfStay;
-	@Column(name = "first_name")
+
 	private String firstName;
-	@Column(name = "last_name")
+
 	private String lastName;
-	@Column(name = "gender")
+
 	private String gender;
-	@Column(name = "birth_date")
+
 	private Date birthDate;
-	@Column(name = "passport_number")
+
 	private String passportNumber;
-	@Column(name = "passport_issue_date")
+
 	private Date passportIssueDate;
-	@Column(name = "passport_expiry_date")
+
 	private Date passportExpiryDate;
-	@Column(name = "office_of_issue")
+
 	private String officeOfIssue;
-	@Column(name = "other_name")
+
 	private String otherName;
-	@Column(name = "address")
+
 	private String address;
-	@Column(name = "town")
+
 	private String town;
-	@Column(name = "state")
+
 	private String state;
-	@Column(name = "country_name")
+
 	private String countryName;
-	@Column(name = "zip_code")
+
 	private String zipCode;
-	@Column(name = "phone_number")
+
 	private String phoneNumber;
-	@Column(name = "email")
+
 	private String email;
-	@Column(name = "assignee")
+
 	private String assignee;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
 	private Date createdOn;
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
+
 	private Date updatedOn;
-	@Column(name = "created_by", length = 50)
+
 	private String createdBy;
-	@Column(name = "updated_by", length = 50)
+
 	private String updatedBy;
-	@Column(name = "is_archive")
+
 	private Boolean isArchive = false;
 
 	public String getId() {
@@ -124,14 +92,6 @@ public class Enrollment implements Serializable {
 	public void setId(final String id) {
 		this.id = id;
 	}
-
-//	public Institute getInstitute() {
-//		return institute;
-//	}
-//
-//	public void setInstitute(final Institute institute) {
-//		this.institute = institute;
-//	}
 
 	public String getUserId() {
 		return userId;
@@ -156,14 +116,6 @@ public class Enrollment implements Serializable {
 	public void setIsInternationalStudent(final Boolean isInternationalStudent) {
 		this.isInternationalStudent = isInternationalStudent;
 	}
-
-//	public InstituteType getInstituteType() {
-//		return instituteType;
-//	}
-//
-//	public void setInstituteType(final InstituteType instituteType) {
-//		this.instituteType = instituteType;
-//	}
 
 	public String getPreviousInstitute() {
 		return previousInstitute;
@@ -406,8 +358,6 @@ public class Enrollment implements Serializable {
 		result = prime * result + (gender == null ? 0 : gender.hashCode());
 		result = prime * result + (graduationDate == null ? 0 : graduationDate.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
-//		result = prime * result + (institute == null ? 0 : institute.hashCode());
-//		result = prime * result + (instituteType == null ? 0 : instituteType.hashCode());
 		result = prime * result + (isArchive == null ? 0 : isArchive.hashCode());
 		result = prime * result + (isInternationalStudent == null ? 0 : isInternationalStudent.hashCode());
 		result = prime * result + (lastName == null ? 0 : lastName.hashCode());
@@ -534,20 +484,6 @@ public class Enrollment implements Serializable {
 		} else if (!id.equals(other.id)) {
 			return false;
 		}
-//		if (institute == null) {
-//			if (other.institute != null) {
-//				return false;
-//			}
-//		} else if (!institute.equals(other.institute)) {
-//			return false;
-//		}
-//		if (instituteType == null) {
-//			if (other.instituteType != null) {
-//				return false;
-//			}
-//		} else if (!instituteType.equals(other.instituteType)) {
-//			return false;
-//		}
 		if (isArchive == null) {
 			if (other.isArchive != null) {
 				return false;
@@ -714,8 +650,6 @@ public class Enrollment implements Serializable {
 		return builder.toString();
 	}
 
-//.append(", institute=").append(institute)
-	@Column(name = "country_name")
 	public String getCountryName() {
 		return countryName;
 	}
@@ -725,4 +659,3 @@ public class Enrollment implements Serializable {
 	}
 
 }
-//.append(", instituteType=").append(instituteType)

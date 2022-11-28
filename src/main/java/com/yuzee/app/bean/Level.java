@@ -17,17 +17,11 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-//@Entity
 @ToString
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Document("level")
-/*
- * @Table(name = "level", uniqueConstraints = @UniqueConstraint(columnNames = {
- * "name", "code", "sequence_no" }, name = "UK_NA_CO_SN"), indexes =
- * { @Index(name = "IDX_NAME", columnList = "name", unique = false) })
- */
 public class Level implements Serializable {
 
 	private static final long serialVersionUID = 9149617652748065109L;

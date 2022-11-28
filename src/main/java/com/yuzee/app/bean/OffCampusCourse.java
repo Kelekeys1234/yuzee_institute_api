@@ -1,10 +1,10 @@
 package com.yuzee.app.bean;
 
 import java.io.Serializable;
+
 import java.util.Date;
 
-import javax.persistence.Id;
-
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -16,13 +16,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Document("off_campus_course")
-/*
- * @Table(name = "off_campus_course", uniqueConstraints = {
- * 
- * @UniqueConstraint(columnNames = { "title" }, name = "UK_OFF_CAMPUS_TITLE"),
- * 
- * @UniqueConstraint(columnNames = { "course_id" }, name = "UK_COURSE") })
- */
+
 public class OffCampusCourse implements Serializable {
 
 	private static final long serialVersionUID = 1L;

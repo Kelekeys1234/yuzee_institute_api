@@ -1,7 +1,5 @@
 package com.yuzee.app.jobs;
 
-import javax.persistence.EntityManagerFactory;
-
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -10,11 +8,12 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JpaPagingItemReader;
+import org.springframework.batch.item.data.MongoItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.yuzee.app.bean.Faculty;
 import com.yuzee.common.lib.dto.institute.FacultyDto;
@@ -27,12 +26,11 @@ public class ElasticFacultyExportBatchConfig {
 	
 	@StepScope
 	@Bean("facultyJpaItemReader")
-	public JpaPagingItemReader<Faculty> facultyJpaItemReader(@Autowired EntityManagerFactory emf) {
-	    JpaPagingItemReader<Faculty> itemReader = new JpaPagingItemReader<>();
-	    itemReader.setEntityManagerFactory(emf);
-	    itemReader.setQueryString("SELECT F FROM Faculty F"); 
-	    itemReader.setPageSize(1);
-	    return itemReader;
+	public MongoItemReader<Faculty> facultyJpaItemReader(@Autowired MongoTemplate mongoTemplate) {
+		  MongoItemReader<Faculty> reader = new MongoItemReader<Faculty>();
+		    reader.setTemplate(mongoTemplate);
+		    reader.setPageSize(1);
+	    return reader;
 	}
 	
 	@Bean

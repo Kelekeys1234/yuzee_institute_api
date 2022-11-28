@@ -1,12 +1,12 @@
 package com.yuzee.app.bean;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Id;
-
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -20,11 +20,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode
-/*
- * @Table(name = "jobs", uniqueConstraints = @UniqueConstraint(columnNames = {
- * "job", "career_id" }, name = "UK_JOB_CAREER_ID"), indexes = {@Index(name =
- * "IDX_CAREER_ID", columnList = "career_id", unique = false)})
- */
+
 public class CareerJob implements Serializable {
 
 	private static final long serialVersionUID = 1L;

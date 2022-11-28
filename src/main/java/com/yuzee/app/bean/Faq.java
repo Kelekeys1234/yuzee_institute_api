@@ -17,53 +17,36 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.yuzee.app.constant.FaqEntityType;
 
 import lombok.Data;
 
-@Entity
-@Table(name = "faq", uniqueConstraints = @UniqueConstraint(columnNames = { "title", "entity_id", "entity_type",
-		"faq_sub_category_id" }, name = "UK_FAQ_T_EI_ET_SC"), indexes = {
-				@Index(name = "IDX_FAQ_ENTITY_ID", columnList = "entity_id", unique = false),
-				@Index(name = "IDX_FAQ_SUB_CATEGORY_ID", columnList = "faq_sub_category_id", unique = false) })
+@Document("faq")
 @Data
 public class Faq implements Serializable {
 
 	private static final long serialVersionUID = 5744814923342867841L;
 
-	@Id
-	@GenericGenerator(name = "GUID", strategy = "org.hibernate.id.GUIDGenerator")
-	@GeneratedValue(generator = "GUID")
-	@Column(name = "id", unique = true, nullable = false, length = 36)
+	@org.springframework.data.annotation.Id
 	private String id;
 
-	@Column(name = "entity_id", nullable = false, length = 36)
 	private String entityId;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "entity_type", nullable = false)
 	private FaqEntityType entityType;
 
-	@Column(name = "title", nullable = false)
 	private String title;
 
-	@Column(name = "description", nullable = false)
 	private String description;
 
-	@Column(name = "created_on")
 	private Date createdOn;
 
-	@Column(name = "updated_on")
 	private Date updatedOn;
 
-	@Column(name = "created_by")
 	private String createdBy;
 
-	@Column(name = "updated_by")
 	private String updatedBy;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "faq_sub_category_id")
 	private FaqSubCategory faqSubCategory;
 }

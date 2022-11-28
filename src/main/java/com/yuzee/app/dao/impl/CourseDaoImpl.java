@@ -2,6 +2,7 @@ package com.yuzee.app.dao.impl;
 
 import java.math.BigInteger;
 
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,15 +12,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.query.Query;
-import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -32,7 +24,9 @@ import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.NearQuery;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -84,8 +78,6 @@ public class CourseDaoImpl implements CourseDao {
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private MongoOperations mongoOperations;
-	@Autowired
-	private SessionFactory sessionFactory;
 
 	@Autowired
 	private CommonHandler commonHandler;
@@ -562,23 +554,24 @@ public class CourseDaoImpl implements CourseDao {
 	}
 
 	public CourseResponseDto getCourse(final String instituteId, final CourseSearchDto courseSearchDto) {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select A.*,count(1) over () totalRows from  (select distinct crs.id as courseId,crs.name as courseName,"
-				+ "inst.id as instId,inst.name as instName,"
-				+ " crs.cost_range,crs.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
-				+ "ctry.name as countryName,crs.world_ranking,crs.language,crs.stars,crs.recognition,crs.domestic_fee,crs.international_fee "
-				+ "from course crs inner join institute inst "
-				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = inst.country_id inner join "
-				+ "city ci  on ci.id = inst.city_id inner join faculty f  on f.id = crs.faculty_id "
-				+ "left join institute_service iis  on iis.institute_id = inst.id where crs.institute_id = "
-				+ instituteId;
-
+////		Session session = sessionFactory.getCurrentSession();
+////		String sqlQuery = "select A.*,count(1) over () totalRows from  (select distinct crs.id as courseId,crs.name as courseName,"
+////				+ "inst.id as instId,inst.name as instName,"
+////				+ " crs.cost_range,crs.currency,crs.duration,crs.duration_time,ci.id as cityId,ctry.id as countryId,ci.name as cityName,"
+////				+ "ctry.name as countryName,crs.world_ranking,crs.language,crs.stars,crs.recognition,crs.domestic_fee,crs.international_fee "
+////				+ "from course crs inner join institute inst "
+////				+ " on crs.institute_id = inst.id inner join country ctry  on ctry.id = inst.country_id inner join "
+////				+ "city ci  on ci.id = inst.city_id inner join faculty f  on f.id = crs.faculty_id "
+////				+ "left join institute_service iis  on iis.institute_id = inst.id where crs.institute_id = "
+////				+ instituteId;
+//
+		Query query = new Query();
 		if (null != courseSearchDto.getLevelIds() && !courseSearchDto.getLevelIds().isEmpty()) {
-			sqlQuery += " and f.level_id in ('" + StringUtils.join(courseSearchDto.getLevelIds(), ',') + "')";
+			query.addCriteria(Criteria.where("levelIds").is(courseSearchDto.getLevelIds()));
 		}
 
 		if (null != courseSearchDto.getFacultyIds() && !courseSearchDto.getFacultyIds().isEmpty()) {
-			sqlQuery += " and crs.faculty_id in ('" + StringUtils.join(courseSearchDto.getFacultyIds(), ',') + "')";
+			query.addCriteria(Criteria.where("facultyId").is(courseSearchDto.getFacultyIds()));
 		}
 
 		if (null != courseSearchDto.getCourseKeys() && !courseSearchDto.getCourseKeys().isEmpty()) {
@@ -701,12 +694,12 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public int findTotalCount() {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select sa.id from course sa where sa.is_active = 1 and sa.deleted_on IS NULL";
-		System.out.println(sqlQuery);
-		Query query = session.createSQLQuery(sqlQuery);
-		List<Object[]> rows = query.list();
-		return rows.size();
+//		Session session = sessionFactory.getCurrentSession();
+//		String sqlQuery = "select sa.id from course sa where sa.is_active = 1 and sa.deleted_on IS NULL";
+//		System.out.println(sqlQuery);
+//		Query query = session.createSQLQuery(sqlQuery);
+//		List<Object[]> rows = query.list();
+		return 0;
 	}
 
 	@Override
@@ -908,12 +901,9 @@ public class CourseDaoImpl implements CourseDao {
 
 	@Override
 	public int findTotalCountByUserId(final String userId) {
-		Session session = sessionFactory.getCurrentSession();
-		String sqlQuery = "select count(*) from  user_my_course umc inner join course c on umc.course_id = c.id where umc.is_active = 1 and c.is_active = 1 and umc.deleted_on IS NULL and umc.user_id='"
-				+ userId + "'";
-		System.out.println(sqlQuery);
-		Query query = session.createSQLQuery(sqlQuery);
-		return ((Number) query.uniqueResult()).intValue();
+		Query query = new Query();
+		query.addCriteria(Criteria.where("id").is(userId));
+		return (int)  mongoOperations.count(query, Course.class);
 	}
 
 	@Override

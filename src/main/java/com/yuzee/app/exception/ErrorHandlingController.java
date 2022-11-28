@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuzee.common.lib.exception.BaseException;
 import com.yuzee.common.lib.exception.BaseRuntimeException;
+import com.yuzee.common.lib.exception.ConstraintVoilationException;
 import com.yuzee.common.lib.exception.ForbiddenException;
 import com.yuzee.common.lib.exception.ValidationException;
 import com.yuzee.common.lib.handler.GenericResponseHandlers;
@@ -52,7 +53,7 @@ public class ErrorHandlingController {
 			status = HttpStatus.BAD_REQUEST;
 			message = exception.getMessage();
 			DataIntegrityViolationException ex = (DataIntegrityViolationException)exception;
-			if (ex.getCause() instanceof ConstraintViolationException) {
+			if (ex.getCause() instanceof ConstraintVoilationException) {
 				String constraintName = ((ConstraintViolationException) ex.getCause()).getConstraintName();
 				if (!ObjectUtils.isEmpty(constraintName)) {
 					String msg =  messageTranslator.toLocale(constraintName);

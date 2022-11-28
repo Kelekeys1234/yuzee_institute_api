@@ -43,5 +43,3 @@ public class InstituteCategoryType implements Serializable {
         this.createdOn = createdOn;
     }
 }
-//@Entity
-//@Table(name = "institute_category_type", uniqueConstraints = @UniqueConstraint(columnNames = { "name" },name = "UK_ICT_NAME"))

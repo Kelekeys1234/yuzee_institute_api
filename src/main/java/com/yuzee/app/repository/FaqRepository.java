@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import com.yuzee.app.bean.Faq;
@@ -13,7 +14,7 @@ import com.yuzee.app.constant.FaqEntityType;
 import com.yuzee.common.lib.dto.CountDto;
 
 @Repository
-public interface FaqRepository extends JpaRepository<Faq, String> {
+public interface FaqRepository extends MongoRepository<Faq, String> {
 
 	@Query("SELECT faq from Faq faq where :entityId = faq.entityId"
 			+ " and (:faqCategoryId is null or :faqCategoryId = '' or :faqCategoryId = faq.faqSubCategory.faqCategory.id)"

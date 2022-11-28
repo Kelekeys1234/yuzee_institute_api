@@ -1,6 +1,5 @@
 package com.yuzee.app.jobs;
 
-import javax.persistence.EntityManagerFactory;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -10,11 +9,12 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JpaPagingItemReader;
+import org.springframework.batch.item.data.MongoItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.yuzee.app.bean.Course;
 import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
@@ -30,13 +30,12 @@ public class ElasticCourseExportBatchConfig {
 	
 	@StepScope
 	@Bean("courseJpaItemReader")
-	public JpaPagingItemReader<Course> courseJpaItemReader(@Autowired EntityManagerFactory emf) {
+	public MongoItemReader<Course> courseJpaItemReader(@Autowired MongoTemplate mongoTemplate) {
 		log.info("inside ElasticCourseExportBatchConfig.courseJpaItemReader");
-	    JpaPagingItemReader<Course> courseItemReader = new JpaPagingItemReader<>();
-	    courseItemReader.setEntityManagerFactory(emf);
-	    courseItemReader.setQueryString("SELECT C FROM Course C");
-	    courseItemReader.setPageSize(50);
-	    return courseItemReader;
+		  MongoItemReader<Course> reader = new MongoItemReader<Course>();
+		    reader.setTemplate(mongoTemplate);
+		    reader.setPageSize(1);
+	    return reader;
 	}
 	
 	@Bean

@@ -2,21 +2,10 @@ package com.yuzee.app.bean;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import org.hibernate.annotations.GenericGenerator;
-
-@Entity
-@Table(name = "error_report")
+@Document("error_report")
 public class ErrorReport implements java.io.Serializable {
 
 	/**
@@ -42,7 +31,7 @@ public class ErrorReport implements java.io.Serializable {
 	private String assigneeUserId;
 	private String severity;
 	private Boolean isFavourite = false;
-	
+
 	private String phoneName;
 	private String phoneLocation;
 	private String phoneIp;
@@ -51,10 +40,8 @@ public class ErrorReport implements java.io.Serializable {
 	/**
 	 * @return the id
 	 */
-	@Id
-	@GenericGenerator(name = "generator", strategy = "guid", parameters = {})
-	@GeneratedValue(generator = "generator")
-	@Column(name = "id", unique = true, nullable = false, length=36)
+	@Id	
+
 	public String getId() {
 		return id;
 	}
@@ -66,8 +53,6 @@ public class ErrorReport implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
 	public Date getCreatedOn() {
 		return this.createdOn;
 	}
@@ -76,8 +61,6 @@ public class ErrorReport implements java.io.Serializable {
 		this.createdOn = createdOn;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
 	public Date getUpdatedOn() {
 		return this.updatedOn;
 	}
@@ -85,9 +68,7 @@ public class ErrorReport implements java.io.Serializable {
 	public void setUpdatedOn(final Date updatedOn) {
 		this.updatedOn = updatedOn;
 	}
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "deleted_on", length = 19)
+	
 	public Date getDeletedOn() {
 		return this.deletedOn;
 	}
@@ -95,8 +76,7 @@ public class ErrorReport implements java.io.Serializable {
 	public void setDeletedOn(final Date deletedOn) {
 		this.deletedOn = deletedOn;
 	}
-
-	@Column(name = "created_by", length = 50)
+	
 	public String getCreatedBy() {
 		return this.createdBy;
 	}
@@ -105,7 +85,7 @@ public class ErrorReport implements java.io.Serializable {
 		this.createdBy = createdBy;
 	}
 
-	@Column(name = "updated_by", length = 50)
+
 	public String getUpdatedBy() {
 		return this.updatedBy;
 	}
@@ -117,7 +97,6 @@ public class ErrorReport implements java.io.Serializable {
 	/**
 	 * @return the isActive
 	 */
-	@Column(name = "is_active")
 	public Boolean getIsActive() {
 		return isActive;
 	}
@@ -132,7 +111,6 @@ public class ErrorReport implements java.io.Serializable {
 	/**
 	 * @return the userId
 	 */
-	@Column(name = "user_id")
 	public String getUserId() {
 		return userId;
 	}
@@ -147,8 +125,6 @@ public class ErrorReport implements java.io.Serializable {
 	/**
 	 * @return the errorReportCategory
 	 */
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "category_id", nullable = false)
 	public ErrorReportCategory getErrorReportCategory() {
 		return errorReportCategory;
 	}
@@ -163,7 +139,7 @@ public class ErrorReport implements java.io.Serializable {
 	/**
 	 * @return the description
 	 */
-	@Column(name = "description")
+
 	public String getDescription() {
 		return description;
 	}
@@ -178,7 +154,7 @@ public class ErrorReport implements java.io.Serializable {
 	/**
 	 * @return the cashNumber
 	 */
-	@Column(name = "case_number")
+
 	public String getCaseNumber() {
 		return caseNumber;
 	}
@@ -193,7 +169,6 @@ public class ErrorReport implements java.io.Serializable {
 	/**
 	 * @return the status
 	 */
-	@Column(name = "status")
 	public String getStatus() {
 		return status;
 	}
@@ -208,7 +183,7 @@ public class ErrorReport implements java.io.Serializable {
 	/**
 	 * @return the coreArticalDetail
 	 */
-	@Column(name = "course_article_id",length=36)
+	
 	public String getCourseArticleId() {
 		return courseArticleId;
 	}
@@ -220,8 +195,7 @@ public class ErrorReport implements java.io.Serializable {
 		this.courseArticleId = courseArticleId;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "due_date", length = 19)
+	
 	public Date getDueDate() {
 		return dueDate;
 	}
@@ -236,7 +210,7 @@ public class ErrorReport implements java.io.Serializable {
 	/**
 	 * @return the assigneeUserId
 	 */
-	@Column(name = "assignee_user_id", length=36)
+
 	public String getAssigneeUserId() {
 		return assigneeUserId;
 	}
@@ -251,7 +225,7 @@ public class ErrorReport implements java.io.Serializable {
 	/**
 	 * @return the severity
 	 */
-	@Column(name = "severity")
+
 	public String getSeverity() {
 		return severity;
 	}
@@ -263,7 +237,6 @@ public class ErrorReport implements java.io.Serializable {
 		this.severity = severity;
 	}
 
-	@Column(name = "is_favourite")
 	public Boolean getIsFavourite() {
 		return isFavourite;
 	}
@@ -272,7 +245,7 @@ public class ErrorReport implements java.io.Serializable {
 		this.isFavourite = isFavourite;
 	}
 
-	@Column(name = "phone_name")
+
 	public String getPhoneName() {
 		return phoneName;
 	}
@@ -280,8 +253,8 @@ public class ErrorReport implements java.io.Serializable {
 	public void setPhoneName(String phoneName) {
 		this.phoneName = phoneName;
 	}
-	
-	@Column(name = "phone_location")
+
+
 	public String getPhoneLocation() {
 		return phoneLocation;
 	}
@@ -290,7 +263,6 @@ public class ErrorReport implements java.io.Serializable {
 		this.phoneLocation = phoneLocation;
 	}
 
-	@Column(name = "phone_ip")
 	public String getPhoneIp() {
 		return phoneIp;
 	}
@@ -299,7 +271,6 @@ public class ErrorReport implements java.io.Serializable {
 		this.phoneIp = phoneIp;
 	}
 
-	@Column(name = "is_archive")
 	public Boolean getIsArchive() {
 		return isArchive;
 	}
@@ -469,7 +440,5 @@ public class ErrorReport implements java.io.Serializable {
 				.append("]");
 		return builder.toString();
 	}
-	
-	
 
 }

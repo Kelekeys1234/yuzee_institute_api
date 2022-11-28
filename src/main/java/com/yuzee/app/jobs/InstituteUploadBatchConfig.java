@@ -2,12 +2,11 @@ package com.yuzee.app.jobs;
 
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.persistence.EntityManagerFactory;
 import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -31,8 +30,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.util.StringUtils;
 
 import com.yuzee.app.bean.Course;
@@ -99,7 +98,7 @@ public class InstituteUploadBatchConfig {
     @Bean("instituteStep")
     public Step instituteStep(StepBuilderFactory stepBuilderFactory, InstituteItemReader instituteItemReader,
             ItemWriter<Institute> instituteWriter, InstituteItemProcessor instituteItemProcessor,
-            HibernateTransactionManager hibernateTransactionManager,
+            MongoTransactionManager mongoTransactionManager,
             SkipAnyFailureSkipPolicy skipPolicy,
             ItemWriteListener<Institute> instituteItemWriteListener) {
         return stepBuilderFactory.get("step1")
@@ -109,7 +108,7 @@ public class InstituteUploadBatchConfig {
                 .processor(instituteItemProcessor)
                 .writer(instituteWriter)
                 .listener(instituteItemWriteListener)
-                .transactionManager(hibernateTransactionManager)
+                .transactionManager(mongoTransactionManager)
                 .build();
     }
     

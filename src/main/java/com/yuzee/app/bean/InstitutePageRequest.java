@@ -2,19 +2,7 @@ package com.yuzee.app.bean;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.yuzee.app.constant.PageRequestStatus;
 
@@ -25,10 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
-@Table(name = "institute_page_request",  uniqueConstraints = @UniqueConstraint(columnNames = { "institute_id", "user_id" } , name = "UK_PR_INSTITUTE_ID_USER_ID"),
-          indexes = { @Index (name = "IDX_PR_INSTITUTE_ID_USER_ID", columnList="institute_id,user_id", unique = true),
-        		  @Index (name = "IDX_PR_INSTITUTE_ID", columnList="institute_id", unique = false)})
+@Document("institute_page_request")
 @Data
 @NoArgsConstructor
 @Getter
@@ -37,58 +22,35 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class InstitutePageRequest {
 	
-	@Id
-	@GenericGenerator(name = "GUID" , strategy = "org.hibernate.id.GUIDGenerator")
-	@GeneratedValue(generator = "GUID")
-	@Column(name = "id", unique = true, nullable = false, length=36)
+	@org.springframework.data.annotation.Id
 	private String id;
-	
-	@Column(name = "institute_id", nullable = false, length = 36)
+
 	private String instituteId;
 	
-	@Column(name = "user_id", nullable = false, length = 36)
 	private String userId;
 	
-	@Column(name ="first_name", nullable = false)
 	private String firstName;
 	
-	@Column(name ="last_name", nullable = false)
 	private String lastName;
 	
-	@Column(name ="title", nullable = false)
 	private String title;
 	
-	@Column(name ="email", nullable = false)
 	private String email;
-	
-	@Column(name ="phone_number", nullable = false)
+
 	private String phoneNumber;
-	
-	@Column(name ="management_name", nullable = false)
+
 	private String managementName;
 	
-	@Column(name ="management_email", nullable = false)
 	private String managementEmail;
 	
-	@Column(name ="management_phone_number", nullable = false)
 	private String managementPhoneNumber;
 	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "status", nullable = false)
 	private PageRequestStatus pageRequestStatus;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "created_on", length = 19)
 	private Date createdOn;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "updated_on", length = 19)
+
 	private Date updatedOn;
 	
-	@Column(name = "created_by", length = 50)
-	private String createdBy;
-	
-	@Column(name = "updated_by", length = 50)
 	private String updatedBy;
 
 	public InstitutePageRequest(String instituteId, String userId, String firstName, String lastName, String title,
@@ -109,7 +71,6 @@ public class InstitutePageRequest {
 		this.pageRequestStatus = pageRequestStatus;
 		this.createdOn = createdOn;
 		this.updatedOn = updatedOn;
-		this.createdBy = createdBy;
 		this.updatedBy = updatedBy;
 	}
 }

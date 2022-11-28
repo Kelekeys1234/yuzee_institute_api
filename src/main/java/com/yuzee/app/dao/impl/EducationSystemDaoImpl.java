@@ -2,13 +2,9 @@ package com.yuzee.app.dao.impl;
 
 import java.util.ArrayList;
 
+
 import java.util.List;
 import java.util.Optional;
-
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -31,8 +27,6 @@ import com.yuzee.common.lib.enumeration.GradeType;
 @SuppressWarnings({ "rawtypes", "deprecation", "unchecked" })
 public class EducationSystemDaoImpl implements EducationSystemDao {
 
-	@Autowired
-	private SessionFactory sessionFactory;
 
 	@Autowired
 	private EducationSystemRepository educationSystemRepository;

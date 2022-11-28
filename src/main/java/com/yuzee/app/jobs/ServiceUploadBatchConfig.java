@@ -2,11 +2,11 @@ package com.yuzee.app.jobs;
 
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.EntityManagerFactory;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.batch.core.ItemWriteListener;
@@ -20,14 +20,18 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.data.MongoItemWriter;
+import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.data.mongodb.MongoTransactionManager;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
+import com.yuzee.app.bean.Faculty;
 import com.yuzee.app.bean.Service;
 import com.yuzee.app.dto.uploader.ServiceCsvDto;
 import com.yuzee.common.lib.job.SkipAnyFailureSkipPolicy;
@@ -66,10 +70,9 @@ public class ServiceUploadBatchConfig {
 
 
     @Bean
-    public JpaItemWriter<Service> serviceWriter(@Autowired EntityManagerFactory emf) {
-        JpaItemWriter<Service> writer = new JpaItemWriter<>();
-        writer.setEntityManagerFactory(emf);
-        return writer;
+    public MongoItemWriter<Service> serviceWriter(@Autowired MongoTemplate mongoTemplate) {
+    	return new MongoItemWriterBuilder<Service>().template(mongoTemplate).collection("service")
+                .build();
     }
  
     @Bean("importServiceJob")
@@ -85,7 +88,7 @@ public class ServiceUploadBatchConfig {
     @Bean("serviceStep1")
     public Step step1Service(StepBuilderFactory stepBuilderFactory, ServiceItemReader serviceItemReader,
             ItemWriter<Service> serviceWriter, ServiceItemProcessor serviceItemProcessor,
-            HibernateTransactionManager hibernateTransactionManager,
+            MongoTransactionManager mongoTransactionManager,
             SkipAnyFailureSkipPolicy skipPolicy,
             ItemWriteListener<Service> serviceItemWriteListener) {
         return stepBuilderFactory.get("step1")
@@ -95,7 +98,7 @@ public class ServiceUploadBatchConfig {
                 .processor(serviceItemProcessor)
                 .writer(serviceWriter)
                 .listener(serviceItemWriteListener)
-                .transactionManager(hibernateTransactionManager)
+                .transactionManager(mongoTransactionManager)
                 .build();
     }
     
