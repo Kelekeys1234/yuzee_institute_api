@@ -30,7 +30,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 import com.yuzee.app.YuzeeApplication;
 import com.yuzee.app.dto.CourseCareerOutcomeRequestWrapper;
 import com.yuzee.app.dto.CourseRequest;

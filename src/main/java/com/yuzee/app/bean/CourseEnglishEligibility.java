@@ -13,9 +13,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
-/*@Table(name = "course_english_eligibility", uniqueConstraints = @UniqueConstraint(columnNames = { "course_id",
-		"english_type" }, name = "UK_COURSE_ID_ENGLISH_TYPE"), indexes = {
-				@Index(name = "IDX_COURSE_ID", columnList = "course_id", unique = false) }) */
+
 public class CourseEnglishEligibility implements Serializable {
 
 	private static final long serialVersionUID = 1L;
