@@ -55,10 +55,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		if (existingCourse.getFaculty() != null) {
 			facultyId = existingCourse.getFaculty().getId().toString();
 		}
-//		if (existingCourse.getInstitute() != null) {
-//			instituteId = existingCourse.getInstitute().getId().toString();
-//		}
-//		Double price = existingCourse.getUsdInternationFee();
+
 		List<Course> resultList = new ArrayList<>();
 
 		List<String> courseIds = new ArrayList<>();

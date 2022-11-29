@@ -250,7 +250,6 @@ public class CreateCourseAndInstitute {
 
 		ValidList<ProviderCodeDto> listOfInstituteProviderCode = new ValidList<>();
 		ProviderCodeDto instituteProviderCode = new ProviderCodeDto();
-		instituteProviderCode.setId(INSTITUTE_ID);
 		instituteProviderCode.setName("TestProviderName");
 		instituteProviderCode.setValue(("TestProviderValue"));
 		listOfInstituteProviderCode.add(instituteProviderCode);

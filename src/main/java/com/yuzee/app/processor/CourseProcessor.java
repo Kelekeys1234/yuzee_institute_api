@@ -177,8 +177,8 @@ public class CourseProcessor {
 	@Autowired
 	private IGlobalStudentDataDAO iGlobalStudentDataDAO;
 
-	@Autowired
-	private ITop10CourseService iTop10CourseService;
+//	@Autowired
+//	private ITop10CourseService iTop10CourseService;
 
 	@Autowired
 	private ReviewHandler reviewHandler;
@@ -1240,9 +1240,9 @@ public class CourseProcessor {
 		 * We will find course keyword based on faculty in top10Course.
 		 *
 		 */
-		if (startIndex < 10) {
-			courseKeywordRecommended = iTop10CourseService.getTop10CourseKeyword(facultyId);
-		}
+//		if (startIndex < 10) {
+//			courseKeywordRecommended = iTop10CourseService.getTop10CourseKeyword(facultyId);
+//		}
 		/**
 		 * If we want more result or no result found from top10Course then we will find
 		 * based on faculty in course table.

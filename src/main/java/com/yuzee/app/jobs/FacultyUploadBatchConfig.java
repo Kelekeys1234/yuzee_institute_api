@@ -18,6 +18,7 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -53,7 +54,7 @@ public class FacultyUploadBatchConfig {
 
 	@Bean("facultyItemWriter")
 	@StepScope
-	public MongoItemWriter<Faculty> writer(MongoTemplate mongoTemplate) {
+	public MongoItemWriter<Faculty> writer(@Autowired MongoTemplate mongoTemplate) {
 		return new MongoItemWriterBuilder<Faculty>().template(mongoTemplate).collection("faculty")
                 .build();
 	}

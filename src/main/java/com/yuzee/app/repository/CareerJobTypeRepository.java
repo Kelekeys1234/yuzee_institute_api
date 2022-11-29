@@ -2,9 +2,9 @@ package com.yuzee.app.repository;
 
 import java.util.List;
 
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +16,6 @@ public interface CareerJobTypeRepository extends MongoRepository<CareerJobType, 
 
 	public Page<CareerJobType> findByCareerJobsIdInOrderByJobType(List<String> jobId, Pageable pageable);
 
-	@Query("select j.id as jobId from CareerJobType jt join jt.careerJobs j where jt.id = :id")
+	@org.springframework.data.mongodb.repository.Query("select j.id as jobId from CareerJobType jt join jt.careerJobs j where jt.id = :id")
 	public List<JobIdProjection> findJobIdsById(String id);
 }

@@ -1,11 +1,7 @@
 package com.yuzee.app.processor;
 
 import java.util.Arrays;
-
-
-
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -24,19 +20,13 @@ import com.yuzee.app.bean.InstituteFacility;
 import com.yuzee.app.bean.InstituteService;
 
 import com.yuzee.app.dao.TimingDao;
-import com.yuzee.common.lib.dto.ValidList;
-import com.yuzee.common.lib.dto.institute.CourseDeliveryModeFundingDto;
-import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
-import com.yuzee.common.lib.dto.institute.CourseFeesDto;
-import com.yuzee.common.lib.dto.institute.CourseIntakeDto;
+import com.yuzee.app.dto.CourseIntakeDto;
 import com.yuzee.common.lib.dto.institute.CoursePaymentDto;
 import com.yuzee.common.lib.dto.institute.CourseSyncDTO;
 import com.yuzee.common.lib.dto.institute.InstituteEnglishRequirementsElasticDto;
 import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
-import com.yuzee.common.lib.dto.institute.TimingDto;
 import com.yuzee.common.lib.dto.scholarship.ScholarshipSyncDto;
-import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.model.elastic.ProviderCode;
 import com.yuzee.common.lib.model.elastic.Scholarship;
 
@@ -48,12 +38,6 @@ public class ConversionProcessor {
 
 	@Autowired
 	private ModelMapper modelMapper;
-
-	@Autowired
-	private TimingDao timingDao;
-
-	@Autowired
-	private CourseMinRequirementProcessor minRequirementProcessor;
 
 	@PostConstruct
 	private void postConstrut() {
@@ -106,23 +90,15 @@ public class ConversionProcessor {
 						InstituteSyncDTO::setInstituteIntakes));
 	};
 
-//	public CourseSyncDTO convertToCourseSyncDTOSyncDataEntity(Course course) {
-//		log.info("inside DTOUtils.convertToCourseSyncDTOSyncDataEntity ");
-//		CourseSyncDTO syncCourse = modelMapper.map(course, CourseSyncDTO.class);
-//		String sameUuid = course.getId();
-//		syncCourse.setLanguages(
-//				course.getCourseLanguages().stream().map(e->e).collect(Collectors.toList()));
-//		syncCourse.setCourseType(course.getCourseType().name());
-//		
-//		if(ObjectUtils.isEmpty(course.getCoursePayment())) {
-//			syncCourse.setCoursePayment(new CoursePaymentDto());
-//		}
-//		if(ObjectUtils.isEmpty(course.getCourseIntake())) {
-//			syncCourse.setCourseIntake(new CourseIntakeDto());
-//		}else {
-//			syncCourse.setCourseIntake(new CourseIntakeDto(course.getCourseIntake().getType().name(),course.getCourseIntake().getDates()));
-//		}
-//		
+	public CourseSyncDTO convertToCourseSyncDTOSyncDataEntity(Course course) {
+		log.info("inside DTOUtils.convertToCourseSyncDTOSyncDataEntity ");
+		CourseSyncDTO syncCourse = modelMapper.map(course, CourseSyncDTO.class);
+		String sameUuid = course.getId();
+		syncCourse.setLanguages(course.getCourseLanguages().stream().map(e -> e).collect(Collectors.toList()));
+
+		if (ObjectUtils.isEmpty(course.getCoursePayment())) {
+			syncCourse.setCoursePayment(new CoursePaymentDto());
+		}
 //		syncCourse.setCourseDeliveryModes(course.getCourseDeliveryModes().stream()
 //				.map(delMode -> new CourseDeliveryModesDto( delMode.getDeliveryType(),
 //						delMode.getDuration(), delMode.getDurationTime(), delMode.getStudyMode(),
@@ -139,16 +115,19 @@ public class ConversionProcessor {
 //		syncCourse.setCourseMinRequirements(course.getCourseMinRequirements().stream().map(e->minRequirementProcessor.modelToDto(e)).toList());
 //		syncCourse.setCourseTimings(timingDao.findByEntityTypeAndEntityIdIn(EntityTypeEnum.COURSE, Arrays.asList(sameUuid)).stream()
 //				.map(e -> modelMapper.map(e, TimingDto.class)).collect(Collectors.toList()));
-//		return syncCourse;
-//	}
+		return syncCourse;
+	}
 
 	public InstituteSyncDTO convertToInstituteInstituteSyncDTOSynDataEntity(Institute institute) {
 		log.info("inside DTOUtils.convertToInstituteInstituteSyncDTOSynDataEntity");
+		ProviderCodeDto providerCode = new ProviderCodeDto();
 		InstituteSyncDTO dto = modelMapper.map(institute, InstituteSyncDTO.class);
-		dto.setInstituteProviderCodes(institute.getInstituteProviderCodes().stream()
-				.map(instituteProviderCode -> new ProviderCodeDto(instituteProviderCode.getName(),
-						instituteProviderCode.getValue(), null))
-				.collect(Collectors.toList()));
+		institute.getInstituteProviderCodes().forEach(e -> {
+			providerCode.setName(e.getName());
+			providerCode.setValue(e.getValue());
+			dto.setInstituteProviderCodes(Arrays.asList(providerCode));
+		});
+
 		return dto;
 	}
 

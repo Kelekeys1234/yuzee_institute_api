@@ -88,7 +88,6 @@ public class ServiceUploadBatchConfig {
     @Bean("serviceStep1")
     public Step step1Service(StepBuilderFactory stepBuilderFactory, ServiceItemReader serviceItemReader,
             ItemWriter<Service> serviceWriter, ServiceItemProcessor serviceItemProcessor,
-            MongoTransactionManager mongoTransactionManager,
             SkipAnyFailureSkipPolicy skipPolicy,
             ItemWriteListener<Service> serviceItemWriteListener) {
         return stepBuilderFactory.get("step1")
@@ -98,7 +97,6 @@ public class ServiceUploadBatchConfig {
                 .processor(serviceItemProcessor)
                 .writer(serviceWriter)
                 .listener(serviceItemWriteListener)
-                .transactionManager(mongoTransactionManager)
                 .build();
     }
     

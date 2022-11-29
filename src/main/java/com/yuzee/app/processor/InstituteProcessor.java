@@ -2,6 +2,7 @@ package com.yuzee.app.processor;
 
 import java.io.File;
 
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -52,7 +53,6 @@ import com.yuzee.app.bean.Location;
 import com.yuzee.app.constant.FaqEntityType;
 import com.yuzee.app.dao.AccrediatedDetailDao;
 import com.yuzee.app.dao.CourseDao;
-import com.yuzee.app.dao.FaqDao;
 import com.yuzee.app.dao.InstituteDao;
 import com.yuzee.app.dao.InstituteServiceDao;
 import com.yuzee.app.dto.AccrediatedDetailDto;
@@ -176,8 +176,6 @@ public class InstituteProcessor {
 	@Autowired
 	private InstituteServiceDao instituteServiceDao;
 
-	@Autowired
-	private FaqDao faqDao;
 
 	@Autowired
 	private UserHandler userHandler;
@@ -1362,10 +1360,6 @@ public class InstituteProcessor {
 		Map<String, Long> instituteServiceCountMap = instituteServiceDao.countByInstituteIds(instituteIds).stream()
 				.collect(Collectors.toMap(e -> e.getId(), e -> e.getCount()));
 
-		Map<String, Long> instituteFaqCountMap = faqDao
-				.countByEntityTypeAndEntityIdIn(FaqEntityType.INSTITUTE, instituteIds).stream()
-				.collect(Collectors.toMap(e -> e.getId(), e -> e.getCount()));
-
 		Map<String, List<StorageDto>> storagesMap = storageHandler
 				.getStorages(instituteIds, EntityTypeEnum.INSTITUTE,
 						Arrays.asList(EntitySubTypeEnum.VIDEO, EntitySubTypeEnum.COVER_PHOTO, EntitySubTypeEnum.LOGO,
@@ -1394,9 +1388,6 @@ public class InstituteProcessor {
 
 			Long servicesCount = instituteServiceCountMap.get(instituteId);
 			verificationDto.setServices(!ObjectUtils.isEmpty(servicesCount) && servicesCount >= 3);
-
-			Long faqCount = instituteFaqCountMap.get(instituteId);
-			verificationDto.setFaq(!ObjectUtils.isEmpty(faqCount) && faqCount >= 5);
 
 			List<StorageDto> storages = storagesMap.get(instituteId);
 			if (!CollectionUtils.isEmpty(storages)) {

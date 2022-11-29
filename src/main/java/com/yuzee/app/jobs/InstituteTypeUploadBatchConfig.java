@@ -82,13 +82,13 @@ public class InstituteTypeUploadBatchConfig {
 	@Bean("instituteTypeStep1")
 	public Step step1InstituteType(StepBuilderFactory stepBuilderFactory,
 			InstituteTypeItemReader instituteTypeItemReader, ItemWriter<InstituteType> instituteTypeWriter,
-			InstituteTypeItemProcessor instituteTypeItemProcessor, MongoTransactionManager mongoTransactionManager,
+			InstituteTypeItemProcessor instituteTypeItemProcessor,
 			SkipAnyFailureSkipPolicy skipPolicy, ItemWriteListener<Institute> instituteTypeItemWriteListener) {
 		return stepBuilderFactory.get("step1").<InstituteTypeDto, InstituteType>chunk(batchSize)
 				.reader(instituteTypeItemReader).faultTolerant().skipPolicy(skipPolicy)
 				.noRollback(ConstraintViolationException.class).processor(instituteTypeItemProcessor)
 				.writer(instituteTypeWriter).listener(instituteTypeItemWriteListener)
-				.transactionManager(mongoTransactionManager).build();
+				.build();
 	}
 
 	@Bean

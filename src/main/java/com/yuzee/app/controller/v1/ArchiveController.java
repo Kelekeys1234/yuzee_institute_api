@@ -26,8 +26,8 @@ public class ArchiveController {
 	@Autowired
 	private HelpProcessor helpProcessor;
 
-	@Autowired
-	private IErrorReportService iErrorReportService;
+//	@Autowired
+//	private IErrorReportService iErrorReportService;
 
 	@PostMapping("/entityType/{entityType}/entityId/{entityId}")
 	public ResponseEntity<Object> addArchive(@PathVariable final String entityType, @PathVariable final String entityId,
@@ -36,7 +36,7 @@ public class ArchiveController {
 			// TODO call enrollment API to make it archive
 			// iEnrollmentService.archiveEnrollment(entityId, isArchive);
 		} else if (entityType.equals(ArchiveEntityType.ERROR_REPORT.name())) {
-			iErrorReportService.archiveErrorReport(entityId, isArchive);
+		//	iErrorReportService.archiveErrorReport(entityId, isArchive);
 		} else if (entityType.equals(ArchiveEntityType.HELP_SUPPORT.name())) {
 			helpProcessor.archiveHelpSupport(entityId, isArchive);
 		}

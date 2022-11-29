@@ -98,7 +98,6 @@ public class InstituteUploadBatchConfig {
     @Bean("instituteStep")
     public Step instituteStep(StepBuilderFactory stepBuilderFactory, InstituteItemReader instituteItemReader,
             ItemWriter<Institute> instituteWriter, InstituteItemProcessor instituteItemProcessor,
-            MongoTransactionManager mongoTransactionManager,
             SkipAnyFailureSkipPolicy skipPolicy,
             ItemWriteListener<Institute> instituteItemWriteListener) {
         return stepBuilderFactory.get("step1")
@@ -108,7 +107,6 @@ public class InstituteUploadBatchConfig {
                 .processor(instituteItemProcessor)
                 .writer(instituteWriter)
                 .listener(instituteItemWriteListener)
-                .transactionManager(mongoTransactionManager)
                 .build();
     }
     
