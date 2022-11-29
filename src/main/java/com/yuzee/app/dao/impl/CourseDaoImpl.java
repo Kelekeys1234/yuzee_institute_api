@@ -803,7 +803,7 @@ public class CourseDaoImpl implements CourseDao {
 
 				CourseDeliveryModesDto additionalInfoDto = new CourseDeliveryModesDto();
 
-				courseDto.setId(String.valueOf(row.getId()));
+				courseDto.setId(row.getId());
 				courseDto.setName(String.valueOf(row.getName()));
 				courseDto.setWorldRanking(String.valueOf(row.getWorldRanking()));
 				courseDto.setStars((String.valueOf(row.getStars())));
@@ -811,14 +811,14 @@ public class CourseDaoImpl implements CourseDao {
 				courseDto.setRemarks(String.valueOf(row.getRemarks()));
 				courseDto.setInstituteName(String.valueOf(row.getInstituteName()));
 
-				additionalInfoDto.setDeliveryType(String.valueOf(row.getCourseDeliveryModes().get(2)));
-				additionalInfoDto.setStudyMode(String.valueOf(row.getCourseDeliveryModes().get(5)));
+				additionalInfoDto.setDeliveryType(row.getCourseDeliveryModes().stream().map(e->e.getDeliveryType()).toString());
+				additionalInfoDto.setStudyMode(row.getCourseDeliveryModes().stream().map(e->e.getStudyMode()).toString());
 
-				String duration = String.valueOf(row.getCourseDeliveryModes().get(3));
+				String duration = String.valueOf(row.getCourseDeliveryModes().stream().map(e->e.getDuration()).toString());
 				additionalInfoDto.setDuration(StringUtils.isEmpty(duration) ? Double.parseDouble(duration) : null);
 
-				additionalInfoDto.setDurationTime(String.valueOf(row.getCourseDeliveryModes().get(4)));
-				additionalInfoDto.setCourseId(String.valueOf(row.getCourseDeliveryModes().get(1)));
+				additionalInfoDto.setDurationTime(row.getCourseDeliveryModes().stream().map(e->e.getDurationTime()).toString());
+				additionalInfoDto.setCourseId(row.getCourseDeliveryModes().stream().map(e->e.getCourseId()).toString());
 				additionalInfoDtos.add(additionalInfoDto);
 				courseDto.setCourseDeliveryModes(additionalInfoDtos);
 			}
@@ -1394,6 +1394,7 @@ public class CourseDaoImpl implements CourseDao {
 		org.springframework.data.mongodb.core.query.Query mongoQuery = new org.springframework.data.mongodb.core.query.Query();
 		mongoQuery.addCriteria(
 				org.springframework.data.mongodb.core.query.Criteria.where("id").is(listOfRecommendedCourseIds));
+
 		return mongoTemplate.find(mongoQuery, Course.class, "course");
 	}
 

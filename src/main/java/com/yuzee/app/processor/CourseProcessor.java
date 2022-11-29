@@ -51,8 +51,6 @@ import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 import com.yuzee.app.bean.AccrediatedDetail;
 import com.yuzee.app.bean.Careers;
 import com.yuzee.app.bean.Course;
-import com.yuzee.app.bean.CourseCurriculum;
-import com.yuzee.app.bean.CourseDeliveryModeFunding;
 import com.yuzee.app.bean.CourseDeliveryModes;
 import com.yuzee.app.bean.CourseEnglishEligibility;
 import com.yuzee.app.bean.CourseIntake;
@@ -88,24 +86,19 @@ import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.entitylistener.CourseUpdateListener;
 import com.yuzee.app.message.MessageByLocaleService;
 import com.yuzee.app.repository.CourseRepository;
-//import com.yuzee.app.repository.CourseRepository;
 import com.yuzee.app.service.IGlobalStudentData;
-import com.yuzee.app.service.ITop10CourseService;
 import com.yuzee.app.service.UserRecommendationService;
 import com.yuzee.app.util.CommonUtil;
-import com.yuzee.app.util.DTOUtils;
 import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.PaginationUtilDto;
 import com.yuzee.common.lib.dto.application.ProcedureDto;
 import com.yuzee.common.lib.dto.common.CurrencyRateDto;
-import com.yuzee.common.lib.dto.eligibility.FundingResponseDto;
 import com.yuzee.common.lib.dto.institute.CourseCareerOutcomeDto;
 import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
 import com.yuzee.common.lib.dto.institute.CourseDeliveryModeFundingDto;
 import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
 import com.yuzee.common.lib.dto.institute.CourseEnglishEligibilityDto;
 import com.yuzee.common.lib.dto.institute.CourseFeesDto;
-import com.yuzee.common.lib.dto.institute.CourseFundingDto;
 import com.yuzee.common.lib.dto.institute.CourseIntakeDto;
 import com.yuzee.common.lib.dto.institute.CoursePreRequisiteDto;
 import com.yuzee.common.lib.dto.institute.CourseSemesterDto;
@@ -443,7 +436,7 @@ public class CourseProcessor {
 		course.setCurrency(courseDto.getCurrency() != null ? courseDto.getCurrency() : null);
 		course.setRecognitionType(courseDto.getRecognitionType() != null ? courseDto.getRecognitionType() : null);
 		course.setExaminationBoard(courseDto.getExaminationBoard());
-
+		course.setStars(Integer.valueOf(courseDto.getStars().intValue()));
 		course.setDomesticApplicationFee(courseDto.getDomesticApplicationFee());
 		course.setInternationalApplicationFee(courseDto.getInternationalApplicationFee());
 		course.setDomesticEnrollmentFee(courseDto.getDomesticEnrollmentFee());
@@ -671,9 +664,9 @@ public class CourseProcessor {
 		Course course = prepareCourseModelFromCourseRequest(loggedInUserId, instituteId, id, courseDto);
 
 		course = courseDao.addUpdateCourse(course);
-//		 timingProcessor.saveUpdateDeleteTimings(loggedInUserId,
-//		 EntityTypeEnum.COURSE, courseDto.getCourseTimings(),
-//     	 course.getId());
+		 timingProcessor.saveUpdateDeleteTimings(loggedInUserId,
+		 EntityTypeEnum.COURSE, courseDto.getCourseTimings(),
+     	 course.getId());
 		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
 
 		return course.getId();
@@ -689,11 +682,11 @@ public class CourseProcessor {
 	private Faculty getFaculty(final String facultyId) throws NotFoundException {
 		Faculty faculty = null;
 		if (!StringUtils.isEmpty(facultyId)) {
-//			faculty = facultyDAO.get(facultyId).get();
-//			if (ObjectUtils.isEmpty(faculty)) {
-//				log.error(messageTranslator.toLocale("courses.faculty.id.invalid", facultyId, Locale.US));
-//				throw new NotFoundException(messageTranslator.toLocale("courses.faculty.id.invalid", facultyId));
-//			}
+			faculty = facultyDAO.get(facultyId).get();
+			if (ObjectUtils.isEmpty(faculty)) {
+				log.error(messageTranslator.toLocale("courses.faculty.id.invalid", facultyId, Locale.US));
+				throw new NotFoundException(messageTranslator.toLocale("courses.faculty.id.invalid", facultyId));
+			}
 		}
 		return faculty;
 	}
@@ -1448,7 +1441,7 @@ public class CourseProcessor {
 		course.setIsActive(status);
 		courseDao.addUpdateCourse(course);
 		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
-		publishSystemEventHandler.syncCourses(Arrays.asList(DTOUtils.convertToCourseDTOElasticSearchEntity(course)));
+		//publishSystemEventHandler.syncCourses(Arrays.asList(DTOUtils.convertToCourseDTOElasticSearchEntity(course)));
 	}
 
 	@Transactional
@@ -1458,7 +1451,7 @@ public class CourseProcessor {
 		List<CourseResponseDto> nearestCourseList = new ArrayList<>();
 		log.info("fetching courses from DB for instituteID "+instituteId);
 		Pageable paging = PageRequest.of(pageNumber - 1, pageSize);
-		List<Course> courseList = courseDao.findByInstituteId(instituteId);
+		List<Course> courseList = courseDao.findByInstituteId(paging,instituteId);
 	    Long totalCount = courseDao.getTotalCountOfCourseByInstituteId(instituteId);
 		if(!CollectionUtils.isEmpty(courseList)) {
 			log.info("if course is not coming null then start iterating data");
@@ -1869,13 +1862,16 @@ public class CourseProcessor {
 			course.setIsActive(true);
 			course.setName(courseDto.getName());
 			course.setId(courseId);
+			course.setCreatedBy(loggedInUserId);
 			readableIdProcessor.setReadableIdForCourse(course);
 		} else {
 			course = courseDao.get(courseId);
+			course.setCreatedBy(loggedInUserId);
 			if (ObjectUtils.isEmpty(course)) {
 				log.error("Course with courseid {} not found", courseId);
 				throw new NotFoundException(String.format("Course with courseid %s not found", courseId));
 			}
+		
 			Course copyCourse = new Course();
 			List<CourseProviderCode> courseProviderCodes = new ArrayList<>(course.getCourseProviderCodes());
 			List<String> courseLanguages = new ArrayList<>(course.getCourseLanguages());
@@ -1891,7 +1887,7 @@ public class CourseProcessor {
 			}
 
 			BeanUtils.copyProperties(course, copyCourse);
-			course.setCreatedBy(loggedInUserId);
+			
 			copyCourse.setCourseLanguages(courseLanguages);
 			copyCourse.setCourseDeliveryModes(courseDeliveryModes);
 			copyCourse.setOffCampusCourse(copyOffCampusCourse);
@@ -1942,8 +1938,8 @@ public class CourseProcessor {
 
 		course = courseDao.addUpdateCourse(course);
 		log.info("Calling elastic service to save/update course on elastic index having courseId: ", course.getId());
-//		publishSystemEventHandler
-//				.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
+		publishSystemEventHandler
+				.syncCourses(Arrays.asList(conversionProcessor.convertToCourseSyncDTOSyncDataEntity(course)));
 		try {
 			courseDao.saveDocument(getCourseById(loggedInUserId, course.getId(), false));
 		} catch (Exception e) {

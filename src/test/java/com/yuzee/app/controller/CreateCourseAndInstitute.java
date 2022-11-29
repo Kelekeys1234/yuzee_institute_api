@@ -42,6 +42,7 @@ import com.yuzee.app.dto.CourseCareerOutcomeRequestWrapper;
 import com.yuzee.app.dto.CourseIntakeDto;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.DayTimingDto;
+import com.yuzee.app.dto.InstituteEnglishRequirementsDto;
 import com.yuzee.app.dto.InstituteFundingDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.TimingRequestDto;
@@ -300,7 +301,7 @@ public class CreateCourseAndInstitute {
 		couseRequest.setLatitude(33.00);
 		couseRequest.setLongitude(400.00);
 		couseRequest.setCountryName("INDIA");
-		couseRequest.setCityName("INDIA CITY");
+		couseRequest.setCityName("CITY");
 		couseRequest.setCourseDeliveryModes(null);
 		couseRequest.setExaminationBoard("examinationBoard");
 		couseRequest.setDomesticApplicationFee(23.00);
@@ -341,6 +342,27 @@ public class CreateCourseAndInstitute {
 
 		return couseRequest;
 	}
+	
+	InstituteEnglishRequirementsDto addInstituteEnglishRequirements() throws IOException {
+		String instituteId = testCreateInstitute();
+		InstituteEnglishRequirementsDto instituteEnglishRequirementsDto = new InstituteEnglishRequirementsDto();
+			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirements" + PATH_SEPARATOR + instituteId;
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("userId", userId);
+			instituteEnglishRequirementsDto.setInstituteId(UUID.randomUUID().toString());
+			instituteEnglishRequirementsDto.setExamName("testExamName");
+			instituteEnglishRequirementsDto.setListeningMarks(54.34);
+			instituteEnglishRequirementsDto.setOralMarks(89.334);
+			instituteEnglishRequirementsDto.setReadingMarks(67.321);
+			instituteEnglishRequirementsDto.setWritingMarks(88.90);
+			instituteEnglishRequirementsDto.getInstituteId();
+			HttpEntity<InstituteEnglishRequirementsDto> entity = new HttpEntity<>(instituteEnglishRequirementsDto,
+					headers);
+			ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.POST, entity, String.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+			return instituteEnglishRequirementsDto;
+		}
 
 
 }

@@ -257,7 +257,7 @@ class CourseMinRequirementTest extends CreateCourseAndInstitute {
 			HttpEntity<String> entityy = new HttpEntity<>(headers);
 			ResponseEntity<String> responses = testRestTemplate
 					.exchange(
-							api + PATH_SEPARATOR + courseId + PATH_SEPARATOR
+							api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR
 									+ "min-requirement?course_min_requirement_ids=" + minRequirementDto.getId(),
 							HttpMethod.DELETE, entityy, String.class, params);
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);

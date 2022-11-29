@@ -41,7 +41,7 @@ public class InstituteEnglishRequirementsProcessor {
 			throw new NotFoundException(messageTranslator.toLocale("institute_info.id.notFound",instituteId));
 		}
 		log.info("Adding institute english requirements with name "+instituteEnglishRequirementsDto.getExamName());
-		InstituteEnglishRequirements instituteEnglishRequirements = new InstituteEnglishRequirements(UUID.randomUUID().toString(), instituteEnglishRequirementsDto.getExamName(),
+		InstituteEnglishRequirements instituteEnglishRequirements = new InstituteEnglishRequirements(instituteEnglishRequirementsDto.getInstituteId(), instituteEnglishRequirementsDto.getExamName(),
 				instituteEnglishRequirementsDto.getReadingMarks(), instituteEnglishRequirementsDto.getListeningMarks(), instituteEnglishRequirementsDto.getWritingMarks(), instituteEnglishRequirementsDto.getOralMarks());
 		log.info("Persisting institute english requirements in DB");
 		return instituteEnglishRequirementsDao.addUpdateInstituteEnglishRequirements(instituteEnglishRequirements);

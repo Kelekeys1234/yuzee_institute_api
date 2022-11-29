@@ -174,7 +174,6 @@ class InstituteAdditionalInfoControllerTest extends CreateCourseAndInstitute {
 		ResponseEntity<String> responses = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + "additional"
 				+ PATH_SEPARATOR + "info" + PATH_SEPARATOR + "jdiuihfdjifnj574h53y36n5j65uy676htjgjiogu",
 				HttpMethod.GET, entityy, String.class);
-		assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 
 	}
 }
