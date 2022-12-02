@@ -31,7 +31,7 @@ public interface CourseCareerOutcomeInterface {
 	@DeleteMapping
 	public ResponseEntity<?> deleteByCourseCareerOutcomeIds(
 			@RequestHeader(value = "userId", required = true) final String userId, @PathVariable final String courseId,
-			@RequestParam(value = "course_career_outcome_ids") @NotEmpty final List<String> courseCareerOutcomeIds,
+			@RequestParam(value = "course_career_outcome_ids", required = false) @NotEmpty final List<String> courseCareerOutcomeIds,
 			@RequestParam(value = "linked_course_ids", required = false) final List<String> linkedCourseIds)
 			throws ValidationException, NotFoundException, ForbiddenException;
 }

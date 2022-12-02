@@ -674,7 +674,7 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 
 				HttpEntity<CourseMobileDto> entity = new HttpEntity<>(courseMobileDto, headers);
 				ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
-						+ PATH_SEPARATOR + "mobile" + PATH_SEPARATOR + courseId.getId(), HttpMethod.POST, entity,
+						+ PATH_SEPARATOR + "mobile" + PATH_SEPARATOR + instituteId, HttpMethod.POST, entity,
 						String.class);
 				assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 			} finally {

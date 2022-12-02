@@ -1,14 +1,12 @@
 package com.yuzee.app.processor;
 
 import java.util.ArrayList;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -62,17 +60,18 @@ public class InstituteServiceProcessor {
 	@Autowired
 	private MessageTranslator messageTranslator;
 
-	public List<InstituteServiceDto> addInstituteService(String userId, String instituteId,
-			List<InstituteServiceDto> instituteServiceDtos) throws NotFoundException, ValidationException {
+
+	public List<InstituteServiceDto> addInstituteService(String userId, String instituteId, List<InstituteServiceDto> instituteServiceDtos)
+			throws NotFoundException, ValidationException {
 		log.debug("inside addInstituteService() method");
 		log.info("Getting all exsisting services");
 		Institute institute = instituteDao.get(instituteId);
 		if (ObjectUtils.isEmpty(institute)) {
-			log.error(messageTranslator.toLocale("institute-services.invalid.id", instituteId, Locale.US));
-			throw new ValidationException(messageTranslator.toLocale("institute-services.invalid.id", instituteId));
+			log.error(messageTranslator.toLocale("institute-services.invalid.id",instituteId,Locale.US));
+			throw new ValidationException( messageTranslator.toLocale("institute-services.invalid.id",instituteId));
 		}
 
-		List<ServiceDto> serviceDtos = instituteServiceDtos.stream().map(InstituteServiceDto::getService)
+		List<ServiceDto> serviceDtos = instituteServiceDtos.stream().map(e -> e.getService())
 				.collect(Collectors.toList());
 		//////////////////// code for adding the new services //////////////////////////
 
@@ -87,22 +86,20 @@ public class InstituteServiceProcessor {
 		}
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 
-		Set<String> serviceIds = serviceDtos.stream().map(e->e.getServiceId()).collect(Collectors.toSet());
+		Set<String> serviceIds = serviceDtos.stream().map(ServiceDto::getServiceId).collect(Collectors.toSet());
 
-		List<Service> servicesFromDb = serviceDao
-				.getAllByIds(!CollectionUtils.isEmpty(serviceIds) ? new ArrayList<>(serviceIds) : null);
+		List<Service> servicesFromDb = serviceDao.getAllByIds(serviceIds.stream().collect(Collectors.toList()));
 		Map<String, Service> mapServicesById = servicesFromDb.stream()
-				.collect(Collectors.toMap(e -> e.getId().toString(), e -> e));
-		Map<String, Service> mapServicesByName = servicesFromDb.stream()
-				.collect(Collectors.toMap(Service::getName, e -> e));
+				.collect(Collectors.toMap(Service::getId, e -> e));
+		List<String> mapServicesByName = servicesFromDb.stream().map(e->e.getName()).toList();
 
-//		if (serviceIds.size() != servicesFromDb.size()) {
-//			log.error(messageTranslator.toLocale("institute-service.invalid", Locale.US));
-//			throw new ValidationException(messageTranslator.toLocale("institute-service.invalid"));
-//		}
+		if (serviceIds.size() != servicesFromDb.size()) {
+			log.error(messageTranslator.toLocale("institute-service.invalid",Locale.US));
+			throw new ValidationException(messageTranslator.toLocale("institute-service.invalid"));
+		}
 
 		List<InstituteService> existingInstituteServices = instituteServiceDao.getAllInstituteService(instituteId);
-		Set<String> existingServiceIds = existingInstituteServices.stream().map(e -> e.getService().getId().toString())
+		Set<String> existingServiceIds = existingInstituteServices.stream().map(e -> e.getService().getId())
 				.collect(Collectors.toSet());
 
 		List<InstituteService> listOfServiceToBeSaved = new ArrayList<>();
@@ -110,27 +107,26 @@ public class InstituteServiceProcessor {
 
 			String serviceId = instituteServiceDto.getService().getServiceId();
 			if (!StringUtils.isEmpty(instituteServiceDto.getService().getServiceName())) {
-				serviceId = mapServicesByName.get(instituteServiceDto.getService().getServiceName()).getId().toString();
+				for(Service id :servicesFromDb) {
+					serviceId = id.getId();
+				}
 			}
 			if (!existingServiceIds.contains(serviceId)) {
 				log.info("No service present for institute with service Id {} adding it to list", serviceId);
 
 				Service service = mapServicesById.get(serviceId);
 				if (ObjectUtils.isEmpty(service)) {
-					log.error(messageTranslator.toLocale("institute-service.illegal.id" + serviceId, Locale.US));
+					log.error(messageTranslator.toLocale("institute-service.illegal.id" + serviceId,Locale.US));
 					throw new NotFoundException(messageTranslator.toLocale("institute-service.illegal.id", serviceId));
 				}
-
-				InstituteService instituteService = new InstituteService(instituteId, service,
-
-						instituteServiceDto.getDescription(), institute);
+				InstituteService instituteService = new InstituteService(institute, service,
+						instituteServiceDto.getDescription(), new Date(), new Date(), userId, userId);
 				listOfServiceToBeSaved.add(instituteService);
-
 			} else {
 				String serviceIdCopy = serviceId;// only to make service id effective final to use in stream
 				log.info("Institute service already present for institute service id {} skipping it", serviceId);
 				Optional<InstituteService> optionalInstituteService = existingInstituteServices.stream()
-						.filter(e -> e.getService().getId().toString().equals(serviceIdCopy)).findFirst();
+						.filter(e -> e.getService().getId().equals(serviceIdCopy)).findFirst();
 				if (optionalInstituteService.isPresent()) {
 					InstituteService existingInstituteService = optionalInstituteService.get();
 					existingInstituteService.setDescription(instituteServiceDto.getDescription());
@@ -145,12 +141,11 @@ public class InstituteServiceProcessor {
 				.map(e -> modelMapper.map(e, InstituteServiceDto.class)).collect(Collectors.toList());
 	}
 
-	public void deleteInstituteService(String userId, String instituteServiceId)
-			throws NotFoundException, InvokeException {
+	public void deleteInstituteService(String userId, String instituteServiceId) throws NotFoundException, InvokeException {
 		log.debug("inside deleteInstituteService() method");
-		// TODO: need to check if user has the access to delete the instituteService
+		//TODO: need to check if user has the access to delete the instituteService 
 		instituteServiceDao.delete(instituteServiceId);
-		// storageHandler.deleteStorageBasedOnEntityId(instituteServiceId);
+		storageHandler.deleteStorageBasedOnEntityId(instituteServiceId);
 	}
 
 	public List<InstituteServiceDto> getInstituteServices(String instituteId) {

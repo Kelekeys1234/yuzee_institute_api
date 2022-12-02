@@ -73,10 +73,6 @@ public class CourseSemesterProcessor {
 						"entityId is present so going to see if it is present in db if yes then we have to update it");
 				courseSubject = existingCourseSubjectsMap.get(e.getId());
 				courseSemester.removeIf(a->a.getCourseSemesterId().equals(e.getId()));
-//				if (courseSubject == null) {
-//					log.error("invalid course subject id : {}", e.getId());
-//					throw new RuntimeNotFoundException("invalid course subject id : " + e.getId());
-//				}
 		}
 			e.getSubjects().stream().forEach(a->{
 				SemesterSubject subject = new SemesterSubject(a.getName(),a.getDescription());
@@ -86,8 +82,8 @@ public class CourseSemesterProcessor {
 			courseSemesters.setDescription(e.getDescription());
 			courseSemesters.setName(e.getName());
 			courseSemesters.setType(e.getType());
-		    saveUpdateSubjects(userId, courseSubject, e.getSubjects());
 			courseSemesters.setSubjects(semesterSubject);
+		    saveUpdateSubjects(userId, courseSemesters, e.getSubjects());
 		    courseSemester.add(courseSemesters);
 		    course.setCourseSemesters(courseSemester);
 		});

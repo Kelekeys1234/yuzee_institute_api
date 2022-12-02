@@ -37,6 +37,7 @@ import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseVaccineRequirementDto;
 import com.yuzee.app.dto.CourseWorkExperienceRequirementDto;
 import com.yuzee.app.dto.CourseWorkPlacementRequirementDto;
+import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.common.VaccinationDto;
 import com.yuzee.common.lib.handler.CommonHandler;
 
@@ -60,6 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 	void addWorkExperienceWorkPlacement() throws IOException {
 		String instituteId = testCreateInstitute();
 		CourseRequest courseId = createCourses(instituteId);
+		Mockito.when(commonHandler.getVaccinationByFilters(1, 1, null)).thenReturn(new PaginationResponseDto());
 		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
 		CourseVaccineRequirementDto vaccine = new CourseVaccineRequirementDto();
 		vaccine.setDescription("hello this is vaccine");

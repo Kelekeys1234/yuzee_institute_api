@@ -2,10 +2,14 @@ package com.yuzee.app.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,50 +52,8 @@ import lombok.extern.slf4j.Slf4j;
 	
 	@DisplayName("saveCourseSemster")
 	@Test
-	  void saveCourseSemester() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
-		try {
-		com.yuzee.app.dto.ValidList<CourseSemesterDto> courseSemesterDtos = new com.yuzee.app.dto.ValidList<CourseSemesterDto>();
-		ValidList<SemesterSubjectDto> subjects = new ValidList<SemesterSubjectDto> ();
-		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto();
-		semesterSubjectDto.setName("semester name");
-		semesterSubjectDto.setDescription("Description");
-		subjects.add(semesterSubjectDto);
-		CourseSemesterDto courseSemesterDto = new CourseSemesterDto();
-		courseSemesterDto.setId("1e348e15-45b6-477f-a457-883738227e09");
-		courseSemesterDto.setType("Type");
-		courseSemesterDto.setDescription("description");
-		courseSemesterDto.setName("semester name");
-		courseSemesterDto.setSubjects(subjects);
-		courseSemesterDtos.add(courseSemesterDto);
-		
-		List<String>linkedCourseId = new ArrayList<>();
-		linkedCourseId.add(courseId.getId());
-		
-		CourseSemesterRequestWrapper request = new CourseSemesterRequestWrapper();
-		request.setCourseSemesterDtos(courseSemesterDtos);
-		request.setLinkedCourseIds(linkedCourseId);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add("userId", userId);
-		HttpEntity<CourseSemesterRequestWrapper > entity = new HttpEntity<>(request, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+ courseId.getId()
-				+PATH_SEPARATOR +"semester",
-				HttpMethod.POST, entity, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}finally {
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-//		headers.add("userId", userId);
-//		HttpEntity<String> entity = new HttpEntity<>(headers);
-//		ResponseEntity<String> response = testRestTemplate.exchange(
-//				api +PATH_SEPARATOR+courseid
-//				+PATH_SEPARATOR +"semester?=course_semester_ids=1e348e15-45b6-477f-a457-883738227e09",
-//				HttpMethod.DELETE, entity, String.class);
-//		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}
+	  void saveCourseSemesters() throws IOException {
+		saveCourseSemester();
 	}
 	
 	@DisplayName("deleteCourseSemster")
@@ -99,48 +61,17 @@ import lombok.extern.slf4j.Slf4j;
 	  void deleteCourseSemester() throws IOException {
 		String instituteId = testCreateInstitute();
 		CourseRequest courseId = createCourses(instituteId);
-		try {
-			com.yuzee.app.dto.ValidList<CourseSemesterDto> courseSemesterDtos = new com.yuzee.app.dto.ValidList<CourseSemesterDto>();
-			ValidList<SemesterSubjectDto> subjects = new ValidList<SemesterSubjectDto> ();
-			SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto();
-			semesterSubjectDto.setName("semester name");
-			semesterSubjectDto.setDescription("Description");
-			subjects.add(semesterSubjectDto);
-			CourseSemesterDto courseSemesterDto = new CourseSemesterDto();
-			courseSemesterDto.setId("1e348e15-45b6-477f-a457-883738227e09");
-			courseSemesterDto.setType("Type");
-			courseSemesterDto.setDescription("description");
-			courseSemesterDto.setName("semester name");
-			courseSemesterDto.setSubjects(subjects);
-			courseSemesterDtos.add(courseSemesterDto);
-			
-			List<String>linkedCourseId = new ArrayList<>();
-			linkedCourseId.add(courseId.getId());
-			
-			CourseSemesterRequestWrapper request = new CourseSemesterRequestWrapper();
-			request.setCourseSemesterDtos(courseSemesterDtos);
-			request.setLinkedCourseIds(linkedCourseId);
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add("userId", userId);
-			HttpEntity<CourseSemesterRequestWrapper > entity = new HttpEntity<>(request, headers);
-			ResponseEntity<String> response = testRestTemplate.exchange(
-					api +PATH_SEPARATOR+ courseId.getId()
-					+PATH_SEPARATOR +"semester",
-					HttpMethod.POST, entity, String.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}finally {
+		String semesterId= saveCourseSemester();
+	
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("userId", userId);
+		HttpEntity<String> entity = new HttpEntity<>(headers);
+		ResponseEntity<String> response = testRestTemplate.exchange(
+				api +PATH_SEPARATOR+ courseId.getId()
+				+PATH_SEPARATOR +"semester",
+				HttpMethod.DELETE, entity, String.class);
 		
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-//		headers.add("userId", userId);
-//		HttpEntity<String> entity = new HttpEntity<>(headers);
-//		ResponseEntity<String> response = testRestTemplate.exchange(
-//				api +PATH_SEPARATOR+courseid
-//				+PATH_SEPARATOR +"semester?=course_semester_ids=1e348e15-45b6-477f-a457-883738227e09",
-//				HttpMethod.DELETE, entity, String.class);
-//		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}
 		}
 	
 	@DisplayName("EmptyCourseSemster")

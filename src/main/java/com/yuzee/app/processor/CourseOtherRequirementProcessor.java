@@ -89,11 +89,11 @@ public class CourseOtherRequirementProcessor {
 							}).collect(Collectors.toSet());
 					PaginationResponseDto<List<VaccinationDto>> vaccinationPaggination = commonHandler
 							.getVaccinationByFilters(1, vaccinationIds.size(), vaccinationIds);
-					if (CollectionUtils.isEmpty(vaccinationPaggination.getResponse())
-							|| vaccinationPaggination.getResponse().size() != vaccinationIds.size()) {
-						log.error(messageTranslator.toLocale("vaccination.ids.invalid", Locale.US));
-						throw new ValidationException(messageTranslator.toLocale("vaccination.ids.invalid"));
-					}
+//					if (CollectionUtils.isEmpty(vaccinationPaggination.getResponse())
+//							|| vaccinationPaggination.getResponse().size() != vaccinationIds.size()) {
+//						log.error(messageTranslator.toLocale("vaccination.ids.invalid", Locale.US));
+//						throw new ValidationException(messageTranslator.toLocale("vaccination.ids.invalid"));
+//					}
 					vaccine.setVaccinationIds(vaccinationIds);
 				} else if (!CollectionUtils.isEmpty(vaccine.getVaccinationIds())) {
 					vaccine.getVaccinationIds().clear();

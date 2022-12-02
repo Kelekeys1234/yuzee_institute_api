@@ -441,7 +441,6 @@ public class CourseProcessor {
 		course.setInternationalApplicationFee(courseDto.getInternationalApplicationFee());
 		course.setDomesticEnrollmentFee(courseDto.getDomesticEnrollmentFee());
 		course.setInternationalEnrollmentFee(courseDto.getInternationalEnrollmentFee());
-
 		course.setRecDate(courseDto.getRecDate());
 		course.setContent(courseDto.getContent());
 		course.setGlobalGpa(courseDto.getGlobalGpa());

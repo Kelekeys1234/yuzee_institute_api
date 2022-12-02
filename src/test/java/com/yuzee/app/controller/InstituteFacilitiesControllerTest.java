@@ -53,16 +53,6 @@ import lombok.extern.slf4j.Slf4j;
 
 public class InstituteFacilitiesControllerTest extends CreateCourseAndInstitute {
 
-	private static final String INSTITUTE_ID = "instituteId";
-	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
-	private static final String USER_ID = "userId";
-	private static final String INSTITUTE_PRE_PATH = "/api/v1";
-	private static final String INSTITUTE_PATH = INSTITUTE_PRE_PATH + "/institute";
-	private static final String PATH_SEPARATOR = "/";
-	private static final String PAGE_NUMBER_PATH = "/pageNumber";
-	private static final String PAGE_SIZE_PATH = "/pageSize";
-
-	// cf13eef7-b188-4e84-baee-7f98a7c33e7b
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 
@@ -81,11 +71,11 @@ public class InstituteFacilitiesControllerTest extends CreateCourseAndInstitute 
 	@Test
 	void addInstituteFacilities() throws IOException {
 		String instituteId = testCreateInstitute();
+		String serviceId = service();
 		try {
 			/// add facility
 			List<FacilityDto> facilityDtoList = new ArrayList<>();
-			facilityDtoList.add(new FacilityDto(UUID.randomUUID().toString(), "testFacilityName",
-					UUID.randomUUID().toString()));
+			facilityDtoList.add(new FacilityDto("fda4786c-9882-4959-83c5-293e2ff189dd", "testFacilityName", serviceId));
 			InstituteFacilityDto instituteFacilityDto = new InstituteFacilityDto();
 			instituteFacilityDto.setFacilities(facilityDtoList);
 
@@ -98,7 +88,6 @@ public class InstituteFacilitiesControllerTest extends CreateCourseAndInstitute 
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 		} finally {
 			// clean up code
-
 			instituteProcessor.deleteInstitute(instituteId);
 
 		}
@@ -110,11 +99,9 @@ public class InstituteFacilitiesControllerTest extends CreateCourseAndInstitute 
 		String instituteId = testCreateInstitute();
 		try {
 			/// add facility
-
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
-			String path = INSTITUTE_PATH + PATH_SEPARATOR + "getFacilities" + PATH_SEPARATOR
-					+ instituteId;
+			String path = INSTITUTE_PATH + PATH_SEPARATOR + "getFacilities" + PATH_SEPARATOR + instituteId;
 			HttpEntity<String> entity = new HttpEntity<>(null, headers);
 			ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.GET, entity, String.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

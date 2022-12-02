@@ -44,4 +44,16 @@ public class InstituteService{
 		this.description = description;
 		this.institute = institute;
 	}
+	public InstituteService(Institute institute, Service service, String description, Date createdOn, Date updatedOn,
+			String createdBy, String updatedBy) {
+		super();
+		this.service = service;
+		this.description = description;
+		this.institute = institute;
+		this.createdOn = createdOn;
+		this.updatedOn = updatedOn;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+	}
+	
 }

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +37,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yuzee.app.YuzeeApplication;
 import com.yuzee.app.bean.Location;
+import com.yuzee.app.bean.Service;
 import com.yuzee.app.controller.v1.InstituteBasicInfoController;
 import com.yuzee.app.dto.InstituteFundingDto;
 import com.yuzee.app.dto.InstituteRequestDto;
@@ -63,19 +65,6 @@ import lombok.extern.slf4j.Slf4j;
 @ContextConfiguration(classes = YuzeeApplication.class)
 class InstituteServiceControllerTest extends CreateCourseAndInstitute {
 
-	private static final String entityId = UUID.randomUUID().toString();
-	private static final String instituteId = "714964e7-ce52-4c07-ac0b-2e8dc6d7d444";
-	private static final String INSTITUTE_ID = "instituteId";
-	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
-	private static final String USER_ID = "userId";
-	private static final String INSTITUTE_PRE_PATH = "/api/v1";
-	private static final String INSTITUTE_PATH = INSTITUTE_PRE_PATH + "/institute";
-	private static final String PATH_SEPARATOR = "/";
-	private static final String PAGE_NUMBER_PATH = "/pageNumber";
-	private static final String PAGE_SIZE_PATH = "/pageSize";
-	private static final String instituteEnglishRequirementId = "259d60e4-6b1d-48ea-9e43-a8e3f585ecb6";
-	private static final UUID IDS = UUID.fromString("1e348e15-45b6-477f-a457-883738227e05");
-
 	// cf13eef7-b188-4e84-baee-7f98a7c33e7b
 	@Autowired
 	private TestRestTemplate testRestTemplate;
@@ -87,8 +76,6 @@ class InstituteServiceControllerTest extends CreateCourseAndInstitute {
 	private InstituteServiceRepository instituteServiceRepository;
 	@Autowired
 	private InstituteProcessor instituteProcessor;
-	@Autowired
-	private ServiceRepository serviceRepository;
 
 	@BeforeClass
 	public static void main() {
@@ -97,7 +84,7 @@ class InstituteServiceControllerTest extends CreateCourseAndInstitute {
 
 	@AfterEach
 	public void deleteAllInstitute() {
-		serviceRepository.deleteAll();
+		// serviceRepository.deleteAll();
 	}
 
 	/// institute/service/instituteId/{instituteId}
@@ -106,6 +93,7 @@ class InstituteServiceControllerTest extends CreateCourseAndInstitute {
 	void addInstituteService() throws IOException {
 		try {
 			String instituteId = testCreateInstitute();
+			String serviceId = service();
 			ServiceDto service = new ServiceDto();
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
@@ -113,12 +101,12 @@ class InstituteServiceControllerTest extends CreateCourseAndInstitute {
 			String path = INSTITUTE_PATH + PATH_SEPARATOR + "service" + PATH_SEPARATOR + "instituteId" + PATH_SEPARATOR
 					+ instituteId;
 			List<InstituteServiceDto> instituteServiceDto = new ArrayList<>();
-			service.setServiceId("6dc37172-4a10-48b6-b110-6970c187238d");
+			service.setServiceId(serviceId);
 			service.setDescription("test service controller jUnit description");
 			service.setServiceName("testServiceName");
 			InstituteServiceDto dto = new InstituteServiceDto();
 			dto.setDescription("mydescription");
-			dto.setInstituteServiceId("694ddd0f-1e0b-43d9-9401-24403112e162");
+			dto.setInstituteServiceId(UUID.randomUUID().toString());
 			dto.setService(service);
 			instituteServiceDto.add(dto);
 			HttpEntity<List<InstituteServiceDto>> entity = new HttpEntity<>(instituteServiceDto, headers);
@@ -154,45 +142,30 @@ class InstituteServiceControllerTest extends CreateCourseAndInstitute {
 
 	@DisplayName("getInstituteServiceById")
 	@Test
-	 void getInstituteServiceById() throws IOException {
-			String instituteId = testCreateInstitute();
-			ServiceDto service = new ServiceDto();
+	void getInstituteServiceById() throws IOException {
+		String instituteId = testCreateInstitute();
+		String serviceId = service();
+		ServiceDto service = new ServiceDto();
 
-			String path = INSTITUTE_PATH + PATH_SEPARATOR + "service" + PATH_SEPARATOR + "instituteId" + PATH_SEPARATOR
-					+ instituteId;
-			List<InstituteServiceDto> instituteServiceDto = new ArrayList<>();
-			service.setServiceId(UUID.randomUUID().toString());
-			service.setDescription("test service controller jUnit description");
-			service.setServiceName("testServiceName");
-			InstituteServiceDto dto = new InstituteServiceDto();
-			dto.setDescription("mydescription");
-			dto.setInstituteServiceId(UUID.randomUUID().toString());
-			dto.setService(service);
-			instituteServiceDto.add(dto);
-			HttpHeaders header = new HttpHeaders();
-			header.setContentType(MediaType.APPLICATION_JSON);
-			header.add("userId", userId);
-			HttpEntity<List<InstituteServiceDto>> entityy = new HttpEntity<>(instituteServiceDto, header);
-			ResponseEntity<InstituteServiceDto> responses = testRestTemplate.exchange(path, HttpMethod.POST, entityy,
-					InstituteServiceDto.class);
-			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-			try {
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.set("userId", userId);
+			String paths = INSTITUTE_PATH + PATH_SEPARATOR + "service" + PATH_SEPARATOR + "instituteId" + PATH_SEPARATOR
+					+ serviceId;
+			Mockito.when(
+					storageHandler.getStorages(service.getServiceId(), EntityTypeEnum.SERVICE, EntitySubTypeEnum.LOGO))
+					.thenReturn(new ArrayList());
+			HttpEntity<List<InstituteServiceDto>> entityys = new HttpEntity<>(null, headers);
+			ResponseEntity<String> responsess = testRestTemplate.exchange(paths, HttpMethod.GET, entityys,
+					String.class);
+			assertThat(responsess.getStatusCode()).isEqualTo(HttpStatus.OK);
+		} finally {
+			ResponseEntity<String> responsed = testRestTemplate
+					.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteId, HttpMethod.DELETE, null, String.class);
+			instituteProcessor.deleteInstitute(instituteId);
 
-				String paths = INSTITUTE_PATH + PATH_SEPARATOR + "service" + PATH_SEPARATOR + "instituteId"
-						+ PATH_SEPARATOR + instituteId;
-				Mockito.when(storageHandler.getStorages(service.getServiceId(), EntityTypeEnum.SERVICE,
-						EntitySubTypeEnum.LOGO)).thenReturn(new ArrayList());
-				HttpEntity<List<InstituteServiceDto>> entityys = new HttpEntity<>(null, header);
-				ResponseEntity<String> responsess = testRestTemplate.exchange(paths, HttpMethod.GET, entityys,
-						String.class);
-				assertThat(responsess.getStatusCode()).isEqualTo(HttpStatus.OK);
-			} finally {
-				ResponseEntity<String> responsed = testRestTemplate.exchange(
-						INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteId, HttpMethod.DELETE, null, String.class);
-				instituteProcessor.deleteInstitute(instituteId);
-
-				assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
-			}
+			assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
 		}
-		}
-
+	}
+}

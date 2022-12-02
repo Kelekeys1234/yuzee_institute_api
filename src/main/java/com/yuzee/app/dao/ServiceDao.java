@@ -13,7 +13,7 @@ public interface ServiceDao {
 
     public List<Service> addUpdateServices(List<Service> service) throws ValidationException;
 
-    public Service getServiceById(String id);
+    public Optional<Service> getServiceById(String id);
 
     public Page<Service> getAllServices(Pageable pageable);
 

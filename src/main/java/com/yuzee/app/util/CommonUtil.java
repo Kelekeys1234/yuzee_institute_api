@@ -141,10 +141,7 @@ public class CommonUtil {
 		if (course.getLevel() != null) {
 			courseRequest.setLevelIds(course.getLevel().getId().toString());
 		}
-		if (course.getCourseIntake() != null) {
-			courseRequest.getIntake().setDates(course.getCourseIntake().getDates());
-		}
-
+	
 		courseRequest.setRemarks(course.getRemarks());
 		courseRequest.setWebsite(course.getWebsite());
 		courseRequest.setPhoneNumber(course.getPhoneNumber());

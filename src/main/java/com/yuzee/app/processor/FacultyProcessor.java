@@ -53,7 +53,7 @@ public class FacultyProcessor {
 		log.debug("Inside saveFaculty() method");
 		Faculty faculty = new Faculty();
 		log.info("saving faculty data in DB having facultyName = " + facultyDto.getName());
-		faculty.setId(UUID.randomUUID().toString());
+		faculty.setId(facultyDto.getId());
 		faculty.setName(facultyDto.getName());
 		faculty.setIsActive(true);
 		faculty.setCreatedBy("API");

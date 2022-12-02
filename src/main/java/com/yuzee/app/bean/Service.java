@@ -19,7 +19,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "service")
+@Document("service")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Service{
 

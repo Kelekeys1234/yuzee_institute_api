@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -34,25 +35,30 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yuzee.app.YuzeeApplication;
+import com.yuzee.app.bean.Careers;
 import com.yuzee.app.bean.InstituteDomesticRankingHistory;
 import com.yuzee.app.bean.InstituteWorldRankingHistory;
 import com.yuzee.app.bean.Location;
+import com.yuzee.app.bean.Service;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.CourseCareerOutcomeRequestWrapper;
-import com.yuzee.app.dto.CourseIntakeDto;
 import com.yuzee.app.dto.CourseRequest;
+import com.yuzee.app.dto.CourseSemesterRequestWrapper;
 import com.yuzee.app.dto.DayTimingDto;
 import com.yuzee.app.dto.InstituteEnglishRequirementsDto;
 import com.yuzee.app.dto.InstituteFundingDto;
 import com.yuzee.app.dto.InstituteRequestDto;
 import com.yuzee.app.dto.TimingRequestDto;
 import com.yuzee.app.dto.ValidList;
+import com.yuzee.app.repository.CareerRepository;
 import com.yuzee.app.repository.CourseRepository;
+import com.yuzee.app.repository.ServiceRepository;
 import com.yuzee.common.lib.dto.GenericWrapperDto;
 import com.yuzee.common.lib.dto.institute.CareerDto;
 import com.yuzee.common.lib.dto.institute.CourseCareerOutcomeDto;
 import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
 import com.yuzee.common.lib.dto.institute.CourseEnglishEligibilityDto;
+import com.yuzee.common.lib.dto.institute.CourseIntakeDto;
 import com.yuzee.common.lib.dto.institute.CourseMinRequirementDto;
 import com.yuzee.common.lib.dto.institute.CourseMinRequirementSubjectDto;
 import com.yuzee.common.lib.dto.institute.CourseSemesterDto;
@@ -98,6 +104,11 @@ public class CreateCourseAndInstitute {
 	protected TestRestTemplate testRestTemplate;
 	@Autowired
 	protected CourseRepository courseRepository;
+	@Autowired
+	private CareerRepository careerRepository;
+	@Autowired
+	private ServiceRepository serviceRepository;
+
 
 	protected String testCreateInstitute() throws IOException {
 
@@ -183,10 +194,44 @@ public class CreateCourseAndInstitute {
 		return instituteId;
 	}
 
+	String createLevel() {
+		LevelDto level = new LevelDto();
+		level.setId(UUID.randomUUID().toString());
+		level.setCode("code");
+		level.setDescription("Description");
+		level.setName("name");
+		level.setSequenceNo(223456);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<LevelDto> entity = new HttpEntity<>(level, headers);
+		ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + "level",
+				HttpMethod.POST, entity, String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		return level.getId();
+	}
+
+	// create faculty
+
+	String createFaculty() {
+		FacultyDto faculty = new FacultyDto();
+		faculty.setId(UUID.randomUUID().toString());
+		faculty.setDescription("Description");
+		faculty.setName("falculty name");
+		faculty.setIcon("icons");
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<FacultyDto> entity = new HttpEntity<>(faculty, headers);
+		ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + "faculty",
+				HttpMethod.POST, entity, String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		return faculty.getId();
+	}
 	// create Course
 
 	protected CourseRequest createCourses(String instituteId) throws IOException {
 		///// create institute api
+		String facultyId = createFaculty();
+		String levelId = createLevel();
 		CourseRequest couseRequests = new CourseRequest();
 		ValidList<CourseMinRequirementDto> courseMinRequirementDtos = new ValidList<>();
 		ValidList<CourseContactPersonDto> courseContactPersons = new ValidList<>();
@@ -216,8 +261,10 @@ public class CreateCourseAndInstitute {
 		CourseSemesterDto courseSemesterDto = new CourseSemesterDto(entityId, "type", "name", "description",
 				semesterSubjectDtos);
 		courseSemesters.add(courseSemesterDto);
-		CourseIntakeDto courseIntakeDto = new CourseIntakeDto(entityId, new Date());
-
+		List<String> linkedCourseId = new ArrayList<>();
+		CourseIntakeDto courseIntake = new CourseIntakeDto();
+		courseIntake.setType("SPECIFIC");
+		courseIntake.setDates(date);
 		UserInitialInfoDto userInitialInfoDto = new UserInitialInfoDto();
 
 		LevelDto levelDto = new LevelDto("39d3f31e-64fb-46eb-babc-c54efa69e091", "levelName", "levelCode",
@@ -273,7 +320,7 @@ public class CreateCourseAndInstitute {
 		CourseRequest couseRequest = new CourseRequest();
 		couseRequest.setId(UUID.randomUUID().toString());
 		couseRequest.setInstituteId(instituteId);
-		couseRequest.setFacultyId("5af8b74f-9f04-45dc-81c5-36019590105c");
+		couseRequest.setFacultyId(facultyId);
 		couseRequest.setFaculty(facultyDto);
 		couseRequest.setName("mycourseTestnnhi");
 		couseRequest.setDescription("course Description");
@@ -290,7 +337,7 @@ public class CreateCourseAndInstitute {
 		couseRequest.setTotalCount("23456");
 		couseRequest.setCurrency("dollar");
 		couseRequest.setCurrencyTime("ISt");
-		couseRequest.setLevelIds("7401b9e0-9541-4336-98bb-934d455afae6");
+		couseRequest.setLevelIds(levelId);
 		couseRequest.setLevel(levelDto);
 		couseRequest.setAvailability("always Available");
 		couseRequest.setRecognition("recognize");
@@ -327,7 +374,7 @@ public class CreateCourseAndInstitute {
 		couseRequest.setEnglishEligibility(courseEnglishEligibilityDtoList);
 		couseRequest.setCourseContactPersons(courseContactPersons);
 		couseRequest.setProviderCodes(listOfInstituteProviderCode);
-		// couseRequest.setIntake(courseIntake);
+		couseRequest.setIntake(courseIntake);
 		couseRequest.setInternationalStudentProcedureId(null);
 		couseRequest.setDomesticStudentProcedureId(null);
 		couseRequest.setCourseMinRequirementDtos(courseMinRequirementDtos);
@@ -342,27 +389,79 @@ public class CreateCourseAndInstitute {
 
 		return couseRequest;
 	}
-	
+
 	InstituteEnglishRequirementsDto addInstituteEnglishRequirements() throws IOException {
 		String instituteId = testCreateInstitute();
 		InstituteEnglishRequirementsDto instituteEnglishRequirementsDto = new InstituteEnglishRequirementsDto();
-			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirements" + PATH_SEPARATOR + instituteId;
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.set("userId", userId);
-			instituteEnglishRequirementsDto.setInstituteId(UUID.randomUUID().toString());
-			instituteEnglishRequirementsDto.setExamName("testExamName");
-			instituteEnglishRequirementsDto.setListeningMarks(54.34);
-			instituteEnglishRequirementsDto.setOralMarks(89.334);
-			instituteEnglishRequirementsDto.setReadingMarks(67.321);
-			instituteEnglishRequirementsDto.setWritingMarks(88.90);
-			instituteEnglishRequirementsDto.getInstituteId();
-			HttpEntity<InstituteEnglishRequirementsDto> entity = new HttpEntity<>(instituteEnglishRequirementsDto,
-					headers);
-			ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.POST, entity, String.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-			return instituteEnglishRequirementsDto;
-		}
+		String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "englishRequirements" + PATH_SEPARATOR + instituteId;
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("userId", userId);
+		instituteEnglishRequirementsDto.setInstituteId(UUID.randomUUID().toString());
+		instituteEnglishRequirementsDto.setExamName("testExamName");
+		instituteEnglishRequirementsDto.setListeningMarks(54.34);
+		instituteEnglishRequirementsDto.setOralMarks(89.334);
+		instituteEnglishRequirementsDto.setReadingMarks(67.321);
+		instituteEnglishRequirementsDto.setWritingMarks(88.90);
+		instituteEnglishRequirementsDto.getInstituteId();
+		HttpEntity<InstituteEnglishRequirementsDto> entity = new HttpEntity<>(instituteEnglishRequirementsDto, headers);
+		ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.POST, entity, String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		return instituteEnglishRequirementsDto;
+	}
 
+	String saveCareer() {
+		Careers career = new Careers();
+		career.setId(UUID.randomUUID().toString());
+		career.setCareer("career");
+		careerRepository.save(career);
+		return career.getId();
+	}
 
+	String service() {
+
+		Service services = new Service();
+		services.setId(UUID.randomUUID().toString());
+		services.setDescription("description");
+		services.setName("name");
+		services.setCreatedBy(userId);
+		services.setCreatedOn(new Date());
+		serviceRepository.save(services);
+		return services.getId();
+
+	}
+
+	String saveCourseSemester() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
+		com.yuzee.app.dto.ValidList<CourseSemesterDto> courseSemesterDtos = new com.yuzee.app.dto.ValidList<CourseSemesterDto>();
+		com.yuzee.common.lib.dto.ValidList<SemesterSubjectDto> subjects = new com.yuzee.common.lib.dto.ValidList<SemesterSubjectDto>();
+		SemesterSubjectDto semesterSubjectDto = new SemesterSubjectDto();
+		semesterSubjectDto.setName(UUID.randomUUID().toString());
+		semesterSubjectDto.setDescription("Description");
+		subjects.add(semesterSubjectDto);
+		CourseSemesterDto courseSemesterDto = new CourseSemesterDto();
+		courseSemesterDto.setId(UUID.randomUUID().toString());
+		courseSemesterDto.setType("Type");
+		courseSemesterDto.setDescription("description");
+		courseSemesterDto.setName(UUID.randomUUID().toString());
+		courseSemesterDto.setSubjects(subjects);
+		courseSemesterDtos.add(courseSemesterDto);
+
+		List<String> linkedCourseId = new ArrayList<>();
+		linkedCourseId.add(courseId.getId());
+
+		CourseSemesterRequestWrapper request = new CourseSemesterRequestWrapper();
+		request.setCourseSemesterDtos(courseSemesterDtos);
+		request.setLinkedCourseIds(linkedCourseId);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("userId", userId);
+		HttpEntity<CourseSemesterRequestWrapper> entity = new HttpEntity<>(request, headers);
+		ResponseEntity<String> response = testRestTemplate.exchange(
+				api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "semester", HttpMethod.POST, entity,
+				String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		return courseSemesterDto.getId();
+	}
 }
