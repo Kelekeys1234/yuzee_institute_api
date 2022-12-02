@@ -75,12 +75,14 @@ import com.yuzee.common.lib.dto.connection.FollowerCountDto;
 import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
 import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
 import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.handler.ConnectionHandler;
 import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.handler.ReviewHandler;
 import com.yuzee.common.lib.handler.StorageHandler;
+import com.yuzee.common.lib.handler.UserHandler;
 import com.yuzee.common.lib.util.ObjectMapperHelper;
 import com.yuzee.common.lib.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -94,7 +96,8 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 
 	@MockBean
 	ReviewHandler reviewHandler;
-
+	@MockBean
+	 UserHandler userHandler;
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 
@@ -685,5 +688,83 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
 	}
+	@DisplayName(" getInstituteImage")
+	@Test
+	void  getInstituteImage() throws IOException {
+		String instituteId = testCreateInstitute();
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+			List<EntitySubTypeEnum> img = new ArrayList<>();
+			img.add(EntitySubTypeEnum.COVER_PHOTO);
+			img.add(EntitySubTypeEnum.LOGO);
+			img.add(EntitySubTypeEnum.ABOUT_US);
+			img.add(EntitySubTypeEnum.MEDIA);
 
-}
+			List<String> id = new ArrayList<>();
+			id.add(instituteId);
+			Mockito.when(storageHandler.getStorages(id, EntityTypeEnum.INSTITUTE, img))
+					.thenReturn(new ArrayList<StorageDto>());
+			ResponseEntity<String> responses = testRestTemplate.exchange(
+					INSTITUTE_PRE_PATH + PATH_SEPARATOR + "images" + PATH_SEPARATOR + instituteId, HttpMethod.GET,
+					entity, String.class);
+			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		} finally {
+			instituteProcessor.deleteInstitute(instituteId);
+		}
+	}
+	
+	@DisplayName(" getInstitutesByIdList")
+	@Test
+	void getInstitutesByIdList() throws IOException {
+		String instituteId = testCreateInstitute();
+		
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+
+			List<String> id = new ArrayList<>();
+			id.add(instituteId);
+			Mockito.when(storageHandler.getStorages(id, EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.LOGO))
+					.thenReturn(new ArrayList<StorageDto>());
+			Mockito.when(reviewHandler.getAverageReview("INSTITUTE", id)).thenReturn(new HashMap());
+			ResponseEntity<String> responses = testRestTemplate.exchange(
+					INSTITUTE_PRE_PATH + PATH_SEPARATOR + "institute" + PATH_SEPARATOR + "multiple" + PATH_SEPARATOR
+							+ "id" + PATH_SEPARATOR + "?institute_ids=" + instituteId,
+					HttpMethod.GET, entity, String.class);
+			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		} finally {
+			instituteProcessor.deleteInstitute(instituteId);
+		}
+	}
+
+	
+		@DisplayName("verifyInstitutes")
+		@Test
+		void verifyInstitutes() throws IOException {
+			String instituteId = testCreateInstitute();
+			try {
+			
+				HttpHeaders headers = new HttpHeaders();
+				headers.set(USER_ID, userId);
+				headers.setContentType(MediaType.APPLICATION_JSON);
+				HttpEntity<String> entity = new HttpEntity<>(headers);
+				Mockito.when(userHandler.getUserById(userId)).thenReturn(new UserInitialInfoDto());
+								
+				ResponseEntity<String> responses = testRestTemplate
+						.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + "admin"+PATH_SEPARATOR+"institute"+PATH_SEPARATOR+"verify_institutes"+PATH_SEPARATOR+"True?verified_institute_ids="+instituteId, HttpMethod.PUT, entity, String.class);
+				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+			} finally {
+				instituteProcessor.deleteInstitute(instituteId);
+
+			}
+		}
+	
+		
+	}
+
+
