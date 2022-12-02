@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,6 +54,12 @@ class CourseFundingTest extends CreateCourseAndInstitute {
 	@MockBean
 	CommonProcessor commonProcessor;
 
+	private CourseRequest courseId;
+	@BeforeEach
+	public void createAllCourse() throws IOException {
+		String instituteId = testCreateInstitute();
+		courseId = createCourses(instituteId);
+	}
 	@DisplayName("savecourseFunding")
 	@Test
 	void saveCourseFunding() throws IOException {

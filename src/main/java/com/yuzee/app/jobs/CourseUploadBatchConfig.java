@@ -2,8 +2,6 @@ package com.yuzee.app.jobs;
 
 import java.io.IOException;
 
-import javax.validation.ConstraintViolationException;
-
 import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
@@ -18,18 +16,15 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
-import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
+
 import com.yuzee.app.bean.Course;
 import com.yuzee.app.bean.CourseCurriculum;
-import com.yuzee.app.bean.Level;
 import com.yuzee.app.dto.uploader.CourseCsvDto;
-import com.yuzee.common.lib.dto.institute.CourseCurriculumDto;
 import com.yuzee.common.lib.exception.UploaderException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -56,12 +51,17 @@ public class CourseUploadBatchConfig {
   
     @Bean("courseItemWriter")
     @StepScope
-    public MongoItemWriter<Course> writer(@Autowired MongoTemplate mongoTemplate) {
-		   return new MongoItemWriterBuilder<Course>().template(mongoTemplate).collection("course")
+    public MongoItemWriter<Course> writer(MongoTemplate mongoTemplate) {
+		 return new MongoItemWriterBuilder<Course>().template(mongoTemplate).collection("course")
 	                .build();
     }
     
- 
+    @Bean("curriculumItemWriter")
+    @StepScope
+    public MongoItemWriter<CourseCurriculum> curriculumItemWriter(MongoTemplate mongoTemplate) {
+		 return new MongoItemWriterBuilder<CourseCurriculum>().template(mongoTemplate).collection("CourseCurriculum")
+	                .build();
+    }
 	
     @Bean("importCourseJob")
     public Job importCourseJob(JobBuilderFactory jobs,@Qualifier("facultyStep") Step facultyStep, @Qualifier ("courseStep") Step courseStep,

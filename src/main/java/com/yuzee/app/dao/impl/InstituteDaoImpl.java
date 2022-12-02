@@ -3,6 +3,7 @@ package com.yuzee.app.dao.impl;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -458,7 +459,7 @@ public class InstituteDaoImpl implements InstituteDao {
 				instituteGetRequestDto.setCityName(row[3].toString());
 			}
 			if (row[4] != null) {
-				instituteGetRequestDto.setInstituteType(row[4].toString());
+				instituteGetRequestDto.setInstituteType(Arrays.asList(row[4].toString()));
 			}
 			if (row[5] != null) {
 				instituteGetRequestDto.setDescription(row[5].toString());

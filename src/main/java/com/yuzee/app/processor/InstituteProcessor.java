@@ -363,7 +363,7 @@ public class InstituteProcessor {
 		institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
 		institute.setCreatedBy("API");
 		institute.setIsActive(true);
-		institute.setId(instituteRequest.getInstituteId());
+		institute.setId((UUID.randomUUID().toString()));
 	        } 
 		institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		institute.setUpdatedBy("API");
@@ -415,7 +415,8 @@ public class InstituteProcessor {
 		institute.setInstituteDomesticRankingHistories(instituteRequest.getInstituteDomesticRankingHistories());
 		institute.setPostalCode(instituteRequest.getPostalCode());
 		institute.setWebsite(instituteRequest.getWebsite());
-
+		institute.setBusinessAccountType(instituteRequest.getBusinessAccountType());
+		institute.setInstituteAffiliactionType(instituteRequest.getInstituteAffiliactionType());
 		institute.setState(instituteRequest.getStateName());
 		institute.setAddress(instituteRequest.getAddress());
 		institute.setEmail(instituteRequest.getEmail());

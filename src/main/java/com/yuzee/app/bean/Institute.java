@@ -36,8 +36,12 @@ public class Institute implements Serializable {
     private String id;
 
     private String readableId;
+    
+	private String businessAccountType;
+	
+	private String instituteAffiliactionType;
 
-    private String instituteType;
+    private List<String> instituteType;
 
     @Indexed(unique = true)
     private String name;

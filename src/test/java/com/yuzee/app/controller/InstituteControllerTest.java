@@ -113,14 +113,16 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 
 	@Autowired
 	private InstituteRepository instituteRepository;
+	
+	private String instituteId;
 
 	public static void main() {
 		SpringApplication.run(InstituteController.class);
 	}
 
 	@AfterEach
-	public void deleteAllInstitute() {
-		// instituteRepository.deleteAll();
+	public void createAllInstitute() throws IOException {
+		instituteId = testCreateInstitute();
 	}
 
 	@DisplayName("change Institute status test success")
@@ -128,7 +130,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 	void changeInstituteStatus() throws IOException {
 
 		boolean status = true;
-		String instituteId = testCreateInstitute();
+
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_JSON);
 		header.set(USER_ID, userId);
@@ -160,8 +162,6 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 	@DisplayName("save instituteType")
 	@Test
 	void saveInstituteType() throws IOException {
-		String instituteId = testCreateInstitute();
-		try {
 
 			InstituteTypeDto instituteTypeDto = new InstituteTypeDto();
 			instituteTypeDto.setCountryName("INDIA");
@@ -177,11 +177,8 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 					INSTITUTE_PRE_PATH + PATH_SEPARATOR + "instituteType?instituteType=SMALL_MEDIUM_PRIVATE_SCHOOL",
 					HttpMethod.POST, entitys, String.class, params);
 			assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			// clean up code
-			instituteProcessor.deleteInstitute(instituteId);
-		}
-	}
+		} 
+	
 
 	@DisplayName("get InstituteType by CountryName")
 	@Test
@@ -267,7 +264,6 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 	@DisplayName("getInstituteByCityName")
 	@Test
 	void testGetInstituteByCityName() throws IOException {
-		String instituteId = testCreateInstitute();
 		String cityName = "CITY";
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_JSON);
@@ -301,7 +297,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 		instituteRequestDto.setLongitude(93.5);
 		instituteRequestDto.setEmail("info@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId(UUID.randomUUID().toString());
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -333,7 +329,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 				instituteRequestDto.setLongitude(93.5);
 				instituteRequestDto.setEmail("info@testEmail.com");
 				instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-				instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+				instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 				instituteRequestDto.setReadableId(UUID.randomUUID().toString());
 				listOfInstituteRequestDto.add(instituteRequestDto);
 				listOfInstituteProviderCode.add(instituteProviderCode);
@@ -422,7 +418,6 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 	void testGetById() throws IOException {
 
 		Boolean is_readable_id = true;
-		String instituteId = testCreateInstitute();
 		Map<String, Boolean> params = new HashMap<>();
 		params.put("is_readable_id", is_readable_id);
 		HttpHeaders headers = new HttpHeaders();
@@ -485,7 +480,6 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 	@DisplayName("testDeleteInstitute")
 	@Test
 	void testDeleteInstitute() throws IOException {
-		String instituteId = testCreateInstitute();
 		ResponseEntity<String> response = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteId,
 				HttpMethod.DELETE, null, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -494,9 +488,6 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 	@DisplayName("testGetHistoryOfDomesticRanking")
 	@Test
 	void testGetHistoryOfDomesticRanking() throws IOException {
-
-		String instituteId = testCreateInstitute();
-		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -508,18 +499,12 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-		} finally {
-			// clean up code
-
-			instituteProcessor.deleteInstitute(instituteId);
-		}
+		
 	}
 
 	@DisplayName("testGetHistoryOfWorldRanking")
 	@Test
 	void testGetHistoryOfWorldRanking() throws IOException {
-		String instituteId = testCreateInstitute();
-		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -530,20 +515,12 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 			InstituteWorldRankingHistoryDto domesticRankingHistoryDto = new InstituteWorldRankingHistoryDto();
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-		} finally {
-			
-			
-			// clean up code
-			instituteProcessor.deleteInstitute(instituteId);
-
 		}
-	}
+
 
 	@DisplayName("testGetInstituteFaculties")
 	@Test
 	void testGetInstituteFaculties() throws IOException {
-		String instituteId = testCreateInstitute();
-		try {
 			HttpHeaders header = new HttpHeaders();
 			header.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<String> entitys = new HttpEntity<>(header);
@@ -552,11 +529,8 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 					String.class);
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-		} finally {
-			// clean up code
-			instituteProcessor.deleteInstitute(instituteId);
 		}
-	}
+
 
 	@DisplayName("getDistinctInstitutes")
 	@Test
@@ -625,7 +599,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 		instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
 		instituteRequestDto.setLatitude(91.202743);
 		instituteRequestDto.setLongitude(56.1240);
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setPostalCode(1234);
 		instituteRequestDto.setReadableId("3889fdc-c292-69ea-a757-09f6d1a0mrvh");
 		instituteRequestDto.setTagLine("Inspirings");
@@ -660,7 +634,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 		instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
 		instituteRequestDto.setLatitude(91.202743);
 		instituteRequestDto.setLongitude(56.1240);
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setPostalCode(1234);
 		instituteRequestDto.setReadableId("3889fdc-c292-69ea-a857-05f6d1a04rvh");
 		instituteRequestDto.setTagLine("Inspirings");
@@ -695,7 +669,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 		instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
 		instituteRequestDto.setLatitude(91.202743);
 		instituteRequestDto.setLongitude(56.1240);
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setPostalCode(1234);
 		instituteRequestDto.setReadableId("3889fdc-c292-69ea-a757-09f6d1a04rpo");
 		instituteRequestDto.setTagLine("Inspirings");

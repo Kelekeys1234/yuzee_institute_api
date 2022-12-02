@@ -6,74 +6,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestClientException;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.yuzee.app.YuzeeApplication;
-import com.yuzee.app.bean.InstituteDomesticRankingHistory;
-import com.yuzee.app.bean.InstituteWorldRankingHistory;
-import com.yuzee.app.bean.Location;
-import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.AdvanceSearchDto;
-import com.yuzee.app.dto.CourseEnglishEligibilityRequestWrapper;
-import com.yuzee.app.dto.CourseIntakeDto;
 import com.yuzee.app.dto.CourseMobileDto;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseSearchDto;
 import com.yuzee.app.dto.CourseSearchFilterDto;
-import com.yuzee.app.dto.DayTimingDto;
-import com.yuzee.app.dto.InstituteFundingDto;
-import com.yuzee.app.dto.InstituteRequestDto;
-import com.yuzee.app.dto.TimingRequestDto;
-import com.yuzee.app.dto.ValidList;
-import com.yuzee.app.repository.CourseRepository;
-import com.yuzee.common.lib.dto.GenericWrapperDto;
-import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
-import com.yuzee.common.lib.dto.institute.CourseEnglishEligibilityDto;
-import com.yuzee.common.lib.dto.institute.CourseMinRequirementDto;
-import com.yuzee.common.lib.dto.institute.CourseMinRequirementSubjectDto;
-import com.yuzee.common.lib.dto.institute.CourseSemesterDto;
-import com.yuzee.common.lib.dto.institute.EducationSystemDto;
-import com.yuzee.common.lib.dto.institute.FacultyDto;
-import com.yuzee.common.lib.dto.institute.GradeDto;
-import com.yuzee.common.lib.dto.institute.LevelDto;
-import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
-import com.yuzee.common.lib.dto.institute.SemesterSubjectDto;
-import com.yuzee.common.lib.dto.institute.SubjectDto;
 import com.yuzee.common.lib.dto.transaction.UserViewCourseDto;
 import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
 import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
-import com.yuzee.common.lib.enumeration.GradeType;
 import com.yuzee.common.lib.enumeration.StudentTypeEnum;
 import com.yuzee.common.lib.enumeration.TransactionTypeEnum;
 import com.yuzee.common.lib.handler.ApplicationHandler;
@@ -82,26 +44,9 @@ import com.yuzee.common.lib.handler.ReviewHandler;
 import com.yuzee.common.lib.handler.StorageHandler;
 import com.yuzee.common.lib.handler.UserHandler;
 import com.yuzee.common.lib.handler.ViewTransactionHandler;
-import com.yuzee.common.lib.util.ObjectMapperHelper;
-
-import org.junit.platform.runner.JUnitPlatform;
-import lombok.extern.slf4j.Slf4j;
-
 
 public class CourseControllerTest extends CreateCourseAndInstitute {
 
-	private static final String entityId = UUID.randomUUID().toString();
-	private static final String instituteId = "39d3f31e-64fb-46eb-babc-c54efa69e091";
-	private static final String INSTITUTE_ID = "instituteId";
-	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
-	private static final String USER_ID = "userId";
-	private static final String COURSE = "/api/v1";
-	private static final String COURSE_PATH = COURSE + "/institute";
-	private static final String PATH_SEPARATOR = "/";
-	private static final String PAGE_NUMBER_PATH = "/pageNumber";
-	private static final String PAGE_SIZE_PATH = "/pageSize";
-	private static final String COURSE_IDS = "829af0d4-8b28-4f8b-82b1-7b32f1308967";
-    
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 	@MockBean
@@ -110,33 +55,34 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 	protected ViewTransactionHandler viewTransactionHandler;
 	@MockBean
 	protected StorageHandler storageHandler;
-	
+
 	@MockBean
-	 ApplicationHandler applicationHandler;
+	ApplicationHandler applicationHandler;
 	@MockBean
 	UserHandler userHandler;
 	@MockBean
 	private ReviewHandler reviewHandler;
 
-	@AfterEach
-	public void deleteAllInstitute() {
-		// courseRepository.deleteAll();
-	}
+	private CourseRequest courseId;
 
-	// create institute
+	private String instituteId;
+
+	@BeforeEach
+	public void createAllCourse() throws IOException {
+		instituteId = testCreateInstitute();
+		courseId = createCourses(instituteId);
+	}
 
 	@DisplayName("Update Courses")
 	@Test
 	void updateCourses() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest couseRequest = createCourses(instituteId);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("userId", userId);
-		HttpEntity<CourseRequest> entity = new HttpEntity<>(couseRequest, headers);
+		HttpEntity<CourseRequest> entity = new HttpEntity<>(courseId, headers);
 		ResponseEntity<CourseRequest> response = testRestTemplate.exchange(COURSE_PATH + PATH_SEPARATOR + instituteId
-				+ PATH_SEPARATOR + "course" + PATH_SEPARATOR + couseRequest.getId().toString(), HttpMethod.PUT, entity,
+				+ PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId().toString(), HttpMethod.PUT, entity,
 				CourseRequest.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -145,8 +91,6 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 	@DisplayName("DELETE Courses")
 	@Test
 	void DeleteCourse() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		/// delete Api
 		Map<String, List<String>> param = new HashMap<>();
 		List<String> ss = new ArrayList<>();
@@ -164,239 +108,235 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 
 	}
 
-		@DisplayName("getAllCourses")
-		@Test
-		void getAllCourses() {
-			Integer pageNumber = 1;
-			Integer pageSize = 1;
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			Mockito.when(storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES))
-			.thenReturn(new ArrayList());
-			HttpEntity<String> entity = new HttpEntity<>(null, headers);
-			ResponseEntity<String> response = testRestTemplate.exchange(
-					COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + PAGE_NUMBER_PATH + PATH_SEPARATOR + pageNumber
-							+ PATH_SEPARATOR + PAGE_SIZE_PATH + PATH_SEPARATOR + pageSize,
-					HttpMethod.GET, entity, String.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}
+	@DisplayName("getAllCourses")
+	@Test
+	void getAllCourses() {
+		Integer pageNumber = 1;
+		Integer pageSize = 1;
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		Mockito.when(storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES))
+				.thenReturn(new ArrayList());
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		ResponseEntity<String> response = testRestTemplate.exchange(
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + PAGE_NUMBER_PATH + PATH_SEPARATOR + pageNumber
+						+ PATH_SEPARATOR + PAGE_SIZE_PATH + PATH_SEPARATOR + pageSize,
+				HttpMethod.GET, entity, String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
 
-		@DisplayName("getAutoSearchCourses")
-		@Test
-		void getAutoSearchCourses() {
-			Mockito.when(storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES))
-					.thenReturn(new ArrayList());
-			Integer pageNumber = 1;
-			Integer pageSize = 1;
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
+	@DisplayName("getAutoSearchCourses")
+	@Test
+	void getAutoSearchCourses() {
+		Mockito.when(storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES))
+				.thenReturn(new ArrayList());
+		Integer pageNumber = 1;
+		Integer pageSize = 1;
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
-			HttpEntity<String> entity = new HttpEntity<>(null, headers);
-			ResponseEntity<String> response = testRestTemplate
-					.exchange(
-							COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "autoSearch" + PATH_SEPARATOR
-									+ "coursename" + PATH_SEPARATOR + PAGE_NUMBER_PATH + PATH_SEPARATOR + pageNumber
-									+ PATH_SEPARATOR + PAGE_SIZE_PATH + PATH_SEPARATOR + pageSize,
-							HttpMethod.GET, entity, String.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		ResponseEntity<String> response = testRestTemplate
+				.exchange(
+						COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "autoSearch" + PATH_SEPARATOR
+								+ "coursename" + PATH_SEPARATOR + PAGE_NUMBER_PATH + PATH_SEPARATOR + pageNumber
+								+ PATH_SEPARATOR + PAGE_SIZE_PATH + PATH_SEPARATOR + pageSize,
+						HttpMethod.GET, entity, String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
 
-		@DisplayName("WrongId deleteCourse")
-		@Test
-		void DeleteWrongIdCourse() {
+	@DisplayName("WrongId deleteCourse")
+	@Test
+	void DeleteWrongIdCourse() {
 
-			Map<String, List<String>> param = new HashMap<>();
-			List<String> ss = new ArrayList<>();
-			ss.add("75218134-062d-41bd-b84d-eeb203cddbae");
-			ss.add(instituteId);
-			param.put("linked_course_ids", ss);
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add("userId", userId);
-			HttpEntity<String> entityer = new HttpEntity<>(headers);
-			ResponseEntity<String> responseds = testRestTemplate.exchange(
-					COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "45ab7d2a-2eb0-469a-b138-37d7f13"
-							+ PATH_SEPARATOR + "45ab7d2a-2eb0-469a-b138-37d7f13",
-					HttpMethod.DELETE, entityer, String.class);
-			assertThat(responseds.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-		}
+		Map<String, List<String>> param = new HashMap<>();
+		List<String> ss = new ArrayList<>();
+		ss.add("75218134-062d-41bd-b84d-eeb203cddbae");
+		ss.add(instituteId);
+		param.put("linked_course_ids", ss);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("userId", userId);
+		HttpEntity<String> entityer = new HttpEntity<>(headers);
+		ResponseEntity<String> responseds = testRestTemplate
+				.exchange(
+						COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "45ab7d2a-2eb0-469a-b138-37d7f13"
+								+ PATH_SEPARATOR + "45ab7d2a-2eb0-469a-b138-37d7f13",
+						HttpMethod.DELETE, entityer, String.class);
+		assertThat(responseds.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
 
-		@DisplayName("course search")
-		@Test
-		void courseSearch() {
-			CourseSearchFilterDto courseSearchFilterDto = new CourseSearchFilterDto("200", "10mins", "India",
-					"recognition", "latesrCourse", "yuzee", "computer science ", "ranking");
-			CourseSearchDto courseSearchDto = new CourseSearchDto();
-			courseSearchDto.setSortingObj(courseSearchFilterDto);
-			courseSearchDto.setSearchKey("coursename");
-			courseSearchDto.setCourseName("courseName");
-			courseSearchDto.setIsProfileSearch(true);
-			courseSearchDto.setCurrencyId(instituteId);
-			courseSearchDto.setUserId(userId);
-			courseSearchDto.setCourseKeys(Arrays.asList("coursename"));
-			courseSearchDto.setLevelIds(Arrays.asList(instituteId));
-			courseSearchDto.setFacultyIds(Arrays.asList(entityId));
-			courseSearchDto.setCountryNames(Arrays.asList("INDIA"));
-			courseSearchDto.setServiceIds(Arrays.asList(entityId));
-			courseSearchDto.setCityNames(Arrays.asList("INDIA"));
-			courseSearchDto.setMaxCost(12.00);
-			courseSearchDto.setMinCost(10.00);
-			courseSearchDto.setMaxDuration(13);
-			Mockito.when(viewTransactionHandler.getUserMyCourseByEntityTypeAndTransactionType(
-					courseSearchDto.getUserId(), EntityTypeEnum.COURSE.name(), TransactionTypeEnum.FAVORITE.name()))
-					.thenReturn(new ArrayList());
-			courseSearchDto.setMinDuration(17);
-			courseSearchDto.setMaxSizePerPage(2);
-			courseSearchDto.setPageNumber(5);
-			courseSearchDto.setInstituteId(instituteId);
-			courseSearchDto.setSortAscending(true);
-			courseSearchDto.setSortBy("APIS");
-			courseSearchDto.setCurrencyCode("DOLLARS");
-			courseSearchDto.setDate("2022-07-25T11:23:11.311+00:00");
-			courseSearchDto.setLatitude(15.00);
-			courseSearchDto.setLongitude(23.00);
-			courseSearchDto.setUserCountryName("NIGERIA");
+	@DisplayName("course search")
+	@Test
+	void courseSearch() {
+		CourseSearchFilterDto courseSearchFilterDto = new CourseSearchFilterDto("200", "10mins", "India", "recognition",
+				"latesrCourse", "yuzee", "computer science ", "ranking");
+		CourseSearchDto courseSearchDto = new CourseSearchDto();
+		courseSearchDto.setSortingObj(courseSearchFilterDto);
+		courseSearchDto.setSearchKey("coursename");
+		courseSearchDto.setCourseName("courseName");
+		courseSearchDto.setIsProfileSearch(true);
+		courseSearchDto.setCurrencyId(instituteId);
+		courseSearchDto.setUserId(userId);
+		courseSearchDto.setCourseKeys(Arrays.asList("coursename"));
+		courseSearchDto.setLevelIds(Arrays.asList(instituteId));
+		courseSearchDto.setFacultyIds(Arrays.asList(entityId));
+		courseSearchDto.setCountryNames(Arrays.asList("INDIA"));
+		courseSearchDto.setServiceIds(Arrays.asList(entityId));
+		courseSearchDto.setCityNames(Arrays.asList("INDIA"));
+		courseSearchDto.setMaxCost(12.00);
+		courseSearchDto.setMinCost(10.00);
+		courseSearchDto.setMaxDuration(13);
+		Mockito.when(viewTransactionHandler.getUserMyCourseByEntityTypeAndTransactionType(courseSearchDto.getUserId(),
+				EntityTypeEnum.COURSE.name(), TransactionTypeEnum.FAVORITE.name())).thenReturn(new ArrayList());
+		courseSearchDto.setMinDuration(17);
+		courseSearchDto.setMaxSizePerPage(2);
+		courseSearchDto.setPageNumber(5);
+		courseSearchDto.setInstituteId(instituteId);
+		courseSearchDto.setSortAscending(true);
+		courseSearchDto.setSortBy("APIS");
+		courseSearchDto.setCurrencyCode("DOLLARS");
+		courseSearchDto.setDate("2022-07-25T11:23:11.311+00:00");
+		courseSearchDto.setLatitude(15.00);
+		courseSearchDto.setLongitude(23.00);
+		courseSearchDto.setUserCountryName("NIGERIA");
 
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add("userId", userId);
-			HttpEntity<CourseSearchDto> entity = new HttpEntity<>(courseSearchDto, headers);
-			ResponseEntity<CourseSearchDto> response = testRestTemplate.exchange(
-					COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "search", HttpMethod.POST, entity,
-					CourseSearchDto.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("userId", userId);
+		HttpEntity<CourseSearchDto> entity = new HttpEntity<>(courseSearchDto, headers);
+		ResponseEntity<CourseSearchDto> response = testRestTemplate.exchange(
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "search", HttpMethod.POST, entity,
+				CourseSearchDto.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-		}
+	}
 
-		@DisplayName(value = "advanceSearch")
-		@Test
-		void advanceSearch() {
-			List<String> courseId = new ArrayList();
-			courseId.add(COURSE_IDS);
-			Mockito.when(storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES))
-					.thenReturn(new ArrayList());
-			AdvanceSearchDto advanceSearch = new AdvanceSearchDto();
-			advanceSearch.setFaculties(Arrays.asList(instituteId));
+	@DisplayName(value = "advanceSearch")
+	@Test
+	void advanceSearch() {
+		List<String> courseId = new ArrayList();
+		courseId.add(COURSE_IDS);
+		Mockito.when(storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES))
+				.thenReturn(new ArrayList());
+		AdvanceSearchDto advanceSearch = new AdvanceSearchDto();
+		advanceSearch.setFaculties(Arrays.asList(instituteId));
 
-			advanceSearch.setLevelIds(Arrays.asList(entityId));
-			advanceSearch.setServiceIds(Arrays.asList(entityId));
-			advanceSearch.setCountryNames(Arrays.asList("INDIA"));
-			advanceSearch.setCourseKeys(Arrays.asList("coursename"));
-			advanceSearch.setCityNames(Arrays.asList("INDIA"));
-			advanceSearch.setMinCost(14.00);
-			advanceSearch.setMaxCost(18.00);
-			advanceSearch.setMinDuration(14);
-			advanceSearch.setMaxDuration(23);
-			advanceSearch.setSortAsscending(true);
-			advanceSearch.setSortBy("coursename");
-			advanceSearch.setMaxSizePerPage(2);
-			advanceSearch.setPageNumber(1);
-			advanceSearch.setCurrencyCode("ISO");
-			advanceSearch.setUserId(userId);
-			advanceSearch.setUserCountryName("NIGERIA");
-			advanceSearch.setNames(Arrays.asList("name"));
-			advanceSearch.setSearchKeyword("coursename");
-			advanceSearch.setStudyModes(Arrays.asList("Online"));
-			advanceSearch.setDeliveryMethods(Arrays.asList("deliveringMode"));
-			advanceSearch.setInstituteId(instituteId);
-			advanceSearch.setLongitude(12.00);
-			advanceSearch.setInitialRadius(12);
+		advanceSearch.setLevelIds(Arrays.asList(entityId));
+		advanceSearch.setServiceIds(Arrays.asList(entityId));
+		advanceSearch.setCountryNames(Arrays.asList("INDIA"));
+		advanceSearch.setCourseKeys(Arrays.asList("coursename"));
+		advanceSearch.setCityNames(Arrays.asList("INDIA"));
+		advanceSearch.setMinCost(14.00);
+		advanceSearch.setMaxCost(18.00);
+		advanceSearch.setMinDuration(14);
+		advanceSearch.setMaxDuration(23);
+		advanceSearch.setSortAsscending(true);
+		advanceSearch.setSortBy("coursename");
+		advanceSearch.setMaxSizePerPage(2);
+		advanceSearch.setPageNumber(1);
+		advanceSearch.setCurrencyCode("ISO");
+		advanceSearch.setUserId(userId);
+		advanceSearch.setUserCountryName("NIGERIA");
+		advanceSearch.setNames(Arrays.asList("name"));
+		advanceSearch.setSearchKeyword("coursename");
+		advanceSearch.setStudyModes(Arrays.asList("Online"));
+		advanceSearch.setDeliveryMethods(Arrays.asList("deliveringMode"));
+		advanceSearch.setInstituteId(instituteId);
+		advanceSearch.setLongitude(12.00);
+		advanceSearch.setInitialRadius(12);
 
-			Mockito.when(viewTransactionHandler.getUserMyCourseByEntityTypeAndTransactionType(advanceSearch.getUserId(),
-					EntityTypeEnum.COURSE.name(), TransactionTypeEnum.VIEW.name())).thenReturn(new ArrayList());
+		Mockito.when(viewTransactionHandler.getUserMyCourseByEntityTypeAndTransactionType(advanceSearch.getUserId(),
+				EntityTypeEnum.COURSE.name(), TransactionTypeEnum.VIEW.name())).thenReturn(new ArrayList());
 
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add("userId", userId);
-			headers.add("language", "ENGLISH");
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("userId", userId);
+		headers.add("language", "ENGLISH");
 
-			Mockito.when(reviewHandler.getAverageReview("COURSE", courseId)).thenReturn(new HashMap<>());
+		Mockito.when(reviewHandler.getAverageReview("COURSE", courseId)).thenReturn(new HashMap<>());
 
-			HttpEntity<AdvanceSearchDto> entity = new HttpEntity<>(advanceSearch, headers);
-			ResponseEntity<AdvanceSearchDto> response = testRestTemplate.exchange(
-					COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "advanceSearch", HttpMethod.POST, entity,
-					AdvanceSearchDto.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		HttpEntity<AdvanceSearchDto> entity = new HttpEntity<>(advanceSearch, headers);
+		ResponseEntity<AdvanceSearchDto> response = testRestTemplate.exchange(
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "advanceSearch", HttpMethod.POST, entity,
+				AdvanceSearchDto.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-		}
+	}
 
-		@DisplayName(value = "get")
-		@Test
-		void get() throws IOException {
-			String instituteId = testCreateInstitute();
-			CourseRequest courseId = createCourses(instituteId);
-			Mockito.when(reviewHandler.getAverageReview(EntityTypeEnum.COURSE.name(), Arrays.asList(courseId.getId())))
-					.thenReturn(new HashMap<>());
-			Mockito.when(viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(userId,
-					EntityTypeEnum.COURSE.name(), courseId.getId(), TransactionTypeEnum.FAVORITE.name()))
-					.thenReturn(new UserViewCourseDto());
-			Mockito.when(storageHandler.getStorages(Arrays.asList(courseId.getId()), EntityTypeEnum.COURSE,
-					Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO, EntitySubTypeEnum.MEDIA)))
-					.thenReturn(new ArrayList<>());
-			// Get Api)
-			Map<String, String> param = new HashMap<>();
-			param.put("is_readable_id", "coursename-Ow9NR9y");
-			HttpHeaders header = new HttpHeaders();
-			header.setContentType(MediaType.APPLICATION_JSON);
-			header.add("userId", userId);
-			HttpEntity<String> entitys = new HttpEntity<>(null, header);
-			ResponseEntity<Object> responses = testRestTemplate.exchange(
-					COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId(), HttpMethod.GET, entitys,
-					Object.class, param);
-			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+	@DisplayName(value = "get")
+	@Test
+	void get() throws IOException {
+		Mockito.when(reviewHandler.getAverageReview(EntityTypeEnum.COURSE.name(), Arrays.asList(courseId.getId())))
+				.thenReturn(new HashMap<>());
+		Mockito.when(viewTransactionHandler.getUserViewedCourseByEntityIdAndTransactionType(userId,
+				EntityTypeEnum.COURSE.name(), courseId.getId(), TransactionTypeEnum.FAVORITE.name()))
+				.thenReturn(new UserViewCourseDto());
+		Mockito.when(storageHandler.getStorages(Arrays.asList(courseId.getId()), EntityTypeEnum.COURSE,
+				Arrays.asList(EntitySubTypeEnum.LOGO, EntitySubTypeEnum.COVER_PHOTO, EntitySubTypeEnum.MEDIA)))
+				.thenReturn(new ArrayList<>());
+		// Get Api)
+		Map<String, String> param = new HashMap<>();
+		param.put("is_readable_id", "coursename-Ow9NR9y");
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_JSON);
+		header.add("userId", userId);
+		HttpEntity<String> entitys = new HttpEntity<>(null, header);
+		ResponseEntity<Object> responses = testRestTemplate.exchange(
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId(), HttpMethod.GET, entitys,
+				Object.class, param);
+		assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-		}
+	}
 
-		@DisplayName("getAllInstituteById")
-		@Test
-		void getAllCourseByInstituteID() throws IOException {
-			String instituteId = testCreateInstitute();
+	@DisplayName("getAllInstituteById")
+	@Test
+	void getAllCourseByInstituteID() throws IOException {
+		String instituteId = testCreateInstitute();
+		Mockito.when(storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES))
+				.thenReturn(new ArrayList());
+		CourseSearchFilterDto courseSearchFilterDto = new CourseSearchFilterDto("200", "10mins", "India", "recognition",
+				"latesrCourse", "yuzee", "computer science ", "ranking");
+		CourseSearchDto courseSearchDto = new CourseSearchDto();
+		courseSearchDto.setSortingObj(courseSearchFilterDto);
+		courseSearchDto.setSearchKey("coursename");
+		courseSearchDto.setCourseName("courseName");
+		courseSearchDto.setIsProfileSearch(true);
+		courseSearchDto.setCurrencyId(instituteId);
+		courseSearchDto.setUserId(userId);
+		courseSearchDto.setCourseKeys(Arrays.asList("coursename"));
+		courseSearchDto.setLevelIds(Arrays.asList(instituteId));
+		courseSearchDto.setFacultyIds(Arrays.asList(entityId));
+		courseSearchDto.setCountryNames(Arrays.asList("INDIA"));
+		courseSearchDto.setServiceIds(Arrays.asList(entityId));
+		courseSearchDto.setCityNames(Arrays.asList("INDIA"));
+		courseSearchDto.setMaxCost(12.00);
+		courseSearchDto.setMinCost(10.00);
+		courseSearchDto.setMaxDuration(13);
+		Mockito.when(viewTransactionHandler.getUserMyCourseByEntityTypeAndTransactionType(courseSearchDto.getUserId(),
+				EntityTypeEnum.COURSE.name(), TransactionTypeEnum.FAVORITE.name())).thenReturn(new ArrayList());
+		courseSearchDto.setMinDuration(17);
+		courseSearchDto.setMaxSizePerPage(2);
+		courseSearchDto.setPageNumber(5);
+		courseSearchDto.setInstituteId(instituteId);
+		courseSearchDto.setSortAscending(true);
+		courseSearchDto.setSortBy("APIS");
+		courseSearchDto.setCurrencyCode("DOLLARS");
+		courseSearchDto.setDate("2022-07-25T11:23:11.311+00:00");
+		courseSearchDto.setLatitude(15.00);
+		courseSearchDto.setLongitude(23.00);
+		courseSearchDto.setUserCountryName("NIGERIA");
 
-			Mockito.when(storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.IMAGES))
-					.thenReturn(new ArrayList());
-			CourseSearchFilterDto courseSearchFilterDto = new CourseSearchFilterDto("200", "10mins", "India",
-					"recognition", "latesrCourse", "yuzee", "computer science ", "ranking");
-			CourseSearchDto courseSearchDto = new CourseSearchDto();
-			courseSearchDto.setSortingObj(courseSearchFilterDto);
-			courseSearchDto.setSearchKey("coursename");
-			courseSearchDto.setCourseName("courseName");
-			courseSearchDto.setIsProfileSearch(true);
-			courseSearchDto.setCurrencyId(instituteId);
-			courseSearchDto.setUserId(userId);
-			courseSearchDto.setCourseKeys(Arrays.asList("coursename"));
-			courseSearchDto.setLevelIds(Arrays.asList(instituteId));
-			courseSearchDto.setFacultyIds(Arrays.asList(entityId));
-			courseSearchDto.setCountryNames(Arrays.asList("INDIA"));
-			courseSearchDto.setServiceIds(Arrays.asList(entityId));
-			courseSearchDto.setCityNames(Arrays.asList("INDIA"));
-			courseSearchDto.setMaxCost(12.00);
-			courseSearchDto.setMinCost(10.00);
-			courseSearchDto.setMaxDuration(13);
-			Mockito.when(viewTransactionHandler.getUserMyCourseByEntityTypeAndTransactionType(
-					courseSearchDto.getUserId(), EntityTypeEnum.COURSE.name(), TransactionTypeEnum.FAVORITE.name()))
-					.thenReturn(new ArrayList());
-			courseSearchDto.setMinDuration(17);
-			courseSearchDto.setMaxSizePerPage(2);
-			courseSearchDto.setPageNumber(5);
-			courseSearchDto.setInstituteId(instituteId);
-			courseSearchDto.setSortAscending(true);
-			courseSearchDto.setSortBy("APIS");
-			courseSearchDto.setCurrencyCode("DOLLARS");
-			courseSearchDto.setDate("2022-07-25T11:23:11.311+00:00");
-			courseSearchDto.setLatitude(15.00);
-			courseSearchDto.setLongitude(23.00);
-			courseSearchDto.setUserCountryName("NIGERIA");
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("userId", userId);
+		HttpEntity<CourseSearchDto> entity = new HttpEntity<>(courseSearchDto, headers);
+		ResponseEntity<CourseSearchDto> response = testRestTemplate.exchange(
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "institute" + PATH_SEPARATOR + instituteId,
+				HttpMethod.PUT, entity, CourseSearchDto.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add("userId", userId);
-			HttpEntity<CourseSearchDto> entity = new HttpEntity<>(courseSearchDto, headers);
-			ResponseEntity<CourseSearchDto> response = testRestTemplate.exchange(
-					COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "institute" + PATH_SEPARATOR + instituteId,
-					HttpMethod.PUT, entity, CourseSearchDto.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-		}
+	}
 
 	@DisplayName(value = "searchKeyword")
 	@Test
@@ -412,7 +352,6 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 				String.class);
 		assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
-	 
 
 //	//// faculty is yet to be created
 	@DisplayName(value = "GetCourseByFacultyId")
@@ -425,7 +364,7 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR
 				+ "faculty" + PATH_SEPARATOR + courseId.getFacultyId(), HttpMethod.GET, entity, String.class);
-		//assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		// assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 	}
 
@@ -437,9 +376,8 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(
-				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "faculty" + PATH_SEPARATOR + "fdfbkjb66n6774m767u90g8g",
-				HttpMethod.GET, entity, String.class);
+		ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+				+ "faculty" + PATH_SEPARATOR + "fdfbkjb66n6774m767u90g8g", HttpMethod.GET, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 
 	}
@@ -447,18 +385,17 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 	@DisplayName(value = "getUserCourse")
 	@Test
 	void getUserCourse() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		// api begin
 		List<String> courseIds = new ArrayList<>();
 		courseIds.add(courseId.getId());
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entitys = new HttpEntity<>(header);
-		ResponseEntity<String> responses = testRestTemplate.exchange(
-				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "user" + PATH_SEPARATOR + courseId.getId()
-				+ PATH_SEPARATOR + "CITY" + PATH_SEPARATOR + "true",
-				HttpMethod.GET, entitys, String.class);
+		ResponseEntity<String> responses = testRestTemplate
+				.exchange(
+						COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "user" + PATH_SEPARATOR + courseId.getId()
+								+ PATH_SEPARATOR + "CITY" + PATH_SEPARATOR + "true",
+						HttpMethod.GET, entitys, String.class);
 		assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 	}
@@ -466,7 +403,7 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 	@DisplayName(value = "courseFilter")
 	@Test
 	void courseFilter() {
-		
+
 		CourseSearchFilterDto courseSearchFilterDto = new CourseSearchFilterDto("200", "10mins", "India", "recognition",
 				"latesrCourse", "yuzee", "computer science ", "ranking");
 		Mockito.when(userHandler.getUserById(userId)).thenReturn(new UserInitialInfoDto());
@@ -477,10 +414,9 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 		HttpEntity<CourseSearchFilterDto> entity = new HttpEntity<>(courseSearchFilterDto, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
 				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "filter", HttpMethod.POST, entity, String.class);
-	//	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		// assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 	}
-
 
 	@DisplayName(value = "searchByCharacter")
 	@Test
@@ -488,13 +424,11 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(
-				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "autoSearch" + PATH_SEPARATOR + "mycourseTestnnhi",
-				HttpMethod.GET, entity, String.class);
+		ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR
+				+ "autoSearch" + PATH_SEPARATOR + "mycourseTestnnhi", HttpMethod.GET, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 	}
-
 
 	@DisplayName(value = "getCourseNoResultRecommendation")
 	@Test
@@ -508,9 +442,7 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 		params.put("userCountry", "INDIA");
 
 	}
-	
-   
-	
+
 	@DisplayName(value = "getCourseNoResultRecommendation")
 	@Test
 	void getCourseKeywordRecommendation() {
@@ -534,27 +466,26 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 	}
-	 void getCourseNoResultRecommendation() {
-			Integer pageNumber = 1;
-			Integer pageSize = 1;
 
-			Map<String, String> params = new HashMap<>();
-			params.put("facultyId", entityId);
-			params.put("countryId", instituteId);
-			params.put("userCountry", "INDIA");
+	void getCourseNoResultRecommendation() {
+		Integer pageNumber = 1;
+		Integer pageSize = 1;
 
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			HttpEntity<String> entity = new HttpEntity<>(headers);
-			ResponseEntity<String> response = testRestTemplate.exchange(
-					COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "noResult" + PATH_SEPARATOR + "pageNumber"
-							+ PATH_SEPARATOR + 1 + PATH_SEPARATOR + "pageSize" + PATH_SEPARATOR + 1,
-					HttpMethod.GET, entity, String.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		Map<String, String> params = new HashMap<>();
+		params.put("facultyId", entityId);
+		params.put("countryId", instituteId);
+		params.put("userCountry", "INDIA");
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> entity = new HttpEntity<>(headers);
+		ResponseEntity<String> response = testRestTemplate.exchange(
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "noResult" + PATH_SEPARATOR + "pageNumber"
+						+ PATH_SEPARATOR + 1 + PATH_SEPARATOR + "pageSize" + PATH_SEPARATOR + 1,
+				HttpMethod.GET, entity, String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 	}
-
-	
 
 	@DisplayName(value = "getCheapestCourse")
 	@Test
@@ -619,8 +550,6 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 	@DisplayName(value = "WrongFacultyIdMobileWrongId")
 	@Test
 	void wrongIdFacultyIdViaMobile() throws RestClientException, IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		CourseMobileDto courseMobileDto = new CourseMobileDto("829af0d4-8b28-4f8b-82b1-7b32f1308967", "coursename",
 				"course Description", "5af8b74f-9f04-45dc-81c5-360191", "facultyName", 3.5, 2.5, 3.5, 6.5,
 				"durationUnit");
@@ -639,8 +568,6 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 	@DisplayName(value = "addCourseMobileWrongId")
 	@Test
 	void wrongIdCourseViaMobile() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		//// api begins
 		CourseMobileDto courseMobileDto = new CourseMobileDto("45ab7d2a-2eb0-469a-b138-37d7f133872b",
 				"coursename-test-W5F0Bv9", "course Description", "5af8b74f-9f04-45dc-81c5-36019590105c", "facultyName",
@@ -657,38 +584,35 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 
 	}
 
-
 ///////RUN AFTER FACULTY DB IS CREATED
 	@DisplayName(value = "addCourseViaMobile")
 	@Test
-	 void addCourseViaMobile() throws IOException {
-			String instituteId = testCreateInstitute();
-			CourseRequest courseId = createCourses(instituteId);
-			try {
-				CourseMobileDto courseMobileDto = new CourseMobileDto(courseId.getId(), "mycourseTestnnhi",
-						"course Description", courseId.getFacultyId(), "facultyName", 9.5, 3.5, 3.5, 8.5,
-						"durationUnit");
-				HttpHeaders headers = new HttpHeaders();
-				headers.setContentType(MediaType.APPLICATION_JSON);
-				headers.add("userId", userId);
+	void addCourseViaMobile() throws IOException {
+		try {
+			CourseMobileDto courseMobileDto = new CourseMobileDto(courseId.getId(), "mycourseTestnnhi",
+					"course Description", courseId.getFacultyId(), "facultyName", 9.5, 3.5, 3.5, 8.5, "durationUnit");
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add("userId", userId);
 
-				HttpEntity<CourseMobileDto> entity = new HttpEntity<>(courseMobileDto, headers);
-				ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
-						+ PATH_SEPARATOR + "mobile" + PATH_SEPARATOR + instituteId, HttpMethod.POST, entity,
-						String.class);
-				assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-			} finally {
-				HttpHeaders header = new HttpHeaders();
-				header.setContentType(MediaType.APPLICATION_JSON);
-				header.add("userId", userId);
-				HttpEntity<String> entityer = new HttpEntity<>(header);
-				ResponseEntity<String> responseds = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
-						+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + courseId, HttpMethod.DELETE, entityer,
-						String.class);
-				assertThat(responseds.getStatusCode()).isEqualTo(HttpStatus.OK);
+			HttpEntity<CourseMobileDto> entity = new HttpEntity<>(courseMobileDto, headers);
+			ResponseEntity<String> response = testRestTemplate.exchange(
+					COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "mobile" + PATH_SEPARATOR + instituteId,
+					HttpMethod.POST, entity, String.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		} finally {
+			HttpHeaders header = new HttpHeaders();
+			header.setContentType(MediaType.APPLICATION_JSON);
+			header.add("userId", userId);
+			HttpEntity<String> entityer = new HttpEntity<>(header);
+			ResponseEntity<String> responseds = testRestTemplate.exchange(
+					COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + courseId,
+					HttpMethod.DELETE, entityer, String.class);
+			assertThat(responseds.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-			}
 		}
+	}
+
 	@DisplayName(value = "WrongIdupdateCourseMobile")
 	@Test
 	void wrongIdupdateCourseMobile() {
@@ -728,8 +652,6 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 	@DisplayName(value = "changeStatus")
 	@Test
 	void changeStatus() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		Boolean status = true;
 		Map<String, Boolean> params = new HashMap<>();
 		params.put("Status", status);
@@ -738,101 +660,69 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("userId", userId);
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-				+ "status" + PATH_SEPARATOR + courseId.getId(), HttpMethod.PUT, entity,
-				String.class, params);
+		ResponseEntity<String> response = testRestTemplate.exchange(
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "status" + PATH_SEPARATOR + courseId.getId(),
+				HttpMethod.PUT, entity, String.class, params);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
-	
 	@DisplayName(value = "getCourseByInstituteId")
 	@Test
 	void getCourseByInstituteId() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
-		try {
+		Integer pageNumber = 1;
+		Integer pageSize = 1;
 
-			Integer pageNumber = 1;
-			Integer pageSize = 1;
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_JSON);
 
-			HttpHeaders header = new HttpHeaders();
-			header.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> entitys = new HttpEntity<>(null, header);
+		ResponseEntity<String> responses = testRestTemplate
+				.exchange(
+						COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "institute" + PATH_SEPARATOR
+								+ "pageNumber" + PATH_SEPARATOR + pageNumber + PATH_SEPARATOR + "pageSize"
+								+ PATH_SEPARATOR + pageSize + PATH_SEPARATOR + courseId.getInstituteId(),
+						HttpMethod.GET, entitys, String.class);
+		assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-			HttpEntity<String> entitys = new HttpEntity<>(null, header);
-			ResponseEntity<String> responses = testRestTemplate
-					.exchange(
-							COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "institute" + PATH_SEPARATOR
-									+ "pageNumber" + PATH_SEPARATOR + pageNumber + PATH_SEPARATOR + "pageSize"
-									+ PATH_SEPARATOR + pageSize + PATH_SEPARATOR + courseId.getInstituteId(),
-							HttpMethod.GET, entitys, String.class);
-			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-			
-		} finally {
-			HttpHeaders header = new HttpHeaders();
-			header.setContentType(MediaType.APPLICATION_JSON);
-			header.add("userId", userId);
-			HttpEntity<String> entityer = new HttpEntity<>(header);
-			ResponseEntity<String> responseds = testRestTemplate.exchange(
-					COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + courseId,
-					HttpMethod.DELETE, entityer, String.class);
-			assertThat(responseds.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-		}
 	}
 
-		@DisplayName(value = "getCourseByInstituteIdWrongId")
-		@Test
-		void wrongIdgetCourseByInstituteId() {
-			Integer pageNumber = 1;
-			Integer pageSize = 1;
+	@DisplayName(value = "getCourseByInstituteIdWrongId")
+	@Test
+	void wrongIdgetCourseByInstituteId() {
+		Integer pageNumber = 1;
+		Integer pageSize = 1;
 
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
-			HttpEntity<String> entity = new HttpEntity<>(null, headers);
-			ResponseEntity<String> response = testRestTemplate
-					.exchange(
-							COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "institute" + PATH_SEPARATOR
-									+ "pageNumber" + PATH_SEPARATOR + pageNumber + PATH_SEPARATOR + "pageSize"
-									+ PATH_SEPARATOR + pageSize + PATH_SEPARATOR + "39d3f31e-64fb-46eb-babc-c54efa61",
-							HttpMethod.GET, entity, String.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-		}
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		ResponseEntity<String> response = testRestTemplate
+				.exchange(
+						COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "institute" + PATH_SEPARATOR
+								+ "pageNumber" + PATH_SEPARATOR + pageNumber + PATH_SEPARATOR + "pageSize"
+								+ PATH_SEPARATOR + pageSize + PATH_SEPARATOR + "39d3f31e-64fb-46eb-babc-c54efa61",
+						HttpMethod.GET, entity, String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
 
+	@DisplayName(value = "getNearestCourseList")
+	@Test
+	void getCourseByCountryName() throws IOException {
+		Integer pageNumber = 1;
+		Integer pageSize = 1;
 
-		@DisplayName(value = "getNearestCourseList")
-		@Test
-		void getCourseByCountryName() throws IOException {
-			String instituteId = testCreateInstitute();
-			CourseRequest courseId = createCourses(instituteId);
-			try {
-				Integer pageNumber = 1;
-				Integer pageSize = 1;
-				
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		Mockito.when(storageHandler.getStorages(courseId.getId(), EntityTypeEnum.COURSE, EntitySubTypeEnum.LOGO))
+				.thenReturn(new ArrayList());
+		ResponseEntity<String> response = testRestTemplate.exchange(
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "pageNumber" + PATH_SEPARATOR + pageNumber
+						+ PATH_SEPARATOR + "pageSize" + PATH_SEPARATOR + pageSize + PATH_SEPARATOR + "INDIA",
+				HttpMethod.POST, entity, String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-				HttpHeaders headers = new HttpHeaders();
-				headers.setContentType(MediaType.APPLICATION_JSON);
-				HttpEntity<String> entity = new HttpEntity<>(null, headers);
-				Mockito.when(
-						storageHandler.getStorages(courseId.getId(), EntityTypeEnum.COURSE, EntitySubTypeEnum.LOGO))
-						.thenReturn(new ArrayList());
-				ResponseEntity<String> response = testRestTemplate.exchange(
-						COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "pageNumber" + PATH_SEPARATOR + pageNumber
-								+ PATH_SEPARATOR + "pageSize" + PATH_SEPARATOR + pageSize + PATH_SEPARATOR + "INDIA",
-						HttpMethod.POST, entity, String.class);
-				assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-			} finally {
-				HttpHeaders header = new HttpHeaders();
-				header.setContentType(MediaType.APPLICATION_JSON);
-				header.add("userId", userId);
-				HttpEntity<String> entityer = new HttpEntity<>(header);
-				ResponseEntity<String> responseds = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
-						+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + courseId, HttpMethod.DELETE, entityer,
-						String.class);
-				assertThat(responseds.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-			}
-		}
+	}
 
 //	@DisplayName(value = "getNearestCourseList")
 //	@Test
@@ -880,52 +770,42 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 	@DisplayName(value = "getCourseByIds")
 	@Test
 	void getCourseByIds() throws RestClientException, IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		List<String> course = Arrays.asList(courseId.getId());
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<List<String>> entity = new HttpEntity<>(course, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "courseIds" , HttpMethod.POST,
-				entity, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}
-
-
-	@DisplayName(value = "getRecommendateCourses")
-	@Test
-	 void getRecommendateCourses() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-				+ "recommendation" + PATH_SEPARATOR + courseId.getId(), HttpMethod.GET, entity,
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "courseIds", HttpMethod.POST, entity,
 				String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	@DisplayName(value = "getRecommendateCourses")
 	@Test
-     void getRelatedCourses() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
+	void getRecommendateCourses() throws IOException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-				+ "related" + PATH_SEPARATOR +courseId.getId(), HttpMethod.GET, entity,
-				String.class);
+				+ "recommendation" + PATH_SEPARATOR + courseId.getId(), HttpMethod.GET, entity, String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
+
+	@DisplayName(value = "getRecommendateCourses")
+	@Test
+	void getRelatedCourses() throws IOException {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		ResponseEntity<String> response = testRestTemplate.exchange(
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "related" + PATH_SEPARATOR + courseId.getId(),
+				HttpMethod.GET, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	@DisplayName(value = "getRecommendateCourses")
 	@Test
 	void getCourseCountByInstituteId() throws RestClientException, IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
@@ -934,22 +814,17 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 				HttpMethod.GET, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
-	
-	
+
 	@DisplayName(value = "saveBasiCourse")
 	@Test
 	void saveBasiCourse() throws RestClientException, IOException {
-
-		String instituteId = testCreateInstitute();
-		CourseRequest couseRequest = createCourses(instituteId);
-
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("userId", userId);
-		HttpEntity<CourseRequest> entity = new HttpEntity<>(couseRequest, headers);
-		ResponseEntity<CourseRequest> response = testRestTemplate.exchange(COURSE_PATH + PATH_SEPARATOR
-				+ instituteId + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "basic" + PATH_SEPARATOR + "info",
-				HttpMethod.POST, entity, CourseRequest.class);
+		HttpEntity<CourseRequest> entity = new HttpEntity<>(courseId, headers);
+		ResponseEntity<CourseRequest> response = testRestTemplate.exchange(COURSE_PATH + PATH_SEPARATOR + instituteId
+				+ PATH_SEPARATOR + "course" + PATH_SEPARATOR + "basic" + PATH_SEPARATOR + "info", HttpMethod.POST,
+				entity, CourseRequest.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 	}
@@ -957,17 +832,13 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 	@DisplayName(value = "updateBasiCourse")
 	@Test
 	void updateBasiCourse() throws RestClientException, IOException {
-
-		String instituteId = testCreateInstitute();
-		CourseRequest couseRequest = createCourses(instituteId);
-
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("userId", userId);
-		HttpEntity<CourseRequest> entity = new HttpEntity<>(couseRequest, headers);
+		HttpEntity<CourseRequest> entity = new HttpEntity<>(courseId, headers);
 		ResponseEntity<CourseRequest> response = testRestTemplate.exchange(
-				COURSE_PATH + PATH_SEPARATOR + instituteId + PATH_SEPARATOR + "course" + PATH_SEPARATOR
-						+ "basic" + PATH_SEPARATOR + "info" + PATH_SEPARATOR + couseRequest.getId(),
+				COURSE_PATH + PATH_SEPARATOR + instituteId + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "basic"
+						+ PATH_SEPARATOR + "info" + PATH_SEPARATOR + courseId.getId(),
 				HttpMethod.PUT, entity, CourseRequest.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -990,29 +861,26 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
-
-	
-
 	@DisplayName(value = "updateProcedureIdInCourse")
 	@Test
-	 void updateProcedureIdInCourse() {
+	void updateProcedureIdInCourse() {
 		Map<String, String> params = new HashMap<>();
 		params.put("courseIds", COURSE_IDS);
 		params.put("studentType", StudentTypeEnum.INTERNATIONAL.toString());
 		params.put("procedureId", entityId);
 		HttpHeaders headers = new HttpHeaders();
-     	headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("userId", userId);
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "procedure_id?student_type=DOMESTIC", HttpMethod.PUT, entity,
-				String.class);
+				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "procedure_id?student_type=DOMESTIC",
+				HttpMethod.PUT, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	@DisplayName(value = "updateProcedureIdInInstituteId")
 	@Test
-	 void updateProcedureIdInIstituteId() {
+	void updateProcedureIdInIstituteId() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -1020,15 +888,15 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
 				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "procedure_id" + PATH_SEPARATOR + "institute_id"
-						+ PATH_SEPARATOR + "39d3f31e-64fb-46eb-babc-c54efa69e091" + PATH_SEPARATOR
-						+ "INTERNATIONAL" + PATH_SEPARATOR + "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb55",
+						+ PATH_SEPARATOR + "39d3f31e-64fb-46eb-babc-c54efa69e091" + PATH_SEPARATOR + "INTERNATIONAL"
+						+ PATH_SEPARATOR + "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb55",
 				HttpMethod.PUT, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	@DisplayName(value = "updateProcedureIdInInstituteIdDomestic")
 	@Test
-	 void updateProcedureIdInIstituteIddomestic() {
+	void updateProcedureIdInIstituteIddomestic() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -1036,19 +904,16 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
 				COURSE + PATH_SEPARATOR + "course" + PATH_SEPARATOR + "procedure_id" + PATH_SEPARATOR + "institute_id"
-						+ PATH_SEPARATOR + "39d3f31e-64fb-46eb-babc-c54efa69e091" + PATH_SEPARATOR
-						+ "DOMESTIC" + PATH_SEPARATOR + "71226418-b086-4514-91aa-54b86096c468",
+						+ PATH_SEPARATOR + "39d3f31e-64fb-46eb-babc-c54efa69e091" + PATH_SEPARATOR + "DOMESTIC"
+						+ PATH_SEPARATOR + "71226418-b086-4514-91aa-54b86096c468",
 				HttpMethod.PUT, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		
+
 	}
-	
 
 	@DisplayName(value = "publishDraftCourse")
 	@Test
 	void publishDraftCourse() throws RestClientException, IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		CourseControllerTest course = new CourseControllerTest();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -1058,7 +923,6 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 
 				+ "draft" + PATH_SEPARATOR + "publish" + PATH_SEPARATOR + courseId.getId(), HttpMethod.POST, entity,
 
-				
 				String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
@@ -1078,8 +942,6 @@ public class CourseControllerTest extends CreateCourseAndInstitute {
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
-	
-	
 	@DisplayName(value = "disCardDreaftcourseWrongid")
 	@Test
 	void WrongIddisCardDreaftcourse() {

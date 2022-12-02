@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.assertj.core.util.Arrays;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +49,13 @@ import lombok.extern.slf4j.Slf4j;
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
 class CourseCareerOutcomeTest extends CreateCourseAndInstitute {
+	private CourseRequest courseId;
+
+	@AfterEach
+	public void createAllCourse() throws IOException {
+		String instituteId = testCreateInstitute();
+		courseId = createCourses(instituteId);
+	}
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
@@ -55,8 +63,6 @@ class CourseCareerOutcomeTest extends CreateCourseAndInstitute {
 	@DisplayName("CourseCareerOutcome")
 	@Test
 	void TestSaveCourseCareerOutCome() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		String careerId = saveCareer();
 		ValidList<CourseCareerOutcomeDto> courseContactPersonDtos = new ValidList<>();
 		List<String> jobIds = new ArrayList<>();
@@ -84,8 +90,7 @@ class CourseCareerOutcomeTest extends CreateCourseAndInstitute {
 	@Test
 	void deleteCourseCareerOutcome() throws IOException {
 		String careerId = saveCareer();
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
+
 		Map<String, String> courseCareer = new HashMap<>();
 		courseCareer.put("course_career_outcome_ids", careerId);
 		HttpHeaders headers = new HttpHeaders();
@@ -94,7 +99,7 @@ class CourseCareerOutcomeTest extends CreateCourseAndInstitute {
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		ResponseEntity<CourseRequest> response = testRestTemplate.exchange(
 				api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "career-outcome", HttpMethod.DELETE, entity,
-				CourseRequest.class,courseCareer);
+				CourseRequest.class, courseCareer);
 	}
 
 }
