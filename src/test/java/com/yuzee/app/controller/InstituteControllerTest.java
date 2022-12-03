@@ -290,7 +290,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 		instituteRequestDto.setLongitude(93.5);
 		instituteRequestDto.setEmail("info@testEmail.com");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setReadableId(UUID.randomUUID().toString());
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -321,7 +321,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 				instituteRequestDto.setLongitude(93.5);
 				instituteRequestDto.setEmail("info@testEmail.com");
 				instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-				instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+				instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 				instituteRequestDto.setReadableId(UUID.randomUUID().toString());
 				listOfInstituteRequestDto.add(instituteRequestDto);
 				listOfInstituteProviderCode.add(instituteProviderCode);
@@ -401,6 +401,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 	void testGetById() throws IOException {
 
 		Boolean is_readable_id = true;
+		String instituteId = testCreateInstitute();
 		Map<String, Boolean> params = new HashMap<>();
 		params.put("is_readable_id", is_readable_id);
 		HttpHeaders headers = new HttpHeaders();
@@ -576,7 +577,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 		instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
 		instituteRequestDto.setLatitude(91.202743);
 		instituteRequestDto.setLongitude(56.1240);
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setPostalCode(1234);
 		instituteRequestDto.setReadableId("3889fdc-c292-69ea-a757-09f6d1a0mrvh");
 		instituteRequestDto.setTagLine("Inspirings");
@@ -611,7 +612,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 		instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
 		instituteRequestDto.setLatitude(91.202743);
 		instituteRequestDto.setLongitude(56.1240);
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setPostalCode(1234);
 		instituteRequestDto.setReadableId("3889fdc-c292-69ea-a857-05f6d1a04rvh");
 		instituteRequestDto.setTagLine("Inspirings");
@@ -646,7 +647,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 		instituteRequestDto.setWebsite("https://www.centrallanguageschool.com/");
 		instituteRequestDto.setLatitude(91.202743);
 		instituteRequestDto.setLongitude(56.1240);
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setPostalCode(1234);
 		instituteRequestDto.setReadableId("3889fdc-c292-69ea-a757-09f6d1a04rpo");
 		instituteRequestDto.setTagLine("Inspirings");

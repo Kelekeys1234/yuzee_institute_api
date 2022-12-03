@@ -36,7 +36,7 @@ public interface InstituteInterface {
 			@PathVariable("instituteId") final String instituteId, @RequestParam(name = "status",required=false) final boolean status);
 	//TODO  done
 	@PostMapping("/instituteType")
-	public ResponseEntity<?> saveInstituteType(@RequestHeader(value = "instituteId") String instituteId, @RequestParam(value = "instituteType") String instituteType) throws Exception;
+	public ResponseEntity<?> saveInstituteType(@RequestHeader(value = "instituteId") String instituteId, @RequestParam(value = "instituteType")List <String>instituteType) throws Exception;
 	//TODO  done
 	@GetMapping("/type")
 	public ResponseEntity<?> getInstituteTypeByCountry(@RequestParam("countryName") String countryName) throws Exception;

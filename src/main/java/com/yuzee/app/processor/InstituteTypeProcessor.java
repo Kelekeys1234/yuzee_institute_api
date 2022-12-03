@@ -56,7 +56,7 @@ public class InstituteTypeProcessor {
 	@Value("${s3.institute-type.image.location}")
 	private String instituteTypeImageLocation;
 
-	public void addUpdateInstituteType(String instituteId, String instituteType) {
+	public void addUpdateInstituteType(String instituteId, List <String> instituteType) {
 		log.debug("Inside addUpdateInstituteType() method");
 		Institute institute = instituteDAO.get(instituteId);
 		if(ObjectUtils.isEmpty(institute)){

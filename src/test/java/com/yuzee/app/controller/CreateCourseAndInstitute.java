@@ -145,7 +145,7 @@ public class CreateCourseAndInstitute {
 		instituteRequestDto.setLongitude(56.1240);
 		instituteRequestDto.setEmail("info@testEmail.comm");
 		instituteRequestDto.setIntakes(Arrays.asList("Dec", "Jan", "Feb"));
-		instituteRequestDto.setInstituteType("SMALL_MEDIUM_PRIVATE_SCHOOL");
+		instituteRequestDto.setInstituteType(Arrays.asList("SMALL_MEDIUM_PRIVATE_SCHOOL"));
 		instituteRequestDto.setPostalCode(1234);
 		instituteRequestDto.setReadableId(UUID.randomUUID().toString());
 		instituteRequestDto.setTagLine("Inspirings");

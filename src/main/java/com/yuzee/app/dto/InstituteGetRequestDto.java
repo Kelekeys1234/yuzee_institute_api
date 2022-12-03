@@ -23,7 +23,7 @@ public class InstituteGetRequestDto {
 	private String cityName;
 
 	@JsonProperty("institute_type")
-	private String instituteType;
+	private List<String> instituteType;
 
 	@JsonProperty("name")
 	@NotBlank(message = "{name.is_required}")

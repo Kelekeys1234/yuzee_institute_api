@@ -1,6 +1,7 @@
 package com.yuzee.app.controller.v1;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -42,6 +43,7 @@ import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.PaginationUtilDto;
 import com.yuzee.common.lib.dto.institute.TimingDto;
 import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.enumeration.BusinessAccountType;
 import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.enumeration.InstituteType;
@@ -79,7 +81,7 @@ public class InstituteController implements InstituteInterface {
 	private MessageTranslator messageTranslator;
 
 	@Override
-	public ResponseEntity<?> saveInstituteType(String instituteId, String instituteType) throws Exception {
+	public ResponseEntity<?> saveInstituteType(String instituteId, List<String> instituteType) throws Exception {
 		log.info("Start process to save new institute types in DB");
 		instituteTypeProcessor.addUpdateInstituteType(instituteId, instituteType);
 		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute.type.added"))
@@ -252,7 +254,9 @@ public class InstituteController implements InstituteInterface {
 	@Override
 	public ResponseEntity<?> save(@RequestBody final ValidList<InstituteRequestDto> institutes) throws Exception {
 		log.info("Start process to add new Institues in DB");
-		institutes.forEach(this::validateInstituteRequest);
+		institutes.stream().forEach(e -> {
+			validateInstituteType(e, e.getInstituteType());
+		});
 		return new GenericResponseHandlers.Builder().setMessage(messageTranslator.toLocale("institute.created"))
 				.setData(instituteProcessor.saveInstitute(institutes)).setStatus(HttpStatus.OK).create();
 	}
@@ -500,7 +504,37 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	private void validateInstituteRequest(InstituteRequestDto instituteRequest) {
-		ValidationUtil.validateInstituteType(instituteRequest.getInstituteType());
+		instituteRequest.getInstituteType().stream().forEach(e -> {
+			ValidationUtil.validateInstituteType(e);
+		});
+
+	}
+
+	private void validateInstituteType(InstituteRequestDto instituteRequest, List<String> instituteType) {
+		List<String> schoolType = new ArrayList<String>(
+				Arrays.asList("PRIMARY_SCHOOL", "SECONDARY_SCHOOL", "PRE_SCHOOL"));
+		List<InstituteType> universityType = new ArrayList<>(
+				Arrays.asList(InstituteType.UNIVERSITY_COLLEGE, InstituteType.SMALL_MEDIUM_PRIVATE_SCHOOL));
+		instituteType.stream().forEach(type -> {
+			if (BusinessAccountType.SCHOOL.toString().equals(instituteRequest.getBusinessAccountType())) {
+
+				if (!schoolType.contains(type)) {
+					log.error(messageTranslator.toLocale("institute_type_school_type.valid", schoolType.toString()));
+					throw new ValidationException(
+							messageTranslator.toLocale("institute_type_school_type.valid", schoolType.toString()));
+				}
+				validateInstituteRequest(instituteRequest);
+			} else {
+				if (!universityType.toString().contains(type)) {
+					log.error(messageTranslator.toLocale("institute_type_university_type.valid",
+							universityType.toString()));
+					throw new ValidationException(messageTranslator.toLocale("institute_type_university_type.valid",
+							universityType.toString()));
+				}
+				validateInstituteRequest(instituteRequest);
+			}
+
+		});
 	}
 
 	@Override

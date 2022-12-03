@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
 
@@ -36,8 +37,8 @@ public class InstituteDto {
 	private Integer worldRanking;
 
 	@JsonProperty("institute_type")
-	@NotBlank(message = "{institute_type.is_required}")
-	private String instituteType;
+	@NotNull(message = "{institute_type.is_required}")
+	private List<String> instituteType;
 
 	@JsonProperty("website")
 	private String website;
@@ -95,7 +96,7 @@ public class InstituteDto {
 	private String readableId;
 
 	@JsonProperty("institute_type_obj")
-	private InstituteType instituteTypeObj;
+	private List<InstituteType> instituteTypeObj;
 
 	@JsonProperty("show_suggestion")
 	private Boolean showSuggestion;
