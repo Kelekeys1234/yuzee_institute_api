@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,6 +63,12 @@ class InstituteCampusControllerTest extends CreateCourseAndInstitute {
 	@Autowired
 	private InstituteProcessor instituteProcessor;
 
+	  private String instituteId;
+		@BeforeEach
+		public void deleteAllInstitute() throws IOException {
+		instituteId = testCreateInstitute();
+		}
+
 	@BeforeClass
 	public static void main() {
 		SpringApplication.run(InstituteController.class);
@@ -71,8 +78,6 @@ class InstituteCampusControllerTest extends CreateCourseAndInstitute {
 	@DisplayName("addCampus test success")
 	@Test
 	void addCampus() throws IOException {
-		String instituteId = testCreateInstitute();
-		try {
 			HttpHeaders header = new HttpHeaders();
 
 			header.set("userId", userId);
@@ -83,17 +88,12 @@ class InstituteCampusControllerTest extends CreateCourseAndInstitute {
 					+ PATH_SEPARATOR + instituteId;
 			ResponseEntity<String> responsess = testRestTemplate.exchange(path, HttpMethod.POST, entitys, String.class);
 			assertThat(responsess.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			// clean up code
-			//instituteProcessor.deleteInstitute(instituteId);
-		}
 	}
 
 	@DisplayName("getInstituteCampuses test success")
 	@Test
 
 	void getInstituteCampuses() throws IOException {
-		String instituteId = testCreateInstitute();
 		// create new campus
 		/*
 		 * HttpHeaders header = new HttpHeaders();
@@ -109,7 +109,6 @@ class InstituteCampusControllerTest extends CreateCourseAndInstitute {
 		 * assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 		 * InstituteCampus instituteCampus = new InstituteCampus();
 		 */
-		try {
 			// instituteCampus.setId(UUID.randomUUID().toString());
 			HttpHeaders headerr = new HttpHeaders();
 			headerr.set("userId", userId);
@@ -121,19 +120,11 @@ class InstituteCampusControllerTest extends CreateCourseAndInstitute {
 			ResponseEntity<String> responsess = testRestTemplate.exchange(paths, HttpMethod.GET, entityss,
 					String.class);
 			assertThat(responsess.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			// clean up code
-		//	instituteProcessor.deleteInstitute(instituteId);
-		}
 	}
 
 	@DisplayName("deleteInstituteCampuses test success")
 	@Test
 	void removeCampus() throws IOException {
-	      String instituteId = testCreateInstitute();
-			// create new campus institute
-			try {
-
 				HttpHeaders heade = new HttpHeaders();
 				heade.set("userId", userId);
 				heade.setContentType(MediaType.APPLICATION_JSON);
@@ -144,10 +135,6 @@ class InstituteCampusControllerTest extends CreateCourseAndInstitute {
 				ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.DELETE, entitys,
 						String.class);
 				//assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-			} finally {
-				// clean up code
-				instituteProcessor.deleteInstitute(instituteId);
-			}
 		}
 	  
 }

@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -61,18 +62,6 @@ import lombok.extern.slf4j.Slf4j;
 
 public class InstituteBasicInfoControllerTest extends CreateCourseAndInstitute{
 
-	private static final String entityId = UUID.randomUUID().toString();
-	private static final String instituteId = "a2a00b2a-6b2d-41f1-8501-8ba882ee2b2a";
-	private static final String INSTITUTE_ID = "instituteId";
-	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
-	private static final String USER_ID = "userId";
-	private static final String INSTITUTE_PRE_PATH = "/api/v1";
-	private static final String INSTITUTE_PATH = INSTITUTE_PRE_PATH + "/institute";
-	private static final String PATH_SEPARATOR = "/";
-	private static final String PAGE_NUMBER_PATH = "/pageNumber";
-	private static final String PAGE_SIZE_PATH = "/pageSize";
-	private static final UUID IDS = UUID.fromString("1e348e15-45b6-477f-a457-883738227e05");
-
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 
@@ -86,6 +75,12 @@ public class InstituteBasicInfoControllerTest extends CreateCourseAndInstitute{
 	InstituteRepository instituteRepository;
 	@Autowired
 	InstituteProcessor instituteProcessor;
+	
+	  private String instituteId;
+		@BeforeEach
+		public void deleteAllInstitute() throws IOException {
+		instituteId = testCreateInstitute();
+		}
 
 	@BeforeClass
 	public static void main() {
@@ -95,8 +90,6 @@ public class InstituteBasicInfoControllerTest extends CreateCourseAndInstitute{
 	@DisplayName("addUpdateInstituteBasicInfo test success")
 	@Test
 	 void addUpdateInstituteBasicInfo() throws IOException {
-                String instituteId = testCreateInstitute();
-			try {
 				InstituteBasicInfoDto instituteBasicInfoDto = new InstituteBasicInfoDto();
 				instituteBasicInfoDto.setInstituteLogoPath("logopath");
 				instituteBasicInfoDto.setNameOfUniversity("rgpvv");
@@ -116,12 +109,7 @@ public class InstituteBasicInfoControllerTest extends CreateCourseAndInstitute{
 						+ instituteId;
 				ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.POST, entitys,
 						String.class);
-				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-			} finally {
-				// clean up code
-			
-				instituteProcessor.deleteInstitute(instituteId);
-			}						
+				assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);			
 	}
 
 	@DisplayName("WrongidaddUpdateInstituteBasicInfo")
@@ -154,8 +142,6 @@ public class InstituteBasicInfoControllerTest extends CreateCourseAndInstitute{
 	@DisplayName("getInstituteBasicInfo test success")
 	@Test
      void getInstituteBasicInfo() throws IOException {
-        String instituteId = testCreateInstitute();
-		try {
 			HttpHeaders header = new HttpHeaders();
 			header.setContentType(MediaType.APPLICATION_JSON);
 			header.set("userId", userId);
@@ -164,11 +150,6 @@ public class InstituteBasicInfoControllerTest extends CreateCourseAndInstitute{
 			HttpEntity<String> entityy = new HttpEntity<>(header);
 			ResponseEntity<String> responsed = testRestTemplate.exchange(path, HttpMethod.GET, entityy, String.class);
 			assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			// clean up code
-			instituteProcessor.deleteInstitute(instituteId);
-	
-		}
 	}
 
 	@DisplayName("WrongIdgetInstituteBasicInfo")
@@ -189,9 +170,6 @@ public class InstituteBasicInfoControllerTest extends CreateCourseAndInstitute{
 	@DisplayName("getInstitutePublicBasicInfo test success")
 	@Test
 	void getInstitutePublicBasicInfo() throws IOException {
-
-		String instituteId = testCreateInstitute();
-		try {
 			List<String>instituteIds=new ArrayList();
 			instituteIds.add(instituteId);
 			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "basic" + PATH_SEPARATOR
@@ -209,11 +187,6 @@ public class InstituteBasicInfoControllerTest extends CreateCourseAndInstitute{
 			ResponseEntity<String> responsed = testRestTemplate.exchange(path, HttpMethod.GET, entityy, String.class,
 					params);
 			assertThat(responsed.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			// clean up code
-
-			instituteProcessor.deleteInstitute(instituteId);
-		}
-	}
+		} 
 
 }

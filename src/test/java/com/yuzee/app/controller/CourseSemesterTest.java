@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,12 +57,18 @@ import lombok.extern.slf4j.Slf4j;
 	  void saveCourseSemesters() throws IOException {
 		saveCourseSemester();
 	}
+	private String instituteId;
+    private CourseRequest courseId;
+
+	@BeforeEach
+	public void deleteAllInstitute() throws IOException {
+		instituteId = testCreateInstitute();
+		courseId = createCourses(instituteId);
+	}
 	
 	@DisplayName("deleteCourseSemster")
 	@Test
 	  void deleteCourseSemester() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		String semesterId= saveCourseSemester();
 	
 		HttpHeaders headers = new HttpHeaders();

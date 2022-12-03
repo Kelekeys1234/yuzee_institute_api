@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,16 +52,6 @@ import lombok.extern.slf4j.Slf4j;
 
 public class InstituteContactInfoControllerTest extends CreateCourseAndInstitute {
 
-	private static final String entityId = UUID.randomUUID().toString();
-	private static final String instituteId = "a2a00b2a-6b2d-41f1-8501-8ba882ee2b2a";
-	private static final String INSTITUTE_ID = "instituteId";
-	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
-	private static final String USER_ID = "userId";
-	private static final String INSTITUTE_PRE_PATH = "/api/v1";
-	private static final String INSTITUTE_PATH = INSTITUTE_PRE_PATH + "/institute";
-	private static final String PATH_SEPARATOR = "/";
-	private static final String PAGE_NUMBER_PATH = "/pageNumber";
-	private static final String PAGE_SIZE_PATH = "/pageSize";
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
@@ -69,6 +60,11 @@ public class InstituteContactInfoControllerTest extends CreateCourseAndInstitute
 
 	@MockBean
 	private PublishSystemEventHandler publishSystemEventHandler;
+	  private String instituteId;
+		@BeforeEach
+		public void deleteAllInstitute() throws IOException {
+		instituteId = testCreateInstitute();
+		}
 
 	@BeforeClass
 	public static void main() {
@@ -79,8 +75,7 @@ public class InstituteContactInfoControllerTest extends CreateCourseAndInstitute
 	@DisplayName("addUpdateInstituteContactInfo test success")
 	@Test
 	void addUpdateInstituteContactInfo() throws IOException {
-		String instituteId = testCreateInstitute();
-		try {
+
 			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "contact" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
 					+ instituteId;
 			HttpHeaders header = new HttpHeaders();
@@ -101,10 +96,7 @@ public class InstituteContactInfoControllerTest extends CreateCourseAndInstitute
 			ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.POST, entitys, String.class);
 
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			// clean up code
-			instituteProcessor.deleteInstitute(instituteId);
-		}
+		
 	}
 
 	@DisplayName("WrongidaddUpdateInstituteContactInfo test success")
@@ -137,7 +129,6 @@ public class InstituteContactInfoControllerTest extends CreateCourseAndInstitute
 	@Test
 	void getInstituteContactInfo() throws IOException {
 		String instituteId = testCreateInstitute();
-		try {
 			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "contact" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
 					+ instituteId;
 			HttpHeaders header = new HttpHeaders();
@@ -146,13 +137,7 @@ public class InstituteContactInfoControllerTest extends CreateCourseAndInstitute
 			HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(header);
 			ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.GET, entitys, String.class);
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			// clean up code
-
-			instituteProcessor.deleteInstitute(instituteId);
-
-		}
-
+		
 	}
 
 	@DisplayName("WrongIdgetInstituteContactInfo")
@@ -173,7 +158,7 @@ public class InstituteContactInfoControllerTest extends CreateCourseAndInstitute
 	@DisplayName("getInstitutePublicContactInfo test success")
 	@Test
 	void getInstitutePublicContactInfo() throws IOException {
-		String instituteId = testCreateInstitute();
+	
 		try {
 			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "contact" + PATH_SEPARATOR
 					+ "info" + PATH_SEPARATOR + instituteId;

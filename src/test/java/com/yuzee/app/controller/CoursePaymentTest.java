@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,21 +39,21 @@ import com.yuzee.common.lib.dto.institute.CoursePaymentItemDto;
 import lombok.extern.slf4j.Slf4j;
 
 class CoursePaymentTest extends CreateCourseAndInstitute {
-	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
-	private static final String Id = "96a2e11b-d64b-4964-9d28-2a4d7a41d944";
-	private static final String jobsId = "7132d88e-cf2c-4f48-ac6e-82214208f677";
-	private static final String api = "/api/v1/course";
-	private static final String PATH_SEPARATOR = "/";
-	private static final String courseId = "9230cdd1-7d12-41c6-bbd0-38e52b3595a4";
+	private static final String Id = "1e348e15-45b6-477f-a457-883738227e06";
 	@Autowired
 	private TestRestTemplate testRestTemplate;
+	private String instituteId;
+	private CourseRequest courseId;
+
+	@BeforeEach
+	public void createAllIntituteAndCourse() throws IOException {
+		instituteId = testCreateInstitute();
+		courseId = createCourses(instituteId);
+	}
 
 	@DisplayName("saveCoursePayment")
 	@Test
 	void saveCoursePayment() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
-		try {
 			ValidList<CoursePaymentItemDto> paymentItems = new ValidList<>();
 			CoursePaymentItemDto coursePaymentItemDto = new CoursePaymentItemDto();
 			List<String> linkedCourseId = Arrays.asList(courseId.getId());
@@ -75,23 +76,11 @@ class CoursePaymentTest extends CreateCourseAndInstitute {
 					api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "payment", HttpMethod.POST, entity,
 					String.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add("userId", userId);
-			HttpEntity<String> entity = new HttpEntity<>(null, headers);
-			ResponseEntity<String> response = testRestTemplate.exchange(
-					api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "payment", HttpMethod.DELETE, entity,
-					String.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}
 	}
 
 	@DisplayName("saveCoursePaymentWrongId")
 	@Test
 	void saveCoursePaymentWrongId() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		ValidList<CoursePaymentItemDto> paymentItems = new ValidList<>();
 		CoursePaymentItemDto coursePaymentItemDto = new CoursePaymentItemDto();
 		List<String> linkedCourseId = Arrays.asList(Id);
@@ -111,17 +100,14 @@ class CoursePaymentTest extends CreateCourseAndInstitute {
 		headers.add("userId", userId);
 		HttpEntity<CoursePaymentDto> entity = new HttpEntity<>(coursePaymentDto, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api + PATH_SEPARATOR + courseId.getCountryName() + PATH_SEPARATOR + "payment", HttpMethod.DELETE, entity,
-				String.class);
+				api + PATH_SEPARATOR + courseId.getCountryName() + PATH_SEPARATOR + "payment", HttpMethod.DELETE,
+				entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 	}
 
 	@DisplayName("deleteCoursePayment")
 	@Test
 	void delete() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
-		try {
 			ValidList<CoursePaymentItemDto> paymentItems = new ValidList<>();
 			CoursePaymentItemDto coursePaymentItemDto = new CoursePaymentItemDto();
 			List<String> linkedCourseId = Arrays.asList(courseId.getId());
@@ -144,16 +130,6 @@ class CoursePaymentTest extends CreateCourseAndInstitute {
 					api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "payment", HttpMethod.POST, entity,
 					String.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add("userId", userId);
-			HttpEntity<String> entity = new HttpEntity<>(null, headers);
-			ResponseEntity<String> response = testRestTemplate.exchange(
-					api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "payment", HttpMethod.DELETE, entity,
-					String.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}
 	}
 
 	@DisplayName("deleteCoursePaymentWrongId")

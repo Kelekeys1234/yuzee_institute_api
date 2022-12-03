@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,6 +61,12 @@ public class InstituteFacilitiesControllerTest extends CreateCourseAndInstitute 
 	private PublishSystemEventHandler publishSystemEventHandler;
 	@Autowired
 	private InstituteProcessor instituteProcessor;
+	private String instituteId;
+
+	@BeforeEach
+	public void deleteAllInstitute() throws IOException {
+		instituteId = testCreateInstitute();
+	}
 
 	@BeforeClass
 	public static void main() {
@@ -70,34 +77,25 @@ public class InstituteFacilitiesControllerTest extends CreateCourseAndInstitute 
 	@DisplayName("addInstituteFacilities test success")
 	@Test
 	void addInstituteFacilities() throws IOException {
-		String instituteId = testCreateInstitute();
 		String serviceId = service();
-		try {
-			/// add facility
-			List<FacilityDto> facilityDtoList = new ArrayList<>();
-			facilityDtoList.add(new FacilityDto("fda4786c-9882-4959-83c5-293e2ff189dd", "testFacilityName", serviceId));
-			InstituteFacilityDto instituteFacilityDto = new InstituteFacilityDto();
-			instituteFacilityDto.setFacilities(facilityDtoList);
+		/// add facility
+		List<FacilityDto> facilityDtoList = new ArrayList<>();
+		facilityDtoList.add(new FacilityDto("fda4786c-9882-4959-83c5-293e2ff189dd", "testFacilityName", serviceId));
+		InstituteFacilityDto instituteFacilityDto = new InstituteFacilityDto();
+		instituteFacilityDto.setFacilities(facilityDtoList);
 
-			HttpHeaders header = new HttpHeaders();
-			header.setContentType(MediaType.APPLICATION_JSON);
-			String paths = INSTITUTE_PATH + PATH_SEPARATOR + "facilities" + PATH_SEPARATOR + instituteId;
-			HttpEntity<InstituteFacilityDto> entitys = new HttpEntity<>(instituteFacilityDto, header);
-			ResponseEntity<InstituteFacilityDto> responses = testRestTemplate.exchange(paths, HttpMethod.POST, entitys,
-					InstituteFacilityDto.class);
-			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			// clean up code
-			instituteProcessor.deleteInstitute(instituteId);
-
-		}
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_JSON);
+		String paths = INSTITUTE_PATH + PATH_SEPARATOR + "facilities" + PATH_SEPARATOR + instituteId;
+		HttpEntity<InstituteFacilityDto> entitys = new HttpEntity<>(instituteFacilityDto, header);
+		ResponseEntity<InstituteFacilityDto> responses = testRestTemplate.exchange(paths, HttpMethod.POST, entitys,
+				InstituteFacilityDto.class);
+		assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	@DisplayName("getInstituteFacilities test success")
 	@Test
 	void getInstituteFacilities() throws IOException {
-		String instituteId = testCreateInstitute();
-		try {
 			/// add facility
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
@@ -105,18 +103,11 @@ public class InstituteFacilitiesControllerTest extends CreateCourseAndInstitute 
 			HttpEntity<String> entity = new HttpEntity<>(null, headers);
 			ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.GET, entity, String.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			// clean up code
-			instituteProcessor.deleteInstitute(instituteId);
-
-		}
 	}
 
 	@DisplayName("deleteInstituteFacilitiesById test success")
 	@Test
 	void deleteInstituteFacilitiesById() throws IOException {
-		String instituteId = testCreateInstitute();
-		try {
 			/// add facility
 
 			Map<String, List<String>> params = new HashMap<>();
@@ -128,17 +119,11 @@ public class InstituteFacilitiesControllerTest extends CreateCourseAndInstitute 
 			ResponseEntity<String> response = testRestTemplate.exchange(path, HttpMethod.DELETE, entity, String.class,
 					params);
 			// assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			// clean up code
-			instituteProcessor.deleteInstitute(instituteId);
-		}
 	}
 
 	@DisplayName("getInstitutePublicFacilities test success")
 	@Test
 	void getInstitutePublicFacilities() throws IOException {
-		String instituteId = testCreateInstitute();
-		try {
 			/// add facility
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
@@ -149,10 +134,6 @@ public class InstituteFacilitiesControllerTest extends CreateCourseAndInstitute 
 					InstituteFacilityDto.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-		} finally {
-			// clean up code
-			instituteProcessor.deleteInstitute(instituteId);
-
-		}
+		
 	}
 }

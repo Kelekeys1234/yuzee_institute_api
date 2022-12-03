@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,13 +40,18 @@ class CourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 
+	private String instituteId;
+	private CourseRequest courseId;
+
+	@BeforeEach
+	public void createAllIntituteAndCourse() throws IOException {
+		instituteId = testCreateInstitute();
+		courseId = createCourses(instituteId);
+	}
+
 	@DisplayName("Add CourseDeliveryMode")
 	@Test
 	void addCourseDeliveryMode() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
-		try {
-
 			CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 			CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 			courseDeliveryModesDto.setDeliveryType("demo");
@@ -89,26 +95,11 @@ class CourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 					+ PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode",
 					HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-		} finally {
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add("userId", userId);
-
-			HttpEntity<String> entity = new HttpEntity<>(headers);
-			ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
-					+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entity,
-					String.class);
-
-		}
 	}
 
 	@DisplayName("Update CourseDeliveryMode")
 	@Test
 	void updateCourseDeliveryMode() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 		CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 		courseDeliveryModesDto.setDeliveryType("demo");
@@ -152,7 +143,6 @@ class CourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 				+ "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.POST,
 				entity, CourseDeliveryModeRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		try {
 			courseDeliveryModesDto.setDeliveryType("demo");
 			courseDeliveryModesDto.setStudyMode("online");
 			courseDeliveryModesDto.setDuration(9.5);
@@ -181,20 +171,12 @@ class CourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 									+ "delivery-mode",
 							HttpMethod.POST, entityy, CourseDeliveryModeRequestWrapper.class);
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			HttpEntity<String> entitys = new HttpEntity<>(null, headers);
-			ResponseEntity<String> responsed = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
-					+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entitys,
-					String.class);
-
-		}
+		
 	}
 
 	@DisplayName("send  multipleCourseDeliveryMode")
 	@Test
 	void sendMultipleCourseDeliveryMode() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 		CourseDeliveryModesDto courseDeliveryModesFirstList = new CourseDeliveryModesDto();
 		courseDeliveryModesFirstList.setDeliveryType("demo");
@@ -264,7 +246,6 @@ class CourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 				+ "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.POST,
 				entity, CourseDeliveryModeRequestWrapper.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		try {
 			courseDeliveryModesFirstList.setDeliveryType("demo");
 			courseDeliveryModesFirstList.setStudyMode("offline");
 			courseDeliveryModesFirstList.setDuration(8.5);
@@ -300,22 +281,11 @@ class CourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 			secondcourseDeliveryModeFunding.setCurrency("INR");
 			secondfundings.add(secondcourseDeliveryModeFunding);
 			courseDeliveryModesSecondList.setFundings(secondfundings);
-		} finally {
-//			HttpEntity<String> entitys = new HttpEntity<>(headers);
-//			ResponseEntity<String> responsed = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
-//					+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entitys,
-//					String.class);
-
-		}
 	}
 
 	@DisplayName("Remove  SingalCourseDeliveryMode")
 	@Test
 	void removeSingalCourseDeliveryMode() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
-		try {
-
 			CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 			CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 			courseDeliveryModesDto.setDeliveryType("demo");
@@ -359,27 +329,11 @@ class CourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 					+ PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode",
 					HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-		} finally {
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add("userId", userId);
-
-			HttpEntity<String> entity = new HttpEntity<>(headers);
-			ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
-					+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entity,
-					String.class);
-
-		}
 	}
 
 	@DisplayName("DELETE All CourseDeliveryMode")
 	@Test
 	void deleteAllCourseDeliveryMode() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
-		try {
 			CourseDeliveryModeRequestWrapper requestWrapper = new CourseDeliveryModeRequestWrapper();
 			CourseDeliveryModesDto courseDeliveryModesDto = new CourseDeliveryModesDto();
 
@@ -424,18 +378,6 @@ class CourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 					+ PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode",
 					HttpMethod.POST, entity, CourseDeliveryModeRequestWrapper.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add("userId", userId);
-
-			HttpEntity<String> entity = new HttpEntity<>(headers);
-			ResponseEntity<String> response = testRestTemplate.exchange(COURSE + PATH_SEPARATOR + "course"
-					+ PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "delivery-mode", HttpMethod.DELETE, entity,
-					String.class);
-
-		}
-
 	}
 
 	@DisplayName("Send Wrong_Id")

@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,6 +48,14 @@ import lombok.extern.slf4j.Slf4j;
 class CourseFundingTest extends CreateCourseAndInstitute {
 
 	private static final String Id = "1e348e15-45b6-477f-a457-883738227e05";
+	private String instituteId;
+	private CourseRequest courseId;
+
+	@BeforeEach
+	public void createAllIntituteAndCourse() throws IOException {
+		instituteId = testCreateInstitute();
+		courseId = createCourses(instituteId);
+	}
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
@@ -55,8 +65,6 @@ class CourseFundingTest extends CreateCourseAndInstitute {
 	@DisplayName("savecourseFunding")
 	@Test
 	void saveCourseFunding() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		List<String> fundingId = new ArrayList<>();
 		fundingId.add(Id);
 		Map<String, String> courseCareer = new HashMap<>();
@@ -75,8 +83,6 @@ class CourseFundingTest extends CreateCourseAndInstitute {
 	@DisplayName("saveAllcourseFunding")
 	@Test
 	void saveAllFunding() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		ValidList<CourseFundingDto> courseFundingDtos = new ValidList<>();
 		CourseFundingRequestWrapper request = new CourseFundingRequestWrapper();
 		List<String> fundingId = new ArrayList<>();
@@ -99,8 +105,6 @@ class CourseFundingTest extends CreateCourseAndInstitute {
 	}
 
 	public void deleteFunding() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		Map<String, String> courseCareer = new HashMap<>();
 		courseCareer.put("course_career_outcome_ids", Id);
 		HttpHeaders headers = new HttpHeaders();

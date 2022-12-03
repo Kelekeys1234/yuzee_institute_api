@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -71,6 +72,12 @@ class InstituteAdditionalInfoControllerTest extends CreateCourseAndInstitute {
 	InstituteRepository instituteRepository;
 	@Autowired
 	InstituteProcessor instituteProcessor;
+	private String instituteId;
+
+	@BeforeEach
+	public void deleteAllInstitute() throws IOException {
+		instituteId = testCreateInstitute();
+	}
 
 	@BeforeClass
 	public static void main() {
@@ -81,8 +88,6 @@ class InstituteAdditionalInfoControllerTest extends CreateCourseAndInstitute {
 	@DisplayName("addInstituteAdditionalInfo test success")
 	@Test
 	void addInstituteAdditionalInfo() throws IOException {
-		String instituteId = testCreateInstitute();
-		try {
 			InstituteAdditionalInfoDto instituteAdditionalInfoDto = new InstituteAdditionalInfoDto();
 			instituteAdditionalInfoDto.setNumberOfStudent(5);
 			instituteAdditionalInfoDto.setNumberOfEmployee(8);
@@ -102,18 +107,11 @@ class InstituteAdditionalInfoControllerTest extends CreateCourseAndInstitute {
 					+ "additional" + PATH_SEPARATOR + "info" + PATH_SEPARATOR + instituteId, HttpMethod.POST, entitys,
 					String.class);
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			// clean up code
-
-			instituteProcessor.deleteInstitute(instituteId);
-		}
 	}
 
 	@DisplayName("WrongIdaddInstituteAdditionalInfo")
 	@Test
 	void wrongIdInstituteAdditionalInfo() throws IOException {
-		String instituteId = testCreateInstitute();
-		try {
 			InstituteAdditionalInfoDto instituteAdditionalInfoDto = new InstituteAdditionalInfoDto();
 			instituteAdditionalInfoDto.setNumberOfStudent(5);
 			instituteAdditionalInfoDto.setNumberOfEmployee(8);
@@ -133,17 +131,11 @@ class InstituteAdditionalInfoControllerTest extends CreateCourseAndInstitute {
 					+ "additional" + PATH_SEPARATOR + "info" + PATH_SEPARATOR + instituteId, HttpMethod.POST, entitys,
 					String.class);
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			
-			instituteProcessor.deleteInstitute(instituteId);
-		}
-	}
+		} 
 
 	@DisplayName("getInstituteAdditionalInfo test success")
 	@Test
 	void getInstituteAdditionalInfo() throws IOException {
-		String instituteId = testCreateInstitute();
-		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.set("userId", userId);
 			headers.setContentType(MediaType.APPLICATION_JSON);
@@ -155,12 +147,6 @@ class InstituteAdditionalInfoControllerTest extends CreateCourseAndInstitute {
 					+ "additional" + PATH_SEPARATOR + "info" + PATH_SEPARATOR + instituteId, HttpMethod.GET, entityy,
 					String.class);
 			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-		} finally {
-			// clean up code
-
-			instituteProcessor.deleteInstitute(instituteId);
-		}
 	}
 
 	@DisplayName("WrongIDgetInstituteAdditionalInfo")

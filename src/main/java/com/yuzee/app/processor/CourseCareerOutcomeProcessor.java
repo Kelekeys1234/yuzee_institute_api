@@ -175,13 +175,13 @@ public class CourseCareerOutcomeProcessor {
 						if (existingScholarshipOp.isPresent()) {
 							courseCareerOutcome = existingScholarshipOp.get();
 						}
-						for(Careers career :careersMap ) {
-						courseCareerOutcome = new Careers();
-						courseCareerOutcome.setId(UUID.randomUUID().toString());
-						courseCareerOutcome.setCareer(career.getCareer());
-						courseCareerOutcomes.add(courseCareerOutcome);
+						for (Careers career : careersMap) {
+							courseCareerOutcome = new Careers();
+							courseCareerOutcome.setId(UUID.randomUUID().toString());
+							courseCareerOutcome.setCareer(career.getCareer());
+							courseCareerOutcomes.add(courseCareerOutcome);
 						}
-						
+
 					});
 				}
 			});

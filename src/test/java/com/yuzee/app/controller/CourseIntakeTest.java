@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.util.Arrays;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,53 +37,45 @@ import com.yuzee.common.lib.dto.institute.CourseIntakeDto;
 
 import lombok.extern.slf4j.Slf4j;
 
-
-class CourseIntakeTest extends CreateCourseAndInstitute{
-	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
-	private static final String Id = "1e348e15-45b6-477f-a457-883738227e05";
-	private static final String jobsId= "7132d88e-cf2c-4f48-ac6e-82214208f677";
-	private static final String api= "/api/v1/course";
-	private static final String PATH_SEPARATOR = "/";
+class CourseIntakeTest extends CreateCourseAndInstitute {
 	@Autowired
 	private TestRestTemplate testRestTemplate;
+
+	private String instituteId;
+	private CourseRequest courseId;
+
+	@BeforeEach
+	public void createAllIntituteAndCourse() throws IOException {
+		instituteId = testCreateInstitute();
+		courseId = createCourses(instituteId);
+	}
+
 	@DisplayName("saveCourseIntake")
 	@Test
-	 void saveCourseIntake() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
-		try {
-		List<String>linkedCourseId = new ArrayList<>();
-		linkedCourseId.add(courseId.getId());
-		List<Date> date = new ArrayList<>();
-		date.add(new Date());
-		CourseIntakeDto courseIntake = new CourseIntakeDto();
-		courseIntake.setType("SPECIFIC");
-		courseIntake.setDates(date);
-		courseIntake.setLinkedCourseIds(linkedCourseId);
-		HttpHeaders headers = new HttpHeaders();
-		headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add("userId", userId);
-		HttpEntity<CourseIntakeDto> entity = new HttpEntity<>(courseIntake, headers);
-		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+courseId.getId()
-				+PATH_SEPARATOR +"intake",
-				HttpMethod.POST, entity, String.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	}finally {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add("userId", userId);
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+	void saveCourseIntake() throws IOException {
+			List<String> linkedCourseId = new ArrayList<>();
+			linkedCourseId.add(courseId.getId());
+			List<Date> date = new ArrayList<>();
+			date.add(new Date());
+			CourseIntakeDto courseIntake = new CourseIntakeDto();
+			courseIntake.setType("SPECIFIC");
+			courseIntake.setDates(date);
+			courseIntake.setLinkedCourseIds(linkedCourseId);
+			HttpHeaders headers = new HttpHeaders();
+			headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add("userId", userId);
+			HttpEntity<CourseIntakeDto> entity = new HttpEntity<>(courseIntake, headers);
+			ResponseEntity<String> response = testRestTemplate.exchange(
+					api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "intake", HttpMethod.POST, entity,
+					String.class);
+			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
-	}
-	
+
 	@DisplayName("sendWrongIdForSave")
 	@Test
-	 void WrongIdForsendSaveCourseIntake() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
-		List<String>linkedCourseId = new ArrayList<>();
+	void WrongIdForsendSaveCourseIntake() throws IOException {
+		List<String> linkedCourseId = new ArrayList<>();
 		linkedCourseId.add(courseId.getId());
 		List<Date> date = new ArrayList<>();
 		date.add(new Date());
@@ -96,20 +89,16 @@ class CourseIntakeTest extends CreateCourseAndInstitute{
 		headers.add("userId", userId);
 		HttpEntity<CourseIntakeDto> entity = new HttpEntity<>(courseIntake, headers);
 		ResponseEntity<String> response = testRestTemplate.exchange(
-				api +PATH_SEPARATOR+courseId.getId()
-				+PATH_SEPARATOR +"intake",
-				HttpMethod.POST, entity, String.class);
+				api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "intake", HttpMethod.POST, entity,
+				String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	
+
 	}
-	
+
 	@DisplayName("deleteCourseIntake")
 	@Test
-	 void deleteIntake() throws IOException {
-		try {
-			String instituteId = testCreateInstitute();
-			CourseRequest courseId = createCourses(instituteId);
-			List<String>linkedCourseId = new ArrayList<>();
+	void deleteIntake() throws IOException {
+			List<String> linkedCourseId = new ArrayList<>();
 			linkedCourseId.add("9230cdd1-7d12-41c6-bbd0-38e52b3595a4");
 			List<Date> date = new ArrayList<>();
 			date.add(new Date());
@@ -123,15 +112,8 @@ class CourseIntakeTest extends CreateCourseAndInstitute{
 			headers.add("userId", userId);
 			HttpEntity<CourseIntakeDto> entity = new HttpEntity<>(courseIntake, headers);
 			ResponseEntity<String> response = testRestTemplate.exchange(
-					api +PATH_SEPARATOR+ courseId.getId()
-					+PATH_SEPARATOR +"intake",
-					HttpMethod.POST, entity, String.class);
+					api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "intake", HttpMethod.POST, entity,
+					String.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}finally {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add("userId", userId);
-		
-	}
-		}
+		} 
 }

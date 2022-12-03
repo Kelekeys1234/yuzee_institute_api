@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,14 +44,13 @@ import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
 import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
 
 import lombok.extern.slf4j.Slf4j;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
 class CourseContactPersonTest extends CreateCourseAndInstitute {
-	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
-	private static final String api = "/api/v1/course";
-	private static final String PATH_SEPARATOR = "/";
+
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 	@MockBean
@@ -58,17 +58,18 @@ class CourseContactPersonTest extends CreateCourseAndInstitute {
 
 	@Autowired
 	private CourseRepository courseRepository;
-	@AfterEach
-	public void deleteAllInstitute() {
-		courseRepository.deleteAll();
+	private String instituteId;
+	private CourseRequest courseId;
+
+	@BeforeEach
+	public void createAllIntituteAndCourse() throws IOException {
+		instituteId = testCreateInstitute();
+		courseId = createCourses(instituteId);
 	}
 
 	@DisplayName("saveCourseContactPerson")
 	@Test
 	void saveCourseContactPerson() throws IOException {
-		try {
-			String instituteId = testCreateInstitute();
-			CourseRequest courseId = createCourses(instituteId);
 			ValidList<CourseContactPersonDto> courseContactPersonDtos = new ValidList<CourseContactPersonDto>();
 			new UserInitialInfoDto();
 			CourseContactPersonDto courseContactPersonDto = new CourseContactPersonDto();
@@ -90,28 +91,11 @@ class CourseContactPersonTest extends CreateCourseAndInstitute {
 					api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "contact-person", HttpMethod.POST,
 					entity, CourseContactPersonRequestWrapper.class);
 			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} finally {
-			String instituteId = testCreateInstitute();
-			CourseRequest courseId = createCourses(instituteId);
-			Map<String, List<String>> params = new HashMap<>();
-			params.put("userIds", Arrays.asList(userId));
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add("userId", userId);
-			HttpEntity<String> entity = new HttpEntity<>(headers);
-			ResponseEntity<CourseContactPersonRequestWrapper> response = testRestTemplate.exchange(
-					api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "contact-person?user_ids=",
-					HttpMethod.DELETE, entity, CourseContactPersonRequestWrapper.class, params);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}
 	}
 
 	@DisplayName("deleteContactPerson")
 	@Test
 	void deleteSaveContactPerson() throws IOException {
-		String instituteId = testCreateInstitute();
-		CourseRequest courseId = createCourses(instituteId);
 		Map<String, List<String>> params = new HashMap<>();
 		params.put("userIds", Arrays.asList(userId));
 
