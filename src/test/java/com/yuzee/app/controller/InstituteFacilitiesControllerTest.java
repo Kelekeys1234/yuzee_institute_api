@@ -11,9 +11,12 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -51,7 +54,12 @@ import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.util.ObjectMapperHelper;
 
 import lombok.extern.slf4j.Slf4j;
-
+@Slf4j
+@RunWith(JUnitPlatform.class)
+@TestInstance(Lifecycle.PER_CLASS)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+@ContextConfiguration(classes = YuzeeApplication.class)
 public class InstituteFacilitiesControllerTest extends CreateCourseAndInstitute {
 
 	@Autowired
@@ -63,7 +71,7 @@ public class InstituteFacilitiesControllerTest extends CreateCourseAndInstitute 
 	private InstituteProcessor instituteProcessor;
 	private String instituteId;
 
-	@BeforeEach
+	@BeforeAll
 	public void deleteAllInstitute() throws IOException {
 		instituteId = testCreateInstitute();
 	}

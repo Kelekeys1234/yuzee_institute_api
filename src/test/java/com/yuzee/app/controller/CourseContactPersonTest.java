@@ -3,19 +3,16 @@ package com.yuzee.app.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.runner.JUnitPlatform;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +28,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.yuzee.app.YuzeeApplication;
@@ -42,10 +38,10 @@ import com.yuzee.app.processor.CommonProcessor;
 import com.yuzee.app.repository.CourseRepository;
 import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
 import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
-
-import lombok.extern.slf4j.Slf4j;
+import static org.junit.jupiter.api.TestInstance.Lifecycle;
 
 @RunWith(SpringRunner.class)
+@TestInstance(Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
@@ -61,11 +57,12 @@ class CourseContactPersonTest extends CreateCourseAndInstitute {
 	private String instituteId;
 	private CourseRequest courseId;
 
-	@BeforeEach
+	@BeforeAll
 	public void createAllIntituteAndCourse() throws IOException {
 		instituteId = testCreateInstitute();
 		courseId = createCourses(instituteId);
 	}
+	
 
 	@DisplayName("saveCourseContactPerson")
 	@Test

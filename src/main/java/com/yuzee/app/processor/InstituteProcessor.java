@@ -2,7 +2,6 @@ package com.yuzee.app.processor;
 
 import java.io.File;
 
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -151,18 +150,16 @@ public class InstituteProcessor {
 	@Autowired
 	private ReviewHandler reviewHandler;
 
-
 	@Autowired
 	CommonProcessor commonProcessor;
 
 	@Autowired
 	private ConversionProcessor conversionProcessor;
 
-	
 	@Autowired
 	@Qualifier("importInstituteJob")
-    private Job job;
-	
+	private Job job;
+
 	@Autowired
 	private JobLauncher jobLauncher;
 
@@ -176,20 +173,19 @@ public class InstituteProcessor {
 	@Autowired
 	private InstituteServiceDao instituteServiceDao;
 
-
 	@Autowired
 	private UserHandler userHandler;
 
-	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
-	public Institute get(final String id) {
-		return instituteDao.get(id);
-	}
+//	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
+//	public Institute get(final String id) {
+//		return instituteDao.get(id);
+//	}
 
-	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
-	public List<String> getRandomInstituteIdByCountry(
-			final List<String> countryIdList/* , Long startIndex, Long pageSize */) {
-		return instituteDao.getRandomInstituteByCountry(countryIdList/* , startIndex, pageSize */);
-	}
+//	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
+//	public List<String> getRandomInstituteIdByCountry(
+//			final List<String> countryIdList/* , Long startIndex, Long pageSize */) {
+//		return instituteDao.getRandomInstituteByCountry(countryIdList/* , startIndex, pageSize */);
+//	}
 
 	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
 	public List<InstituteResponseDto> getAllInstitutesByFilter(final CourseSearchDto filterObj,
@@ -218,6 +214,7 @@ public class InstituteProcessor {
 				log.info("Converting bean class to DTO class using beanUtils");
 				BeanUtils.copyProperties(institute, instituteResponseDto);
 				instituteResponseDtos.add(instituteResponseDto);
+
 			});
 		}
 		return instituteResponseDtos;
@@ -230,12 +227,9 @@ public class InstituteProcessor {
 		instituteElasticSearchDto
 				.setCountryName(institute.getCountryName() != null ? institute.getCountryName() : null);
 		instituteElasticSearchDto.setCityName(institute.getCityName() != null ? institute.getCityName() : null);
-//		instituteElasticSearchDto
-//				.setInstituteType(institute.getInstituteType() != null ? institute.getInstituteType() : null);
-		List<String> intakes = institute.getInstituteIntakes();
-		if (!CollectionUtils.isEmpty(intakes)) {
-			instituteElasticSearchDto.setIntakes(institute.getInstituteIntakes());
-		}
+		instituteElasticSearchDto
+				.setInstituteType(institute.getInstituteType() != null ? institute.getInstituteType() : null);
+
 		instituteElasticSearchDto.setReadableId(institute.getReadableId());
 		return instituteElasticSearchDto;
 	}
@@ -265,7 +259,7 @@ public class InstituteProcessor {
 						.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
 			}
 			log.info("Calling elasticSearch Service to add new institutes on elastic index");
-		   // publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
+			// publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
 		} catch (Exception exception) {
 			log.error("Exception while saving institutes having exception ", exception.getMessage());
 			throw exception;
@@ -341,7 +335,7 @@ public class InstituteProcessor {
 			instituteElasticDtoList.add(conversionProcessor.convertToInstituteInstituteSyncDTOSynDataEntity(institute));
 
 			log.info("Calling elastic service to save instiutes on index");
-            publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
+			publishSystemEventHandler.syncInstitutes(instituteElasticDtoList);
 		} catch (Exception exception) {
 			log.error("Exception while updating institute having exception ={}", exception.getMessage());
 			throw exception;
@@ -356,15 +350,15 @@ public class InstituteProcessor {
 
 		log.info("instituteId is null, creating object and setting values in it");
 		institute = new Institute();
-		 if (id != null) {
-	            log.info("if instituteId in not null, then getInstitute from DB for id = " + id);
-	            institute = instituteDao.get(id);
-	        } else {
-		institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
-		institute.setCreatedBy("API");
-		institute.setIsActive(true);
-		institute.setId((UUID.randomUUID().toString()));
-	        } 
+		if (id != null) {
+			log.info("if instituteId in not null, then getInstitute from DB for id = " + id);
+			institute = instituteDao.get(id);
+		} else {
+			institute.setCreatedOn(DateUtil.getUTCdatetimeAsDate());
+			institute.setCreatedBy("API");
+			institute.setIsActive(true);
+			institute.setId((UUID.randomUUID().toString()));
+		}
 		institute.setUpdatedOn(DateUtil.getUTCdatetimeAsDate());
 		institute.setUpdatedBy("API");
 		if (!StringUtils.isEmpty(instituteRequest.getName())) {
@@ -374,16 +368,16 @@ public class InstituteProcessor {
 			throw new ValidationException(messageTranslator.toLocale("institute-processor.required.name"));
 		}
 
-        Institute insituteWithSameId = instituteDao.findByReadableId(instituteRequest.getReadableId());
-        if (ObjectUtils.isEmpty(insituteWithSameId)
-                || (ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId().toString()))
-                || (!ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId().toString())
-                && institute.getId().equals(insituteWithSameId.getId()))) {
-            institute.setReadableId(instituteRequest.getReadableId());
-        } else {
-            log.info("Institute with same readable_id already exists.");
-            throw new ValidationException("Institute with same readable_id already exists.");
-        }
+		Institute insituteWithSameId = instituteDao.findByReadableId(instituteRequest.getReadableId());
+		if (ObjectUtils.isEmpty(insituteWithSameId)
+				|| (ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId().toString()))
+				|| (!ObjectUtils.isEmpty(insituteWithSameId) && StringUtils.hasText(institute.getId().toString())
+						&& institute.getId().equals(insituteWithSameId.getId()))) {
+			institute.setReadableId(instituteRequest.getReadableId());
+		} else {
+			log.info("Institute with same readable_id already exists.");
+			throw new ValidationException("Institute with same readable_id already exists.");
+		}
 
 		institute.setDescription(instituteRequest.getDescription());
 		if (!StringUtils.isEmpty(instituteRequest.getCountryName())) {
@@ -437,10 +431,11 @@ public class InstituteProcessor {
 		institute.setDomesticBoardingFee(instituteRequest.getDomesticBoardingFee());
 		institute.setInternationalBoardingFee(instituteRequest.getInternationalBoardingFee());
 		institute.setTagLine(instituteRequest.getTagLine());
-        saveUpdateInstituteFundings("API", institute,
-                CollectionUtils.isEmpty(instituteRequest.getInstituteFundings()) ? null : instituteRequest.getInstituteFundings()
-                        .stream().map(e->e.getFundingNameId()).collect(Collectors.toList()));
-        saveUpdateInstituteProviderCodes("API", institute, instituteRequest.getInstituteProviderCodes());
+		saveUpdateInstituteFundings("API", institute,
+				CollectionUtils.isEmpty(instituteRequest.getInstituteFundings()) ? null
+						: instituteRequest.getInstituteFundings().stream().map(e -> e.getFundingNameId())
+								.collect(Collectors.toList()));
+		saveUpdateInstituteProviderCodes("API", institute, instituteRequest.getInstituteProviderCodes());
 		try {
 			institute = instituteDao.addUpdateInstitute(institute);
 		} catch (DataIntegrityViolationException exception) {
@@ -464,7 +459,8 @@ public class InstituteProcessor {
 			log.info("instituteTimings is not null hence going to save institute timings in DB");
 			TimingDto timingResponseDto = instituteTimingProcessor.getTimingResponseDtoByInstituteId(institute.getId());
 			TimingRequestDto timingRequestDto = new TimingRequestDto();
-		//	timingRequestDto.setId(timingResponseDto != null ? timingResponseDto.getId().toString() : null);
+			// timingRequestDto.setId(timingResponseDto != null ?
+			// timingResponseDto.getId().toString() : null);
 			timingRequestDto.setEntityType(EntityTypeEnum.INSTITUTE.name());
 			timingRequestDto.setTimingType(TimingType.OPEN_HOURS.name());
 			timingRequestDto.setTimings(instituteRequest.getInstituteTimings());
@@ -513,7 +509,7 @@ public class InstituteProcessor {
 		} else {
 			fundingsToBeAdded = instituteFundingDtos;
 		}
-		//instituteFundings.addAll(fundingsToBeAdded);
+		// instituteFundings.addAll(fundingsToBeAdded);
 		institute.setInstituteFundings(instituteFundings);
 		instituteDao.addUpdateInstitute(institute);
 	}
@@ -632,10 +628,9 @@ public class InstituteProcessor {
 		dto.setName(institute.getName());
 		log.info("fetching institute videos from DB having countryName = " + institute.getCountryName()
 				+ " and instituteName = " + institute.getName());
-		 dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountryName(),
-		 institute.getName()));
+		dto.setInstituteYoutubes(getInstituteYoutube(institute.getCountryName(), institute.getName()));
 		log.info("Get total course count from DB for instituteId = " + institute.getId());
-	    dto.setCourseCount(courseDao.getTotalCourseCountForInstitute(institute.getId().toString()));
+		dto.setCourseCount(courseDao.getTotalCourseCountForInstitute(institute.getId().toString()));
 		dto.setVerified(institute.isVerified());
 		return dto;
 	}
@@ -659,10 +654,10 @@ public class InstituteProcessor {
 		log.debug("Inside getById() method");
 		log.info("Fetching institute from DB for instituteId = {}", id);
 		Institute institute = new Institute();
-        if (isReadableId) {
-            institute = instituteDao.findByReadableId(id);
-        } else {
-        }
+		if (isReadableId) {
+			institute = instituteDao.findByReadableId(id);
+		} else {
+		}
 		institute = instituteDao.get(id);
 		if (institute == null) {
 			log.error(messageTranslator.toLocale("institute-processor.not_found.id", id, Locale.US));
@@ -1204,14 +1199,6 @@ public class InstituteProcessor {
 		}
 	}
 
-	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
-	public CourseScholarshipAndFacultyCountDto getInstituteCourseScholarshipAndFacultyCount(String instituteId)
-			throws NotFoundException {
-		CourseScholarshipAndFacultyCountDto dto = new CourseScholarshipAndFacultyCountDto();
-		dto.setCourseCount(courseDao.getTotalCourseCountForInstitute(instituteId));
-		dto.setFacultyCount(instituteDao.getInstituteFaculties(instituteId).size());
-		return dto;
-	}
 
 	/**
 	 * @param instituteIds
@@ -1222,8 +1209,7 @@ public class InstituteProcessor {
 	public List<InstituteResponseDto> getInstitutesByIdList(List<String> instituteIds) throws Exception {
 		log.info("inside InstituteProcessor.getInstitutesByIdList");
 		List<InstituteResponseDto> instituteResponseDtos = new ArrayList<>();
-		List<UUID> uuidIds = instituteIds.stream().map(UUID::fromString).collect(Collectors.toList());
-		List<Institute> institutes = instituteDao.findByIds(uuidIds);
+		List<Institute> institutes = instituteDao.findByIds(instituteIds);
 		if (!CollectionUtils.isEmpty(institutes)) {
 			for (Institute e : institutes) {
 				instituteResponseDtos.add(new InstituteResponseDto(e.getName(), e.getWorldRanking(), e.getCityName(),
@@ -1282,10 +1268,7 @@ public class InstituteProcessor {
 	@Transactional(rollbackFor = { ConstraintVoilationException.class, Exception.class })
 	public List<Institute> validateAndGetInstituteByIds(List<String> instituteIds) throws NotFoundException {
 		log.info("inside validateAndGetInstituteByIds");
-
-		List<UUID> uuidList = instituteIds.stream().map(UUID::fromString).collect(Collectors.toList());
-
-		List<Institute> institutes = instituteDao.findByIds(uuidList);
+		List<Institute> institutes = instituteDao.findByIds(instituteIds);
 
 		if (institutes.size() != instituteIds.size()) {
 			log.error(
@@ -1350,8 +1333,7 @@ public class InstituteProcessor {
 
 	@Transactional
 	public List<InstituteVerficationDto> getMultipleInstituteVerificationStatus(List<String> instituteIds) {
-		List<UUID> uuidIds = instituteIds.stream().map(UUID::fromString).collect(Collectors.toList());
-		List<Institute> institutes = instituteDao.findByIds(uuidIds);
+		List<Institute> institutes = instituteDao.findByIds(instituteIds);
 		if (CollectionUtils.isEmpty(institutes) || institutes.size() != instituteIds.size()) {
 			log.error("one or more institute ids are invalid");
 			throw new ValidationException("one or more institute ids are invalid");
@@ -1430,9 +1412,8 @@ public class InstituteProcessor {
 			log.error("User with user_id : {} not found", userId);
 			throw new RuntimeNotFoundException("Invalid login user_id : " + userId);
 		}
-		List<UUID> uuidList = verifiedInstituteIds.stream().map(UUID::fromString).collect(Collectors.toList());
 		List<InstituteSyncDTO> institutesSync = new ArrayList<InstituteSyncDTO>();
-		List<Institute> institutesFromDb = instituteDao.findByIds(uuidList);
+		List<Institute> institutesFromDb = instituteDao.findByIds(verifiedInstituteIds);
 
 		if (!CollectionUtils.isEmpty(institutesFromDb)) {
 			institutesFromDb.forEach(institute -> {

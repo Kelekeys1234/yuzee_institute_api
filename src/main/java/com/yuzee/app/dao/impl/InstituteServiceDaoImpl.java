@@ -5,9 +5,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.yuzee.app.bean.Institute;
 import com.yuzee.app.bean.InstituteService;
 import com.yuzee.app.dao.InstituteServiceDao;
 import com.yuzee.app.repository.InstituteServiceRepository;
@@ -18,6 +22,8 @@ public class InstituteServiceDaoImpl implements InstituteServiceDao {
 
 	@Autowired
 	private InstituteServiceRepository instituteServiceRepository;
+	@Autowired
+	private MongoOperations operator;
 
 	@Override
 	public Optional<InstituteService> get(String id) {
@@ -42,6 +48,9 @@ public class InstituteServiceDaoImpl implements InstituteServiceDao {
 
 	@Override
 	public List<CountDto> countByInstituteIds(List<String> instituteIds) {
-		return instituteServiceRepository.countByInstituteIdsIn(instituteIds);
+		Query mongoQuery = new Query();
+		mongoQuery.addCriteria(Criteria.where("id").in(instituteIds));
+		List<CountDto> count= operator.find(mongoQuery, CountDto.class);
+		return count;
 	}
 }

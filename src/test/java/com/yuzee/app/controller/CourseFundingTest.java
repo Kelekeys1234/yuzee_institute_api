@@ -4,21 +4,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -27,31 +24,20 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import com.yuzee.app.YuzeeApplication;
-import com.yuzee.app.dto.CourseCareerOutcomeRequestWrapper;
 import com.yuzee.app.dto.CourseFundingRequestWrapper;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.processor.CommonProcessor;
-import com.yuzee.common.lib.dto.institute.CareerDto;
-import com.yuzee.common.lib.dto.institute.CourseCareerOutcomeDto;
-import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
 import com.yuzee.common.lib.dto.institute.CourseFundingDto;
 
-import lombok.extern.slf4j.Slf4j;
-
+@TestInstance(Lifecycle.PER_CLASS)
 class CourseFundingTest extends CreateCourseAndInstitute {
 
 	private static final String Id = "1e348e15-45b6-477f-a457-883738227e05";
 	private String instituteId;
 	private CourseRequest courseId;
 
-	@BeforeEach
+	@BeforeAll
 	public void createAllIntituteAndCourse() throws IOException {
 		instituteId = testCreateInstitute();
 		courseId = createCourses(instituteId);

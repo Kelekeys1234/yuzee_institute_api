@@ -1218,7 +1218,7 @@ public class InstituteDaoImpl implements InstituteDao {
 	}
 
 	@Override
-	public List<Institute> findByIds(List<UUID> instituteIds) {
+	public List<Institute> findByIds(List<String> instituteIds) {
 		Query mongoQuery = new Query();
 		mongoQuery.addCriteria(Criteria.where("id").in(instituteIds));
 		return mongoTemplate.find(mongoQuery, Institute.class, "institute");

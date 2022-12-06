@@ -103,12 +103,10 @@ public class CommonUtil {
 		instituteRequestDto.setTagLine(institute.getTagLine());
 		instituteRequestDto.setPostalCode(institute.getPostalCode());
 		instituteRequestDto.setReadableId(institute.getReadableId());
-		institute.getInstituteType().stream().forEach(type ->{
-			if(EnumUtils.isValidEnum(InstituteType.class, type)) {
-			instituteRequestDto.getInstituteType().add(type);
-		}
-		});
-
+		String type = institute.getInstituteType().stream().toString();
+			if (EnumUtils.isValidEnum(InstituteType.class, type)) {
+				instituteRequestDto.getInstituteType().add(type);
+			}
 		return instituteRequestDto;
 	}
 
@@ -143,7 +141,7 @@ public class CommonUtil {
 		if (course.getLevel() != null) {
 			courseRequest.setLevelIds(course.getLevel().getId().toString());
 		}
-	
+
 		courseRequest.setRemarks(course.getRemarks());
 		courseRequest.setWebsite(course.getWebsite());
 		courseRequest.setPhoneNumber(course.getPhoneNumber());
@@ -195,8 +193,6 @@ public class CommonUtil {
 		return new HashMap<>();
 
 	}
-
-	
 
 //	public static TodoDto convertTodoIntoTodoDto(final Todo todo) {
 //		TodoDto todoDto = new TodoDto();

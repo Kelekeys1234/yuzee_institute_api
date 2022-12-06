@@ -109,7 +109,7 @@ public interface InstituteDao {
 
 	public List<InstituteFacultyDto> getInstituteFaculties(String instituteId, Sort sort) throws NotFoundException;
 
-	public List<Institute> findByIds(List<UUID> instituteIds);
+	public List<Institute> findByIds(List<String> instituteIds);
 
 	public List<Institute> findByReadableIdIn(List<String> readableIds);
 

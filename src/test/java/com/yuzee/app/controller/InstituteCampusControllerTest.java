@@ -9,9 +9,13 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -50,7 +54,7 @@ import com.yuzee.common.lib.util.ObjectMapperHelper;
 
 import lombok.extern.slf4j.Slf4j;
 
-
+@TestInstance(Lifecycle.PER_CLASS)
 class InstituteCampusControllerTest extends CreateCourseAndInstitute {
 
 	@Autowired
@@ -59,15 +63,22 @@ class InstituteCampusControllerTest extends CreateCourseAndInstitute {
 	InstituteRepository instituteRepository;
 	@MockBean
 	private PublishSystemEventHandler publishSystemEventHandler;
+	@Autowired
+	private InstituteCampusRepository campus;
 
 	@Autowired
 	private InstituteProcessor instituteProcessor;
 
-	  private String instituteId;
-		@BeforeEach
-		public void deleteAllInstitute() throws IOException {
+	private String instituteId;
+
+	@BeforeAll
+	public void createAllInstitute() throws IOException {
 		instituteId = testCreateInstitute();
-		}
+	}
+	  @AfterAll
+	public void deleteCampus() {
+		  campus.deleteAll();
+	}
 
 	@BeforeClass
 	public static void main() {
@@ -78,16 +89,16 @@ class InstituteCampusControllerTest extends CreateCourseAndInstitute {
 	@DisplayName("addCampus test success")
 	@Test
 	void addCampus() throws IOException {
-			HttpHeaders header = new HttpHeaders();
+		HttpHeaders header = new HttpHeaders();
 
-			header.set("userId", userId);
-			header.setContentType(MediaType.APPLICATION_JSON);
-			List<String> instituteIds = Arrays.asList(userId, instituteId, instituteId);
-			HttpEntity<List<String>> entitys = new HttpEntity<>(instituteIds, header);
-			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "campus" + PATH_SEPARATOR + "instituteId"
-					+ PATH_SEPARATOR + instituteId;
-			ResponseEntity<String> responsess = testRestTemplate.exchange(path, HttpMethod.POST, entitys, String.class);
-			assertThat(responsess.getStatusCode()).isEqualTo(HttpStatus.OK);
+		header.set("userId", userId);
+		header.setContentType(MediaType.APPLICATION_JSON);
+		List<String> instituteIds = Arrays.asList(userId, instituteId, instituteId);
+		HttpEntity<List<String>> entitys = new HttpEntity<>(instituteIds, header);
+		String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "campus" + PATH_SEPARATOR + "instituteId" + PATH_SEPARATOR
+				+ instituteId;
+		ResponseEntity<String> responsess = testRestTemplate.exchange(path, HttpMethod.POST, entitys, String.class);
+		assertThat(responsess.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	@DisplayName("getInstituteCampuses test success")
@@ -109,32 +120,30 @@ class InstituteCampusControllerTest extends CreateCourseAndInstitute {
 		 * assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 		 * InstituteCampus instituteCampus = new InstituteCampus();
 		 */
-			// instituteCampus.setId(UUID.randomUUID().toString());
-			HttpHeaders headerr = new HttpHeaders();
-			headerr.set("userId", userId);
-			headerr.setContentType(MediaType.APPLICATION_JSON);
-			List<String> instituteIdss = Arrays.asList(userId, instituteId);
-			HttpEntity<List<String>> entityss = new HttpEntity<>(instituteIdss, headerr);
-			String paths = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "campus" + PATH_SEPARATOR + "instituteId"
-					+ PATH_SEPARATOR + instituteId;
-			ResponseEntity<String> responsess = testRestTemplate.exchange(paths, HttpMethod.GET, entityss,
-					String.class);
-			assertThat(responsess.getStatusCode()).isEqualTo(HttpStatus.OK);
+		// instituteCampus.setId(UUID.randomUUID().toString());
+		HttpHeaders headerr = new HttpHeaders();
+		headerr.set("userId", userId);
+		headerr.setContentType(MediaType.APPLICATION_JSON);
+		List<String> instituteIdss = Arrays.asList(userId, instituteId);
+		HttpEntity<List<String>> entityss = new HttpEntity<>(instituteIdss, headerr);
+		String paths = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "campus" + PATH_SEPARATOR + "instituteId" + PATH_SEPARATOR
+				+ instituteId;
+		ResponseEntity<String> responsess = testRestTemplate.exchange(paths, HttpMethod.GET, entityss, String.class);
+		assertThat(responsess.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	@DisplayName("deleteInstituteCampuses test success")
 	@Test
 	void removeCampus() throws IOException {
-				HttpHeaders heade = new HttpHeaders();
-				heade.set("userId", userId);
-				heade.setContentType(MediaType.APPLICATION_JSON);
-				List<String> instituteIds = Arrays.asList(userId, instituteId, instituteId);
-				HttpEntity<List<String>> entitys = new HttpEntity<>(instituteIds, heade);
-				String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "campus" + PATH_SEPARATOR + "instituteId"
-						+ PATH_SEPARATOR + instituteId;
-				ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.DELETE, entitys,
-						String.class);
-				//assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-		}
-	  
+		HttpHeaders heade = new HttpHeaders();
+		heade.set("userId", userId);
+		heade.setContentType(MediaType.APPLICATION_JSON);
+		List<String> instituteIds = Arrays.asList(userId, instituteId, instituteId);
+		HttpEntity<List<String>> entitys = new HttpEntity<>(instituteIds, heade);
+		String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "campus" + PATH_SEPARATOR + "instituteId" + PATH_SEPARATOR
+				+ instituteId;
+		ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.DELETE, entitys, String.class);
+		// assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
+
 }

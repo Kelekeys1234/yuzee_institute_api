@@ -157,7 +157,7 @@ public interface InstituteInterface {
 	//TODO below API calls many other micro-services.
 	@GetMapping("/institute/verification-status")
 	public ResponseEntity<?> getMultipleInstituteVerificationStatus(
-			@RequestParam(name = "institute_ids", required = true) List<String> instituteIds);
+			@RequestParam(name = "institute_ids" ,required=true) List<String> instituteIds);
 
 	//TODO below API calls many other micro-services.
 	@PutMapping(path = "/admin/institute/verify_institutes/{verified}")

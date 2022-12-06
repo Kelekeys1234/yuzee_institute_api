@@ -10,9 +10,12 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -49,9 +52,8 @@ import com.yuzee.common.lib.handler.PublishSystemEventHandler;
 import com.yuzee.common.lib.util.ObjectMapperHelper;
 
 import lombok.extern.slf4j.Slf4j;
-
+@TestInstance(Lifecycle.PER_CLASS)
 public class InstituteContactInfoControllerTest extends CreateCourseAndInstitute {
-
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
@@ -60,11 +62,12 @@ public class InstituteContactInfoControllerTest extends CreateCourseAndInstitute
 
 	@MockBean
 	private PublishSystemEventHandler publishSystemEventHandler;
-	  private String instituteId;
-		@BeforeEach
-		public void deleteAllInstitute() throws IOException {
+	private String instituteId;
+
+	@BeforeAll
+	public void deleteAllInstitute() throws IOException {
 		instituteId = testCreateInstitute();
-		}
+	}
 
 	@BeforeClass
 	public static void main() {
@@ -76,27 +79,27 @@ public class InstituteContactInfoControllerTest extends CreateCourseAndInstitute
 	@Test
 	void addUpdateInstituteContactInfo() throws IOException {
 
-			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "contact" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
-					+ instituteId;
-			HttpHeaders header = new HttpHeaders();
-			header.setContentType(MediaType.APPLICATION_JSON);
-			header.set("userId", userId);
-			InstituteContactInfoDto instituteContactInfoDto = new InstituteContactInfoDto();
-			instituteContactInfoDto.setEmail("testContrr@email.com");
-			instituteContactInfoDto.setContactNumber("5428923957");
-			instituteContactInfoDto.setLatitude(82.0);
-			instituteContactInfoDto.setLongitude(93.5);
-			instituteContactInfoDto.setWebsite("testWebsite.com");
-			instituteContactInfoDto.setAddress("test t-8, new test road, testNagar");
-			instituteContactInfoDto.setAverageLivingCost("4500");
-			instituteContactInfoDto.setOfficeHoursFrom("8 O'clock");
-			instituteContactInfoDto.setOfficeHoursTo("17 O'clock");
-			HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(instituteContactInfoDto, header);
+		String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "contact" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
+				+ instituteId;
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_JSON);
+		header.set("userId", userId);
+		InstituteContactInfoDto instituteContactInfoDto = new InstituteContactInfoDto();
+		instituteContactInfoDto.setEmail("testContrr@email.com");
+		instituteContactInfoDto.setContactNumber("5428923957");
+		instituteContactInfoDto.setLatitude(82.0);
+		instituteContactInfoDto.setLongitude(93.5);
+		instituteContactInfoDto.setWebsite("testWebsite.com");
+		instituteContactInfoDto.setAddress("test t-8, new test road, testNagar");
+		instituteContactInfoDto.setAverageLivingCost("4500");
+		instituteContactInfoDto.setOfficeHoursFrom("8 O'clock");
+		instituteContactInfoDto.setOfficeHoursTo("17 O'clock");
+		HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(instituteContactInfoDto, header);
 
-			ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.POST, entitys, String.class);
+		ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.POST, entitys, String.class);
 
-			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-		
+		assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+
 	}
 
 	@DisplayName("WrongidaddUpdateInstituteContactInfo test success")
@@ -129,15 +132,15 @@ public class InstituteContactInfoControllerTest extends CreateCourseAndInstitute
 	@Test
 	void getInstituteContactInfo() throws IOException {
 		String instituteId = testCreateInstitute();
-			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "contact" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
-					+ instituteId;
-			HttpHeaders header = new HttpHeaders();
-			header.setContentType(MediaType.APPLICATION_JSON);
-			header.set("userId", userId);
-			HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(header);
-			ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.GET, entitys, String.class);
-			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-		
+		String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "contact" + PATH_SEPARATOR + "info" + PATH_SEPARATOR
+				+ instituteId;
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_JSON);
+		header.set("userId", userId);
+		HttpEntity<InstituteContactInfoDto> entitys = new HttpEntity<>(header);
+		ResponseEntity<String> responses = testRestTemplate.exchange(path, HttpMethod.GET, entitys, String.class);
+		assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+
 	}
 
 	@DisplayName("WrongIdgetInstituteContactInfo")
@@ -158,7 +161,7 @@ public class InstituteContactInfoControllerTest extends CreateCourseAndInstitute
 	@DisplayName("getInstitutePublicContactInfo test success")
 	@Test
 	void getInstitutePublicContactInfo() throws IOException {
-	
+
 		try {
 			String path = INSTITUTE_PRE_PATH + PATH_SEPARATOR + "public" + PATH_SEPARATOR + "contact" + PATH_SEPARATOR
 					+ "info" + PATH_SEPARATOR + instituteId;

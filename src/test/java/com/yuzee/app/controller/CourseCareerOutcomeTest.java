@@ -10,11 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.assertj.core.util.Arrays;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,35 +29,54 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import com.yuzee.app.YuzeeApplication;
-import com.yuzee.app.bean.Careers;
 import com.yuzee.app.dto.CourseCareerOutcomeRequestWrapper;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.repository.CareerRepository;
+import com.yuzee.app.repository.CourseRepository;
+import com.yuzee.app.repository.FacultyRepository;
+import com.yuzee.app.repository.InstituteRepository;
+import com.yuzee.app.repository.InstituteServiceRepository;
+import com.yuzee.app.repository.LevelRepository;
+import com.yuzee.app.repository.ServiceRepository;
 import com.yuzee.common.lib.dto.institute.CareerDto;
 import com.yuzee.common.lib.dto.institute.CourseCareerOutcomeDto;
-import com.yuzee.common.lib.dto.institute.CourseContactPersonDto;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RunWith(JUnitPlatform.class)
+@TestInstance(Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
 class CourseCareerOutcomeTest extends CreateCourseAndInstitute {
+	@Autowired
+	private CourseRepository courseRepository;
+	@Autowired
+	private InstituteRepository instituteRepository;
+	@Autowired
+	private CareerRepository careersRepository;
+	@Autowired
+	private FacultyRepository facultyRepository;
+	@Autowired
+	private LevelRepository levelRepository;
+	@Autowired
+	private ServiceRepository serviceRepository;
+	@Autowired
+	private InstituteServiceRepository instituteServiceRepository;
+	
 	private String instituteId;
 	private CourseRequest courseId;
+	private String careerId; 
 
-	@BeforeEach
+	@BeforeAll
 	public void createAllIntituteAndCourse() throws IOException {
 		instituteId = testCreateInstitute();
 		courseId = createCourses(instituteId);
+		careerId = saveCareer();
 	}
+
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
@@ -64,7 +84,6 @@ class CourseCareerOutcomeTest extends CreateCourseAndInstitute {
 	@DisplayName("CourseCareerOutcome")
 	@Test
 	void TestSaveCourseCareerOutCome() throws IOException {
-		String careerId = saveCareer();
 		ValidList<CourseCareerOutcomeDto> courseContactPersonDtos = new ValidList<>();
 		List<String> jobIds = new ArrayList<>();
 		jobIds.add(courseId.getId());
@@ -90,8 +109,6 @@ class CourseCareerOutcomeTest extends CreateCourseAndInstitute {
 	@DisplayName("deleteCourseCareerOutcome")
 	@Test
 	void deleteCourseCareerOutcome() throws IOException {
-		String careerId = saveCareer();
-		CourseRequest courseId = createCourses(instituteId);
 		Map<String, String> courseCareer = new HashMap<>();
 		courseCareer.put("course_career_outcome_ids", careerId);
 		HttpHeaders headers = new HttpHeaders();

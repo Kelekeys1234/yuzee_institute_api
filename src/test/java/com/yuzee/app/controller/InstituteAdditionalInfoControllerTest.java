@@ -9,9 +9,12 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -53,13 +56,8 @@ import com.yuzee.common.lib.util.ObjectMapperHelper;
 
 import lombok.extern.slf4j.Slf4j;
 
+@TestInstance(Lifecycle.PER_CLASS)
 class InstituteAdditionalInfoControllerTest extends CreateCourseAndInstitute {
-
-	private static final String entityId = UUID.randomUUID().toString();
-	private static final String userId = "8d7c017d-37e3-4317-a8b5-9ae6d9cdcb49";
-	private static final String INSTITUTE_PRE_PATH = "/api/v1";
-	private static final String PATH_SEPARATOR = "/";
-	private static final UUID IDS = UUID.fromString("1e348e15-45b6-477f-a457-883738227e05");
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
@@ -74,7 +72,7 @@ class InstituteAdditionalInfoControllerTest extends CreateCourseAndInstitute {
 	InstituteProcessor instituteProcessor;
 	private String instituteId;
 
-	@BeforeEach
+	@BeforeAll
 	public void deleteAllInstitute() throws IOException {
 		instituteId = testCreateInstitute();
 	}
@@ -88,65 +86,62 @@ class InstituteAdditionalInfoControllerTest extends CreateCourseAndInstitute {
 	@DisplayName("addInstituteAdditionalInfo test success")
 	@Test
 	void addInstituteAdditionalInfo() throws IOException {
-			InstituteAdditionalInfoDto instituteAdditionalInfoDto = new InstituteAdditionalInfoDto();
-			instituteAdditionalInfoDto.setNumberOfStudent(5);
-			instituteAdditionalInfoDto.setNumberOfEmployee(8);
-			instituteAdditionalInfoDto.setNumberOfTeacher(2);
-			instituteAdditionalInfoDto.setNumberOfClassRoom(2);
-			instituteAdditionalInfoDto.setSizeOfCampus(122);
-			instituteAdditionalInfoDto.setNumberOfLectureHall(2);
-			instituteAdditionalInfoDto.setNumberOfFaculty(2);
-			instituteAdditionalInfoDto.setRateOfEmployment(10);
-			instituteAdditionalInfoDto.setAboutInfo("addUpdateInstituteAdditionalInfo");
+		InstituteAdditionalInfoDto instituteAdditionalInfoDto = new InstituteAdditionalInfoDto();
+		instituteAdditionalInfoDto.setNumberOfStudent(5);
+		instituteAdditionalInfoDto.setNumberOfEmployee(8);
+		instituteAdditionalInfoDto.setNumberOfTeacher(2);
+		instituteAdditionalInfoDto.setNumberOfClassRoom(2);
+		instituteAdditionalInfoDto.setSizeOfCampus(122);
+		instituteAdditionalInfoDto.setNumberOfLectureHall(2);
+		instituteAdditionalInfoDto.setNumberOfFaculty(2);
+		instituteAdditionalInfoDto.setRateOfEmployment(10);
+		instituteAdditionalInfoDto.setAboutInfo("addUpdateInstituteAdditionalInfo");
 
-			HttpHeaders header = new HttpHeaders();
-			header.set("userId", userId);
-			header.setContentType(MediaType.APPLICATION_JSON);
-			HttpEntity<InstituteAdditionalInfoDto> entitys = new HttpEntity<>(instituteAdditionalInfoDto, header);
-			ResponseEntity<String> responses = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR
-					+ "additional" + PATH_SEPARATOR + "info" + PATH_SEPARATOR + instituteId, HttpMethod.POST, entitys,
-					String.class);
-			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+		HttpHeaders header = new HttpHeaders();
+		header.set("userId", userId);
+		header.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<InstituteAdditionalInfoDto> entitys = new HttpEntity<>(instituteAdditionalInfoDto, header);
+		ResponseEntity<String> responses = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + "additional"
+				+ PATH_SEPARATOR + "info" + PATH_SEPARATOR + instituteId, HttpMethod.POST, entitys, String.class);
+		assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	@DisplayName("WrongIdaddInstituteAdditionalInfo")
 	@Test
 	void wrongIdInstituteAdditionalInfo() throws IOException {
-			InstituteAdditionalInfoDto instituteAdditionalInfoDto = new InstituteAdditionalInfoDto();
-			instituteAdditionalInfoDto.setNumberOfStudent(5);
-			instituteAdditionalInfoDto.setNumberOfEmployee(8);
-			instituteAdditionalInfoDto.setNumberOfTeacher(2);
-			instituteAdditionalInfoDto.setNumberOfClassRoom(2);
-			instituteAdditionalInfoDto.setSizeOfCampus(122);
-			instituteAdditionalInfoDto.setNumberOfLectureHall(2);
-			instituteAdditionalInfoDto.setNumberOfFaculty(2);
-			instituteAdditionalInfoDto.setRateOfEmployment(10);
-			instituteAdditionalInfoDto.setAboutInfo("addUpdateInstituteAdditionalInfo");
+		InstituteAdditionalInfoDto instituteAdditionalInfoDto = new InstituteAdditionalInfoDto();
+		instituteAdditionalInfoDto.setNumberOfStudent(5);
+		instituteAdditionalInfoDto.setNumberOfEmployee(8);
+		instituteAdditionalInfoDto.setNumberOfTeacher(2);
+		instituteAdditionalInfoDto.setNumberOfClassRoom(2);
+		instituteAdditionalInfoDto.setSizeOfCampus(122);
+		instituteAdditionalInfoDto.setNumberOfLectureHall(2);
+		instituteAdditionalInfoDto.setNumberOfFaculty(2);
+		instituteAdditionalInfoDto.setRateOfEmployment(10);
+		instituteAdditionalInfoDto.setAboutInfo("addUpdateInstituteAdditionalInfo");
 
-			HttpHeaders header = new HttpHeaders();
-			header.set("userId", userId);
-			header.setContentType(MediaType.APPLICATION_JSON);
-			HttpEntity<InstituteAdditionalInfoDto> entitys = new HttpEntity<>(instituteAdditionalInfoDto, header);
-			ResponseEntity<String> responses = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR
-					+ "additional" + PATH_SEPARATOR + "info" + PATH_SEPARATOR + instituteId, HttpMethod.POST, entitys,
-					String.class);
-			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} 
+		HttpHeaders header = new HttpHeaders();
+		header.set("userId", userId);
+		header.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<InstituteAdditionalInfoDto> entitys = new HttpEntity<>(instituteAdditionalInfoDto, header);
+		ResponseEntity<String> responses = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + "additional"
+				+ PATH_SEPARATOR + "info" + PATH_SEPARATOR + instituteId, HttpMethod.POST, entitys, String.class);
+		assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+	}
 
 	@DisplayName("getInstituteAdditionalInfo test success")
 	@Test
 	void getInstituteAdditionalInfo() throws IOException {
-			HttpHeaders headers = new HttpHeaders();
-			headers.set("userId", userId);
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			HttpEntity<String> entityy = new HttpEntity<>(headers);
-			Mockito.when(storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.ABOUT_US))
-					.thenReturn(new ArrayList());
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("userId", userId);
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> entityy = new HttpEntity<>(headers);
+		Mockito.when(storageHandler.getStorages(instituteId, EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.ABOUT_US))
+				.thenReturn(new ArrayList());
 
-			ResponseEntity<String> responses = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR
-					+ "additional" + PATH_SEPARATOR + "info" + PATH_SEPARATOR + instituteId, HttpMethod.GET, entityy,
-					String.class);
-			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+		ResponseEntity<String> responses = testRestTemplate.exchange(INSTITUTE_PRE_PATH + PATH_SEPARATOR + "additional"
+				+ PATH_SEPARATOR + "info" + PATH_SEPARATOR + instituteId, HttpMethod.GET, entityy, String.class);
+		assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	@DisplayName("WrongIDgetInstituteAdditionalInfo")

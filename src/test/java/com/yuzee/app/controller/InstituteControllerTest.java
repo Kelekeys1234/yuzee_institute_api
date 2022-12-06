@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -17,6 +18,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -75,6 +78,7 @@ import com.yuzee.common.lib.dto.connection.FollowerCountDto;
 import com.yuzee.common.lib.dto.institute.InstituteSyncDTO;
 import com.yuzee.common.lib.dto.institute.ProviderCodeDto;
 import com.yuzee.common.lib.dto.storage.StorageDto;
+import com.yuzee.common.lib.dto.user.UserInitialInfoDto;
 import com.yuzee.common.lib.enumeration.EntitySubTypeEnum;
 import com.yuzee.common.lib.enumeration.EntityTypeEnum;
 import com.yuzee.common.lib.handler.ConnectionHandler;
@@ -90,6 +94,7 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
+@TestInstance(Lifecycle.PER_CLASS)
 class InstituteControllerTest extends CreateCourseAndInstitute {
 
 	@MockBean
@@ -115,7 +120,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 		SpringApplication.run(InstituteController.class);
 	}
      private String instituteId;
-	@BeforeEach
+	@BeforeAll
 	public void deleteAllInstitute() throws IOException {
 	instituteId = testCreateInstitute();
 	}
@@ -137,6 +142,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 		assertThat(respons.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 	}
+	
 	@DisplayName("wrongId Institute status test success")
 	@Test
 	void wrongIdchangeInstituteStatus() throws IOException {
@@ -227,7 +233,48 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 				HttpMethod.POST, entity, String.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
+	@DisplayName(" getInstituteImage")
+	@Test
+	void  getInstituteImage() throws IOException {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+			List<EntitySubTypeEnum> img = new ArrayList<>();
+			img.add(EntitySubTypeEnum.COVER_PHOTO);
+			img.add(EntitySubTypeEnum.LOGO);
+			img.add(EntitySubTypeEnum.ABOUT_US);
+			img.add(EntitySubTypeEnum.MEDIA);
 
+			List<String> id = new ArrayList<>();
+			id.add(instituteId);
+			Mockito.when(storageHandler.getStorages(id, EntityTypeEnum.INSTITUTE, img))
+					.thenReturn(new ArrayList<StorageDto>());
+			ResponseEntity<String> responses = testRestTemplate.exchange(
+					INSTITUTE_PRE_PATH + PATH_SEPARATOR + "images" + PATH_SEPARATOR + instituteId, HttpMethod.GET,
+					entity, String.class);
+			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+	}
+
+	@DisplayName(" getInstitutesByIdList")
+	@Test
+	void getInstitutesByIdList() throws IOException {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+
+			List<String> id = new ArrayList<>();
+			id.add(instituteId);
+			Mockito.when(storageHandler.getStorages(id, EntityTypeEnum.INSTITUTE, EntitySubTypeEnum.LOGO))
+					.thenReturn(new ArrayList<StorageDto>());
+			Mockito.when(reviewHandler.getAverageReview("INSTITUTE", id)).thenReturn(new HashMap());
+			ResponseEntity<String> responses = testRestTemplate.exchange(
+					INSTITUTE_PRE_PATH + PATH_SEPARATOR + "institute" + PATH_SEPARATOR + "multiple" + PATH_SEPARATOR
+							+ "id" + PATH_SEPARATOR + "?institute_ids=" + instituteId,
+					HttpMethod.GET, entity, String.class);
+			assertThat(responses.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		} 
 
 
 	@DisplayName("getAllRecommendedInstitutes")
@@ -257,7 +304,7 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 	@DisplayName("getInstituteByCityName")
 	@Test
 	void testGetInstituteByCityName() throws IOException {
-		String cityName = "CITY";
+		String cityName = "AHMEDABAD";
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<InstituteTypeDto> entitys = new HttpEntity<>(null, header);
@@ -401,6 +448,35 @@ class InstituteControllerTest extends CreateCourseAndInstitute {
 	void testGetById() throws IOException {
 
 		Boolean is_readable_id = true;
+		String instituteId = testCreateInstitute();
+		Map<String, Boolean> params = new HashMap<>();
+		params.put("is_readable_id", is_readable_id);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("userId", userId);
+		List<EntitySubTypeEnum> news = new ArrayList<>();
+		news.add(EntitySubTypeEnum.LOGO);
+		news.add(EntitySubTypeEnum.COVER_PHOTO);
+		List<String> id = new ArrayList<>();
+		id.add("795592f1-3665-4649-89b0-39cb844e78d0");
+
+		Mockito.when(connectionHandler.checkFollowerExist(userId, "795592f1-3665-4649-89b0-39cb844e78d0"))
+				.thenReturn(true);
+		Mockito.when(storageHandler.getStorages(id, EntityTypeEnum.INSTITUTE, news))
+				.thenReturn(new ArrayList<StorageDto>());
+		Mockito.when(reviewHandler.getAverageReview("newInstitute", id)).thenReturn(new HashMap());
+		HttpEntity<InstituteResponseDto> entity = new HttpEntity<>(null, headers);
+		ResponseEntity<InstituteRequestDto> response = testRestTemplate.exchange(
+				INSTITUTE_PRE_PATH + PATH_SEPARATOR + instituteId, HttpMethod.GET, entity, InstituteRequestDto.class,
+				params);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+	}
+	@DisplayName("get by ids")
+	@Test
+	void testGetByIds() throws IOException {
+
+		Boolean is_readable_id = false;
 		String instituteId = testCreateInstitute();
 		Map<String, Boolean> params = new HashMap<>();
 		params.put("is_readable_id", is_readable_id);

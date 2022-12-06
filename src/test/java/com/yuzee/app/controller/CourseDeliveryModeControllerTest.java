@@ -6,14 +6,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,11 +20,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
-import com.yuzee.app.YuzeeApplication;
 import com.yuzee.app.dto.CourseDeliveryModeRequestWrapper;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.common.lib.dto.ValidList;
@@ -33,8 +27,7 @@ import com.yuzee.common.lib.dto.institute.CourseDeliveryModeFundingDto;
 import com.yuzee.common.lib.dto.institute.CourseDeliveryModesDto;
 import com.yuzee.common.lib.dto.institute.CourseFeesDto;
 
-import lombok.extern.slf4j.Slf4j;
-
+@TestInstance(Lifecycle.PER_CLASS)
 class CourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 
 	@Autowired
@@ -43,7 +36,7 @@ class CourseDeliveryModeControllerTest extends CreateCourseAndInstitute {
 	private String instituteId;
 	private CourseRequest courseId;
 
-	@BeforeEach
+	@BeforeAll
 	public void createAllIntituteAndCourse() throws IOException {
 		instituteId = testCreateInstitute();
 		courseId = createCourses(instituteId);

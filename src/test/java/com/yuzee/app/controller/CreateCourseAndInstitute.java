@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +43,7 @@ import com.yuzee.app.bean.Location;
 import com.yuzee.app.bean.Service;
 import com.yuzee.app.dto.AccrediatedDetailDto;
 import com.yuzee.app.dto.CourseCareerOutcomeRequestWrapper;
+import com.yuzee.app.dto.CourseMinRequirementRequestWrapper;
 import com.yuzee.app.dto.CourseRequest;
 import com.yuzee.app.dto.CourseSemesterRequestWrapper;
 import com.yuzee.app.dto.DayTimingDto;
@@ -52,6 +54,10 @@ import com.yuzee.app.dto.TimingRequestDto;
 import com.yuzee.app.dto.ValidList;
 import com.yuzee.app.repository.CareerRepository;
 import com.yuzee.app.repository.CourseRepository;
+import com.yuzee.app.repository.FacultyRepository;
+import com.yuzee.app.repository.InstituteRepository;
+import com.yuzee.app.repository.InstituteServiceRepository;
+import com.yuzee.app.repository.LevelRepository;
 import com.yuzee.app.repository.ServiceRepository;
 import com.yuzee.common.lib.dto.GenericWrapperDto;
 import com.yuzee.common.lib.dto.institute.CareerDto;
@@ -105,9 +111,30 @@ public class CreateCourseAndInstitute {
 	@Autowired
 	protected CourseRepository courseRepository;
 	@Autowired
-	private CareerRepository careerRepository;
+	protected InstituteRepository instituteRepository;
 	@Autowired
-	private ServiceRepository serviceRepository;
+	protected CareerRepository careersRepository;
+	@Autowired
+	protected FacultyRepository facultyRepository;
+	@Autowired
+	protected LevelRepository levelRepository;
+	@Autowired
+	protected ServiceRepository serviceRepository;
+	@Autowired
+	protected InstituteServiceRepository instituteServiceRepository;
+	@Autowired
+	protected UserHandler userHandler;
+	
+	  @AfterAll
+		public void remove() {
+	    	courseRepository.deleteAll();
+	    	instituteRepository.deleteAll();
+	    	careersRepository.deleteAll();
+	    	facultyRepository.deleteAll();
+	    	levelRepository.deleteAll();
+	    	serviceRepository.deleteAll();
+	    	instituteServiceRepository.deleteAll();
+		}
 
 
 	protected String testCreateInstitute() throws IOException {
@@ -414,8 +441,42 @@ public class CreateCourseAndInstitute {
 		Careers career = new Careers();
 		career.setId(UUID.randomUUID().toString());
 		career.setCareer("career");
-		careerRepository.save(career);
+		careersRepository.save(career);
 		return career.getId();
+	}
+	CourseMinRequirementDto createMinRequirement() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
+		List<CourseMinRequirementDto> coursePreRequisiteDtos = new ArrayList<>();
+		ValidList<CourseMinRequirementSubjectDto> minRequirementSubjects = new ValidList<>();
+		CourseMinRequirementSubjectDto subjectDto = new CourseMinRequirementSubjectDto();
+		subjectDto.setName("name");
+		subjectDto.setGrade("grade");
+		Set<String> language = new HashSet<>();
+		language.add("English");
+		List<String> linkedCourseId = new ArrayList<>();
+		linkedCourseId.add(courseId.getId());
+		CourseMinRequirementDto minRequirementDto = new CourseMinRequirementDto();
+		minRequirementDto.setId(UUID.randomUUID().toString());
+		minRequirementDto.setCountryName("India");
+		minRequirementDto.setStateName("MP");
+		minRequirementDto.setEducationSystemId(UUID.randomUUID().toString());
+		minRequirementDto.setGradePoint(15.3);
+		minRequirementDto.setMinRequirementSubjects(minRequirementSubjects);
+		minRequirementDto.setStudyLanguages(language);
+		coursePreRequisiteDtos.add(minRequirementDto);
+		CourseMinRequirementRequestWrapper request = new CourseMinRequirementRequestWrapper();
+		request.setCoursePreRequisiteDtos(coursePreRequisiteDtos);
+		request.setLinkedCourseIds(linkedCourseId);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("userId", userId);
+		HttpEntity<CourseMinRequirementRequestWrapper> entity = new HttpEntity<>(request, headers);
+		ResponseEntity<String> response = testRestTemplate.exchange(
+				api + PATH_SEPARATOR + courseId.getId() + PATH_SEPARATOR + "min-requirement", HttpMethod.POST, entity,
+				String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		return minRequirementDto;
 	}
 
 	String service() {

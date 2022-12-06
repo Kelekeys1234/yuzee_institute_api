@@ -2,7 +2,6 @@ package com.yuzee.app.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,9 +9,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -32,19 +34,19 @@ import com.yuzee.common.lib.dto.PaginationResponseDto;
 import com.yuzee.common.lib.dto.common.VaccinationDto;
 import com.yuzee.common.lib.handler.CommonHandler;
 
-
- class CourseOtherRequirementControllerTest extends CreateCourseAndInstitute{
-	 UUID uuid = UUID.randomUUID();
+@TestInstance(Lifecycle.PER_CLASS)
+class CourseOtherRequirementControllerTest extends CreateCourseAndInstitute {
+	UUID uuid = UUID.randomUUID();
 	@Autowired
 	private TestRestTemplate testRestTemplate;
-	
+
 	@MockBean
 	private CommonHandler commonHandler;
-	
+
 	private String instituteId;
 	private CourseRequest courseId;
 
-	@BeforeEach
+	@BeforeAll
 	public void createAllIntituteAndCourse() throws IOException {
 		instituteId = testCreateInstitute();
 		courseId = createCourses(instituteId);
@@ -86,141 +88,146 @@ import com.yuzee.common.lib.handler.CommonHandler;
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set("userId", userId);
 		HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(courseOtherRequirementDto, headers);
-		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate.exchange(
-				INSTITUTE_PRE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
-						+ PATH_SEPARATOR + "other-requirement",
-				HttpMethod.POST, entity, CourseOtherRequirementDto.class);
+		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate
+				.exchange(
+						INSTITUTE_PRE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
+								+ PATH_SEPARATOR + "other-requirement",
+						HttpMethod.POST, entity, CourseOtherRequirementDto.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 	}
 
 	@DisplayName("Update work_experience_work_placement")
 	@Test
-     void updateWorkExperienceWorkPlacement() throws IOException {
-			CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
-			CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
-			workExperience.setDescription("Hello this is my  workExperience ");
-			workExperience.setDuration(5.5);
-			workExperience.setDurationType("month");
-			List<String> workExperienceFields = new ArrayList<>();
-			workExperienceFields.add("IT");
-			workExperience.setFields(workExperienceFields);
-			courseOtherRequirementDto.setWorkExperience(workExperience);
+	void updateWorkExperienceWorkPlacement() throws IOException {
+		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
+		CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
+		workExperience.setDescription("Hello this is my  workExperience ");
+		workExperience.setDuration(5.5);
+		workExperience.setDurationType("month");
+		List<String> workExperienceFields = new ArrayList<>();
+		workExperienceFields.add("IT");
+		workExperience.setFields(workExperienceFields);
+		courseOtherRequirementDto.setWorkExperience(workExperience);
 
-			CourseWorkPlacementRequirementDto workPlacement = new CourseWorkPlacementRequirementDto();
-			workPlacement.setDescription("Hello this is my workPlacement ");
-			workPlacement.setDuration(5.5);
-			workPlacement.setDurationType("month");
-			List<String> workPlacementFields = new ArrayList<>();
-			workPlacementFields.add("IT");
-			workPlacement.setFields(workPlacementFields);
-			courseOtherRequirementDto.setWorkPlacement(workPlacement);
+		CourseWorkPlacementRequirementDto workPlacement = new CourseWorkPlacementRequirementDto();
+		workPlacement.setDescription("Hello this is my workPlacement ");
+		workPlacement.setDuration(5.5);
+		workPlacement.setDurationType("month");
+		List<String> workPlacementFields = new ArrayList<>();
+		workPlacementFields.add("IT");
+		workPlacement.setFields(workPlacementFields);
+		courseOtherRequirementDto.setWorkPlacement(workPlacement);
 
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.set("userId", userId);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("userId", userId);
 
-			HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(courseOtherRequirementDto, headers);
-			ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate.exchange(
-					INSTITUTE_PRE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
-							+ PATH_SEPARATOR + "other-requirement",
-					HttpMethod.POST, entity, CourseOtherRequirementDto.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(courseOtherRequirementDto, headers);
+		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate
+				.exchange(
+						INSTITUTE_PRE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
+								+ PATH_SEPARATOR + "other-requirement",
+						HttpMethod.POST, entity, CourseOtherRequirementDto.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-		}
+	}
 
 	@DisplayName("Add multiple_fields_work_experience_work_placement")
 	@Test
-	  void addMultipleFieldsWorkExperienceWorkPlacement() throws IOException {
-			String instituteId = testCreateInstitute();
-			CourseRequest courseId = createCourses(instituteId);
-			CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
-			CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
-			workExperience.setDescription("Hello this is my  work_experience ");
-			workExperience.setDuration(5.5);
-			workExperience.setDurationType("month");
-			List<String> workExperienceFields = new ArrayList<>();
-			workExperienceFields.add("IT");
-			workExperienceFields.add("NIT");
-			workExperience.setFields(workExperienceFields);
-			courseOtherRequirementDto.setWorkExperience(workExperience);
+	void addMultipleFieldsWorkExperienceWorkPlacement() throws IOException {
+		String instituteId = testCreateInstitute();
+		CourseRequest courseId = createCourses(instituteId);
+		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
+		CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
+		workExperience.setDescription("Hello this is my  work_experience ");
+		workExperience.setDuration(5.5);
+		workExperience.setDurationType("month");
+		List<String> workExperienceFields = new ArrayList<>();
+		workExperienceFields.add("IT");
+		workExperienceFields.add("NIT");
+		workExperience.setFields(workExperienceFields);
+		courseOtherRequirementDto.setWorkExperience(workExperience);
 
-			CourseWorkPlacementRequirementDto workPlacement = new CourseWorkPlacementRequirementDto();
-			workPlacement.setDescription("Hello this is my workPlacement");
-			workPlacement.setDuration(5.5);
-			workPlacement.setDurationType("month");
-			List<String> workPlacementFields = new ArrayList<>();
-			workPlacementFields.add("IT");
-			workPlacementFields.add("NIT");
-			workPlacement.setFields(workPlacementFields);
-			courseOtherRequirementDto.setWorkPlacement(workPlacement);
+		CourseWorkPlacementRequirementDto workPlacement = new CourseWorkPlacementRequirementDto();
+		workPlacement.setDescription("Hello this is my workPlacement");
+		workPlacement.setDuration(5.5);
+		workPlacement.setDurationType("month");
+		List<String> workPlacementFields = new ArrayList<>();
+		workPlacementFields.add("IT");
+		workPlacementFields.add("NIT");
+		workPlacement.setFields(workPlacementFields);
+		courseOtherRequirementDto.setWorkPlacement(workPlacement);
 
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.set("userId", userId);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("userId", userId);
 
-			HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(courseOtherRequirementDto, headers);
-			ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate.exchange(
-					INSTITUTE_PRE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
-							+ PATH_SEPARATOR + "other-requirement",
-					HttpMethod.POST, entity, CourseOtherRequirementDto.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(courseOtherRequirementDto, headers);
+		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate
+				.exchange(
+						INSTITUTE_PRE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
+								+ PATH_SEPARATOR + "other-requirement",
+						HttpMethod.POST, entity, CourseOtherRequirementDto.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-		}
+	}
 
-		@DisplayName("Remove singal_fields_work_experience_work_placement")
-		@Test
-		void removeSingalFieldsWorkExperienceWorkPlacement() throws IOException {
-			CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
-			CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
-			workExperience.setDescription("Hello this is my  workExperience ");
-			workExperience.setDuration(5.5);
-			workExperience.setDurationType("month");
-			List<String> workExperienceFields = new ArrayList<>();
-			workExperienceFields.add("NIT");
-			workExperience.setFields(workExperienceFields);
-			courseOtherRequirementDto.setWorkExperience(workExperience);
+	@DisplayName("Remove singal_fields_work_experience_work_placement")
+	@Test
+	void removeSingalFieldsWorkExperienceWorkPlacement() throws IOException {
+		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
+		CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
+		workExperience.setDescription("Hello this is my  workExperience ");
+		workExperience.setDuration(5.5);
+		workExperience.setDurationType("month");
+		List<String> workExperienceFields = new ArrayList<>();
+		workExperienceFields.add("NIT");
+		workExperience.setFields(workExperienceFields);
+		courseOtherRequirementDto.setWorkExperience(workExperience);
 
-			CourseWorkPlacementRequirementDto workPlacement = new CourseWorkPlacementRequirementDto();
-			workPlacement.setDescription("Hello this is my workPlacement");
-			workPlacement.setDuration(5.5);
-			workPlacement.setDurationType("month");
-			List<String> workPlacementFields = new ArrayList<>();
-			workPlacementFields.add("NIT");
-			workPlacement.setFields(workPlacementFields);
-			courseOtherRequirementDto.setWorkPlacement(workPlacement);
+		CourseWorkPlacementRequirementDto workPlacement = new CourseWorkPlacementRequirementDto();
+		workPlacement.setDescription("Hello this is my workPlacement");
+		workPlacement.setDuration(5.5);
+		workPlacement.setDurationType("month");
+		List<String> workPlacementFields = new ArrayList<>();
+		workPlacementFields.add("NIT");
+		workPlacement.setFields(workPlacementFields);
+		courseOtherRequirementDto.setWorkPlacement(workPlacement);
 
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.set("userId", userId);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("userId", userId);
 
-			HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(courseOtherRequirementDto, headers);
-			ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate.exchange(
-					INSTITUTE_PRE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
-							+ PATH_SEPARATOR + "other-requirement",
-					HttpMethod.POST, entity, CourseOtherRequirementDto.class);
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(courseOtherRequirementDto, headers);
+		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate
+				.exchange(
+						INSTITUTE_PRE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
+								+ PATH_SEPARATOR + "other-requirement",
+						HttpMethod.POST, entity, CourseOtherRequirementDto.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-		}
+	}
 
 	@DisplayName("Get all_work_experience_work_placement")
 	@Test
-     void getAllWorkExperienceWorkPlacement() throws IOException {
+	void getAllWorkExperienceWorkPlacement() throws IOException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set("userId", userId);
 
 		HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(headers);
-		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate.exchange(
-				INSTITUTE_PRE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
-					+ PATH_SEPARATOR + "other-requirement",
-				HttpMethod.GET, entity, CourseOtherRequirementDto.class);
+		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate
+				.exchange(
+						INSTITUTE_PRE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
+								+ PATH_SEPARATOR + "other-requirement",
+						HttpMethod.GET, entity, CourseOtherRequirementDto.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	@DisplayName("Send wrong_courseId")
 	@Test
-	  void sendWrongCourseId() {
+	void sendWrongCourseId() {
 		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
 		CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
 		workExperience.setDescription("Hello this is my  workExperience ");
@@ -255,7 +262,7 @@ import com.yuzee.common.lib.handler.CommonHandler;
 
 	@DisplayName("WrongIdForGetAll")
 	@Test
-     void SendWrongIDgetAll() {
+	void SendWrongIDgetAll() {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -269,20 +276,20 @@ import com.yuzee.common.lib.handler.CommonHandler;
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 
 	}
-	
+
 	@DisplayName("Send NullWorkExp_WorkPlac")
 	@Test
-	 void SendNullWorkExperienceWorkPlacement() throws IOException {
+	void SendNullWorkExperienceWorkPlacement() throws IOException {
 		CourseOtherRequirementDto courseOtherRequirementDto = new CourseOtherRequirementDto();
-		CourseVaccineRequirementDto vaccine =new CourseVaccineRequirementDto();
-		vaccine=null;
+		CourseVaccineRequirementDto vaccine = new CourseVaccineRequirementDto();
+		vaccine = null;
 		courseOtherRequirementDto.setVaccine(vaccine);
 		CourseWorkExperienceRequirementDto workExperience = new CourseWorkExperienceRequirementDto();
-		workExperience=null;
+		workExperience = null;
 		courseOtherRequirementDto.setWorkExperience(workExperience);
-		
+
 		CourseWorkPlacementRequirementDto workPlacement = new CourseWorkPlacementRequirementDto();
-		workPlacement=null;
+		workPlacement = null;
 		courseOtherRequirementDto.setWorkPlacement(workPlacement);
 
 		HttpHeaders headers = new HttpHeaders();
@@ -290,10 +297,11 @@ import com.yuzee.common.lib.handler.CommonHandler;
 		headers.set("userId", userId);
 
 		HttpEntity<CourseOtherRequirementDto> entity = new HttpEntity<>(courseOtherRequirementDto, headers);
-		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate.exchange(
-				INSTITUTE_PRE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
-						+ PATH_SEPARATOR + "other-requirement",
-				HttpMethod.POST, entity, CourseOtherRequirementDto.class);
+		ResponseEntity<CourseOtherRequirementDto> response = testRestTemplate
+				.exchange(
+						INSTITUTE_PRE_PATH + PATH_SEPARATOR + "course" + PATH_SEPARATOR + courseId.getId()
+								+ PATH_SEPARATOR + "other-requirement",
+						HttpMethod.POST, entity, CourseOtherRequirementDto.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 	}

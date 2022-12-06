@@ -11,9 +11,12 @@ import java.util.UUID;
 
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -64,6 +67,7 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = YuzeeApplication.class)
+@TestInstance(Lifecycle.PER_CLASS)
 class InstituteServiceControllerTest extends CreateCourseAndInstitute {
 
 	// cf13eef7-b188-4e84-baee-7f98a7c33e7b
@@ -74,6 +78,7 @@ class InstituteServiceControllerTest extends CreateCourseAndInstitute {
 	@MockBean
 	private PublishSystemEventHandler publishSystemEventHandler;
 
+	private String serviceId;
 
 	@BeforeClass
 	public static void main() {
@@ -82,16 +87,16 @@ class InstituteServiceControllerTest extends CreateCourseAndInstitute {
 
 	private String instituteId;
 
-	@BeforeEach
-	public void deleteAllInstitute() throws IOException {
+	@BeforeAll
+	public void createAllInstitute() throws IOException {
 		instituteId = testCreateInstitute();
+		serviceId = service();
 	}
 
 	/// institute/service/instituteId/{instituteId}
 	@DisplayName("addInstituteService test success")
 	@Test
 	void addInstituteService() throws IOException {
-		String serviceId = service();
 		ServiceDto service = new ServiceDto();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -137,7 +142,6 @@ class InstituteServiceControllerTest extends CreateCourseAndInstitute {
 	@DisplayName("getInstituteServiceById")
 	@Test
 	void getInstituteServiceById() throws IOException {
-		String serviceId = service();
 		ServiceDto service = new ServiceDto();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
